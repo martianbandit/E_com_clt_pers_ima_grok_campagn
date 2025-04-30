@@ -1,0 +1,480 @@
+{% extends 'layout.html' %}
+
+{% block title %}Export Shopify - {{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Export Shopify</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Tableau de bord</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('products') }}">Produits</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('view_product', product_id=product.id) }}">{{ product.name }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Export Shopify</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Onglets pour les différentes sections -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="exportTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">
+                                Description
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab" aria-controls="specifications" aria-selected="false">
+                                Spécifications
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="faq-tab" data-bs-toggle="tab" data-bs-target="#faq" type="button" role="tab" aria-controls="faq" aria-selected="false">
+                                FAQ
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="metadata-tab" data-bs-toggle="tab" data-bs-target="#metadata" type="button" role="tab" aria-controls="metadata" aria-selected="false">
+                                Métadonnées
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="exportTabsContent">
+                        <!-- Onglet Description -->
+                        <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">Description du Produit</h5>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary me-2" id="copyDescriptionBtn">
+                                        <i class="fas fa-copy me-1"></i> Copier HTML
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" id="editDescriptionBtn">
+                                        <i class="fas fa-edit me-1"></i> Modifier
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Éditeur HTML et aperçu -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Code HTML</label>
+                                        <textarea id="descriptionHTML" class="form-control code-textarea" rows="15" readonly>{{ product.html_description }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Aperçu</label>
+                                        <div id="descriptionPreview" class="preview-box p-3 border rounded overflow-auto" style="height: 350px;">
+                                            {{ product.html_description|safe }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Onglet Spécifications -->
+                        <div class="tab-pane fade" id="specifications" role="tabpanel" aria-labelledby="specifications-tab">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">Spécifications Techniques</h5>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary me-2" id="copySpecsBtn">
+                                        <i class="fas fa-copy me-1"></i> Copier HTML
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" id="editSpecsBtn">
+                                        <i class="fas fa-edit me-1"></i> Modifier
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Éditeur HTML et aperçu -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Code HTML</label>
+                                        <textarea id="specsHTML" class="form-control code-textarea" rows="15" readonly>{{ product.html_specifications }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Aperçu</label>
+                                        <div id="specsPreview" class="preview-box p-3 border rounded overflow-auto" style="height: 350px;">
+                                            {{ product.html_specifications|safe }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Onglet FAQ -->
+                        <div class="tab-pane fade" id="faq" role="tabpanel" aria-labelledby="faq-tab">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">Questions Fréquentes</h5>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary me-2" id="copyFAQBtn">
+                                        <i class="fas fa-copy me-1"></i> Copier HTML
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" id="editFAQBtn">
+                                        <i class="fas fa-edit me-1"></i> Modifier
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Éditeur HTML et aperçu -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Code HTML</label>
+                                        <textarea id="faqHTML" class="form-control code-textarea" rows="15" readonly>{{ product.html_faq }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Aperçu</label>
+                                        <div id="faqPreview" class="preview-box p-3 border rounded overflow-auto" style="height: 350px;">
+                                            {{ product.html_faq|safe }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Onglet Métadonnées -->
+                        <div class="tab-pane fade" id="metadata" role="tabpanel" aria-labelledby="metadata-tab">
+                            <h5 class="card-title mb-3">Métadonnées SEO</h5>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Meta Title</div>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="metaTitle" value="{{ product.meta_title }}" readonly>
+                                        <button class="btn btn-outline-primary copy-btn" data-target="metaTitle">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <small class="text-muted">{{ product.meta_title|length }}/60 caractères</small>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Meta Description</div>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <textarea class="form-control" id="metaDescription" rows="2" readonly>{{ product.meta_description }}</textarea>
+                                        <button class="btn btn-outline-primary copy-btn" data-target="metaDescription">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <small class="text-muted">{{ product.meta_description|length }}/160 caractères</small>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Texte Alternatif</div>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="altText" value="{{ product.alt_text }}" readonly>
+                                        <button class="btn btn-outline-primary copy-btn" data-target="altText">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <small class="text-muted">{{ product.alt_text|length }}/125 caractères</small>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-3 fw-bold">Mots-clés / Tags</div>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="keywordsList" value="{{ product.get_keywords_list()|join(', ') }}" readonly>
+                                        <button class="btn btn-outline-primary copy-btn" data-target="keywordsList">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <!-- Aperçu produit -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Aperçu du Produit</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="card product-card mx-auto border-0">
+                        {% if product.image_url %}
+                        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.alt_text or product.name }}">
+                        {% else %}
+                        <div class="bg-light text-center py-5">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                            <p class="mt-2 mb-0 small text-muted">Aucune image</p>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.generated_title or product.name }}</h5>
+                            <p class="card-text small">{{ product.meta_description }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="product-price fw-bold">{{ "%.2f"|format(product.price) }}€</span>
+                                <span class="badge bg-secondary">{{ product.category }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" id="exportFullBtn">
+                            <i class="fas fa-file-export me-2"></i> Exporter Tout (HTML)
+                        </button>
+                        <button class="btn btn-outline-success" id="exportJSONBtn">
+                            <i class="fas fa-file-code me-2"></i> Exporter JSON
+                        </button>
+                        <button class="btn btn-outline-info" id="regenerateBtn">
+                            <i class="fas fa-sync-alt me-2"></i> Régénérer le Contenu
+                        </button>
+                        <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Retour au Produit
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Conseils d'utilisation -->
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Conseils Shopify</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex">
+                            <i class="fas fa-info-circle me-2 text-info align-self-start pt-1"></i>
+                            <div>
+                                <strong>Copier le code</strong>
+                                <p class="mb-0 small">Utilisez les boutons "Copier" pour copier le code HTML dans le presse-papiers.</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <i class="fas fa-info-circle me-2 text-info align-self-start pt-1"></i>
+                            <div>
+                                <strong>Éditeur Shopify</strong>
+                                <p class="mb-0 small">Dans Shopify, utilisez l'éditeur HTML en mode "Editeur HTML" pour coller le code.</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex">
+                            <i class="fas fa-info-circle me-2 text-info align-self-start pt-1"></i>
+                            <div>
+                                <strong>Métadonnées SEO</strong>
+                                <p class="mb-0 small">Utilisez les métadonnées dans la section "Search engine listing" de Shopify.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal d'édition HTML -->
+<div class="modal fade" id="editHtmlModal" tabindex="-1" aria-labelledby="editHtmlModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editHtmlModalLabel">Modifier le HTML</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="htmlEditorForm">
+                    <input type="hidden" id="htmlSection" name="html_section" value="">
+                    <input type="hidden" id="productId" name="product_id" value="{{ product.id }}">
+                    
+                    <div class="mb-3">
+                        <label for="htmlEditor" class="form-label">Code HTML</label>
+                        <textarea id="htmlEditor" name="html_content" class="form-control" rows="15"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="saveHtmlChangesBtn">Enregistrer les modifications</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fonctions de copie
+    function copyToClipboard(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+    }
+    
+    function showCopySuccess() {
+        const alertPlaceholder = document.getElementById('alert-placeholder');
+        if (!alertPlaceholder) return;
+        
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i> Copié dans le presse-papiers!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+        
+        alertPlaceholder.innerHTML = '';
+        alertPlaceholder.append(wrapper);
+        
+        setTimeout(() => {
+            const alert = wrapper.querySelector('.alert');
+            if (alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }
+        }, 3000);
+    }
+    
+    // Boutons de copie pour les sections HTML
+    document.getElementById('copyDescriptionBtn')?.addEventListener('click', function() {
+        const html = document.getElementById('descriptionHTML').value;
+        copyToClipboard(html);
+        showCopySuccess();
+    });
+    
+    document.getElementById('copySpecsBtn')?.addEventListener('click', function() {
+        const html = document.getElementById('specsHTML').value;
+        copyToClipboard(html);
+        showCopySuccess();
+    });
+    
+    document.getElementById('copyFAQBtn')?.addEventListener('click', function() {
+        const html = document.getElementById('faqHTML').value;
+        copyToClipboard(html);
+        showCopySuccess();
+    });
+    
+    // Boutons de copie pour les métadonnées
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const targetElement = document.getElementById(targetId);
+            copyToClipboard(targetElement.value);
+            showCopySuccess();
+        });
+    });
+    
+    // Bouton d'exportation complète
+    document.getElementById('exportFullBtn')?.addEventListener('click', function() {
+        // Combiner tous les blocs HTML
+        const description = document.getElementById('descriptionHTML').value;
+        const specs = document.getElementById('specsHTML').value;
+        const faq = document.getElementById('faqHTML').value;
+        
+        const fullHtml = description + '\n\n' + specs + '\n\n' + faq;
+        copyToClipboard(fullHtml);
+        showCopySuccess();
+    });
+    
+    // Gestion du modal d'édition HTML
+    const editHtmlModal = new bootstrap.Modal(document.getElementById('editHtmlModal'));
+    
+    document.getElementById('editDescriptionBtn')?.addEventListener('click', function() {
+        document.getElementById('htmlSection').value = 'description';
+        document.getElementById('htmlEditor').value = document.getElementById('descriptionHTML').value;
+        document.getElementById('editHtmlModalLabel').textContent = 'Modifier la Description';
+        editHtmlModal.show();
+    });
+    
+    document.getElementById('editSpecsBtn')?.addEventListener('click', function() {
+        document.getElementById('htmlSection').value = 'specifications';
+        document.getElementById('htmlEditor').value = document.getElementById('specsHTML').value;
+        document.getElementById('editHtmlModalLabel').textContent = 'Modifier les Spécifications';
+        editHtmlModal.show();
+    });
+    
+    document.getElementById('editFAQBtn')?.addEventListener('click', function() {
+        document.getElementById('htmlSection').value = 'faq';
+        document.getElementById('htmlEditor').value = document.getElementById('faqHTML').value;
+        document.getElementById('editHtmlModalLabel').textContent = 'Modifier la FAQ';
+        editHtmlModal.show();
+    });
+    
+    // Sauvegarde des modifications HTML
+    document.getElementById('saveHtmlChangesBtn')?.addEventListener('click', function() {
+        const section = document.getElementById('htmlSection').value;
+        const content = document.getElementById('htmlEditor').value;
+        const productId = document.getElementById('productId').value;
+        
+        // Envoyer les modifications au serveur via AJAX
+        fetch(`/update_product_html/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                section: section,
+                content: content
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Mettre à jour l'interface
+                const textareaId = section === 'description' ? 'descriptionHTML' : 
+                                  (section === 'specifications' ? 'specsHTML' : 'faqHTML');
+                const previewId = section === 'description' ? 'descriptionPreview' : 
+                                 (section === 'specifications' ? 'specsPreview' : 'faqPreview');
+                
+                document.getElementById(textareaId).value = content;
+                document.getElementById(previewId).innerHTML = content;
+                
+                editHtmlModal.hide();
+                showCopySuccess();
+            } else {
+                alert('Erreur lors de la sauvegarde: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error updating HTML:', error);
+            alert('Erreur lors de la communication avec le serveur');
+        });
+    });
+    
+    // Exportation JSON
+    document.getElementById('exportJSONBtn')?.addEventListener('click', function() {
+        window.location.href = `/export_product_json/${document.getElementById('productId').value}`;
+    });
+    
+    // Régénération du contenu
+    document.getElementById('regenerateBtn')?.addEventListener('click', function() {
+        if (confirm('Êtes-vous sûr de vouloir régénérer tout le contenu HTML? Les modifications manuelles seront perdues.')) {
+            window.location.href = `/regenerate_product_content/${document.getElementById('productId').value}`;
+        }
+    });
+});
+</script>
+{% endblock %}

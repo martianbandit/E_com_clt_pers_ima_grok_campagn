@@ -241,6 +241,11 @@ class Product(db.Model):
     boutique_id = db.Column(db.Integer, db.ForeignKey('boutique.id'), nullable=True)
     boutique = db.relationship('Boutique', backref='products', lazy=True)
     
+    # Contenu HTML optimisé pour Shopify
+    html_description = db.Column(db.Text, nullable=True)  # HTML principal de description
+    html_specifications = db.Column(db.Text, nullable=True)  # HTML des spécifications techniques
+    html_faq = db.Column(db.Text, nullable=True)  # HTML des FAQ
+    
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -254,3 +259,38 @@ class Product(db.Model):
         if isinstance(self.keywords, list):
             return self.keywords
         return [k.strip() for k in self.keywords.split(',') if k.strip()]
+        
+class ImportedProduct(db.Model):
+    """Model for storing products imported from AliExpress with optimization data"""
+    id = db.Column(db.Integer, primary_key=True)
+    
+    # Lien avec le produit dans notre système
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    product = db.relationship('Product', backref='import_data', lazy=True)
+    
+    # Données source
+    source = db.Column(db.String(50), default="aliexpress")  # Source de l'import (aliexpress, amazon, etc.)
+    source_url = db.Column(db.Text, nullable=False)  # URL source complète
+    source_id = db.Column(db.String(100), nullable=True)  # ID du produit sur la plateforme source
+    
+    # Données brutes extraites
+    raw_data = db.Column(JSONB, nullable=True)  # Données brutes extraites
+    
+    # Données de prix
+    original_price = db.Column(db.Float, nullable=True)  # Prix original sur la source
+    original_currency = db.Column(db.String(3), nullable=True)  # Devise d'origine (EUR, USD, etc.)
+    optimized_price = db.Column(db.Float, nullable=True)  # Prix optimisé calculé
+    pricing_strategy = db.Column(JSONB, nullable=True)  # Stratégie de prix complète (marges, etc.)
+    
+    # Données de transformation
+    templates = db.Column(JSONB, nullable=True)  # Templates HTML générés (description, specs, FAQ)
+    optimization_settings = db.Column(JSONB, nullable=True)  # Paramètres utilisés pour l'optimisation
+    
+    # Métadonnées
+    import_status = db.Column(db.String(20), default="pending")  # pending, processing, complete, failed
+    status_message = db.Column(db.Text, nullable=True)  # Message d'erreur ou de statut
+    imported_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<ImportedProduct {self.id} from {self.source}>'
