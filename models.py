@@ -212,3 +212,45 @@ class Metric(db.Model):
     
     def __repr__(self):
         return f'<Metric {self.name}>'
+        
+class Product(db.Model):
+    """Model for storing product information and generated content"""
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(50), nullable=True)
+    base_description = db.Column(db.Text, nullable=True)
+    price = db.Column(db.Float, nullable=True)
+    image_url = db.Column(db.Text, nullable=True)
+    
+    # Champs pour les contenus générés
+    generated_title = db.Column(db.String(100), nullable=True)
+    generated_description = db.Column(db.Text, nullable=True)
+    meta_title = db.Column(db.String(60), nullable=True)
+    meta_description = db.Column(db.String(160), nullable=True)
+    alt_text = db.Column(db.String(125), nullable=True)
+    keywords = db.Column(JSONB, nullable=True)  # Liste de mots-clés
+    
+    # Variantes du produit
+    variants = db.Column(JSONB, nullable=True)  # Stockage des variantes (couleurs, tailles, etc.)
+    comparative_analysis = db.Column(JSONB, nullable=True)  # Analyse comparative
+    
+    # Données complémentaires
+    target_audience_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
+    target_audience = db.relationship('Customer', backref='targeted_products', lazy=True)
+    
+    boutique_id = db.Column(db.Integer, db.ForeignKey('boutique.id'), nullable=True)
+    boutique = db.relationship('Boutique', backref='products', lazy=True)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<Product {self.name}>'
+    
+    def get_keywords_list(self):
+        """Return keywords as a list"""
+        if not self.keywords:
+            return []
+        if isinstance(self.keywords, list):
+            return self.keywords
+        return [k.strip() for k in self.keywords.split(',') if k.strip()]

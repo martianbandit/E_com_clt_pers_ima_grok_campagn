@@ -1,0 +1,174 @@
+{% extends 'layout.html' %}
+
+{% block title %}Modifier {{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Modifier le produit</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Tableau de bord</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('products') }}">Produits</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('view_product', product_id=product.id) }}">{{ product.name }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Modifier</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Informations du produit</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('edit_product', product_id=product.id) }}" method="POST">
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Nom du produit *</label>
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ product.name }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="price" class="form-label">Prix *</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" value="{{ "%.2f"|format(product.price) }}" required>
+                                        <span class="input-group-text">€</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Catégorie *</label>
+                                    <input type="text" class="form-control" id="category" name="category" value="{{ product.category }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="boutique_id" class="form-label">Boutique associée</label>
+                                    <select class="form-select" id="boutique_id" name="boutique_id">
+                                        <option value="">Aucune boutique</option>
+                                        {% for boutique in boutiques %}
+                                        <option value="{{ boutique.id }}" {% if product.boutique_id == boutique.id %}selected{% endif %}>{{ boutique.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="base_description" class="form-label">Description de base</label>
+                            <textarea class="form-control" id="base_description" name="base_description" rows="4">{{ product.base_description }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="image_url" class="form-label">URL de l'image</label>
+                            <input type="url" class="form-control" id="image_url" name="image_url" value="{{ product.image_url or '' }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="target_audience_id" class="form-label">Public cible</label>
+                            <select class="form-select" id="target_audience_id" name="target_audience_id">
+                                <option value="">Aucun public cible</option>
+                                {% for customer in customers %}
+                                <option value="{{ customer.id }}" {% if product.target_audience_id == customer.id %}selected{% endif %}>{{ customer.name }} ({{ customer.age }} ans, {{ customer.location }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h5 class="mb-3">Informations SEO</h5>
+
+                        <div class="mb-3">
+                            <label for="meta_title" class="form-label">Meta Title</label>
+                            <input type="text" class="form-control" id="meta_title" name="meta_title" value="{{ product.meta_title or '' }}" maxlength="60">
+                            <small class="form-text text-muted">Max 60 caractères</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="meta_description" class="form-label">Meta Description</label>
+                            <textarea class="form-control" id="meta_description" name="meta_description" rows="2" maxlength="160">{{ product.meta_description or '' }}</textarea>
+                            <small class="form-text text-muted">Max 160 caractères</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="alt_text" class="form-label">Texte alternatif pour l'image</label>
+                            <input type="text" class="form-control" id="alt_text" name="alt_text" value="{{ product.alt_text or '' }}" maxlength="125">
+                            <small class="form-text text-muted">Max 125 caractères</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="keywords" class="form-label">Mots-clés (séparés par des virgules)</label>
+                            <input type="text" class="form-control" id="keywords" name="keywords" value="{{ product.get_keywords_list()|join(', ') }}">
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-secondary">Annuler</a>
+                            <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Aperçu</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="card product-preview mx-auto" style="max-width: 330px; border: none;">
+                        {% if product.image_url %}
+                        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.alt_text or product.name }}">
+                        {% else %}
+                        <div class="bg-light text-center py-5">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                            <p class="mt-2 mb-0 text-muted">Aucune image</p>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.base_description or 'Aucune description disponible' }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="product-price fw-bold">{{ "%.2f"|format(product.price) }}€</span>
+                                <span class="badge bg-secondary">{{ product.category }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Conseils</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="fas fa-info-circle me-2 text-info"></i>
+                            Une description de base concise mais informative aidera l'IA à générer du contenu de qualité.
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-info-circle me-2 text-info"></i>
+                            Pour une personnalisation optimale, associez le produit à une boutique et un public cible.
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-info-circle me-2 text-info"></i>
+                            Pour un meilleur référencement, utilisez les outils de génération de contenu après avoir sauvegardé ces informations de base.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -41,7 +41,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 # Import routes after app initialization
-from models import Boutique, NicheMarket, Customer, Campaign, Metric
+from models import Boutique, NicheMarket, Customer, Campaign, SimilarProduct, Metric, Product
 from boutique_ai import (
     generate_customers, 
     generate_customer_persona, 
@@ -880,6 +880,381 @@ def metrics_view():
                            persona_gen_count=persona_gen_count,
                            profile_success_rate=profile_success_rate,
                            persona_success_rate=persona_success_rate)
+
+# Routes pour la gestion des produits
+@app.route('/products', methods=['GET'])
+def products():
+    """Page de gestion des produits et génération de contenu"""
+    # Récupérer les produits existants
+    products_list = Product.query.order_by(Product.name).all()
+    
+    # Récupérer les clients pour le ciblage
+    customers = Customer.query.order_by(Customer.name).all()
+    
+    # Récupérer les boutiques pour l'association des produits
+    boutiques = Boutique.query.order_by(Boutique.name).all()
+    
+    return render_template('products.html',
+                          products=products_list,
+                          customers=customers,
+                          boutiques=boutiques)
+
+@app.route('/create_product', methods=['POST'])
+def create_product():
+    """Créer un nouveau produit"""
+    try:
+        # Créer le produit à partir des données du formulaire
+        product = Product(
+            name=request.form.get('name'),
+            category=request.form.get('category'),
+            price=float(request.form.get('price', 0)),
+            base_description=request.form.get('base_description'),
+            image_url=request.form.get('image_url')
+        )
+        
+        # Associer à une boutique si spécifiée
+        boutique_id = request.form.get('boutique_id')
+        if boutique_id and boutique_id.isdigit():
+            product.boutique_id = int(boutique_id)
+        
+        # Sauvegarder le produit
+        db.session.add(product)
+        db.session.commit()
+        
+        flash(f'Produit "{product.name}" créé avec succès', 'success')
+        return redirect(url_for('view_product', product_id=product.id))
+    
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erreur lors de la création du produit: {str(e)}', 'danger')
+        logging.error(f"Error creating product: {e}")
+        return redirect(url_for('products'))
+
+@app.route('/product/<int:product_id>', methods=['GET'])
+def view_product(product_id):
+    """Afficher les détails d'un produit spécifique"""
+    product = Product.query.get_or_404(product_id)
+    return render_template('product_detail.html', product=product)
+
+@app.route('/edit_product/<int:product_id>', methods=['GET', 'POST'])
+def edit_product(product_id):
+    """Modifier les informations d'un produit"""
+    product = Product.query.get_or_404(product_id)
+    
+    if request.method == 'POST':
+        try:
+            # Mettre à jour les champs du produit
+            product.name = request.form.get('name', product.name)
+            product.category = request.form.get('category')
+            product.price = float(request.form.get('price', 0))
+            product.base_description = request.form.get('base_description')
+            product.image_url = request.form.get('image_url')
+            
+            # Associer à une boutique si spécifiée
+            boutique_id = request.form.get('boutique_id')
+            if boutique_id and boutique_id.isdigit():
+                product.boutique_id = int(boutique_id)
+            else:
+                product.boutique_id = None
+            
+            # Associer à un public cible si spécifié
+            target_audience_id = request.form.get('target_audience_id')
+            if target_audience_id and target_audience_id.isdigit():
+                product.target_audience_id = int(target_audience_id)
+            else:
+                product.target_audience_id = None
+            
+            # Mettre à jour les métadonnées SEO si fournies
+            meta_title = request.form.get('meta_title')
+            if meta_title:
+                product.meta_title = meta_title
+                
+            meta_description = request.form.get('meta_description')
+            if meta_description:
+                product.meta_description = meta_description
+                
+            alt_text = request.form.get('alt_text')
+            if alt_text:
+                product.alt_text = alt_text
+                
+            keywords = request.form.get('keywords')
+            if keywords:
+                product.keywords = [k.strip() for k in keywords.split(',') if k.strip()]
+            
+            # Sauvegarder les modifications
+            db.session.commit()
+            
+            flash(f'Produit "{product.name}" mis à jour avec succès', 'success')
+            return redirect(url_for('view_product', product_id=product.id))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Erreur lors de la mise à jour du produit: {str(e)}', 'danger')
+            logging.error(f"Error updating product: {e}")
+    
+    # GET request - afficher le formulaire d'édition
+    boutiques = Boutique.query.order_by(Boutique.name).all()
+    customers = Customer.query.order_by(Customer.name).all()
+    
+    return render_template('product_edit.html', 
+                          product=product,
+                          boutiques=boutiques,
+                          customers=customers)
+
+@app.route('/delete_product/<int:product_id>', methods=['POST'])
+def delete_product(product_id):
+    """Supprimer un produit"""
+    product = Product.query.get_or_404(product_id)
+    
+    try:
+        db.session.delete(product)
+        db.session.commit()
+        flash(f'Produit "{product.name}" supprimé avec succès', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erreur lors de la suppression du produit: {str(e)}', 'danger')
+    
+    return redirect(url_for('products'))
+
+@app.route('/generate_product_content', methods=['POST'])
+def generate_product_content():
+    """Générer du contenu pour un produit (description, variantes, analyse comparative)"""
+    from product_generator import generate_product_description, generate_product_variants, generate_product_comparison
+    
+    action = request.form.get('action', '')
+    product_id = request.form.get('product_id')
+    
+    if not product_id or not product_id.isdigit():
+        flash('Produit invalide sélectionné', 'danger')
+        return redirect(url_for('products'))
+    
+    product = Product.query.get_or_404(int(product_id))
+    
+    try:
+        # Génération de description produit
+        if action == 'generate_description':
+            target_audience_id = request.form.get('target_audience_id')
+            if not target_audience_id or not target_audience_id.isdigit():
+                flash('Public cible invalide sélectionné', 'danger')
+                return redirect(url_for('products'))
+            
+            # Récupérer le public cible
+            customer = Customer.query.get_or_404(int(target_audience_id))
+            
+            # Incrémenter le compteur d'utilisation du profil
+            customer.usage_count = (customer.usage_count or 0) + 1
+            
+            # Préparer les données du produit
+            product_info = {
+                'nom': product.name,
+                'categorie': product.category,
+                'prix': product.price,
+                'description': product.base_description,
+                'boutique': product.boutique.name if product.boutique else None
+            }
+            
+            # Préparer les données du public cible
+            target_audience = {
+                'nom': customer.name,
+                'age': customer.age,
+                'sexe': customer.gender,
+                'localisation': customer.location,
+                'interets': customer.get_interests_list(),
+                'niveau_revenu': customer.income_level,
+                'profession': customer.occupation,
+                'education': customer.education,
+                'persona': customer.persona
+            }
+            
+            # Générer la description
+            style = request.form.get('style', 'descriptif')
+            language = request.form.get('language', 'fr')
+            
+            result = generate_product_description(
+                product_info=product_info,
+                target_audience=target_audience,
+                language=language,
+                style=style
+            )
+            
+            # Mettre à jour le produit avec les données générées
+            product.generated_title = result.get('titre')
+            product.generated_description = result.get('description_complete')
+            product.meta_title = result.get('meta_title')
+            product.meta_description = result.get('meta_description')
+            product.alt_text = result.get('alt_text')
+            product.keywords = result.get('mots_cles')
+            product.target_audience_id = customer.id
+            
+            # Enregistrer les modifications
+            db.session.commit()
+            
+            # Log metric pour la génération de description produit
+            log_metric("product_description_generation", {
+                "success": True,
+                "product_id": product.id,
+                "product_name": product.name,
+                "customer_id": customer.id,
+                "language": language,
+                "style": style
+            })
+            
+            flash(f'Description générée avec succès pour "{product.name}"', 'success')
+            
+        # Génération de variantes
+        elif action == 'generate_variants':
+            variant_types = request.form.getlist('variant_types')
+            if not variant_types:
+                flash('Veuillez sélectionner au moins un type de variante', 'warning')
+                return redirect(url_for('products'))
+            
+            # Préparer les données du produit
+            base_product = {
+                'nom': product.name,
+                'categorie': product.category,
+                'prix': product.price,
+                'description': product.base_description or product.generated_description
+            }
+            
+            # Générer les variantes
+            language = request.form.get('language', 'fr')
+            result = generate_product_variants(
+                base_product=base_product,
+                variant_types=variant_types,
+                language=language
+            )
+            
+            # Mettre à jour le produit avec les variantes générées
+            product.variants = result.get('variantes')
+            
+            # Enregistrer les modifications
+            db.session.commit()
+            
+            # Log metric pour la génération de variantes
+            log_metric("product_variants_generation", {
+                "success": True,
+                "product_id": product.id,
+                "product_name": product.name,
+                "variant_types": variant_types,
+                "variants_count": len(result.get('variantes', []))
+            })
+            
+            flash(f'{len(result.get("variantes", []))} variantes générées pour "{product.name}"', 'success')
+            
+        # Génération d'analyse comparative
+        elif action == 'generate_comparison':
+            competitor_names = request.form.get('competitor_names', '')
+            competitor_details = request.form.get('competitor_details', '')
+            
+            if not competitor_names:
+                flash('Veuillez spécifier au moins un produit concurrent', 'warning')
+                return redirect(url_for('products'))
+            
+            # Préparer les données du produit
+            product_info = {
+                'nom': product.name,
+                'categorie': product.category,
+                'prix': product.price,
+                'description': product.base_description or product.generated_description,
+                'avantages': product.generated_description or "Aucune description disponible"
+            }
+            
+            # Préparer les données des concurrents
+            competitor_list = []
+            for idx, name in enumerate(competitor_names.split(',')):
+                competitor = {
+                    'nom': name.strip(),
+                    'details': competitor_details
+                }
+                competitor_list.append(competitor)
+            
+            # Générer l'analyse comparative
+            language = request.form.get('language', 'fr')
+            result = generate_product_comparison(
+                product_info=product_info,
+                competitors=competitor_list,
+                language=language
+            )
+            
+            # Mettre à jour le produit avec l'analyse comparative
+            product.comparative_analysis = result
+            
+            # Enregistrer les modifications
+            db.session.commit()
+            
+            # Log metric pour la génération d'analyse comparative
+            log_metric("product_comparison_generation", {
+                "success": True,
+                "product_id": product.id,
+                "product_name": product.name,
+                "competitors_count": len(competitor_list)
+            })
+            
+            flash(f'Analyse comparative générée pour "{product.name}"', 'success')
+        
+        return redirect(url_for('view_product', product_id=product.id))
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erreur lors de la génération du contenu: {str(e)}', 'danger')
+        logging.error(f"Error generating product content: {e}")
+        
+        # Log metric pour l'échec de génération
+        log_metric("product_content_generation", {
+            "success": False,
+            "error": str(e),
+            "action": action
+        })
+        
+        return redirect(url_for('products'))
+
+@app.route('/export_product/<int:product_id>', methods=['GET'])
+def export_product(product_id):
+    """Exporter un produit au format JSON"""
+    product = Product.query.get_or_404(product_id)
+    
+    # Créer un dictionnaire avec toutes les données du produit
+    product_data = {
+        'id': product.id,
+        'name': product.name,
+        'category': product.category,
+        'price': product.price,
+        'base_description': product.base_description,
+        'generated_title': product.generated_title,
+        'generated_description': product.generated_description,
+        'meta_title': product.meta_title,
+        'meta_description': product.meta_description,
+        'alt_text': product.alt_text,
+        'keywords': product.get_keywords_list(),
+        'variants': product.variants,
+        'comparative_analysis': product.comparative_analysis,
+        'image_url': product.image_url,
+        'created_at': product.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        'updated_at': product.updated_at.strftime('%Y-%m-%d %H:%M:%S') if product.updated_at else None
+    }
+    
+    # Ajouter les informations sur le public cible si disponible
+    if product.target_audience:
+        product_data['target_audience'] = {
+            'id': product.target_audience.id,
+            'name': product.target_audience.name,
+            'age': product.target_audience.age,
+            'location': product.target_audience.location,
+            'gender': product.target_audience.gender
+        }
+    
+    # Ajouter les informations sur la boutique si disponible
+    if product.boutique:
+        product_data['boutique'] = {
+            'id': product.boutique.id,
+            'name': product.boutique.name,
+            'description': product.boutique.description
+        }
+    
+    # Créer une réponse JSON avec le bon header pour le téléchargement
+    response = jsonify(product_data)
+    response.headers['Content-Disposition'] = f'attachment; filename=product_{product.id}.json'
+    return response
 
 with app.app_context():
     # Create tables
