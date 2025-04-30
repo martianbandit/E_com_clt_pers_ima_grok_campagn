@@ -1,0 +1,146 @@
+{% extends 'layout.html' %}
+
+{% block title %}Campaign: {{ campaign.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>Campaign: {{ campaign.title }}</h1>
+                <div>
+                    <a href="{{ url_for('campaigns') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Campaigns
+                    </a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCampaignModal">
+                        <i class="fas fa-trash-alt me-2"></i>Delete
+                    </button>
+                </div>
+            </div>
+            <div class="text-muted">
+                <i class="fas fa-calendar me-1"></i> Created: {{ campaign.created_at.strftime('%Y-%m-%d %H:%M') }}
+                | <i class="fas fa-tag me-1"></i> Type: {{ campaign.campaign_type }}
+                {% if campaign.customer %}
+                | <i class="fas fa-user me-1"></i> For: <a href="{{ url_for('view_customer', customer_id=campaign.customer.id) }}">{{ campaign.customer.name }}</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-{% if campaign.image_url %}8{% else %}12{% endif %}">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Campaign Content</h5>
+                </div>
+                <div class="card-body">
+                    <div class="campaign-content">
+                        {{ campaign.content | nl2br }}
+                    </div>
+                </div>
+            </div>
+            
+            {% if campaign.profile_data %}
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Target Customer Profile</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <strong>Name:</strong> {{ campaign.profile_data.name }}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Age:</strong> {{ campaign.profile_data.age }}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Location:</strong> {{ campaign.profile_data.location }}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Gender:</strong> {{ campaign.profile_data.gender }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <strong>Language:</strong> {{ campaign.profile_data.language }}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Device:</strong> {{ campaign.profile_data.preferred_device }}
+                            </div>
+                            <div class="mb-3">
+                                <strong>Interests:</strong>
+                                <div>
+                                    {% for interest in campaign.profile_data.interests %}
+                                        <span class="badge bg-secondary me-1">{{ interest }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if campaign.profile_data.persona %}
+                    <div class="mt-3">
+                        <strong>Persona:</strong>
+                        <div class="persona-box mt-2">
+                            {{ campaign.profile_data.persona | nl2br }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if campaign.image_url %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Campaign Image</h5>
+                </div>
+                <div class="card-body p-0">
+                    <img src="{{ campaign.image_url }}" alt="Campaign Image" class="img-fluid rounded-bottom">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Marketing Analytics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Future enhancement: This section will display marketing performance metrics for this campaign, such as open rates, click-through rates, conversions, and revenue attribution.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Campaign Modal -->
+<div class="modal fade" id="deleteCampaignModal" tabindex="-1" aria-labelledby="deleteCampaignModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCampaignModalLabel">Delete Campaign</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the campaign <strong>{{ campaign.title }}</strong>? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('delete_campaign', campaign_id=campaign.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

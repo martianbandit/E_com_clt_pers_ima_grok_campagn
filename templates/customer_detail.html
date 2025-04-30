@@ -1,0 +1,171 @@
+{% extends 'layout.html' %}
+
+{% block title %}Customer Profile: {{ customer.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>Customer Profile: {{ customer.name }}</h1>
+                <div>
+                    <a href="{{ url_for('edit_customer', customer_id=customer.id) }}" class="btn btn-primary">
+                        <i class="fas fa-edit me-2"></i>Edit
+                    </a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCustomerModal">
+                        <i class="fas fa-trash-alt me-2"></i>Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Name:</div>
+                        <div class="col-md-8">{{ customer.name }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Age:</div>
+                        <div class="col-md-8">{{ customer.age }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Location:</div>
+                        <div class="col-md-8">{{ customer.location }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Gender:</div>
+                        <div class="col-md-8">{{ customer.gender }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Language:</div>
+                        <div class="col-md-8">{{ customer.language }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Device:</div>
+                        <div class="col-md-8">{{ customer.preferred_device }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Interests:</div>
+                        <div class="col-md-8">
+                            {% for interest in customer.get_interests_list() %}
+                                <span class="badge bg-secondary me-1">{{ interest }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if customer.niche_market %}
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Niche Market</h5>
+                </div>
+                <div class="card-body">
+                    <h5>{{ customer.niche_market.name }}</h5>
+                    <p>{{ customer.niche_market.description }}</p>
+                    
+                    <div class="mt-3">
+                        <strong>Key Characteristics:</strong>
+                        <div>
+                            {% for char in customer.niche_market.get_characteristics_list() %}
+                                <span class="badge bg-info me-1">{{ char }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Customer Persona</h5>
+                </div>
+                <div class="card-body">
+                    {% if customer.persona %}
+                        <div class="persona-content">
+                            {{ customer.persona | nl2br }}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            No persona has been generated for this customer yet.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Recent Campaigns</h5>
+                </div>
+                <div class="card-body">
+                    {% if customer.campaigns %}
+                        <div class="list-group">
+                            {% for campaign in customer.campaigns %}
+                                <a href="{{ url_for('view_campaign', campaign_id=campaign.id) }}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ campaign.title }}</h5>
+                                        <small>{{ campaign.created_at.strftime('%Y-%m-%d') }}</small>
+                                    </div>
+                                    <p class="mb-1">Type: {{ campaign.campaign_type }}</p>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            No campaigns have been created for this customer yet.
+                        </div>
+                        <a href="{{ url_for('campaigns') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create Campaign
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if customer.profile_data %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Full Profile Data</h5>
+                </div>
+                <div class="card-body">
+                    <pre class="mb-0"><code>{{ customer.profile_data | tojson(indent=2) }}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Delete Customer Modal -->
+<div class="modal fade" id="deleteCustomerModal" tabindex="-1" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCustomerModalLabel">Delete Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete customer <strong>{{ customer.name }}</strong>? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('delete_customer', customer_id=customer.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

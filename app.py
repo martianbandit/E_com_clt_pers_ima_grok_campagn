@@ -48,6 +48,14 @@ from boutique_ai import (
     generate_marketing_image
 )
 
+# Ajouter des filtres Jinja personnalisés
+@app.template_filter('nl2br')
+def nl2br_filter(s):
+    """Convertit les retours à la ligne en balises <br>"""
+    if s is None:
+        return ""
+    return Markup(s.replace('\n', '<br>'))
+
 # Function to log metrics to the database
 def log_metric(metric_name, data):
     """Log a metric to the database for monitoring and analytics"""
@@ -70,9 +78,33 @@ def index():
 
 @app.route('/dashboard')
 def dashboard():
+    # Récupérer les données pour le tableau de bord
     boutiques = Boutique.query.all()
     niches = NicheMarket.query.all()
-    return render_template('dashboard.html', boutiques=boutiques, niches=niches)
+    
+    # Récupérer les métriques pour les analyses
+    persona_metrics = Metric.query.filter_by(name='persona_generation').order_by(Metric.created_at.desc()).limit(10).all()
+    profile_metrics = Metric.query.filter_by(name='profile_generation').order_by(Metric.created_at.desc()).limit(10).all()
+    
+    # Compter le nombre total d'éléments
+    total_customers = Customer.query.count()
+    total_campaigns = Campaign.query.count()
+    total_boutiques = len(boutiques)
+    total_niches = len(niches)
+    
+    # Récupérer les dernières campagnes créées
+    recent_campaigns = Campaign.query.order_by(Campaign.created_at.desc()).limit(5).all()
+    
+    return render_template('dashboard.html', 
+                          boutiques=boutiques, 
+                          niches=niches,
+                          persona_metrics=persona_metrics,
+                          profile_metrics=profile_metrics,
+                          total_customers=total_customers,
+                          total_campaigns=total_campaigns,
+                          total_boutiques=total_boutiques,
+                          total_niches=total_niches,
+                          recent_campaigns=recent_campaigns)
 
 @app.route('/profiles', methods=['GET', 'POST'])
 def profiles():
@@ -179,45 +211,105 @@ def generate_persona(profile_index):
 @app.route('/campaigns', methods=['GET', 'POST'])
 def campaigns():
     if request.method == 'POST':
-        profile_index = int(request.form.get('profile_index', 0))
+        profile_source = request.form.get('profile_source', 'session')
         campaign_type = request.form.get('campaign_type', 'email')
-        customer_profiles = session.get('customer_profiles', [])
         
-        if not customer_profiles or profile_index >= len(customer_profiles):
-            flash('Invalid profile selected', 'danger')
-            return redirect(url_for('campaigns'))
+        # Obtenir le profil soit de la session, soit de la base de données
+        profile = None
+        if profile_source == 'session':
+            profile_index = int(request.form.get('profile_index', 0))
+            customer_profiles = session.get('customer_profiles', [])
+            
+            if not customer_profiles or profile_index >= len(customer_profiles):
+                flash('Invalid profile selected', 'danger')
+                return redirect(url_for('campaigns'))
+            
+            profile = customer_profiles[profile_index]
+            customer_id = None
+        else:
+            # Profil de la base de données
+            customer_id = int(request.form.get('customer_id', 0))
+            customer = Customer.query.get(customer_id)
+            
+            if not customer:
+                flash('Invalid customer selected', 'danger')
+                return redirect(url_for('campaigns'))
+            
+            # Utiliser les données de profil stockées ou convertir l'objet en dictionnaire
+            profile = customer.profile_data if customer.profile_data else {
+                'name': customer.name,
+                'age': customer.age,
+                'location': customer.location,
+                'gender': customer.gender,
+                'language': customer.language,
+                'interests': customer.get_interests_list(),
+                'preferred_device': customer.preferred_device,
+                'persona': customer.persona
+            }
         
         try:
-            profile = customer_profiles[profile_index]
+            # Générer le contenu marketing personnalisé
             content = generate_marketing_content(profile, campaign_type)
             
-            # Generate an image for the campaign if requested
+            # Log metric pour la génération de contenu marketing
+            log_metric("marketing_content_generation", {
+                "success": True,
+                "profile_name": profile.get('name', 'Unknown'),
+                "campaign_type": campaign_type
+            })
+            
+            # Générer une image pour la campagne si demandé
             image_prompt = request.form.get('image_prompt', '')
             image_url = None
             if image_prompt:
                 image_url = generate_marketing_image(profile, image_prompt)
+                
+                # Log metric pour la génération d'image
+                log_metric("marketing_image_generation", {
+                    "success": True if image_url else False,
+                    "prompt": image_prompt
+                })
             
-            # Create and save the campaign
+            # Créer et sauvegarder la campagne
             campaign = Campaign(
                 title=request.form.get('title', f"Campaign for {profile.get('name', 'Customer')}"),
                 content=content,
                 campaign_type=campaign_type,
                 profile_data=profile,
-                image_url=image_url
+                image_url=image_url,
+                customer_id=customer_id
             )
             db.session.add(campaign)
             db.session.commit()
             
             flash('Campaign created successfully', 'success')
+            
+            # Rediriger vers la page de détail de la campagne
+            return redirect(url_for('view_campaign', campaign_id=campaign.id))
         except Exception as e:
             flash(f'Error creating campaign: {str(e)}', 'danger')
             logging.error(f"Error creating campaign: {e}")
+            
+            # Log metric pour l'échec de génération
+            log_metric("marketing_content_generation", {
+                "success": False,
+                "error": str(e),
+                "campaign_type": campaign_type
+            })
         
         return redirect(url_for('campaigns'))
     
+    # GET request - afficher la page des campagnes
     campaigns = Campaign.query.order_by(Campaign.created_at.desc()).all()
     customer_profiles = session.get('customer_profiles', [])
-    return render_template('campaigns.html', campaigns=campaigns, profiles=customer_profiles)
+    
+    # Récupérer les clients sauvegardés pour la sélection
+    saved_customers = Customer.query.order_by(Customer.name).all()
+    
+    return render_template('campaigns.html', 
+                          campaigns=campaigns, 
+                          profiles=customer_profiles,
+                          saved_customers=saved_customers)
 
 @app.route('/api/boutiques', methods=['POST'])
 def create_boutique():
@@ -250,6 +342,111 @@ def create_niche():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
+
+@app.route('/customer/<int:customer_id>')
+def view_customer(customer_id):
+    """Afficher les détails d'un client spécifique"""
+    customer = Customer.query.get_or_404(customer_id)
+    return render_template('customer_detail.html', customer=customer)
+
+@app.route('/customer/<int:customer_id>/edit', methods=['GET', 'POST'])
+def edit_customer(customer_id):
+    """Modifier les informations d'un client"""
+    customer = Customer.query.get_or_404(customer_id)
+    
+    if request.method == 'POST':
+        try:
+            # Mettre à jour les champs du client
+            customer.name = request.form.get('name', customer.name)
+            customer.age = request.form.get('age', customer.age)
+            customer.location = request.form.get('location', customer.location)
+            customer.gender = request.form.get('gender', customer.gender)
+            customer.language = request.form.get('language', customer.language)
+            customer.interests = request.form.get('interests', customer.interests)
+            customer.preferred_device = request.form.get('preferred_device', customer.preferred_device)
+            customer.persona = request.form.get('persona', customer.persona)
+            
+            # Si des données JSON sont soumises, les traiter
+            profile_data = request.form.get('profile_data')
+            if profile_data:
+                try:
+                    customer.profile_data = json.loads(profile_data)
+                except json.JSONDecodeError:
+                    flash('Invalid JSON format for profile data', 'danger')
+            
+            db.session.commit()
+            flash('Customer updated successfully', 'success')
+            return redirect(url_for('view_customer', customer_id=customer.id))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating customer: {str(e)}', 'danger')
+    
+    # GET request - afficher le formulaire de modification
+    niches = NicheMarket.query.all()
+    return render_template('customer_edit.html', customer=customer, niches=niches)
+
+@app.route('/customer/<int:customer_id>/delete', methods=['POST'])
+def delete_customer(customer_id):
+    """Supprimer un client"""
+    customer = Customer.query.get_or_404(customer_id)
+    try:
+        db.session.delete(customer)
+        db.session.commit()
+        flash('Customer deleted successfully', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting customer: {str(e)}', 'danger')
+    
+    return redirect(url_for('profiles'))
+
+@app.route('/campaign/<int:campaign_id>')
+def view_campaign(campaign_id):
+    """Afficher les détails d'une campagne spécifique"""
+    campaign = Campaign.query.get_or_404(campaign_id)
+    return render_template('campaign_detail.html', campaign=campaign)
+
+@app.route('/campaign/<int:campaign_id>/delete', methods=['POST'])
+def delete_campaign(campaign_id):
+    """Supprimer une campagne"""
+    campaign = Campaign.query.get_or_404(campaign_id)
+    try:
+        db.session.delete(campaign)
+        db.session.commit()
+        flash('Campaign deleted successfully', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting campaign: {str(e)}', 'danger')
+    
+    return redirect(url_for('campaigns'))
+
+@app.route('/metrics')
+def metrics_view():
+    """Afficher les métriques de l'application"""
+    # Récupérer les dernières métriques
+    recent_metrics = Metric.query.order_by(Metric.created_at.desc()).limit(50).all()
+    
+    # Compter les métriques par type
+    profile_gen_count = Metric.query.filter_by(name='profile_generation').count()
+    persona_gen_count = Metric.query.filter_by(name='persona_generation').count()
+    
+    # Calculer les taux de succès
+    successful_profiles = Metric.query.filter_by(name='profile_generation').filter(
+        Metric.data.contains({'success': True})
+    ).count()
+    
+    successful_personas = Metric.query.filter_by(name='persona_generation').filter(
+        Metric.data.contains({'success': True})
+    ).count()
+    
+    profile_success_rate = (successful_profiles / profile_gen_count * 100) if profile_gen_count > 0 else 0
+    persona_success_rate = (successful_personas / persona_gen_count * 100) if persona_gen_count > 0 else 0
+    
+    return render_template('metrics.html', 
+                           metrics=recent_metrics,
+                           profile_gen_count=profile_gen_count,
+                           persona_gen_count=persona_gen_count,
+                           profile_success_rate=profile_success_rate,
+                           persona_success_rate=persona_success_rate)
 
 with app.app_context():
     # Create tables

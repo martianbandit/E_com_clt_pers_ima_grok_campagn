@@ -1,0 +1,123 @@
+{% extends 'layout.html' %}
+
+{% block title %}Edit Customer: {{ customer.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>Edit Customer: {{ customer.name }}</h1>
+                <div>
+                    <a href="{{ url_for('view_customer', customer_id=customer.id) }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Customer Information</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('edit_customer', customer_id=customer.id) }}" method="POST">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ customer.name }}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="age" class="form-label">Age</label>
+                                    <input type="number" class="form-control" id="age" name="age" value="{{ customer.age }}">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="location" class="form-label">Location</label>
+                                    <input type="text" class="form-control" id="location" name="location" value="{{ customer.location }}">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="gender" class="form-label">Gender</label>
+                                    <select class="form-select" id="gender" name="gender">
+                                        <option value="MALE" {% if customer.gender == 'MALE' %}selected{% endif %}>Male</option>
+                                        <option value="FEMALE" {% if customer.gender == 'FEMALE' %}selected{% endif %}>Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="language" class="form-label">Language</label>
+                                    <input type="text" class="form-control" id="language" name="language" value="{{ customer.language }}">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="interests" class="form-label">Interests (comma-separated)</label>
+                                    <input type="text" class="form-control" id="interests" name="interests" value="{{ customer.interests }}">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="preferred_device" class="form-label">Preferred Device</label>
+                                    <input type="text" class="form-control" id="preferred_device" name="preferred_device" value="{{ customer.preferred_device }}">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="niche_market_id" class="form-label">Niche Market</label>
+                                    <select class="form-select" id="niche_market_id" name="niche_market_id">
+                                        <option value="">-- Select Niche Market --</option>
+                                        {% for niche in niches %}
+                                            <option value="{{ niche.id }}" {% if customer.niche_market_id == niche.id %}selected{% endif %}>
+                                                {{ niche.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="persona" class="form-label">Customer Persona</label>
+                            <textarea class="form-control" id="persona" name="persona" rows="6">{{ customer.persona }}</textarea>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if customer.profile_data %}
+            <div class="card mt-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Advanced: Edit Profile JSON Data</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('edit_customer', customer_id=customer.id) }}" method="POST">
+                        <div class="mb-3">
+                            <label for="profile_data" class="form-label">Profile Data (JSON format)</label>
+                            <textarea class="form-control font-monospace" id="profile_data" name="profile_data" rows="12">{{ customer.profile_data | tojson(indent=2) }}</textarea>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Warning:</strong> Editing raw JSON data could cause issues if not formatted correctly. Make sure your JSON is valid before saving.
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning">Update Profile Data</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
