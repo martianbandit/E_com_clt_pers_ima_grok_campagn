@@ -541,7 +541,7 @@ def delete_campaign(campaign_id):
 
 @app.route('/image_generation', methods=['GET', 'POST'])
 def image_generation():
-    """Page de génération d'images marketing optimisées"""
+    """Page de génération d'images marketing optimisées avec recherche de produits similaires"""
     # Récupérer les clients sauvegardés pour la sélection
     saved_customers = Customer.query.order_by(Customer.name).all()
     
@@ -550,6 +550,7 @@ def image_generation():
             customer_id = request.form.get('customer_id')
             base_prompt = request.form.get('base_prompt', '')
             style = request.form.get('style', None)
+            find_similar = request.form.get('find_similar_products') == 'on'
             image_data = None
             
             # Vérifier si une image a été téléchargée
@@ -597,12 +598,39 @@ def image_generation():
             db.session.add(campaign)
             db.session.commit()
             
+            # Rechercher des produits similaires sur AliExpress si demandé
+            similar_products = []
+            if find_similar:
+                try:
+                    # Importer le module de recherche AliExpress
+                    from aliexpress_search import search_similar_products
+                    
+                    # Extraire les intérêts du client comme niche
+                    niche = ""
+                    if customer.interests:
+                        niche = customer.get_interests_list()[0]
+                    
+                    # Rechercher des produits similaires
+                    similar_products = search_similar_products(
+                        base_prompt, 
+                        campaign.id,
+                        niche=niche, 
+                        max_results=3
+                    )
+                    
+                    if similar_products:
+                        flash(f'{len(similar_products)} produits similaires trouvés sur AliExpress', 'success')
+                except Exception as e:
+                    logging.error(f"Error searching similar products: {e}")
+                    flash('Erreur lors de la recherche de produits similaires', 'warning')
+            
             # Log metric pour la génération d'image
             log_metric("marketing_image_generation", {
                 "success": True if image_url else False,
                 "prompt": base_prompt,
                 "customer_id": customer_id,
-                "style": style
+                "style": style,
+                "similar_products_found": len(similar_products) if similar_products else 0
             })
             
             flash('Image marketing générée avec succès', 'success')
