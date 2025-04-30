@@ -989,13 +989,54 @@ def generate_customer_persona(customer, boutique_id=None):
     finally:
         loop.close()
 
-def generate_marketing_content(customer, campaign_type):
-    """Generate personalized marketing content for a customer"""
+def generate_marketing_content(customer, campaign_type, boutique_id=None):
+    """
+    Generate personalized marketing content for a customer
+    
+    Args:
+        customer: Customer data dict
+        campaign_type: Type of marketing campaign (email, social, sms, etc.)
+        boutique_id: Optional ID of the boutique to use for context
+        
+    Returns:
+        String containing the generated marketing content
+    """
     import logging
     
     niche = ""
     if customer.get("interests"):
         niche = customer["interests"][0]
+    
+    # Récupérer les informations de la boutique si un ID est fourni
+    boutique_info = None
+    if boutique_id:
+        try:
+            from models import Boutique
+            boutique = Boutique.query.get(boutique_id)
+            if boutique:
+                boutique_info = {
+                    "name": boutique.name,
+                    "description": boutique.description,
+                    "target_demographic": boutique.target_demographic
+                }
+                logging.info(f"Using boutique information from boutique_id: {boutique.name}")
+        except Exception as boutique_err:
+            logging.warning(f"Could not retrieve boutique information: {boutique_err}")
+    
+    # Si le client est associé à une boutique, utiliser cette information
+    if not boutique_info and customer.get("boutique_id"):
+        try:
+            from models import Boutique
+            boutique = Boutique.query.get(customer.get("boutique_id"))
+            if boutique:
+                boutique_info = {
+                    "name": boutique.name,
+                    "description": boutique.description,
+                    "target_demographic": boutique.target_demographic
+                }
+                logging.info(f"Using boutique information from customer association: {boutique.name}")
+        except Exception as boutique_err:
+            logging.warning(f"Could not retrieve boutique information from customer: {boutique_err}")
     
     # Créer une nouvelle boucle d'événements
     loop = asyncio.new_event_loop()
@@ -1004,7 +1045,13 @@ def generate_marketing_content(customer, campaign_type):
     try:
         # Exécuter la fonction asynchrone avec un timeout
         return loop.run_until_complete(asyncio.wait_for(
-            generate_boutique_marketing_content_async(grok_client, customer, niche, campaign_type),
+            generate_boutique_marketing_content_async(
+                grok_client,
+                customer,
+                niche,
+                campaign_type,
+                boutique_info=boutique_info
+            ),
             timeout=25.0
         ))
     except asyncio.TimeoutError:
