@@ -21,11 +21,58 @@
         <div class="col-md-8">
             {% if campaign.image_url %}
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Image de la campagne</h5>
+                    <span class="badge bg-light text-dark">SEO optimisée</span>
                 </div>
                 <div class="card-body text-center">
-                    <img src="{{ campaign.image_url }}" alt="Image de la campagne {{ campaign.title }}" class="img-fluid rounded campaign-image">
+                    <img src="{{ campaign.image_url }}" 
+                         alt="{{ campaign.image_alt_text or 'Image de la campagne ' + campaign.title }}" 
+                         title="{{ campaign.image_title or campaign.title }}"
+                         class="img-fluid rounded campaign-image">
+                    
+                    {% if campaign.image_alt_text or campaign.image_title or campaign.image_description or campaign.image_keywords %}
+                    <div class="card mt-3">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Métadonnées SEO de l'image</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% if campaign.image_alt_text %}
+                                <div class="col-md-6 mb-2">
+                                    <small class="text-muted d-block">Texte alternatif (alt):</small>
+                                    <span class="small">{{ campaign.image_alt_text }}</span>
+                                </div>
+                                {% endif %}
+                                
+                                {% if campaign.image_title %}
+                                <div class="col-md-6 mb-2">
+                                    <small class="text-muted d-block">Titre:</small>
+                                    <span class="small">{{ campaign.image_title }}</span>
+                                </div>
+                                {% endif %}
+                                
+                                {% if campaign.image_description %}
+                                <div class="col-12 mb-2">
+                                    <small class="text-muted d-block">Description:</small>
+                                    <span class="small">{{ campaign.image_description }}</span>
+                                </div>
+                                {% endif %}
+                                
+                                {% if campaign.image_keywords %}
+                                <div class="col-12">
+                                    <small class="text-muted d-block">Mots-clés:</small>
+                                    <div class="d-flex flex-wrap gap-1 mt-1">
+                                        {% for keyword in campaign.get_seo_keywords() %}
+                                        <span class="badge bg-info text-dark">{{ keyword }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             {% endif %}
@@ -196,10 +243,29 @@ function printCampaign() {
         </div>
     `;
     
-    // Ajouter l'image si elle existe
+    // Ajouter l'image si elle existe avec ses métadonnées SEO
     const campaignImage = document.querySelector('.campaign-image');
     if (campaignImage) {
-        content += `<div style="text-align: center;"><img class="image" src="${campaignImage.src}" alt="Image de campagne"></div>`;
+        // Récupérer les métadonnées SEO pour l'image
+        const altText = campaignImage.getAttribute('alt');
+        const imageTitle = campaignImage.getAttribute('title');
+        
+        // Récupérer la description et les mots-clés s'ils sont disponibles
+        let seoDescription = '';
+        const descElement = document.querySelector('.small:nth-of-type(1)');
+        if (descElement) {
+            seoDescription = descElement.textContent;
+        }
+        
+        // Ajouter l'image avec ses métadonnées
+        content += `
+            <div style="text-align: center;">
+                <img class="image" src="${campaignImage.src}" alt="${altText}" title="${imageTitle || ''}">
+                <div class="metadata" style="text-align: left; font-size: 0.9em; margin-top: 10px;">
+                    <p><strong>Titre SEO:</strong> ${imageTitle || ''}</p>
+                    <p><strong>Description SEO:</strong> ${seoDescription || ''}</p>
+                </div>
+            </div>`;
     }
     
     // Ajouter le contenu de la campagne

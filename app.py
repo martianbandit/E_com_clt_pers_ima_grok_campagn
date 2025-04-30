@@ -583,16 +583,46 @@ def image_generation():
                 'persona': customer.persona
             }
             
-            # Générer l'image
-            image_url = generate_marketing_image(profile, base_prompt, image_data, style)
+            # Générer l'image et les métadonnées SEO
+            image_result = generate_marketing_image(profile, base_prompt, image_data, style)
             
-            # Créer et sauvegarder la campagne avec l'image
+            # Déterminer si nous avons reçu une simple URL ou un dictionnaire complet
+            if isinstance(image_result, dict) and "url" in image_result:
+                image_url = image_result["url"]
+                seo_metadata = {
+                    "alt_text": image_result.get("alt_text", ""),
+                    "title": image_result.get("title", ""),
+                    "description": image_result.get("description", ""),
+                    "keywords": image_result.get("keywords", []),
+                    "prompt": image_result.get("prompt", base_prompt)
+                }
+            else:
+                # Compatible avec l'ancienne version qui retourne juste l'URL
+                image_url = image_result
+                # Extraire les mots-clés des intérêts du client
+                keywords = customer.get_interests_list()
+                if not keywords and customer.niche_market:
+                    keywords = [customer.niche_market.name]
+                seo_metadata = {
+                    "alt_text": f"Image marketing pour {customer.name} dans la niche {', '.join(keywords[:2]) if keywords else 'boutique'}",
+                    "title": request.form.get('title', f"Image marketing pour {customer.name}"),
+                    "description": f"Image générée avec le prompt: {base_prompt}",
+                    "keywords": keywords,
+                    "prompt": base_prompt
+                }
+            
+            # Créer et sauvegarder la campagne avec l'image et les métadonnées SEO
             campaign = Campaign(
                 title=request.form.get('title', f"Image marketing pour {customer.name}"),
                 content=f"Image générée avec le prompt: {base_prompt}",
                 campaign_type="image",
                 profile_data=profile,
                 image_url=image_url,
+                image_alt_text=seo_metadata["alt_text"],
+                image_title=seo_metadata["title"],
+                image_description=seo_metadata["description"],
+                image_keywords=seo_metadata["keywords"],
+                image_prompt=seo_metadata["prompt"],
                 customer_id=customer_id
             )
             db.session.add(campaign)

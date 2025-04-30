@@ -125,6 +125,13 @@ class Campaign(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
+    # SEO metadata for images
+    image_alt_text = db.Column(db.String(125), nullable=True)  # Alt text optimisé pour SEO
+    image_title = db.Column(db.String(60), nullable=True)  # Titre optimisé pour SEO
+    image_description = db.Column(db.Text, nullable=True)  # Description optimisée pour SEO
+    image_keywords = db.Column(JSONB, nullable=True)  # Mots-clés pour le référencement
+    image_prompt = db.Column(db.Text, nullable=True)  # Prompt utilisé pour générer l'image
+    
     # Foreign keys
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
     
@@ -138,6 +145,23 @@ class Campaign(db.Model):
     def is_personalized(self):
         """Check if this campaign is personalized"""
         return self.customer_id is not None or self.profile_data is not None
+        
+    def get_seo_keywords(self):
+        """Return image keywords as a list"""
+        if self.image_keywords and isinstance(self.image_keywords, list):
+            return self.image_keywords
+        return []
+        
+    def get_seo_image_data(self):
+        """Return a dictionary with all SEO image data"""
+        return {
+            "url": self.image_url,
+            "alt_text": self.image_alt_text or f"Marketing image for {self.title}",
+            "title": self.image_title or self.title,
+            "description": self.image_description or self.content,
+            "keywords": self.get_seo_keywords(),
+            "prompt": self.image_prompt or ""
+        }
 
 class SimilarProduct(db.Model):
     """Model for storing similar products found on AliExpress"""
