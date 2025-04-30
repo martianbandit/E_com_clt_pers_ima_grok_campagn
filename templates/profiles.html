@@ -113,6 +113,65 @@
     </div>
 {% endif %}
 
+<!-- Section Niches de Marché -->
+<div class="card mt-5">
+    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Niches de Marché</h5>
+        <button type="button" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#createNicheModal">
+            <i class="fas fa-plus me-1"></i> Nouvelle Niche
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Description</th>
+                        <th>Caractéristiques</th>
+                        <th>Clients</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for niche in niches %}
+                        <tr>
+                            <td>{{ niche.name }}</td>
+                            <td>{{ niche.description }}</td>
+                            <td>
+                                {% if niche.key_characteristics %}
+                                    {% for characteristic in niche.get_characteristics_list() %}
+                                        <span class="badge bg-secondary">{{ characteristic }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="text-muted">Aucune caractéristique</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">{{ niche.customers|length }}</span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary edit-niche-btn" 
+                                        data-niche-id="{{ niche.id }}"
+                                        data-niche-name="{{ niche.name }}"
+                                        data-niche-description="{{ niche.description }}"
+                                        data-niche-characteristics="{{ niche.key_characteristics }}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger delete-niche-btn" 
+                                        data-niche-id="{{ niche.id }}"
+                                        data-niche-name="{{ niche.name }}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 {% if saved_profiles %}
     <div class="card mt-5">
         <div class="card-header bg-success text-white">
@@ -189,4 +248,269 @@
         </div>
     </div>
 {% endif %}
+
+<!-- Modale de création de niche -->
+<div class="modal fade" id="createNicheModal" tabindex="-1" aria-labelledby="createNicheModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createNicheModalLabel">Créer une nouvelle niche</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createNicheForm">
+                    <div class="mb-3">
+                        <label for="newNicheName" class="form-label">Nom de la niche *</label>
+                        <input type="text" class="form-control" id="newNicheName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newNicheDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="newNicheDescription" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newNicheCharacteristics" class="form-label">Caractéristiques clés</label>
+                        <input type="text" class="form-control" id="newNicheCharacteristics" placeholder="Séparées par des virgules">
+                        <small class="form-text text-muted">Exemple: Écologique, Durable, Luxueux</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="saveNewNicheBtn">Créer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale d'édition de niche -->
+<div class="modal fade" id="editNicheModal" tabindex="-1" aria-labelledby="editNicheModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editNicheModalLabel">Modifier la niche</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editNicheForm">
+                    <input type="hidden" id="editNicheId">
+                    <div class="mb-3">
+                        <label for="editNicheName" class="form-label">Nom de la niche *</label>
+                        <input type="text" class="form-control" id="editNicheName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editNicheDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editNicheDescription" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editNicheCharacteristics" class="form-label">Caractéristiques clés</label>
+                        <input type="text" class="form-control" id="editNicheCharacteristics" placeholder="Séparées par des virgules">
+                        <small class="form-text text-muted">Exemple: Écologique, Durable, Luxueux</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="updateNicheBtn">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale de confirmation de suppression de niche -->
+<div class="modal fade" id="deleteNicheModal" tabindex="-1" aria-labelledby="deleteNicheModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteNicheModalLabel">Confirmer la suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer la niche <strong id="deleteNicheName"></strong>?</p>
+                <p class="text-danger"><small>Cette action est irréversible. Les clients associés resteront dans la base de données mais perdront leur association avec cette niche.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteNicheBtn">Supprimer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gestion des personas
+        const generatePersonaBtns = document.querySelectorAll('.generate-persona-btn');
+        
+        if (generatePersonaBtns) {
+            generatePersonaBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const profileIndex = this.getAttribute('data-profile-index');
+                    const buttonText = this.querySelector('.btn-text');
+                    const spinner = this.querySelector('.spinner-border');
+                    
+                    // Disable button and show spinner
+                    this.disabled = true;
+                    spinner.classList.remove('d-none');
+                    buttonText.textContent = 'Generating...';
+                    
+                    // Call persona generation function
+                    generatePersona(profileIndex)
+                        .then(response => {
+                            // Re-enable button and hide spinner
+                            this.disabled = false;
+                            spinner.classList.add('d-none');
+                            buttonText.textContent = 'Generate Persona';
+                        })
+                        .catch(error => {
+                            console.error('Error generating persona:', error);
+                            this.disabled = false;
+                            spinner.classList.add('d-none');
+                            buttonText.textContent = 'Try Again';
+                            
+                            // Show error alert
+                            showAlert('Failed to generate persona. Please try again.', 'danger');
+                        });
+                });
+            });
+        }
+        
+        // Fonction pour la gestion des niches de marché
+        
+        // Ouvrir modal d'édition de niche
+        document.querySelectorAll('.edit-niche-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const nicheId = this.getAttribute('data-niche-id');
+                const nicheName = this.getAttribute('data-niche-name');
+                const nicheDescription = this.getAttribute('data-niche-description');
+                const nicheCharacteristics = this.getAttribute('data-niche-characteristics');
+                
+                document.getElementById('editNicheId').value = nicheId;
+                document.getElementById('editNicheName').value = nicheName || '';
+                document.getElementById('editNicheDescription').value = nicheDescription || '';
+                document.getElementById('editNicheCharacteristics').value = nicheCharacteristics || '';
+                
+                const editModal = new bootstrap.Modal(document.getElementById('editNicheModal'));
+                editModal.show();
+            });
+        });
+        
+        // Ouvrir modal de suppression de niche
+        document.querySelectorAll('.delete-niche-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const nicheId = this.getAttribute('data-niche-id');
+                const nicheName = this.getAttribute('data-niche-name');
+                
+                document.getElementById('deleteNicheName').textContent = nicheName;
+                document.getElementById('confirmDeleteNicheBtn').setAttribute('data-niche-id', nicheId);
+                
+                const deleteModal = new bootstrap.Modal(document.getElementById('deleteNicheModal'));
+                deleteModal.show();
+            });
+        });
+        
+        // Créer nouvelle niche
+        document.getElementById('saveNewNicheBtn').addEventListener('click', function() {
+            const name = document.getElementById('newNicheName').value;
+            const description = document.getElementById('newNicheDescription').value;
+            const characteristics = document.getElementById('newNicheCharacteristics').value;
+            
+            if (!name) {
+                showAlert('Le nom de la niche est requis', 'danger');
+                return;
+            }
+            
+            fetch('/api/niches', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    description: description,
+                    key_characteristics: characteristics
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showAlert('Erreur: ' + data.error, 'danger');
+                } else {
+                    showAlert('Niche créée avec succès', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('createNicheModal')).hide();
+                    // Recharger la page pour afficher la nouvelle niche
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Erreur lors de la création de la niche', 'danger');
+            });
+        });
+        
+        // Mettre à jour une niche
+        document.getElementById('updateNicheBtn').addEventListener('click', function() {
+            const nicheId = document.getElementById('editNicheId').value;
+            const name = document.getElementById('editNicheName').value;
+            const description = document.getElementById('editNicheDescription').value;
+            const characteristics = document.getElementById('editNicheCharacteristics').value;
+            
+            if (!name) {
+                showAlert('Le nom de la niche est requis', 'danger');
+                return;
+            }
+            
+            fetch(`/api/niches/${nicheId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    description: description,
+                    key_characteristics: characteristics
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showAlert('Erreur: ' + data.error, 'danger');
+                } else {
+                    showAlert('Niche mise à jour avec succès', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('editNicheModal')).hide();
+                    // Recharger la page pour afficher les changements
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Erreur lors de la mise à jour de la niche', 'danger');
+            });
+        });
+        
+        // Supprimer une niche
+        document.getElementById('confirmDeleteNicheBtn').addEventListener('click', function() {
+            const nicheId = this.getAttribute('data-niche-id');
+            
+            fetch(`/api/niches/${nicheId}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showAlert('Erreur: ' + data.error, 'danger');
+                } else {
+                    showAlert('Niche supprimée avec succès', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('deleteNicheModal')).hide();
+                    // Recharger la page pour refléter la suppression
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Erreur lors de la suppression de la niche', 'danger');
+            });
+        });
+    });
+</script>
 {% endblock %}

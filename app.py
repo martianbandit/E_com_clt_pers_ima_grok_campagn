@@ -344,6 +344,55 @@ def create_niche():
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
 
+@app.route('/api/niches/<int:niche_id>', methods=['PUT'])
+def edit_niche(niche_id):
+    """Modifier une niche de marché via API"""
+    data = request.json
+    niche = NicheMarket.query.get_or_404(niche_id)
+    
+    try:
+        if data.get('name'):
+            niche.name = data.get('name')
+        if data.get('description') is not None:
+            niche.description = data.get('description')
+        if data.get('key_characteristics') is not None:
+            niche.key_characteristics = data.get('key_characteristics')
+        
+        niche.updated_at = datetime.datetime.utcnow()
+        db.session.commit()
+        
+        return jsonify({
+            'id': niche.id, 
+            'name': niche.name,
+            'status': 'success'
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/api/niches/<int:niche_id>', methods=['DELETE'])
+def delete_niche(niche_id):
+    """Supprimer une niche de marché via API"""
+    niche = NicheMarket.query.get_or_404(niche_id)
+    
+    try:
+        # Vérifier s'il y a des clients associés
+        customers_count = Customer.query.filter_by(niche_market_id=niche_id).count()
+        
+        if customers_count > 0:
+            return jsonify({
+                'error': f'Cannot delete niche: {customers_count} customer(s) are associated with it.',
+                'status': 'error'
+            }), 400
+        
+        db.session.delete(niche)
+        db.session.commit()
+        
+        return jsonify({'status': 'success'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e), 'status': 'error'}), 400
+
 @app.route('/customer/<int:customer_id>')
 def view_customer(customer_id):
     """Afficher les détails d'un client spécifique"""
