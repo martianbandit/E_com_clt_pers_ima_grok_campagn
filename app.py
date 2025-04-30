@@ -114,12 +114,23 @@ def profiles():
         num_profiles = int(request.form.get('num_profiles', 5))
         persist_to_db = request.form.get('persist_to_db') == 'on'
         
+        # Nouveaux paramètres
+        target_country = request.form.get('target_country', '')
+        age_range = request.form.get('age_range', '')
+        income_level = request.form.get('income_level', '')
+        
         try:
             # Generate customer profiles for the selected niche
             niche = NicheMarket.query.get(niche_id)
             if niche:
-                # Generate profiles with AI
-                customer_profiles = generate_customers(niche.name, niche.description, num_profiles)
+                # Generate profiles with AI with additional parameters
+                generation_params = {
+                    'target_country': target_country,
+                    'age_range': age_range,
+                    'income_level': income_level
+                }
+                
+                customer_profiles = generate_customers(niche.name, niche.description, num_profiles, generation_params)
                 
                 # Log metric for profile generation
                 log_metric("profile_generation", {
@@ -410,11 +421,25 @@ def edit_customer(customer_id):
             customer.name = request.form.get('name', customer.name)
             customer.age = request.form.get('age', customer.age)
             customer.location = request.form.get('location', customer.location)
+            customer.country_code = request.form.get('country_code', customer.country_code)
             customer.gender = request.form.get('gender', customer.gender)
             customer.language = request.form.get('language', customer.language)
             customer.interests = request.form.get('interests', customer.interests)
             customer.preferred_device = request.form.get('preferred_device', customer.preferred_device)
             customer.persona = request.form.get('persona', customer.persona)
+            
+            # Nouveaux champs
+            customer.occupation = request.form.get('occupation', customer.occupation)
+            customer.education = request.form.get('education', customer.education)
+            customer.income_level = request.form.get('income_level', customer.income_level)
+            customer.shopping_frequency = request.form.get('shopping_frequency', customer.shopping_frequency)
+            
+            # Niche de marché
+            niche_market_id = request.form.get('niche_market_id')
+            if niche_market_id:
+                customer.niche_market_id = int(niche_market_id)
+            else:
+                customer.niche_market_id = None
             
             # Si des données JSON sont soumises, les traiter
             profile_data = request.form.get('profile_data')

@@ -47,14 +47,79 @@
                             </div>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="location" class="form-label">Localisation</label>
-                            <input type="text" class="form-control" id="location" name="location" value="{{ customer.location }}">
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label for="location" class="form-label">Localisation</label>
+                                <input type="text" class="form-control" id="location" name="location" value="{{ customer.location }}">
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="country_code" class="form-label">Pays</label>
+                                <select class="form-select" id="country_code" name="country_code">
+                                    <option value="">Non spécifié</option>
+                                    <option value="US" {% if customer.country_code == 'US' %}selected{% endif %}>États-Unis</option>
+                                    <option value="CA" {% if customer.country_code == 'CA' %}selected{% endif %}>Canada</option>
+                                    <option value="GB" {% if customer.country_code == 'GB' %}selected{% endif %}>Royaume-Uni</option>
+                                    <option value="FR" {% if customer.country_code == 'FR' %}selected{% endif %}>France</option>
+                                    <option value="DE" {% if customer.country_code == 'DE' %}selected{% endif %}>Allemagne</option>
+                                    <option value="IT" {% if customer.country_code == 'IT' %}selected{% endif %}>Italie</option>
+                                    <option value="ES" {% if customer.country_code == 'ES' %}selected{% endif %}>Espagne</option>
+                                    <option value="JP" {% if customer.country_code == 'JP' %}selected{% endif %}>Japon</option>
+                                    <option value="AU" {% if customer.country_code == 'AU' %}selected{% endif %}>Australie</option>
+                                    <option value="BR" {% if customer.country_code == 'BR' %}selected{% endif %}>Brésil</option>
+                                    <option value="IN" {% if customer.country_code == 'IN' %}selected{% endif %}>Inde</option>
+                                    <option value="CN" {% if customer.country_code == 'CN' %}selected{% endif %}>Chine</option>
+                                    <option value="MX" {% if customer.country_code == 'MX' %}selected{% endif %}>Mexique</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <div class="mb-3">
                             <label for="language" class="form-label">Langue</label>
                             <input type="text" class="form-control" id="language" name="language" value="{{ customer.language }}">
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="occupation" class="form-label">Profession</label>
+                                <input type="text" class="form-control" id="occupation" name="occupation" value="{{ customer.occupation }}">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="education" class="form-label">Niveau d'éducation</label>
+                                <select class="form-select" id="education" name="education">
+                                    <option value="">Non spécifié</option>
+                                    <option value="high school" {% if customer.education == 'high school' %}selected{% endif %}>Lycée</option>
+                                    <option value="some college" {% if customer.education == 'some college' %}selected{% endif %}>Quelques années d'université</option>
+                                    <option value="bachelor" {% if customer.education == 'bachelor' %}selected{% endif %}>Licence/Bachelor</option>
+                                    <option value="master" {% if customer.education == 'master' %}selected{% endif %}>Master</option>
+                                    <option value="doctorate" {% if customer.education == 'doctorate' %}selected{% endif %}>Doctorat</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="income_level" class="form-label">Niveau de revenu</label>
+                                <select class="form-select" id="income_level" name="income_level">
+                                    <option value="">Non spécifié</option>
+                                    <option value="budget" {% if customer.income_level == 'budget' %}selected{% endif %}>Budget-conscious</option>
+                                    <option value="middle" {% if customer.income_level == 'middle' %}selected{% endif %}>Middle income</option>
+                                    <option value="affluent" {% if customer.income_level == 'affluent' %}selected{% endif %}>Affluent</option>
+                                    <option value="luxury" {% if customer.income_level == 'luxury' %}selected{% endif %}>Luxury consumer</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="shopping_frequency" class="form-label">Fréquence d'achat</label>
+                                <select class="form-select" id="shopping_frequency" name="shopping_frequency">
+                                    <option value="">Non spécifié</option>
+                                    <option value="rarely" {% if customer.shopping_frequency == 'rarely' %}selected{% endif %}>Rarement</option>
+                                    <option value="occasionally" {% if customer.shopping_frequency == 'occasionally' %}selected{% endif %}>Occasionnellement</option>
+                                    <option value="frequently" {% if customer.shopping_frequency == 'frequently' %}selected{% endif %}>Fréquemment</option>
+                                    <option value="very frequently" {% if customer.shopping_frequency == 'very frequently' %}selected{% endif %}>Très fréquemment</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <div class="mb-3">
