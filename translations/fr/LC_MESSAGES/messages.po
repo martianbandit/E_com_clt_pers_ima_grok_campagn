@@ -18,3 +18,63 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
+# Navigation menu items
+msgid "Home"
+msgstr "Accueil"
+
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+msgid "Customer Profiles"
+msgstr "Profils clients"
+
+msgid "Campaigns"
+msgstr "Campagnes"
+
+msgid "Image Generator"
+msgstr "Générateur d'images"
+
+msgid "Products"
+msgstr "Fiches Produits"
+
+# Footer text
+msgid "Hyper-personalized marketing solutions for boutique retailers and niche markets."
+msgstr "Solutions marketing hyper-personnalisées pour les boutiques et marchés de niche."
+
+msgid "All rights reserved."
+msgstr "Tous droits réservés."
+
+# Common UI elements
+msgid "Save"
+msgstr "Enregistrer"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Create"
+msgstr "Créer"
+
+msgid "Generate"
+msgstr "Générer"
+
+msgid "Submit"
+msgstr "Soumettre"
+
+msgid "Success"
+msgstr "Succès"
+
+msgid "Error"
+msgstr "Erreur"
+
+msgid "Warning"
+msgstr "Avertissement"
+
+msgid "Info"
+msgstr "Info"
+
