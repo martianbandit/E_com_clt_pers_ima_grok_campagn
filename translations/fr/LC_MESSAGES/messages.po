@@ -37,6 +37,9 @@ msgstr "Générateur d'images"
 msgid "Products"
 msgstr "Fiches Produits"
 
+msgid "Personas"
+msgstr "Personas"
+
 # Footer text
 msgid "Hyper-personalized marketing solutions for boutique retailers and niche markets."
 msgstr "Solutions marketing hyper-personnalisées pour les boutiques et marchés de niche."
@@ -141,4 +144,206 @@ msgstr "Chaque niche est associée à des caractéristiques clés qui aident à 
 
 msgid "Explore Niches"
 msgstr "Explorer les Niches"
+
+# Personas Page
+msgid "Customer Personas"
+msgstr "Personas Clients"
+
+msgid "Create New Persona"
+msgstr "Créer un Nouveau Persona"
+
+msgid "Search personas..."
+msgstr "Rechercher des personas..."
+
+msgid "All Niches"
+msgstr "Toutes les Niches"
+
+msgid "All Boutiques"
+msgstr "Toutes les Boutiques"
+
+msgid "Reset"
+msgstr "Réinitialiser"
+
+msgid "View Details"
+msgstr "Voir les Détails"
+
+msgid "Assign to Customer"
+msgstr "Assigner à un Client"
+
+msgid "View Complete Profile"
+msgstr "Voir le Profil Complet"
+
+msgid "No personas available"
+msgstr "Aucun persona disponible"
+
+msgid "Create your first customer persona to get started"
+msgstr "Créez votre premier persona client pour commencer"
+
+msgid "Used by"
+msgstr "Utilisé par"
+
+msgid "customers"
+msgstr "clients"
+
+msgid "Not specified"
+msgstr "Non spécifié"
+
+msgid "Primary Goal"
+msgstr "Objectif Principal"
+
+msgid "What are Customer Personas?"
+msgstr "Que sont les Personas Clients ?"
+
+msgid "Customer personas are semi-fictional representations of your ideal customers based on market research and real data about your existing customers."
+msgstr "Les personas clients sont des représentations semi-fictives de vos clients idéaux basées sur des études de marché et des données réelles concernant vos clients existants."
+
+msgid "By creating detailed personas, you can better understand your customers' needs, behaviors, concerns, and motivations, allowing you to tailor your marketing efforts and product development specifically to them."
+msgstr "En créant des personas détaillés, vous pouvez mieux comprendre les besoins, comportements, préoccupations et motivations de vos clients, ce qui vous permet d'adapter spécifiquement vos efforts marketing et le développement de vos produits."
+
+msgid "Persona Statistics"
+msgstr "Statistiques des Personas"
+
+msgid "Total Personas"
+msgstr "Total des Personas"
+
+msgid "Customer Associations"
+msgstr "Associations Clients"
+
+msgid "Primary Personas"
+msgstr "Personas Principaux"
+
+msgid "Secondary Personas"
+msgstr "Personas Secondaires"
+
+msgid "Personas by Niche"
+msgstr "Personas par Niche"
+
+msgid "Without niche"
+msgstr "Sans niche"
+
+msgid "Persona Details"
+msgstr "Détails du Persona"
+
+msgid "Loading..."
+msgstr "Chargement..."
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "Edit Persona"
+msgstr "Modifier le Persona"
+
+msgid "Title"
+msgstr "Titre"
+
+msgid "Niche Market"
+msgstr "Marché de Niche"
+
+msgid "Select a niche"
+msgstr "Sélectionner une niche"
+
+msgid "Boutique"
+msgstr "Boutique"
+
+msgid "Select a boutique"
+msgstr "Sélectionner une boutique"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Pain Points"
+msgstr "Points Douloureux"
+
+msgid "Age Range"
+msgstr "Tranche d'Âge"
+
+msgid "Gender"
+msgstr "Genre"
+
+msgid "Select a gender"
+msgstr "Sélectionner un genre"
+
+msgid "Income Level"
+msgstr "Niveau de Revenu"
+
+msgid "Select income level"
+msgstr "Sélectionner un niveau de revenu"
+
+msgid "Budget"
+msgstr "Budget"
+
+msgid "Middle"
+msgstr "Moyen"
+
+msgid "Affluent"
+msgstr "Aisé"
+
+msgid "Luxury"
+msgstr "Luxe"
+
+msgid "Interests"
+msgstr "Intérêts"
+
+msgid "Technology, travel, fashion..."
+msgstr "Technologie, voyages, mode..."
+
+msgid "Separate multiple interests with commas"
+msgstr "Séparez les intérêts multiples par des virgules"
+
+msgid "Buying Habits"
+msgstr "Habitudes d'Achat"
+
+msgid "Confirm Deletion"
+msgstr "Confirmer la Suppression"
+
+msgid "Are you sure you want to delete the persona"
+msgstr "Êtes-vous sûr de vouloir supprimer le persona"
+
+msgid "Warning: This persona is currently assigned to one or more customers. Deleting it will remove all associations."
+msgstr "Attention : Ce persona est actuellement assigné à un ou plusieurs clients. Le supprimer supprimera toutes les associations."
+
+msgid "This action cannot be undone."
+msgstr "Cette action ne peut pas être annulée."
+
+msgid "Assign Persona to Customer"
+msgstr "Assigner un Persona à un Client"
+
+msgid "Select Customer"
+msgstr "Sélectionner un Client"
+
+msgid "Choose a customer..."
+msgstr "Choisir un client..."
+
+msgid "years"
+msgstr "ans"
+
+msgid "Set as primary persona"
+msgstr "Définir comme persona principal"
+
+msgid "If checked, this will become the main persona for the selected customer."
+msgstr "Si coché, cela deviendra le persona principal pour le client sélectionné."
+
+msgid "Relevance Score"
+msgstr "Score de Pertinence"
+
+msgid "Notes"
+msgstr "Notes"
+
+msgid "Persona created successfully"
+msgstr "Persona créé avec succès"
+
+msgid "Error creating persona: {}"
+msgstr "Erreur lors de la création du persona : {}"
+
+msgid "Persona deleted successfully"
+msgstr "Persona supprimé avec succès"
+
+msgid "Error deleting persona: {}"
+msgstr "Erreur lors de la suppression du persona : {}"
+
+msgid "Persona \"{}\" assigned to customer \"{}\" successfully"
+msgstr "Persona \"{}\" assigné au client \"{}\" avec succès"
+
+msgid "Error assigning persona: {}"
+msgstr "Erreur lors de l'assignation du persona : {}"
 
