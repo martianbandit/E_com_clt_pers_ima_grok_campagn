@@ -173,7 +173,142 @@
                     <h5 class="mb-0">Persona</h5>
                 </div>
                 <div class="card-body">
-                    <p class="persona-text">{{ customer.persona|nl2br }}</p>
+                    <div class="row">
+                        {% if customer.avatar_url %}
+                        <div class="col-md-3 text-center mb-3">
+                            <img src="{{ customer.avatar_url }}" alt="Avatar de {{ customer.name }}" class="img-fluid rounded-circle avatar-image mb-2" style="max-width: 150px; max-height: 150px;">
+                            <div>
+                                <small class="text-muted">Avatar généré</small>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <p class="persona-text">{{ customer.persona|nl2br }}</p>
+                        </div>
+                        {% else %}
+                        <div class="col-12">
+                            <p class="persona-text">{{ customer.persona|nl2br }}</p>
+                            {% if customer.avatar_prompt %}
+                            <div class="mt-3">
+                                <button class="btn btn-sm btn-outline-primary generate-avatar" data-customer-id="{{ customer.id }}">
+                                    <i class="fas fa-portrait me-2"></i> Générer un avatar
+                                </button>
+                                <div class="avatar-loading d-none mt-2">
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span class="visually-hidden">Chargement...</span>
+                                    </div>
+                                    <small class="ms-2">Génération de l'avatar en cours...</small>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if customer.niche_attributes %}
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Attributs spécifiques à la niche</h5>
+                </div>
+                <div class="card-body">
+                    {% if customer.niche_attributes.preferred_subcategories %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Sous-catégories préférées</div>
+                        <div class="col-md-8">
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for subcategory in customer.niche_attributes.preferred_subcategories %}
+                                    <span class="badge bg-primary">{{ subcategory }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if customer.niche_attributes.price_range %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Gamme de prix</div>
+                        <div class="col-md-8">{{ customer.niche_attributes.price_range }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if customer.niche_attributes.favorite_brands %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Marques favorites</div>
+                        <div class="col-md-8">
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for brand in customer.niche_attributes.favorite_brands %}
+                                    <span class="badge bg-secondary">{{ brand }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if customer.niche_attributes.special_preferences %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Préférences spéciales</div>
+                        <div class="col-md-8">
+                            <dl class="row mb-0">
+                                {% for key, value in customer.niche_attributes.special_preferences.items() %}
+                                    <dt class="col-sm-4">{{ key }}</dt>
+                                    <dd class="col-sm-8">{{ value }}</dd>
+                                {% endfor %}
+                            </dl>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if customer.niche_attributes.collection_themes %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Thèmes de collection</div>
+                        <div class="col-md-8">
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for theme in customer.niche_attributes.collection_themes %}
+                                    <span class="badge bg-success">{{ theme }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if customer.purchased_products %}
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Historique d'achats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Catégorie</th>
+                                    <th>Marque</th>
+                                    <th>Prix</th>
+                                    <th>Date d'achat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in customer.purchased_products %}
+                                <tr>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.category }}</td>
+                                    <td>{{ product.brand }}</td>
+                                    <td>{{ product.price }}</td>
+                                    <td>{{ product.purchase_date }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">Note: Les informations d'achat sont générées pour enrichir le profil et sont basées sur le persona du client.</small>
+                    </div>
                 </div>
             </div>
             {% endif %}
@@ -301,6 +436,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.disabled = false;
                 this.innerHTML = '<i class="fas fa-magic me-2"></i> Générer un persona';
                 alert('Une erreur est survenue lors de la génération du persona.');
+            });
+        });
+    }
+    
+    // Gestionnaire pour le bouton de génération d'avatar
+    const generateAvatarBtn = document.querySelector('.generate-avatar');
+    if (generateAvatarBtn) {
+        generateAvatarBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const customerId = this.getAttribute('data-customer-id');
+            const loadingIndicator = document.querySelector('.avatar-loading');
+            
+            // Désactiver le bouton et afficher l'indicateur de chargement
+            this.disabled = true;
+            loadingIndicator.classList.remove('d-none');
+            
+            // Créer une requête fetch pour générer l'avatar
+            fetch(`/generate_customer_avatar/${customerId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Recharger la page pour afficher le nouvel avatar
+                    window.location.reload();
+                } else {
+                    // Réactiver le bouton et masquer l'indicateur de chargement
+                    this.disabled = false;
+                    loadingIndicator.classList.add('d-none');
+                    alert('Erreur lors de la génération de l\'avatar: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error generating avatar:', error);
+                this.disabled = false;
+                loadingIndicator.classList.add('d-none');
+                alert('Une erreur est survenue lors de la génération de l\'avatar.');
             });
         });
     }

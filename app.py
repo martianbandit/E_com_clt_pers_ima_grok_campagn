@@ -479,6 +479,9 @@ def delete_customer(customer_id):
 @app.route('/generate_customer_persona/<int:customer_id>', methods=['POST'])
 def generate_customer_persona_db(customer_id):
     """Générer un persona pour un client dans la base de données"""
+    from boutique_ai import generate_enhanced_customer_data_async, AsyncOpenAI, grok_client
+    import asyncio
+    
     customer = Customer.query.get_or_404(customer_id)
     
     try:
@@ -490,24 +493,64 @@ def generate_customer_persona_db(customer_id):
             'gender': customer.gender,
             'language': customer.language,
             'interests': customer.get_interests_list(),
-            'preferred_device': customer.preferred_device
+            'preferred_device': customer.preferred_device,
+            'id': customer.id  # Ajouter l'ID pour permettre les mises à jour des attributs supplémentaires
         }
         
-        # Générer le persona
-        persona = generate_customer_persona(profile)
+        # Récupérer le nom de la niche associée au client
+        niche_name = "general boutique"
+        if customer.niche_market:
+            niche_name = customer.niche_market.name
         
-        # Mettre à jour le client avec le nouveau persona
-        customer.persona = persona
+        # Récupérer les personas existants pour éviter la répétition
+        existing_personas = []
+        other_customers = Customer.query.filter(Customer.id != customer_id, Customer.persona != None).order_by(Customer.created_at.desc()).limit(5).all()
+        for other in other_customers:
+            if other.persona:
+                existing_personas.append(other.persona)
+        
+        # Utiliser asyncio pour exécuter la génération asynchrone
+        async def generate_data():
+            return await generate_enhanced_customer_data_async(
+                client=grok_client,
+                customer=profile,
+                niche=niche_name,
+                existing_personas=existing_personas
+            )
+        
+        # Exécuter la fonction asynchrone
+        enhanced_data = asyncio.run(generate_data())
+        
+        # Mettre à jour le client avec les nouvelles données enrichies
+        customer.persona = enhanced_data["persona"]
+        customer.niche_attributes = enhanced_data["niche_attributes"]
+        customer.purchased_products = enhanced_data["purchased_products"]
+        
+        # Pour l'avatar, nous allons générer l'image avec le prompt fourni
+        # Mais comme la génération d'image prend du temps, nous allons d'abord stocker le prompt
+        customer.avatar_prompt = enhanced_data["avatar_prompt"]
+        
         db.session.commit()
+        
+        # Générer l'avatar avec OpenAI (en arrière-plan ou dans un thread séparé pour ne pas bloquer)
+        # Pour l'instant, nous stockons juste l'avatar_prompt, nous implémenterons la génération d'avatar plus tard
         
         # Log metric pour la génération de persona
         log_metric("persona_generation", {
             "success": True,
             "customer_id": customer.id,
-            "profile_name": customer.name
+            "profile_name": customer.name,
+            "enhanced": True,
+            "avatar_prompt_generated": True
         })
         
-        return jsonify({'success': True, 'persona': persona})
+        return jsonify({
+            'success': True, 
+            'persona': enhanced_data["persona"],
+            'niche_attributes': enhanced_data["niche_attributes"],
+            'purchased_products': enhanced_data["purchased_products"],
+            'avatar_prompt': enhanced_data["avatar_prompt"]
+        })
     except Exception as e:
         db.session.rollback()
         # Log metric pour l'échec de génération
@@ -517,7 +560,7 @@ def generate_customer_persona_db(customer_id):
             "error": str(e)
         })
         
-        logging.error(f"Error generating persona for customer {customer_id}: {e}")
+        logging.error(f"Error generating enhanced persona for customer {customer_id}: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/campaign/<int:campaign_id>')
@@ -538,6 +581,59 @@ def delete_campaign(campaign_id):
         db.session.rollback()
         flash(f'Erreur lors de la suppression de la campagne: {str(e)}', 'danger')
     return redirect(url_for('campaigns'))
+
+@app.route('/generate_customer_avatar/<int:customer_id>', methods=['POST'])
+def generate_customer_avatar(customer_id):
+    """Générer un avatar pour un client basé sur son persona et ses attributs"""
+    from boutique_ai import generate_boutique_image_async, AsyncOpenAI, grok_client
+    import asyncio
+    
+    customer = Customer.query.get_or_404(customer_id)
+    
+    try:
+        # Vérifier si le client a un avatar_prompt
+        if not customer.avatar_prompt:
+            return jsonify({
+                'error': 'Ce client n\'a pas de prompt d\'avatar. Veuillez d\'abord générer un persona.'
+            }), 400
+        
+        # Utiliser asyncio pour exécuter la génération d'image asynchrone
+        async def generate_avatar():
+            avatar_url = await generate_boutique_image_async(
+                client=grok_client,
+                image_prompt=customer.avatar_prompt
+            )
+            return avatar_url
+        
+        # Exécuter la fonction asynchrone
+        avatar_url = asyncio.run(generate_avatar())
+        
+        # Mettre à jour le client avec l'URL de l'avatar
+        customer.avatar_url = avatar_url
+        db.session.commit()
+        
+        # Log metric pour la génération d'avatar
+        log_metric("avatar_generation", {
+            "success": True,
+            "customer_id": customer.id,
+            "profile_name": customer.name
+        })
+        
+        return jsonify({
+            'success': True, 
+            'avatar_url': avatar_url
+        })
+    except Exception as e:
+        db.session.rollback()
+        # Log metric pour l'échec de génération
+        log_metric("avatar_generation", {
+            "success": False,
+            "customer_id": customer.id,
+            "error": str(e)
+        })
+        
+        logging.error(f"Error generating avatar for customer {customer_id}: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/image_generation', methods=['GET', 'POST'])
 def image_generation():
