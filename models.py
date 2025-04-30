@@ -30,7 +30,7 @@ class NicheMarket(db.Model):
     
     def __repr__(self):
         return f'<NicheMarket {self.name}>'
-    
+        
     def get_characteristics_list(self):
         """Return key characteristics as a list"""
         if not self.key_characteristics:
