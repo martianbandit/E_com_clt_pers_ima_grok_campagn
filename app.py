@@ -386,19 +386,62 @@ def edit_customer(customer_id):
     niches = NicheMarket.query.all()
     return render_template('customer_edit.html', customer=customer, niches=niches)
 
-@app.route('/customer/<int:customer_id>/delete', methods=['POST'])
+@app.route('/customer/<int:customer_id>/delete', methods=['GET', 'POST'])
 def delete_customer(customer_id):
     """Supprimer un client"""
     customer = Customer.query.get_or_404(customer_id)
     try:
         db.session.delete(customer)
         db.session.commit()
-        flash('Customer deleted successfully', 'success')
+        flash('Client supprimé avec succès', 'success')
     except Exception as e:
         db.session.rollback()
-        flash(f'Error deleting customer: {str(e)}', 'danger')
-    
+        flash(f'Erreur lors de la suppression du client: {str(e)}', 'danger')
     return redirect(url_for('profiles'))
+
+@app.route('/generate_customer_persona/<int:customer_id>', methods=['POST'])
+def generate_customer_persona_db(customer_id):
+    """Générer un persona pour un client dans la base de données"""
+    customer = Customer.query.get_or_404(customer_id)
+    
+    try:
+        # Préparer les données du profil pour la génération
+        profile = customer.profile_data if customer.profile_data else {
+            'name': customer.name,
+            'age': customer.age,
+            'location': customer.location,
+            'gender': customer.gender,
+            'language': customer.language,
+            'interests': customer.get_interests_list(),
+            'preferred_device': customer.preferred_device
+        }
+        
+        # Générer le persona
+        persona = generate_customer_persona(profile)
+        
+        # Mettre à jour le client avec le nouveau persona
+        customer.persona = persona
+        db.session.commit()
+        
+        # Log metric pour la génération de persona
+        log_metric("persona_generation", {
+            "success": True,
+            "customer_id": customer.id,
+            "profile_name": customer.name
+        })
+        
+        return jsonify({'success': True, 'persona': persona})
+    except Exception as e:
+        db.session.rollback()
+        # Log metric pour l'échec de génération
+        log_metric("persona_generation", {
+            "success": False,
+            "customer_id": customer.id,
+            "error": str(e)
+        })
+        
+        logging.error(f"Error generating persona for customer {customer_id}: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/campaign/<int:campaign_id>')
 def view_campaign(campaign_id):
@@ -406,18 +449,17 @@ def view_campaign(campaign_id):
     campaign = Campaign.query.get_or_404(campaign_id)
     return render_template('campaign_detail.html', campaign=campaign)
 
-@app.route('/campaign/<int:campaign_id>/delete', methods=['POST'])
+@app.route('/campaign/<int:campaign_id>/delete', methods=['GET', 'POST'])
 def delete_campaign(campaign_id):
     """Supprimer une campagne"""
     campaign = Campaign.query.get_or_404(campaign_id)
     try:
         db.session.delete(campaign)
         db.session.commit()
-        flash('Campaign deleted successfully', 'success')
+        flash('Campagne supprimée avec succès', 'success')
     except Exception as e:
         db.session.rollback()
-        flash(f'Error deleting campaign: {str(e)}', 'danger')
-    
+        flash(f'Erreur lors de la suppression de la campagne: {str(e)}', 'danger')
     return redirect(url_for('campaigns'))
 
 @app.route('/metrics')
