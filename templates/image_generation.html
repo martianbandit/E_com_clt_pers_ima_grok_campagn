@@ -127,30 +127,32 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        {% set image_campaigns = [] %}
+                        {# Afficher les campagnes avec images #}
+                        {% set image_count = 0 %}
+                        {% set max_images = 6 %}
+                        {% set has_image_campaigns = false %}
+                        
                         {% for customer in saved_customers %}
                             {% for campaign in customer.campaigns %}
-                                {% if campaign.campaign_type == 'image' and campaign.image_url %}
-                                    {% do image_campaigns.append(campaign) %}
+                                {% if campaign.campaign_type == 'image' and campaign.image_url and image_count < max_images %}
+                                    {% set has_image_campaigns = true %}
+                                    {% set image_count = image_count + 1 %}
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card h-100">
+                                            <img src="{{ campaign.image_url }}" class="card-img-top" alt="Image marketing">
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ campaign.title }}</h6>
+                                                <p class="card-text small">{{ campaign.content }}</p>
+                                                <p class="card-text"><small class="text-muted">Client: {{ campaign.customer.name }}</small></p>
+                                                <a href="{{ url_for('view_campaign', campaign_id=campaign.id) }}" class="btn btn-sm btn-outline-primary">Voir les détails</a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 {% endif %}
                             {% endfor %}
                         {% endfor %}
                         
-                        {% if image_campaigns %}
-                            {% for campaign in image_campaigns[:6] %}
-                                <div class="col-md-4 mb-4">
-                                    <div class="card h-100">
-                                        <img src="{{ campaign.image_url }}" class="card-img-top" alt="Image marketing">
-                                        <div class="card-body">
-                                            <h6 class="card-title">{{ campaign.title }}</h6>
-                                            <p class="card-text small">{{ campaign.content }}</p>
-                                            <p class="card-text"><small class="text-muted">Client: {{ campaign.customer.name }}</small></p>
-                                            <a href="{{ url_for('view_campaign', campaign_id=campaign.id) }}" class="btn btn-sm btn-outline-primary">Voir les détails</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
+                        {% if not has_image_campaigns %}
                             <div class="col-12 text-center py-5">
                                 <p class="text-muted">Aucune image générée pour le moment.</p>
                             </div>
