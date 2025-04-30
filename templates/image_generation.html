@@ -1,0 +1,164 @@
+{% extends 'layout.html' %}
+
+{% block title %}Génération d'Images Marketing Optimisées{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Générateur d'Images Marketing</h1>
+            <p class="lead">Créez des images marketing personnalisées et optimisées pour vos clients</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Tableau de bord</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Générateur d'Images</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-palette me-2"></i> Création d'Image Marketing</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('image_generation') }}" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Titre de la campagne</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Nom de votre campagne d'images">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="customer_id" class="form-label">Client</label>
+                            <select class="form-select" id="customer_id" name="customer_id" required>
+                                <option value="">Sélectionner un client</option>
+                                {% for customer in saved_customers %}
+                                <option value="{{ customer.id }}">{{ customer.name }} - {{ customer.location }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="form-text text-muted">L'image sera personnalisée en fonction du profil et des préférences du client.</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="base_prompt" class="form-label">Description d'image (prompt)</label>
+                            <textarea class="form-control" id="base_prompt" name="base_prompt" rows="3" placeholder="Décrivez l'image que vous souhaitez générer..." required></textarea>
+                            <small class="form-text text-muted">Soyez spécifique: objet principal, ambiance, couleurs, style, etc.</small>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="style" class="form-label">Style artistique</label>
+                                <select class="form-select" id="style" name="style">
+                                    <option value="">Style par défaut</option>
+                                    {% for style in available_styles %}
+                                    <option value="{{ style.id }}">{{ style.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="reference_image" class="form-label">Image de référence (optionnel)</label>
+                                <input type="file" class="form-control" id="reference_image" name="reference_image" accept="image/*">
+                                <small class="form-text text-muted">Téléchargez une image pour servir de référence visuelle.</small>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i> L'IA analysera le profil client et améliorera automatiquement votre prompt pour créer une image optimisée pour ce client spécifique.
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-magic me-2"></i> Générer l'image
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i> Conseils</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Pour de meilleurs résultats:</h6>
+                    <ul>
+                        <li>Soyez détaillé et précis dans votre description</li>
+                        <li>Mentionnez les éléments visuels importants</li>
+                        <li>Précisez l'ambiance et les émotions souhaitées</li>
+                        <li>Utilisez une image de référence pour guider le style</li>
+                        <li>Choisissez un style adapté à votre boutique</li>
+                    </ul>
+                    <p class="mb-0 small text-muted">Le système améliorera automatiquement votre prompt en fonction du profil client pour maximiser la personnalisation et l'impact.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-th me-2"></i> Exemples de prompts</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <h6>Pour la mode:</h6>
+                        <p class="small">"Une robe élégante rouge flottant sur un mannequin invisible, dans un décor urbain avec des reflets de lumière dorée"</p>
+                    </div>
+                    <div class="mb-2">
+                        <h6>Pour les accessoires:</h6>
+                        <p class="small">"Un sac à main en cuir premium sur une table en marbre avec des plantes tropicales en arrière-plan et une lumière douce"</p>
+                    </div>
+                    <div class="mb-0">
+                        <h6>Pour la décoration:</h6>
+                        <p class="small mb-0">"Une table basse en bois dans un salon minimaliste scandinave, avec une tasse de café et un livre ouvert"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i> Images générées récemment</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% set image_campaigns = [] %}
+                        {% for customer in saved_customers %}
+                            {% for campaign in customer.campaigns %}
+                                {% if campaign.campaign_type == 'image' and campaign.image_url %}
+                                    {% do image_campaigns.append(campaign) %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                        
+                        {% if image_campaigns %}
+                            {% for campaign in image_campaigns[:6] %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <img src="{{ campaign.image_url }}" class="card-img-top" alt="Image marketing">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ campaign.title }}</h6>
+                                            <p class="card-text small">{{ campaign.content }}</p>
+                                            <p class="card-text"><small class="text-muted">Client: {{ campaign.customer.name }}</small></p>
+                                            <a href="{{ url_for('view_campaign', campaign_id=campaign.id) }}" class="btn btn-sm btn-outline-primary">Voir les détails</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-12 text-center py-5">
+                                <p class="text-muted">Aucune image générée pour le moment.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

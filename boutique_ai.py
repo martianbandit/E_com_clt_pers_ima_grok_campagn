@@ -283,15 +283,47 @@ async def generate_image_prompt_async(
 async def generate_boutique_image_async(
     client: AsyncOpenAI,
     image_prompt: str,
-    model: str = GROK_2_IMAGE
+    model: str = GROK_2_IMAGE,
+    image_data=None,
+    style=None
 ) -> str:
+    """
+    Generate a marketing image with Grok's image generation model.
+    
+    Args:
+        client: AsyncOpenAI client
+        image_prompt: Text prompt for image generation
+        model: Grok model to use
+        image_data: Optional base64 encoded image data to use as a starting point
+        style: Optional style to apply to the image (e.g., 'watercolor', 'photorealistic')
+    
+    Returns:
+        URL of the generated image
+    """
     try:
-        response = await client.images.generate(
-            model=model,
-            prompt=image_prompt,
-            n=1,
-            size="1024x1024",
-        )
+        # Prepare generation parameters
+        params = {
+            "model": model,
+            "prompt": image_prompt,
+            "n": 1,
+            "size": "1024x1024",
+        }
+        
+        # Add style to prompt if specified
+        if style:
+            params["prompt"] = f"{params['prompt']} Style: {style}."
+        
+        # If image_data is provided, use image variation endpoint
+        if image_data:
+            # For compatibility with OpenAI's API structure
+            # Depending on the API implementation, might need adjustment
+            response = await client.images.generate(
+                **params,
+                reference_image=image_data
+            )
+        else:
+            # Standard image generation
+            response = await client.images.generate(**params)
         
         if not response.data or not response.data[0].url:
             raise ValueError("No image generated")
@@ -323,12 +355,30 @@ def generate_marketing_content(customer, campaign_type):
         niche = customer["interests"][0]
     return asyncio.run(generate_boutique_marketing_content_async(grok_client, customer, niche, campaign_type))
 
-def generate_marketing_image(customer, base_prompt):
-    """Generate a personalized marketing image for a customer"""
+def generate_marketing_image(customer, base_prompt, image_data=None, style=None):
+    """
+    Generate a personalized marketing image for a customer
+    
+    Args:
+        customer: Customer data dict
+        base_prompt: Base text prompt for image generation
+        image_data: Optional base64 encoded image data
+        style: Optional style to apply (watercolor, oil painting, photorealistic, etc)
+        
+    Returns:
+        URL of the generated image
+    """
     niche = ""
     if customer.get("interests"):
         niche = customer["interests"][0]
+        
     # First, enhance the prompt for this specific customer and niche
     enhanced_prompt = asyncio.run(generate_image_prompt_async(grok_client, customer, niche, base_prompt))
-    # Then, generate the image using the enhanced prompt
-    return asyncio.run(generate_boutique_image_async(grok_client, enhanced_prompt))
+    
+    # Then, generate the image using the enhanced prompt and optional parameters
+    return asyncio.run(generate_boutique_image_async(
+        grok_client, 
+        enhanced_prompt, 
+        image_data=image_data,
+        style=style
+    ))

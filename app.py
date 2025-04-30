@@ -462,6 +462,101 @@ def delete_campaign(campaign_id):
         flash(f'Erreur lors de la suppression de la campagne: {str(e)}', 'danger')
     return redirect(url_for('campaigns'))
 
+@app.route('/image_generation', methods=['GET', 'POST'])
+def image_generation():
+    """Page de génération d'images marketing optimisées"""
+    # Récupérer les clients sauvegardés pour la sélection
+    saved_customers = Customer.query.order_by(Customer.name).all()
+    
+    if request.method == 'POST':
+        try:
+            customer_id = request.form.get('customer_id')
+            base_prompt = request.form.get('base_prompt', '')
+            style = request.form.get('style', None)
+            image_data = None
+            
+            # Vérifier si une image a été téléchargée
+            if 'reference_image' in request.files and request.files['reference_image'].filename:
+                import base64
+                from io import BytesIO
+                
+                # Lire le fichier image
+                uploaded_file = request.files['reference_image']
+                image_bytes = BytesIO(uploaded_file.read())
+                
+                # Encoder en base64
+                image_data = base64.b64encode(image_bytes.getvalue()).decode('utf-8')
+            
+            # Récupérer le profil client
+            customer = Customer.query.get(customer_id)
+            if not customer:
+                flash('Client invalide sélectionné', 'danger')
+                return redirect(url_for('image_generation'))
+            
+            # Convertir le client en dictionnaire pour l'API
+            profile = customer.profile_data if customer.profile_data else {
+                'name': customer.name,
+                'age': customer.age,
+                'location': customer.location,
+                'gender': customer.gender,
+                'language': customer.language,
+                'interests': customer.get_interests_list(),
+                'preferred_device': customer.preferred_device,
+                'persona': customer.persona
+            }
+            
+            # Générer l'image
+            image_url = generate_marketing_image(profile, base_prompt, image_data, style)
+            
+            # Créer et sauvegarder la campagne avec l'image
+            campaign = Campaign(
+                title=request.form.get('title', f"Image marketing pour {customer.name}"),
+                content=f"Image générée avec le prompt: {base_prompt}",
+                campaign_type="image",
+                profile_data=profile,
+                image_url=image_url,
+                customer_id=customer_id
+            )
+            db.session.add(campaign)
+            db.session.commit()
+            
+            # Log metric pour la génération d'image
+            log_metric("marketing_image_generation", {
+                "success": True if image_url else False,
+                "prompt": base_prompt,
+                "customer_id": customer_id,
+                "style": style
+            })
+            
+            flash('Image marketing générée avec succès', 'success')
+            return redirect(url_for('view_campaign', campaign_id=campaign.id))
+            
+        except Exception as e:
+            flash(f'Erreur lors de la génération de l\'image: {str(e)}', 'danger')
+            logging.error(f"Error generating marketing image: {e}")
+            
+            # Log metric pour l'échec de génération
+            log_metric("marketing_image_generation", {
+                "success": False,
+                "error": str(e)
+            })
+    
+    # Styles disponibles pour la génération d'images
+    available_styles = [
+        {"id": "watercolor", "name": "Aquarelle"},
+        {"id": "oil_painting", "name": "Peinture à l'huile"},
+        {"id": "photorealistic", "name": "Photoréaliste"},
+        {"id": "sketch", "name": "Croquis"},
+        {"id": "anime", "name": "Anime"},
+        {"id": "3d_render", "name": "Rendu 3D"},
+        {"id": "minimalist", "name": "Minimaliste"},
+        {"id": "pop_art", "name": "Pop Art"}
+    ]
+    
+    return render_template('image_generation.html',
+                          saved_customers=saved_customers,
+                          available_styles=available_styles)
+
 @app.route('/metrics')
 def metrics_view():
     """Afficher les métriques de l'application"""
