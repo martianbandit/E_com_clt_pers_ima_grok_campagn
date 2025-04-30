@@ -299,30 +299,137 @@ class Customer(db.Model):
         )
 
 class Campaign(db.Model):
+    """Modèle pour les campagnes marketing avec métadonnées complètes"""
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    campaign_type = db.Column(db.String(50), nullable=False)  # email, social, ad, etc.
-    profile_data = db.Column(JSONB, nullable=True)  # The customer profile this campaign is for
-    image_url = db.Column(db.Text, nullable=True)  # URL complète de l'image, peut être longue
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    campaign_type = db.Column(db.String(50), nullable=False)  # email, social, ad, product_description, etc.
+    target_audience = db.Column(db.String(100), nullable=True)  # Description brève de l'audience cible
+    status = db.Column(db.String(20), default="draft")  # draft, active, paused, completed, archived
     
-    # SEO metadata for images
+    # Contenu et données
+    profile_data = db.Column(JSONB, nullable=True)  # The customer profile this campaign is for
+    prompt_used = db.Column(db.Text, nullable=True)  # Prompt utilisé pour générer le contenu
+    ai_model_used = db.Column(db.String(50), nullable=True)  # Modèle IA utilisé (grok-2, gpt-4o, etc.)
+    generation_params = db.Column(JSONB, nullable=True)  # Paramètres utilisés pour la génération
+    
+    # Métriques et suivi
+    view_count = db.Column(db.Integer, default=0)  # Nombre de vues
+    click_count = db.Column(db.Integer, default=0)  # Nombre de clics
+    conversion_count = db.Column(db.Integer, default=0)  # Nombre de conversions
+    
+    # Image principale
+    image_url = db.Column(db.Text, nullable=True)  # URL complète de l'image, peut être longue
     image_alt_text = db.Column(db.String(125), nullable=True)  # Alt text optimisé pour SEO
     image_title = db.Column(db.String(60), nullable=True)  # Titre optimisé pour SEO
     image_description = db.Column(db.Text, nullable=True)  # Description optimisée pour SEO
     image_keywords = db.Column(JSONB, nullable=True)  # Mots-clés pour le référencement
     image_prompt = db.Column(db.Text, nullable=True)  # Prompt utilisé pour générer l'image
     
+    # Planification et publication
+    scheduled_at = db.Column(db.DateTime, nullable=True)  # Date planifiée de publication
+    published_at = db.Column(db.DateTime, nullable=True)  # Date effective de publication
+    platforms = db.Column(JSONB, nullable=True)  # Plateformes de publication (Facebook, Instagram, Email, etc.)
+    
+    # Dates de création/modification
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
     # Foreign keys
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
+    # Relation sans backref pour éviter les conflits
+    campaign_customer = db.relationship('Customer', foreign_keys=[customer_id], lazy=True)
+    
+    persona_id = db.Column(db.Integer, db.ForeignKey('customer_persona.id'), nullable=True)
+    campaign_persona = db.relationship('CustomerPersona', foreign_keys=[persona_id], lazy=True)
+    
+    boutique_id = db.Column(db.Integer, db.ForeignKey('boutique.id'), nullable=True)
+    campaign_boutique = db.relationship('Boutique', foreign_keys=[boutique_id], lazy=True)
     
     # Relation avec les produits similaires
     similar_products = db.relationship('SimilarProduct', backref='campaign', lazy=True)
     
     def __repr__(self):
-        return f'<Campaign {self.title}>'
+        return f'<Campaign {self.title} ({self.campaign_type})>'
+    
+    @property
+    def engagement_rate(self):
+        """Calcule le taux d'engagement (vues -> clics)"""
+        if self.view_count == 0:
+            return 0
+        return (self.click_count / self.view_count) * 100
+    
+    @property
+    def conversion_rate(self):
+        """Calcule le taux de conversion (clics -> conversions)"""
+        if self.click_count == 0:
+            return 0
+        return (self.conversion_count / self.click_count) * 100
+    
+    def log_view(self):
+        """Incrémente le compteur de vues"""
+        self.view_count += 1
+        db.session.commit()
+        
+    def log_click(self):
+        """Incrémente le compteur de clics"""
+        self.click_count += 1
+        db.session.commit()
+        
+    def log_conversion(self):
+        """Incrémente le compteur de conversions"""
+        self.conversion_count += 1
+        db.session.commit()
+        
+    def publish(self):
+        """Publie la campagne"""
+        if self.status == "draft":
+            self.status = "active"
+            self.published_at = datetime.utcnow()
+            db.session.commit()
+            
+    def archive(self):
+        """Archive la campagne"""
+        self.status = "archived"
+        db.session.commit()
+        
+    @staticmethod
+    def get_campaign_stats():
+        """Récupère des statistiques sur toutes les campagnes"""
+        from sqlalchemy import func
+        
+        total_campaigns = Campaign.query.count()
+        active_campaigns = Campaign.query.filter_by(status="active").count()
+        
+        # Aggrégations sur les vues, clics et conversions
+        results = db.session.query(
+            func.sum(Campaign.view_count).label('total_views'),
+            func.sum(Campaign.click_count).label('total_clicks'),
+            func.sum(Campaign.conversion_count).label('total_conversions')
+        ).first()
+        
+        total_views = results.total_views or 0
+        total_clicks = results.total_clicks or 0
+        total_conversions = results.total_conversions or 0
+        
+        # Campagnes par type
+        campaign_types = db.session.query(
+            Campaign.campaign_type,
+            func.count(Campaign.id).label('count')
+        ).group_by(Campaign.campaign_type).all()
+        
+        types_summary = {c_type: count for c_type, count in campaign_types}
+        
+        return {
+            'total_campaigns': total_campaigns,
+            'active_campaigns': active_campaigns,
+            'total_views': total_views,
+            'total_clicks': total_clicks,
+            'total_conversions': total_conversions,
+            'avg_engagement_rate': (total_clicks / total_views * 100) if total_views > 0 else 0,
+            'avg_conversion_rate': (total_conversions / total_clicks * 100) if total_clicks > 0 else 0,
+            'campaigns_by_type': types_summary
+        }
     
     @property
     def is_personalized(self):
