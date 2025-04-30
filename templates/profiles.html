@@ -1,22 +1,22 @@
 {% extends 'layout.html' %}
 
-{% block title %}Boutique AI Marketing - Customer Profiles{% endblock %}
+{% block title %}{{ _('Boutique AI Marketing - Customer Profiles') }}{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Customer Profiles</h1>
+<h1 class="mb-4">{{ _('Customer Profiles') }}</h1>
 
 <div class="card mb-4">
     <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Generate Customer Profiles</h5>
+        <h5 class="mb-0">{{ _('Generate Customer Profiles') }}</h5>
     </div>
     <div class="card-body">
         <form action="/profiles" method="POST">
             <div class="row mb-3">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="niche_id" class="form-label">Niche Market</label>
+                        <label for="niche_id" class="form-label">{{ _('Niche Market') }}</label>
                         <select class="form-select" id="niche_id" name="niche_id" required>
-                            <option value="">Choose a niche...</option>
+                            <option value="">{{ _('Choose a niche...') }}</option>
                             {% for niche in niches %}
                                 <option value="{{ niche.id }}">{{ niche.name }}</option>
                             {% endfor %}
@@ -25,7 +25,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="mb-3">
-                        <label for="num_profiles" class="form-label">Number of Profiles</label>
+                        <label for="num_profiles" class="form-label">{{ _('Number of Profiles') }}</label>
                         <select class="form-select" id="num_profiles" name="num_profiles">
                             <option value="3">3</option>
                             <option value="5" selected>5</option>
@@ -36,7 +36,7 @@
                 <div class="col-md-3">
                     <div class="mb-3 form-check mt-4">
                         <input type="checkbox" class="form-check-input" id="persist_to_db" name="persist_to_db">
-                        <label class="form-check-label" for="persist_to_db">Save to Database</label>
+                        <label class="form-check-label" for="persist_to_db">{{ _('Save to Database') }}</label>
                     </div>
                 </div>
             </div>
@@ -44,37 +44,37 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="target_country" class="form-label">Target Country</label>
+                        <label for="target_country" class="form-label">{{ _('Target Country') }}</label>
                         <select class="form-select" id="target_country" name="target_country">
-                            <option value="">Any (Global Mix)</option>
-                            <option value="US">United States</option>
-                            <option value="CA">Canada</option>
-                            <option value="GB">United Kingdom</option>
-                            <option value="FR">France</option>
-                            <option value="DE">Germany</option>
-                            <option value="IT">Italy</option>
-                            <option value="ES">Spain</option>
-                            <option value="JP">Japan</option>
-                            <option value="AU">Australia</option>
-                            <option value="BR">Brazil</option>
-                            <option value="IN">India</option>
-                            <option value="CN">China</option>
-                            <option value="MX">Mexico</option>
+                            <option value="">{{ _('Any (Global Mix)') }}</option>
+                            <option value="US">{{ _('United States') }}</option>
+                            <option value="CA">{{ _('Canada') }}</option>
+                            <option value="GB">{{ _('United Kingdom') }}</option>
+                            <option value="FR">{{ _('France') }}</option>
+                            <option value="DE">{{ _('Germany') }}</option>
+                            <option value="IT">{{ _('Italy') }}</option>
+                            <option value="ES">{{ _('Spain') }}</option>
+                            <option value="JP">{{ _('Japan') }}</option>
+                            <option value="AU">{{ _('Australia') }}</option>
+                            <option value="BR">{{ _('Brazil') }}</option>
+                            <option value="IN">{{ _('India') }}</option>
+                            <option value="CN">{{ _('China') }}</option>
+                            <option value="MX">{{ _('Mexico') }}</option>
                         </select>
-                        <small class="form-text text-muted">Choose a country to generate customer profiles from that specific region</small>
+                        <small class="form-text text-muted">{{ _('Choose a country to generate customer profiles from that specific region') }}</small>
                     </div>
                 </div>
                 
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="age_range" class="form-label">Age Range</label>
+                        <label for="age_range" class="form-label">{{ _('Age Range') }}</label>
                         <select class="form-select" id="age_range" name="age_range">
-                            <option value="">Any (Mixed Ages)</option>
-                            <option value="18-25">18-25 years</option>
-                            <option value="26-35">26-35 years</option>
-                            <option value="36-50">36-50 years</option>
-                            <option value="51-65">51-65 years</option>
-                            <option value="66+">66+ years</option>
+                            <option value="">{{ _('Any (Mixed Ages)') }}</option>
+                            <option value="18-25">{{ _('18-25 years') }}</option>
+                            <option value="26-35">{{ _('26-35 years') }}</option>
+                            <option value="36-50">{{ _('36-50 years') }}</option>
+                            <option value="51-65">{{ _('51-65 years') }}</option>
+                            <option value="66+">{{ _('66+ years') }}</option>
                         </select>
                     </div>
                 </div>
@@ -83,13 +83,13 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="income_level" class="form-label">Income Level</label>
+                        <label for="income_level" class="form-label">{{ _('Income Level') }}</label>
                         <select class="form-select" id="income_level" name="income_level">
-                            <option value="">Any (Mixed Income Levels)</option>
-                            <option value="budget">Budget-conscious</option>
-                            <option value="middle">Middle income</option>
-                            <option value="affluent">Affluent</option>
-                            <option value="luxury">Luxury consumers</option>
+                            <option value="">{{ _('Any (Mixed Income Levels)') }}</option>
+                            <option value="budget">{{ _('Budget-conscious') }}</option>
+                            <option value="middle">{{ _('Middle income') }}</option>
+                            <option value="affluent">{{ _('Affluent') }}</option>
+                            <option value="luxury">{{ _('Luxury consumers') }}</option>
                         </select>
                     </div>
                 </div>
@@ -97,7 +97,7 @@
                 <div class="col-md-6 d-flex align-items-end">
                     <div class="mb-3 w-100">
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="fas fa-users me-2"></i> Generate Customer Profiles
+                            <i class="fas fa-users me-2"></i> {{ _('Generate Customer Profiles') }}
                         </button>
                     </div>
                 </div>
@@ -114,13 +114,13 @@
                     <div class="profile-header">
                         <h5 class="mb-0">{{ profile.name }}</h5>
                         <div class="d-flex justify-content-between align-items-center">
-                            <small>{{ profile.age }} years • {{ profile.location }}</small>
+                            <small>{{ profile.age }} {{ _('years') }} • {{ profile.location }}</small>
                             <small>{{ profile.language }}</small>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <h6>Interests</h6>
+                            <h6>{{ _('Interests') }}</h6>
                             <div>
                                 {% for interest in profile.interests %}
                                     <span class="interest-tag">{{ interest }}</span>
@@ -129,7 +129,7 @@
                         </div>
                         
                         <div class="mb-3">
-                            <h6>Purchase History</h6>
+                            <h6>{{ _('Purchase History') }}</h6>
                             <ul class="list-group list-group-flush">
                                 {% for item in profile.purchase_history %}
                                     <li class="list-group-item px-0 py-1 border-0">
@@ -140,13 +140,13 @@
                         </div>
                         
                         <div class="mb-3">
-                            <h6>Customer Persona</h6>
+                            <h6>{{ _('Customer Persona') }}</h6>
                             <div class="persona-box">
                                 <p id="persona-{{ loop.index0 }}" class="mb-0 text-muted">
                                     {% if profile.persona %}
                                         {{ profile.persona }}
                                     {% else %}
-                                        No persona generated yet. Click the button below to generate a detailed customer persona.
+                                        {{ _('No persona generated yet. Click the button below to generate a detailed customer persona.') }}
                                     {% endif %}
                                 </p>
                             </div>
@@ -154,7 +154,7 @@
                         
                         <button class="btn btn-primary generate-persona-btn w-100" data-profile-index="{{ loop.index0 }}">
                             <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                            <span class="btn-text">Generate Persona</span>
+                            <span class="btn-text">{{ _('Generate Persona') }}</span>
                         </button>
                     </div>
                 </div>
@@ -164,16 +164,16 @@
 {% else %}
     <div class="alert alert-info mb-4">
         <i class="fas fa-info-circle me-2"></i>
-        No customer profiles generated yet. Select a niche market and click "Generate Profiles" to get started.
+        {{ _('No customer profiles generated yet. Select a niche market and click "Generate Profiles" to get started.') }}
     </div>
 {% endif %}
 
-<!-- Section Niches de Marché -->
+<!-- Niche Markets Section -->
 <div class="card mt-5">
     <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Niches de Marché</h5>
+        <h5 class="mb-0">{{ _('Niche Markets') }}</h5>
         <button type="button" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#createNicheModal">
-            <i class="fas fa-plus me-1"></i> Nouvelle Niche
+            <i class="fas fa-plus me-1"></i> {{ _('New Niche') }}
         </button>
     </div>
     <div class="card-body">
@@ -181,11 +181,11 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Nom</th>
-                        <th>Description</th>
-                        <th>Caractéristiques</th>
-                        <th>Clients</th>
-                        <th>Actions</th>
+                        <th>{{ _('Name') }}</th>
+                        <th>{{ _('Description') }}</th>
+                        <th>{{ _('Characteristics') }}</th>
+                        <th>{{ _('Customers') }}</th>
+                        <th>{{ _('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -199,7 +199,7 @@
                                         <span class="badge bg-secondary">{{ characteristic }}</span>
                                     {% endfor %}
                                 {% else %}
-                                    <span class="text-muted">Aucune caractéristique</span>
+                                    <span class="text-muted">{{ _('No characteristics') }}</span>
                                 {% endif %}
                             </td>
                             <td>

@@ -1,9 +1,9 @@
 {% extends 'layout.html' %}
 
-{% block title %}Boutique AI Marketing - Dashboard{% endblock %}
+{% block title %}{{ _('Boutique AI Marketing - Dashboard') }}{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Dashboard</h1>
+<h1 class="mb-4">{{ _('Dashboard') }}</h1>
 
 <div class="row mb-4">
     <div class="col-md-6">
@@ -11,7 +11,7 @@
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">
                     <i class="fas fa-store me-2"></i>
-                    Your Boutiques
+                    {{ _('Your Boutiques') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -21,23 +21,23 @@
                             <div class="list-group-item list-group-item-action card-boutique">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h5 class="mb-1">{{ boutique.name }}</h5>
-                                    <small>Created: {{ boutique.created_at.strftime('%Y-%m-%d') }}</small>
+                                    <small>{{ _('Created') }}: {{ boutique.created_at.strftime('%Y-%m-%d') }}</small>
                                 </div>
                                 <p class="mb-1">{{ boutique.description }}</p>
-                                <small>Target demographic: {{ boutique.target_demographic }}</small>
+                                <small>{{ _('Target demographic') }}: {{ boutique.target_demographic }}</small>
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle me-2"></i>
-                        You haven't added any boutiques yet. Add your first boutique to get started.
+                        {{ _('You haven\'t added any boutiques yet. Add your first boutique to get started.') }}
                     </div>
                 {% endif %}
                 
                 <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addBoutiqueModal">
                     <i class="fas fa-plus me-2"></i>
-                    Add New Boutique
+                    {{ _('Add New Boutique') }}
                 </button>
             </div>
         </div>
@@ -48,7 +48,7 @@
             <div class="card-header bg-success text-white">
                 <h5 class="mb-0">
                     <i class="fas fa-tags me-2"></i>
-                    Niche Markets
+                    {{ _('Niche Markets') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -58,23 +58,23 @@
                             <div class="list-group-item list-group-item-action card-niche">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h5 class="mb-1">{{ niche.name }}</h5>
-                                    <small>Created: {{ niche.created_at.strftime('%Y-%m-%d') }}</small>
+                                    <small>{{ _('Created') }}: {{ niche.created_at.strftime('%Y-%m-%d') }}</small>
                                 </div>
                                 <p class="mb-1">{{ niche.description }}</p>
-                                <small>Key characteristics: {{ niche.key_characteristics }}</small>
+                                <small>{{ _('Key characteristics') }}: {{ niche.key_characteristics }}</small>
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle me-2"></i>
-                        No niche markets defined yet. Add your first niche to target specific customer segments.
+                        {{ _('No niche markets defined yet. Add your first niche to target specific customer segments.') }}
                     </div>
                 {% endif %}
                 
                 <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addNicheModal">
                     <i class="fas fa-plus me-2"></i>
-                    Add New Niche
+                    {{ _('Add New Niche') }}
                 </button>
             </div>
         </div>
@@ -87,7 +87,7 @@
             <div class="card-header bg-info text-white">
                 <h5 class="mb-0">
                     <i class="fas fa-lightbulb me-2"></i>
-                    Next Steps
+                    {{ _('Next Steps') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -100,11 +100,11 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h5>Generate Customer Profiles</h5>
-                                <p class="mb-0">Create detailed customer profiles for your boutique niche.</p>
+                                <h5>{{ _('Generate Customer Profiles') }}</h5>
+                                <p class="mb-0">{{ _('Create detailed customer profiles for your boutique niche.') }}</p>
                                 <a href="/profiles" class="btn btn-sm btn-outline-primary mt-2">
                                     <i class="fas fa-arrow-right me-1"></i>
-                                    Customer Profiles
+                                    {{ _('Customer Profiles') }}
                                 </a>
                             </div>
                         </div>
@@ -117,11 +117,11 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h5>Create Marketing Campaigns</h5>
-                                <p class="mb-0">Develop personalized marketing campaigns for your customers.</p>
+                                <h5>{{ _('Create Marketing Campaigns') }}</h5>
+                                <p class="mb-0">{{ _('Develop personalized marketing campaigns for your customers.') }}</p>
                                 <a href="/campaigns" class="btn btn-sm btn-outline-success mt-2">
                                     <i class="fas fa-arrow-right me-1"></i>
-                                    Campaigns
+                                    {{ _('Campaigns') }}
                                 </a>
                             </div>
                         </div>
@@ -134,11 +134,11 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h5>Generate Marketing Images</h5>
-                                <p class="mb-0">Create custom images that reflect your boutique's style.</p>
-                                <a href="/campaigns" class="btn btn-sm btn-outline-info mt-2">
+                                <h5>{{ _('Generate Marketing Images') }}</h5>
+                                <p class="mb-0">{{ _('Create custom images that reflect your boutique\'s style.') }}</p>
+                                <a href="/image_generation" class="btn btn-sm btn-outline-info mt-2">
                                     <i class="fas fa-arrow-right me-1"></i>
-                                    Generate Images
+                                    {{ _('Generate Images') }}
                                 </a>
                             </div>
                         </div>
@@ -154,24 +154,24 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="addBoutiqueModalLabel">Add New Boutique</h5>
+                <h5 class="modal-title" id="addBoutiqueModalLabel">{{ _('Add New Boutique') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="boutique-form">
                     <div class="mb-3">
-                        <label for="boutique-name" class="form-label">Boutique Name</label>
+                        <label for="boutique-name" class="form-label">{{ _('Boutique Name') }}</label>
                         <input type="text" class="form-control" id="boutique-name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="boutique-description" class="form-label">Description</label>
+                        <label for="boutique-description" class="form-label">{{ _('Description') }}</label>
                         <textarea class="form-control" id="boutique-description" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="target-demographic" class="form-label">Target Demographic</label>
-                        <input type="text" class="form-control" id="target-demographic" placeholder="e.g., Women 25-40, Urban professionals">
+                        <label for="target-demographic" class="form-label">{{ _('Target Demographic') }}</label>
+                        <input type="text" class="form-control" id="target-demographic" placeholder="{{ _('e.g., Women 25-40, Urban professionals') }}">
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Boutique</button>
+                    <button type="submit" class="btn btn-primary">{{ _('Add Boutique') }}</button>
                 </form>
             </div>
         </div>
@@ -183,24 +183,24 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="addNicheModalLabel">Add Niche Market</h5>
+                <h5 class="modal-title" id="addNicheModalLabel">{{ _('Add Niche Market') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="niche-form">
                     <div class="mb-3">
-                        <label for="niche-name" class="form-label">Niche Name</label>
-                        <input type="text" class="form-control" id="niche-name" required placeholder="e.g., Sustainable Fashion, Vintage Collectibles">
+                        <label for="niche-name" class="form-label">{{ _('Niche Name') }}</label>
+                        <input type="text" class="form-control" id="niche-name" required placeholder="{{ _('e.g., Sustainable Fashion, Vintage Collectibles') }}">
                     </div>
                     <div class="mb-3">
-                        <label for="niche-description" class="form-label">Description</label>
+                        <label for="niche-description" class="form-label">{{ _('Description') }}</label>
                         <textarea class="form-control" id="niche-description" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="key-characteristics" class="form-label">Key Characteristics</label>
-                        <textarea class="form-control" id="key-characteristics" rows="2" placeholder="e.g., Eco-friendly, Handmade, Limited edition"></textarea>
+                        <label for="key-characteristics" class="form-label">{{ _('Key Characteristics') }}</label>
+                        <textarea class="form-control" id="key-characteristics" rows="2" placeholder="{{ _('e.g., Eco-friendly, Handmade, Limited edition') }}"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-success">Add Niche</button>
+                    <button type="submit" class="btn btn-success">{{ _('Add Niche') }}</button>
                 </form>
             </div>
         </div>
