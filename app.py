@@ -1,5 +1,7 @@
 import os
+import json
 import logging
+import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
@@ -17,8 +19,17 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# Configure the SQLite database
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///boutique.db")
+# Configure the PostgreSQL database
+database_url = os.environ.get("DATABASE_URL")
+if database_url is None:
+    raise RuntimeError("DATABASE_URL environment variable is not set. PostgreSQL database is required.")
+    
+# Check if DATABASE_URL starts with postgres://, and if so, replace with postgresql://
+# This is required for SQLAlchemy 1.4.x+
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+    
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
@@ -29,13 +40,29 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 # Import routes after app initialization
-from models import Boutique, NicheMarket, Customer, Campaign
+from models import Boutique, NicheMarket, Customer, Campaign, Metric
 from boutique_ai import (
     generate_customers, 
     generate_customer_persona, 
     generate_marketing_content,
     generate_marketing_image
 )
+
+# Function to log metrics to the database
+def log_metric(metric_name, data):
+    """Log a metric to the database for monitoring and analytics"""
+    try:
+        metric = Metric(
+            name=metric_name,
+            data=data,
+            created_at=datetime.datetime.utcnow()
+        )
+        db.session.add(metric)
+        db.session.commit()
+        logging.info(f"Metric logged: {metric_name} - {json.dumps(data)}")
+    except Exception as e:
+        logging.error(f"Failed to log metric {metric_name}: {e}")
+        db.session.rollback()
 
 @app.route('/')
 def index():
@@ -88,8 +115,21 @@ def generate_persona(profile_index):
         customer_profiles[profile_index]['persona'] = persona
         session['customer_profiles'] = customer_profiles
         
+        # Log metric for persona generation
+        log_metric("persona_generation", {
+            "success": True,
+            "profile_name": profile.get('name', 'Unknown'),
+            "niche": profile.get('interests', ['Unknown'])[0] if profile.get('interests') else 'Unknown'
+        })
+        
         return jsonify({'success': True, 'persona': persona})
     except Exception as e:
+        # Log metric for failed persona generation
+        log_metric("persona_generation", {
+            "success": False,
+            "error": str(e)
+        })
+        
         logging.error(f"Error generating persona: {e}")
         return jsonify({'error': str(e)}), 500
 

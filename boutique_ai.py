@@ -305,7 +305,9 @@ async def generate_boutique_image_async(
 
 def generate_customers(niche, niche_description, num_customers=5):
     """Generate customer profiles for a specific boutique niche"""
-    return asyncio.run(generate_boutique_customers(grok_client, niche, niche_description, num_customers))
+    customers_obj = asyncio.run(generate_boutique_customers(grok_client, niche, niche_description, num_customers))
+    # Convert to a list of dictionaries for JSON serialization
+    return [customer.dict() for customer in customers_obj.customers]
 
 def generate_customer_persona(customer):
     """Generate a detailed persona for a customer profile"""
