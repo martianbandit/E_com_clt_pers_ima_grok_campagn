@@ -1,0 +1,694 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Personas') }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ _('Customer Personas') }}</h1>
+        <div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createPersonaModal">
+                <i class="fas fa-plus-circle me-2"></i> {{ _('Create New Persona') }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Recherche et filtres -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" id="personaSearch" placeholder="{{ _('Search personas...') }}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="nicheFilter">
+                        <option value="">{{ _('All Niches') }}</option>
+                        {% for niche in niches %}
+                        <option value="{{ niche.id }}">{{ niche.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="boutiqueFilter">
+                        <option value="">{{ _('All Boutiques') }}</option>
+                        {% for boutique in boutiques %}
+                        <option value="{{ boutique.id }}">{{ boutique.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-secondary w-100" id="resetFilters">
+                        {{ _('Reset') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des personas -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="personasList">
+        {% for persona in personas %}
+        <div class="col persona-item" data-niche="{{ persona.niche_market_id or '' }}" data-boutique="{{ persona.boutique_id or '' }}">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-gradient d-flex justify-content-between align-items-center {% if persona.customer_associations|length > 0 %}bg-success text-white{% else %}bg-light{% endif %}">
+                    <h5 class="card-title mb-0 text-truncate">{{ persona.title }}</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-link text-white" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewPersonaModal" data-persona-id="{{ persona.id }}">
+                                <i class="fas fa-eye me-2"></i> {{ _('View Details') }}
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editPersonaModal" data-persona-id="{{ persona.id }}">
+                                <i class="fas fa-edit me-2"></i> {{ _('Edit') }}
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assignPersonaModal" data-persona-id="{{ persona.id }}">
+                                <i class="fas fa-user-plus me-2"></i> {{ _('Assign to Customer') }}
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deletePersonaModal" data-persona-id="{{ persona.id }}" data-persona-title="{{ persona.title }}">
+                                <i class="fas fa-trash-alt me-2"></i> {{ _('Delete') }}
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    {% if persona.avatar_url %}
+                    <div class="text-center mb-3">
+                        <img src="{{ persona.avatar_url }}" class="persona-avatar rounded-circle" alt="{{ persona.title }}" style="width: 80px; height: 80px; object-fit: cover;">
+                    </div>
+                    {% endif %}
+                    
+                    <p class="persona-description">{{ persona.description|truncate(150) }}</p>
+                    
+                    <div class="mb-3">
+                        <strong>{{ _('Primary Goal') }}:</strong>
+                        <p class="mb-0 text-muted small">{{ persona.primary_goal or _('Not specified') }}</p>
+                    </div>
+                    
+                    {% if persona.niche_market %}
+                    <div class="mb-2">
+                        <span class="badge bg-info">{{ persona.niche_market.name }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">{{ _('Used by') }}: {{ persona.customer_associations|length }} {{ _('customers') }}</small>
+                        <small class="text-muted">{{ persona.created_at.strftime('%d/%m/%Y') }}</small>
+                    </div>
+                </div>
+                
+                <div class="card-footer">
+                    <div class="d-grid">
+                        <a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewPersonaModal" data-persona-id="{{ persona.id }}">
+                            {{ _('View Complete Profile') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <div class="py-5">
+                <i class="fas fa-user-circle fa-4x text-muted mb-3"></i>
+                <h5>{{ _('No personas available') }}</h5>
+                <p class="text-muted">{{ _('Create your first customer persona to get started') }}</p>
+                <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#createPersonaModal">
+                    <i class="fas fa-plus-circle me-2"></i> {{ _('Create Persona') }}
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Information sur les personas et statistiques -->
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">{{ _('What are Customer Personas?') }}</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ _('Customer personas are semi-fictional representations of your ideal customers based on market research and real data about your existing customers.') }}</p>
+                    <p>{{ _('By creating detailed personas, you can better understand your customers\' needs, behaviors, concerns, and motivations, allowing you to tailor your marketing efforts and product development specifically to them.') }}</p>
+                    <div class="text-center mt-4">
+                        <img src="https://via.placeholder.com/400x200?text=Persona+Benefits" class="img-fluid rounded" alt="Persona Benefits">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">{{ _('Persona Statistics') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-0">
+                        <div class="col-6 border-end border-bottom p-3 text-center">
+                            <h3 class="text-primary">{{ personas|length }}</h3>
+                            <p class="mb-0 text-muted">{{ _('Total Personas') }}</p>
+                        </div>
+                        <div class="col-6 border-bottom p-3 text-center">
+                            <h3 class="text-success">{{ total_associations }}</h3>
+                            <p class="mb-0 text-muted">{{ _('Customer Associations') }}</p>
+                        </div>
+                        <div class="col-6 border-end p-3 text-center">
+                            <h3 class="text-info">{{ primary_personas }}</h3>
+                            <p class="mb-0 text-muted">{{ _('Primary Personas') }}</p>
+                        </div>
+                        <div class="col-6 p-3 text-center">
+                            <h3 class="text-warning">{{ secondary_personas }}</h3>
+                            <p class="mb-0 text-muted">{{ _('Secondary Personas') }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6>{{ _('Personas by Niche') }}</h6>
+                        <div class="progress-stacked mb-3">
+                            {% for niche, count in personas_by_niche.items() %}
+                            {% if count > 0 %}
+                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ (count / personas|length * 100)|round }}%" title="{{ niche }}: {{ count }}"></div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="small">
+                            {% for niche, count in personas_by_niche.items() %}
+                            {% if count > 0 %}
+                            <span class="me-3"><span class="badge bg-info me-1">{{ count }}</span> {{ niche }}</span>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de détails du persona -->
+<div class="modal fade" id="viewPersonaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="viewPersonaTitle">{{ _('Persona Details') }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="viewPersonaBody">
+                <div class="text-center mb-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">{{ _('Loading...') }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
+                <button type="button" class="btn btn-primary" id="editPersonaBtn">{{ _('Edit Persona') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de création de persona -->
+<div class="modal fade" id="createPersonaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">{{ _('Create New Persona') }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="createPersonaForm" action="{{ url_for('create_persona') }}" method="POST">
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="title" class="form-label">{{ _('Title') }} *</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                            <div class="form-text">{{ _('E.g., "Budget-Conscious Millennial", "Luxury Home Designer"') }}</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="niche_market_id" class="form-label">{{ _('Niche Market') }}</label>
+                            <select class="form-select" id="niche_market_id" name="niche_market_id">
+                                <option value="">{{ _('Select a niche') }}</option>
+                                {% for niche in niches %}
+                                <option value="{{ niche.id }}">{{ niche.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="boutique_id" class="form-label">{{ _('Boutique') }}</label>
+                            <select class="form-select" id="boutique_id" name="boutique_id">
+                                <option value="">{{ _('Select a boutique') }}</option>
+                                {% for boutique in boutiques %}
+                                <option value="{{ boutique.id }}">{{ boutique.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">{{ _('Description') }} *</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="primary_goal" class="form-label">{{ _('Primary Goal') }}</label>
+                            <input type="text" class="form-control" id="primary_goal" name="primary_goal">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="pain_points" class="form-label">{{ _('Pain Points') }}</label>
+                            <input type="text" class="form-control" id="pain_points" name="pain_points">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="age_range" class="form-label">{{ _('Age Range') }}</label>
+                            <input type="text" class="form-control" id="age_range" name="age_range" placeholder="25-34">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="gender_affinity" class="form-label">{{ _('Gender') }}</label>
+                            <select class="form-select" id="gender_affinity" name="gender_affinity">
+                                <option value="">{{ _('Select a gender') }}</option>
+                                <option value="MALE">{{ _('Male') }}</option>
+                                <option value="FEMALE">{{ _('Female') }}</option>
+                                <option value="NON_BINARY">{{ _('Non-binary') }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="income_bracket" class="form-label">{{ _('Income Level') }}</label>
+                            <select class="form-select" id="income_bracket" name="income_bracket">
+                                <option value="">{{ _('Select income level') }}</option>
+                                <option value="budget">{{ _('Budget') }}</option>
+                                <option value="middle">{{ _('Middle') }}</option>
+                                <option value="affluent">{{ _('Affluent') }}</option>
+                                <option value="luxury">{{ _('Luxury') }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="interests" class="form-label">{{ _('Interests') }}</label>
+                        <input type="text" class="form-control" id="interests" name="interests" placeholder="{{ _('Technology, travel, fashion...') }}">
+                        <div class="form-text">{{ _('Separate multiple interests with commas') }}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="buying_habits" class="form-label">{{ _('Buying Habits') }}</label>
+                        <textarea class="form-control" id="buying_habits" name="buying_habits" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-primary">{{ _('Create Persona') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de suppression de persona -->
+<div class="modal fade" id="deletePersonaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">{{ _('Confirm Deletion') }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{{ _('Are you sure you want to delete the persona') }} <strong id="deletePersonaTitle"></strong>?</p>
+                <p id="personaAssociationWarning" class="text-danger d-none">
+                    {{ _('Warning: This persona is currently assigned to one or more customers. Deleting it will remove all associations.') }}
+                </p>
+                <p class="text-danger mb-0">{{ _('This action cannot be undone.') }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                <form id="deletePersonaForm" method="POST">
+                    <button type="submit" class="btn btn-danger">{{ _('Delete Persona') }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal d'assignation de persona -->
+<div class="modal fade" id="assignPersonaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">{{ _('Assign Persona to Customer') }}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="assignPersonaForm" action="{{ url_for('assign_persona') }}" method="POST">
+                <input type="hidden" id="assign_persona_id" name="persona_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="customer_id" class="form-label">{{ _('Select Customer') }} *</label>
+                        <select class="form-select" id="customer_id" name="customer_id" required>
+                            <option value="">{{ _('Choose a customer...') }}</option>
+                            {% for customer in customers %}
+                            <option value="{{ customer.id }}">{{ customer.name }} ({{ customer.age }} {{ _('years') }}, {{ customer.location }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="is_primary" name="is_primary" value="1">
+                            <label class="form-check-label" for="is_primary">
+                                {{ _('Set as primary persona') }}
+                            </label>
+                            <div class="form-text">{{ _('If checked, this will become the main persona for the selected customer.') }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="relevance_score" class="form-label">{{ _('Relevance Score') }}</label>
+                        <input type="range" class="form-range" min="0" max="10" step="1" id="relevance_score" name="relevance_score" value="7">
+                        <div class="d-flex justify-content-between">
+                            <span class="small text-muted">0.0</span>
+                            <span class="small text-muted" id="relevanceScoreValue">0.7</span>
+                            <span class="small text-muted">1.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">{{ _('Notes') }}</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-primary">{{ _('Assign Persona') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Filtrage des personas
+    const personaSearch = document.getElementById('personaSearch');
+    const nicheFilter = document.getElementById('nicheFilter');
+    const boutiqueFilter = document.getElementById('boutiqueFilter');
+    const resetFilters = document.getElementById('resetFilters');
+    const personaItems = document.querySelectorAll('.persona-item');
+    
+    function applyFilters() {
+        const searchTerm = personaSearch.value.toLowerCase();
+        const nicheId = nicheFilter.value;
+        const boutiqueId = boutiqueFilter.value;
+        
+        personaItems.forEach(item => {
+            const title = item.querySelector('.card-title').textContent.toLowerCase();
+            const description = item.querySelector('.persona-description').textContent.toLowerCase();
+            const itemNicheId = item.dataset.niche;
+            const itemBoutiqueId = item.dataset.boutique;
+            
+            const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+            const matchesNiche = !nicheId || itemNicheId === nicheId;
+            const matchesBoutique = !boutiqueId || itemBoutiqueId === boutiqueId;
+            
+            if (matchesSearch && matchesNiche && matchesBoutique) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+    
+    personaSearch.addEventListener('input', applyFilters);
+    nicheFilter.addEventListener('change', applyFilters);
+    boutiqueFilter.addEventListener('change', applyFilters);
+    
+    resetFilters.addEventListener('click', function() {
+        personaSearch.value = '';
+        nicheFilter.selectedIndex = 0;
+        boutiqueFilter.selectedIndex = 0;
+        applyFilters();
+    });
+    
+    // Affichage des détails d'un persona
+    const viewPersonaModal = document.getElementById('viewPersonaModal');
+    if (viewPersonaModal) {
+        viewPersonaModal.addEventListener('show.bs.modal', async function(event) {
+            const button = event.relatedTarget;
+            const personaId = button.getAttribute('data-persona-id');
+            const modalTitle = viewPersonaModal.querySelector('#viewPersonaTitle');
+            const modalBody = viewPersonaModal.querySelector('#viewPersonaBody');
+            const editBtn = viewPersonaModal.querySelector('#editPersonaBtn');
+            
+            // Mettre à jour le bouton d'édition
+            editBtn.setAttribute('data-bs-target', '#editPersonaModal');
+            editBtn.setAttribute('data-bs-dismiss', 'modal');
+            editBtn.setAttribute('data-persona-id', personaId);
+            
+            // Charger les détails du persona
+            try {
+                const response = await fetch(`/persona/${personaId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    modalTitle.textContent = data.title;
+                    
+                    // Construire le contenu des détails
+                    let detailsHtml = `
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                ${data.avatar_url 
+                                    ? `<img src="${data.avatar_url}" class="img-fluid rounded-circle mb-2" style="max-width: 150px;" alt="${data.title}">`
+                                    : `<div class="avatar-placeholder rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto" style="width: 150px; height: 150px;">
+                                        <i class="fas fa-user fa-4x text-muted"></i>
+                                      </div>`
+                                }
+                                <h5>${data.title}</h5>
+                                ${data.niche_market ? `<span class="badge bg-info">${data.niche_market.name}</span>` : ''}
+                            </div>
+                            <div class="col-md-8">
+                                <h6>${data.title}</h6>
+                                <p>${data.description}</p>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <strong>Primary Goal:</strong>
+                                        <p class="mb-1">${data.primary_goal || 'Not specified'}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Pain Points:</strong>
+                                        <p class="mb-1">${data.pain_points || 'Not specified'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h6>Demographics</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width: 40%">Age Range:</th>
+                                                <td>${data.age_range || 'Not specified'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Gender:</th>
+                                                <td>${data.gender_affinity || 'Not specified'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Location Type:</th>
+                                                <td>${data.location_type || 'Not specified'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Income Level:</th>
+                                                <td>${data.income_bracket || 'Not specified'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Education:</th>
+                                                <td>${data.education_level || 'Not specified'}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <h6>Psychographics</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width: 40%">Values:</th>
+                                                <td>${Array.isArray(data.values) ? data.values.join(', ') : 'Not specified'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Interests:</th>
+                                                <td>${Array.isArray(data.interests) ? data.interests.join(', ') : 'Not specified'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Lifestyle:</th>
+                                                <td>${data.lifestyle || 'Not specified'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Personality Traits:</th>
+                                                <td>${Array.isArray(data.personality_traits) ? data.personality_traits.join(', ') : 'Not specified'}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h6>Shopping Behavior</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width: 40%">Buying Habits:</th>
+                                                <td>${data.buying_habits || 'Not specified'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Price Sensitivity:</th>
+                                                <td>${data.price_sensitivity || 'Not specified'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Decision Factors:</th>
+                                                <td>${Array.isArray(data.decision_factors) ? data.decision_factors.join(', ') : 'Not specified'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Buying Triggers:</th>
+                                                <td>${data.buying_triggers || 'Not specified'}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <h6>Communication Preferences</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width: 40%">Preferred Channels:</th>
+                                                <td>${Array.isArray(data.preferred_channels) ? data.preferred_channels.join(', ') : 'Not specified'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Content Preferences:</th>
+                                                <td>${data.content_preferences || 'Not specified'}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Social Media:</th>
+                                                <td>${data.social_media_behavior ? JSON.stringify(data.social_media_behavior) : 'Not specified'}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <h6>Associated Customers</h6>
+                        ${data.customers && data.customers.length > 0
+                            ? `<div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Customer</th>
+                                            <th>Primary</th>
+                                            <th>Relevance</th>
+                                            <th>Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${data.customers.map(c => `
+                                            <tr>
+                                                <td><a href="/view_customer/${c.id}">${c.name}</a></td>
+                                                <td>${c.is_primary ? '<i class="fas fa-check-circle text-success"></i>' : ''}</td>
+                                                <td>${c.relevance_score ? (c.relevance_score * 100).toFixed(0) + '%' : '-'}</td>
+                                                <td>${c.notes || ''}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                               </div>`
+                            : '<p class="text-muted">This persona is not associated with any customers yet.</p>'
+                        }
+                    `;
+                    
+                    modalBody.innerHTML = detailsHtml;
+                } else {
+                    modalBody.innerHTML = `<div class="alert alert-danger">Failed to load persona details.</div>`;
+                }
+            } catch (error) {
+                console.error('Error loading persona details:', error);
+                modalBody.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            }
+        });
+    }
+    
+    // Modal de suppression
+    const deletePersonaModal = document.getElementById('deletePersonaModal');
+    if (deletePersonaModal) {
+        deletePersonaModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const personaId = button.getAttribute('data-persona-id');
+            const personaTitle = button.getAttribute('data-persona-title');
+            const titleEl = deletePersonaModal.querySelector('#deletePersonaTitle');
+            const form = deletePersonaModal.querySelector('#deletePersonaForm');
+            
+            titleEl.textContent = personaTitle;
+            form.setAttribute('action', `/delete_persona/${personaId}`);
+            
+            // Vérifier si le persona a des associations
+            // Cette partie serait idéalement gérée de manière plus dynamique
+            const hasAssociations = button.hasAttribute('data-has-associations') && 
+                                    button.getAttribute('data-has-associations') === 'true';
+            
+            const warningEl = deletePersonaModal.querySelector('#personaAssociationWarning');
+            if (hasAssociations) {
+                warningEl.classList.remove('d-none');
+            } else {
+                warningEl.classList.add('d-none');
+            }
+        });
+    }
+    
+    // Modal d'assignation
+    const assignPersonaModal = document.getElementById('assignPersonaModal');
+    if (assignPersonaModal) {
+        assignPersonaModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const personaId = button.getAttribute('data-persona-id');
+            const personaIdInput = assignPersonaModal.querySelector('#assign_persona_id');
+            
+            personaIdInput.value = personaId;
+        });
+        
+        // Mise à jour de l'affichage du score de pertinence
+        const relevanceScoreInput = document.getElementById('relevance_score');
+        const relevanceScoreValue = document.getElementById('relevanceScoreValue');
+        
+        relevanceScoreInput.addEventListener('input', function() {
+            const value = (this.value / 10).toFixed(1);
+            relevanceScoreValue.textContent = value;
+        });
+    }
+});
+</script>
+{% endblock %}

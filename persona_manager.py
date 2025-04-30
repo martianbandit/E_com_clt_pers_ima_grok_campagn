@@ -421,16 +421,25 @@ def convert_legacy_personas() -> int:
         # Ne pas créer de nouveau persona si le client a déjà un persona principal
         if existing_primary:
             continue
+        
+        print(f"Traitement du client: {customer.name}")
             
         # Créer un nouveau persona à partir du texte
         try:
+            # Pour éviter les erreurs d'âge négatif
+            age_range = None
+            if customer.age:
+                min_age = max(18, customer.age - 5)  # Minimum 18 ans
+                max_age = customer.age + 5
+                age_range = f"{min_age}-{max_age}"
+            
             persona = create_persona_from_text(
                 title=f"Persona pour {customer.name}",
-                description=customer.persona,
+                description=customer.persona or f"Profil de {customer.name}",
                 niche_market_id=customer.niche_market_id,
                 boutique_id=customer.boutique_id,
                 additional_data={
-                    'age_range': f"{customer.age - 5}-{customer.age + 5}" if customer.age else None,
+                    'age_range': age_range,
                     'gender_affinity': customer.gender,
                     'income_bracket': customer.income_level,
                     'education_level': customer.education,
@@ -448,8 +457,14 @@ def convert_legacy_personas() -> int:
                 notes="Persona converti depuis l'ancien format."
             )
             
+            # Commit après chaque persona pour éviter une longue transaction
+            db.session.commit()
+            
             count += 1
+            print(f"Persona créé et assigné avec succès pour {customer.name}")
         except Exception as e:
             print(f"Erreur lors de la conversion du persona pour le client {customer.id}: {e}")
+            # Continuer malgré l'erreur
+            db.session.rollback()
     
     return count
