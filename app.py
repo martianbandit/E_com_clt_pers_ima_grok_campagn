@@ -7,6 +7,8 @@ from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
+from flask_babel import gettext as _
+from i18n import babel, get_locale
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -39,6 +41,11 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Initialize the app with the extension
 db.init_app(app)
+
+# Initialize Flask-Babel
+app.config['BABEL_DEFAULT_LOCALE'] = 'en'
+app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
+babel.init_app(app, locale_selector=get_locale)
 
 # Import routes after app initialization
 from models import Boutique, NicheMarket, Customer, Campaign, SimilarProduct, Metric, Product, ImportedProduct
@@ -75,6 +82,19 @@ def log_metric(metric_name, data):
     except Exception as e:
         logging.error(f"Failed to log metric {metric_name}: {e}")
         db.session.rollback()
+
+@app.route('/change_language/<string:lang>')
+def change_language(lang):
+    """Change the application language"""
+    # Only accept valid languages
+    if lang not in ['en', 'fr']:
+        lang = 'en'
+    
+    # Store the language in the session
+    session['language'] = lang
+    
+    # Redirect back to the page they were on
+    return redirect(request.referrer or url_for('index'))
 
 @app.route('/')
 def index():
