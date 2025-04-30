@@ -121,12 +121,15 @@ class Campaign(db.Model):
     content = db.Column(db.Text, nullable=False)
     campaign_type = db.Column(db.String(50), nullable=False)  # email, social, ad, etc.
     profile_data = db.Column(JSONB, nullable=True)  # The customer profile this campaign is for
-    image_url = db.Column(db.String(255), nullable=True)
+    image_url = db.Column(db.Text, nullable=True)  # URL complète de l'image, peut être longue
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Foreign keys
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
+    
+    # Relation avec les produits similaires
+    similar_products = db.relationship('SimilarProduct', backref='campaign', lazy=True)
     
     def __repr__(self):
         return f'<Campaign {self.title}>'
@@ -135,6 +138,25 @@ class Campaign(db.Model):
     def is_personalized(self):
         """Check if this campaign is personalized"""
         return self.customer_id is not None or self.profile_data is not None
+
+class SimilarProduct(db.Model):
+    """Model for storing similar products found on AliExpress"""
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    price = db.Column(db.Float, nullable=True)
+    image_url = db.Column(db.Text, nullable=True)
+    product_url = db.Column(db.Text, nullable=True)
+    similarity_score = db.Column(db.Float, nullable=True)  # Score de similarité (0-1)
+    relevance_notes = db.Column(db.Text, nullable=True)  # Notes sur la pertinence du produit
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Foreign keys
+    campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=False)
+    
+    def __repr__(self):
+        return f'<SimilarProduct {self.name}>'
+
 
 class Metric(db.Model):
     """Model for storing application metrics and analytics data"""
