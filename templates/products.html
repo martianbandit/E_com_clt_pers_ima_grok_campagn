@@ -213,20 +213,20 @@
     </div>
 </div>
 
-<!-- Modal de génération de contenu -->
+<!-- Content generation modal -->
 <div class="modal fade" id="generateContentModal" tabindex="-1" aria-labelledby="generateContentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="generateContentModalLabel">Générer du Contenu pour un Produit</h5>
+                <h5 class="modal-title" id="generateContentModalLabel">{{ _('Generate Content for a Product') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ url_for('generate_product_content') }}" method="POST">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="product_id" class="form-label">Sélectionner un Produit *</label>
+                        <label for="product_id" class="form-label">{{ _('Select a Product') }} *</label>
                         <select class="form-select" id="product_id" name="product_id" required>
-                            <option value="">Choisir un produit...</option>
+                            <option value="">{{ _('Choose a product...') }}</option>
                             {% for product in products %}
                             <option value="{{ product.id }}">{{ product.name }}</option>
                             {% endfor %}
@@ -234,51 +234,51 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="target_audience_id" class="form-label">Public Cible</label>
+                        <label for="target_audience_id" class="form-label">{{ _('Target Audience') }}</label>
                         <select class="form-select" id="target_audience_id" name="target_audience_id">
-                            <option value="">Aucun public cible spécifique</option>
+                            <option value="">{{ _('No specific target audience') }}</option>
                             {% for customer in customers %}
-                            <option value="{{ customer.id }}">{{ customer.name }} ({{ customer.age }} ans, {{ customer.location }})</option>
+                            <option value="{{ customer.id }}">{{ customer.name }} ({{ customer.age }} {{ _('years') }}, {{ customer.location }})</option>
                             {% endfor %}
                         </select>
-                        <div class="form-text">Sélectionnez un public cible pour personnaliser le contenu selon un persona spécifique.</div>
+                        <div class="form-text">{{ _('Select a target audience to personalize content according to a specific persona.') }}</div>
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label">Éléments à Générer</label>
+                        <label class="form-label">{{ _('Elements to Generate') }}</label>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="checkbox" id="generate_description" name="generate_description" value="1" checked>
-                                    <label class="form-check-label" for="generate_description">Description optimisée</label>
+                                    <label class="form-check-label" for="generate_description">{{ _('Optimized description') }}</label>
                                 </div>
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="checkbox" id="generate_meta" name="generate_meta" value="1" checked>
-                                    <label class="form-check-label" for="generate_meta">Métadonnées SEO</label>
+                                    <label class="form-check-label" for="generate_meta">{{ _('SEO metadata') }}</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="checkbox" id="generate_variants" name="generate_variants" value="1" checked>
-                                    <label class="form-check-label" for="generate_variants">Variantes du produit</label>
+                                    <label class="form-check-label" for="generate_variants">{{ _('Product variants') }}</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="generate_comparative" name="generate_comparative" value="1">
-                                    <label class="form-check-label" for="generate_comparative">Analyse comparative</label>
+                                    <label class="form-check-label" for="generate_comparative">{{ _('Comparative analysis') }}</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="generation_instructions" class="form-label">Instructions Spécifiques (optionnel)</label>
-                        <textarea class="form-control" id="generation_instructions" name="generation_instructions" rows="2" placeholder="Ex: Mettre l'accent sur le rapport qualité-prix, aspect écologique, etc."></textarea>
+                        <label for="generation_instructions" class="form-label">{{ _('Specific Instructions (optional)') }}</label>
+                        <textarea class="form-control" id="generation_instructions" name="generation_instructions" rows="2" placeholder="{{ _('Ex: Emphasize value for money, eco-friendly aspects, etc.') }}"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-magic me-2"></i> Générer le Contenu
+                        <i class="fas fa-magic me-2"></i> {{ _('Generate Content') }}
                     </button>
                 </div>
             </form>
@@ -286,22 +286,22 @@
     </div>
 </div>
 
-<!-- Modal de confirmation de suppression -->
+<!-- Delete confirmation modal -->
 <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteProductModalLabel">Confirmer la suppression</h5>
+                <h5 class="modal-title" id="deleteProductModalLabel">{{ _('Confirm deletion') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Êtes-vous sûr de vouloir supprimer le produit <strong id="deleteProductName"></strong> ?</p>
-                <p class="text-danger mb-0">Cette action ne peut pas être annulée.</p>
+                <p>{{ _('Are you sure you want to delete the product') }} <strong id="deleteProductName"></strong>?</p>
+                <p class="text-danger mb-0">{{ _('This action cannot be undone.') }}</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                 <form id="deleteProductForm" method="POST">
-                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                    <button type="submit" class="btn btn-danger">{{ _('Delete') }}</button>
                 </form>
             </div>
         </div>
@@ -312,7 +312,7 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Filtre de recherche pour les produits
+    // Product search filter
     const productSearch = document.getElementById('productSearch');
     if (productSearch) {
         productSearch.addEventListener('keyup', function() {
@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Gestion de la suppression de produit
+    // Product deletion handling
     const deleteButtons = document.querySelectorAll('.delete-product-btn');
     const deleteProductForm = document.getElementById('deleteProductForm');
     const deleteProductName = document.getElementById('deleteProductName');

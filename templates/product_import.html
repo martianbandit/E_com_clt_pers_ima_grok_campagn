@@ -1,97 +1,97 @@
 {% extends 'layout.html' %}
 
-{% block title %}Import AliExpress{% endblock %}
+{% block title %}{{ _('AliExpress Import') }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Importation AliExpress</h1>
+    <h1 class="mb-4">{{ _('AliExpress Import') }}</h1>
     
     <div class="row">
         <div class="col-lg-6">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-primary bg-gradient text-white">
-                    <h5 class="card-title mb-0">Importer un produit AliExpress</h5>
+                    <h5 class="card-title mb-0">{{ _('Import an AliExpress product') }}</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ url_for('import_aliexpress_product') }}" method="post">
                         <div class="mb-3">
-                            <label for="aliexpress_url" class="form-label">URL AliExpress</label>
+                            <label for="aliexpress_url" class="form-label">{{ _('AliExpress URL') }}</label>
                             <input type="url" class="form-control" id="aliexpress_url" name="aliexpress_url" 
                                    placeholder="https://aliexpress.com/item/..." required>
-                            <div class="form-text">Collez l'URL complète d'un produit AliExpress</div>
+                            <div class="form-text">{{ _('Paste the complete URL of an AliExpress product') }}</div>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="product_name" class="form-label">Nom du produit</label>
+                            <label for="product_name" class="form-label">{{ _('Product name') }}</label>
                             <input type="text" class="form-control" id="product_name" name="product_name" required>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="category" class="form-label">Catégorie</label>
+                            <label for="category" class="form-label">{{ _('Category') }}</label>
                             <input type="text" class="form-control" id="category" name="category">
                         </div>
                         
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="boutique_id" class="form-label">Boutique</label>
+                                <label for="boutique_id" class="form-label">{{ _('Boutique') }}</label>
                                 <select class="form-select" id="boutique_id" name="boutique_id">
-                                    <option value="">-- Sélectionner --</option>
+                                    <option value="">-- {{ _('Select') }} --</option>
                                     {% for boutique in boutiques %}
                                     <option value="{{ boutique.id }}">{{ boutique.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="target_audience_id" class="form-label">Public cible</label>
+                                <label for="target_audience_id" class="form-label">{{ _('Target audience') }}</label>
                                 <select class="form-select" id="target_audience_id" name="target_audience_id">
-                                    <option value="">-- Sélectionner --</option>
+                                    <option value="">-- {{ _('Select') }} --</option>
                                     {% for customer in customers %}
-                                    <option value="{{ customer.id }}">{{ customer.name }} ({{ customer.age }} ans)</option>
+                                    <option value="{{ customer.id }}">{{ customer.name }} ({{ customer.age }} {{ _('years') }})</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="target_market" class="form-label">Positionnement marché</label>
+                            <label for="target_market" class="form-label">{{ _('Market positioning') }}</label>
                             <select class="form-select" id="target_market" name="target_market">
-                                <option value="entrée_gamme">Entrée de gamme</option>
-                                <option value="moyenne_gamme" selected>Moyenne gamme</option>
-                                <option value="haut_de_gamme">Haut de gamme</option>
-                                <option value="luxe">Luxe</option>
+                                <option value="entrée_gamme">{{ _('Entry level') }}</option>
+                                <option value="moyenne_gamme" selected>{{ _('Mid-range') }}</option>
+                                <option value="haut_de_gamme">{{ _('High-end') }}</option>
+                                <option value="luxe">{{ _('Luxury') }}</option>
                             </select>
                         </div>
                         
                         <div class="mt-4 mb-3">
-                            <h6>Options d'optimisation:</h6>
+                            <h6>{{ _('Optimization options:') }}</h6>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="optimize_seo" name="optimize_seo" checked>
-                                <label class="form-check-label" for="optimize_seo">Optimiser pour le SEO</label>
+                                <label class="form-check-label" for="optimize_seo">{{ _('Optimize for SEO') }}</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="optimize_price" name="optimize_price" checked>
-                                <label class="form-check-label" for="optimize_price">Optimiser le prix</label>
+                                <label class="form-check-label" for="optimize_price">{{ _('Optimize price') }}</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="generate_html" name="generate_html" checked>
-                                <label class="form-check-label" for="generate_html">Générer la description HTML</label>
+                                <label class="form-check-label" for="generate_html">{{ _('Generate HTML description') }}</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="generate_specs" name="generate_specs" checked>
-                                <label class="form-check-label" for="generate_specs">Générer les spécifications</label>
+                                <label class="form-check-label" for="generate_specs">{{ _('Generate specifications') }}</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="generate_faq" name="generate_faq" checked>
-                                <label class="form-check-label" for="generate_faq">Générer une FAQ</label>
+                                <label class="form-check-label" for="generate_faq">{{ _('Generate FAQ') }}</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="generate_variants" name="generate_variants" checked>
-                                <label class="form-check-label" for="generate_variants">Générer des variantes</label>
+                                <label class="form-check-label" for="generate_variants">{{ _('Generate variants') }}</label>
                             </div>
                         </div>
                         
                         <div class="mt-4">
-                            <button type="submit" class="btn btn-primary">Importer et optimiser</button>
+                            <button type="submit" class="btn btn-primary">{{ _('Import and optimize') }}</button>
                         </div>
                     </form>
                 </div>
@@ -101,25 +101,25 @@
         <div class="col-lg-6">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-secondary bg-gradient text-white">
-                    <h5 class="card-title mb-0">Import par lot</h5>
+                    <h5 class="card-title mb-0">{{ _('Bulk Import') }}</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ url_for('import_aliexpress_bulk') }}" method="post">
                         <div class="mb-3">
-                            <label for="bulk_urls" class="form-label">URLs (une par ligne)</label>
+                            <label for="bulk_urls" class="form-label">{{ _('URLs (one per line)') }}</label>
                             <textarea class="form-control" id="bulk_urls" name="bulk_urls" rows="5" 
                                       placeholder="https://aliexpress.com/item/...&#10;https://aliexpress.com/item/..." required></textarea>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="bulk_category" class="form-label">Catégorie commune</label>
+                            <label for="bulk_category" class="form-label">{{ _('Common category') }}</label>
                             <input type="text" class="form-control" id="bulk_category" name="bulk_category">
                         </div>
                         
                         <div class="mb-3">
-                            <label for="bulk_boutique_id" class="form-label">Boutique</label>
+                            <label for="bulk_boutique_id" class="form-label">{{ _('Boutique') }}</label>
                             <select class="form-select" id="bulk_boutique_id" name="bulk_boutique_id">
-                                <option value="">-- Sélectionner --</option>
+                                <option value="">-- {{ _('Select') }} --</option>
                                 {% for boutique in boutiques %}
                                 <option value="{{ boutique.id }}">{{ boutique.name }}</option>
                                 {% endfor %}
@@ -127,7 +127,7 @@
                         </div>
                         
                         <div class="mt-4">
-                            <button type="submit" class="btn btn-secondary">Importer le lot</button>
+                            <button type="submit" class="btn btn-secondary">{{ _('Import bulk') }}</button>
                         </div>
                     </form>
                 </div>
@@ -136,7 +136,7 @@
             {% if recent_imports %}
             <div class="card shadow-sm">
                 <div class="card-header bg-info bg-gradient text-white">
-                    <h5 class="card-title mb-0">Imports récents</h5>
+                    <h5 class="card-title mb-0">{{ _('Recent imports') }}</h5>
                 </div>
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush">
@@ -144,7 +144,7 @@
                         <li class="list-group-item">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h6 class="mb-0">{% if import_item.product %}{{ import_item.product.name }}{% else %}Produit #{{ import_item.product_id }}{% endif %}</h6>
+                                    <h6 class="mb-0">{% if import_item.product %}{{ import_item.product.name }}{% else %}{{ _('Product') }} #{{ import_item.product_id }}{% endif %}</h6>
                                     <small class="text-muted">{{ import_item.source_url|truncate(50) }}</small>
                                 </div>
                                 <span class="badge rounded-pill 
@@ -156,7 +156,7 @@
                                 </span>
                             </div>
                             {% if import_item.import_status == 'complete' and import_item.product %}
-                            <a href="{{ url_for('view_product', product_id=import_item.product_id) }}" class="btn btn-sm btn-outline-primary mt-2">Voir produit</a>
+                            <a href="{{ url_for('view_product', product_id=import_item.product_id) }}" class="btn btn-sm btn-outline-primary mt-2">{{ _('View product') }}</a>
                             {% endif %}
                         </li>
                         {% endfor %}
