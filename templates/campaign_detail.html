@@ -1,146 +1,188 @@
 {% extends 'layout.html' %}
 
-{% block title %}Campaign: {{ campaign.title }}{% endblock %}
+{% block title %}Campagne - {{ campaign.title }}{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container mt-4">
     <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <h1>Campaign: {{ campaign.title }}</h1>
-                <div>
-                    <a href="{{ url_for('campaigns') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>Back to Campaigns
-                    </a>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCampaignModal">
-                        <i class="fas fa-trash-alt me-2"></i>Delete
-                    </button>
-                </div>
-            </div>
-            <div class="text-muted">
-                <i class="fas fa-calendar me-1"></i> Created: {{ campaign.created_at.strftime('%Y-%m-%d %H:%M') }}
-                | <i class="fas fa-tag me-1"></i> Type: {{ campaign.campaign_type }}
-                {% if campaign.customer %}
-                | <i class="fas fa-user me-1"></i> For: <a href="{{ url_for('view_customer', customer_id=campaign.customer.id) }}">{{ campaign.customer.name }}</a>
-                {% endif %}
-            </div>
+        <div class="col">
+            <h1>{{ campaign.title }}</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Tableau de bord</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('campaigns') }}">Campagnes</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ campaign.title }}</li>
+                </ol>
+            </nav>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-{% if campaign.image_url %}8{% else %}12{% endif %}">
+        <div class="col-md-8">
+            {% if campaign.image_url %}
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Campaign Content</h5>
+                    <h5 class="mb-0">Image de la campagne</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ campaign.image_url }}" alt="Image de la campagne {{ campaign.title }}" class="img-fluid rounded campaign-image">
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Contenu de la campagne</h5>
                 </div>
                 <div class="card-body">
-                    <div class="campaign-content">
-                        {{ campaign.content | nl2br }}
+                    <div class="bg-light p-3 rounded mb-3">
+                        <div class="campaign-content">{{ campaign.content|nl2br }}</div>
+                    </div>
+                    
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-secondary me-2">Type:</span>
+                                <span>{{ campaign.campaign_type }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-secondary me-2">Créée le:</span>
+                                <span>{{ campaign.created_at.strftime('%d/%m/%Y à %H:%M') }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            {% if campaign.profile_data %}
+            {% if campaign.customer %}
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Target Customer Profile</h5>
+                    <h5 class="mb-0">Profil client associé</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <strong>Name:</strong> {{ campaign.profile_data.name }}
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h5>{{ campaign.customer.name }}</h5>
+                            <p class="mb-1">
+                                <span class="badge bg-secondary me-1">{{ campaign.customer.age }} ans</span>
+                                <span class="badge bg-secondary me-1">{{ campaign.customer.location }}</span>
+                                <span class="badge bg-secondary">{{ campaign.customer.language }}</span>
+                            </p>
+                            {% if campaign.customer.get_interests_list() %}
+                            <div class="d-flex flex-wrap gap-1 mt-2">
+                                {% for interest in campaign.customer.get_interests_list() %}
+                                <span class="badge bg-info text-dark">{{ interest }}</span>
+                                {% endfor %}
                             </div>
-                            <div class="mb-3">
-                                <strong>Age:</strong> {{ campaign.profile_data.age }}
-                            </div>
-                            <div class="mb-3">
-                                <strong>Location:</strong> {{ campaign.profile_data.location }}
-                            </div>
-                            <div class="mb-3">
-                                <strong>Gender:</strong> {{ campaign.profile_data.gender }}
-                            </div>
+                            {% endif %}
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <strong>Language:</strong> {{ campaign.profile_data.language }}
-                            </div>
-                            <div class="mb-3">
-                                <strong>Device:</strong> {{ campaign.profile_data.preferred_device }}
-                            </div>
-                            <div class="mb-3">
-                                <strong>Interests:</strong>
-                                <div>
-                                    {% for interest in campaign.profile_data.interests %}
-                                        <span class="badge bg-secondary me-1">{{ interest }}</span>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
+                        <a href="{{ url_for('view_customer', customer_id=campaign.customer.id) }}" class="btn btn-sm btn-outline-primary ms-auto">
+                            <i class="fas fa-eye me-1"></i> Voir le profil complet
+                        </a>
                     </div>
-                    
-                    {% if campaign.profile_data.persona %}
-                    <div class="mt-3">
-                        <strong>Persona:</strong>
-                        <div class="persona-box mt-2">
-                            {{ campaign.profile_data.persona | nl2br }}
-                        </div>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
             {% endif %}
         </div>
         
-        {% if campaign.image_url %}
         <div class="col-md-4">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Campaign Image</h5>
-                </div>
-                <div class="card-body p-0">
-                    <img src="{{ campaign.image_url }}" alt="Campaign Image" class="img-fluid rounded-bottom">
-                </div>
-            </div>
-        </div>
-        {% endif %}
-    </div>
-    
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Marketing Analytics</h5>
+                    <h5 class="mb-0">Actions</h5>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-info mb-0">
-                        <i class="fas fa-chart-line me-2"></i>
-                        Future enhancement: This section will display marketing performance metrics for this campaign, such as open rates, click-through rates, conversions, and revenue attribution.
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('campaigns') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i> Retour aux campagnes
+                        </a>
+                        <a href="#" class="btn btn-outline-success" onclick="printCampaign()">
+                            <i class="fas fa-print me-2"></i> Imprimer la campagne
+                        </a>
+                        <a href="{{ url_for('delete_campaign', campaign_id=campaign.id) }}" class="btn btn-outline-danger" 
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette campagne? Cette action est irréversible.');">
+                            <i class="fas fa-trash me-2"></i> Supprimer la campagne
+                        </a>
                     </div>
                 </div>
             </div>
+            
+            {% if campaign.profile_data %}
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Données complètes</h5>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-sm btn-outline-secondary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseData">
+                        <i class="fas fa-code me-2"></i> Afficher/Masquer les données
+                    </button>
+                    <div class="collapse" id="collapseData">
+                        <div class="card card-body">
+                            <pre class="json-data">{{ campaign.profile_data|tojson(indent=2) }}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
 
-<!-- Delete Campaign Modal -->
-<div class="modal fade" id="deleteCampaignModal" tabindex="-1" aria-labelledby="deleteCampaignModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteCampaignModalLabel">Delete Campaign</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete the campaign <strong>{{ campaign.title }}</strong>? This action cannot be undone.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form action="{{ url_for('delete_campaign', campaign_id=campaign.id) }}" method="POST">
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            </div>
+<script>
+function printCampaign() {
+    // Créer une nouvelle fenêtre pour l'impression
+    const printWindow = window.open('', '_blank');
+    
+    // Créer le contenu HTML pour l'impression
+    let content = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Campagne Marketing - ${document.title}</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .content { margin-bottom: 20px; white-space: pre-line; }
+            .footer { margin-top: 30px; text-align: center; font-size: 0.8em; color: #777; }
+            .image { max-width: 100%; margin: 20px 0; }
+            .metadata { color: #555; margin: 15px 0; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>${document.querySelector('h1').textContent}</h1>
+            <p class="metadata">Type: ${document.querySelector('.badge + span').textContent}</p>
+            <p class="metadata">Date: ${document.querySelectorAll('.badge + span')[1].textContent}</p>
         </div>
-    </div>
-</div>
+    `;
+    
+    // Ajouter l'image si elle existe
+    const campaignImage = document.querySelector('.campaign-image');
+    if (campaignImage) {
+        content += `<div style="text-align: center;"><img class="image" src="${campaignImage.src}" alt="Image de campagne"></div>`;
+    }
+    
+    // Ajouter le contenu de la campagne
+    content += `
+        <div class="content">
+            ${document.querySelector('.campaign-content').innerHTML}
+        </div>
+        <div class="footer">
+            <p>Hyper-Personalized Marketing - Généré le ${new Date().toLocaleDateString()}</p>
+        </div>
+    </body>
+    </html>`;
+    
+    // Écrire le contenu dans la nouvelle fenêtre et imprimer
+    printWindow.document.open();
+    printWindow.document.write(content);
+    printWindow.document.close();
+    
+    // Déclencher l'impression après le chargement complet
+    printWindow.onload = function() {
+        printWindow.print();
+    };
+}
+</script>
 {% endblock %}
