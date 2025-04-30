@@ -1195,6 +1195,357 @@ def export_product(product_id):
     response.headers['Content-Disposition'] = f'attachment; filename=product_{product.id}.json'
     return response
 
+# Routes pour l'importation AliExpress et l'export Shopify
+
+@app.route('/import_aliexpress_form')
+def import_aliexpress_form():
+    """Afficher le formulaire d'importation de produits AliExpress"""
+    boutiques = Boutique.query.all()
+    customers = Customer.query.all()
+    
+    # Récupérer les 5 derniers imports
+    recent_imports = (ImportedProduct.query
+                     .order_by(ImportedProduct.imported_at.desc())
+                     .limit(5)
+                     .all())
+    
+    return render_template('product_import.html', 
+                           boutiques=boutiques, 
+                           customers=customers,
+                           recent_imports=recent_imports)
+
+@app.route('/import_aliexpress_product', methods=['POST'])
+def import_aliexpress_product():
+    """Importer et optimiser un produit depuis AliExpress"""
+    try:
+        aliexpress_url = request.form.get('aliexpress_url')
+        product_name = request.form.get('product_name')
+        target_market = request.form.get('target_market', 'moyenne_gamme')
+        category = request.form.get('category')
+        boutique_id = request.form.get('boutique_id')
+        target_audience_id = request.form.get('target_audience_id')
+        
+        # Valider les entrées
+        if not aliexpress_url or not product_name:
+            flash('L\'URL AliExpress et le nom du produit sont obligatoires.', 'danger')
+            return redirect(url_for('import_aliexpress_form'))
+        
+        # Convertir les IDs en entiers si nécessaire
+        if boutique_id and boutique_id.isdigit():
+            boutique_id = int(boutique_id)
+        else:
+            boutique_id = None
+            
+        if target_audience_id and target_audience_id.isdigit():
+            target_audience_id = int(target_audience_id)
+        else:
+            target_audience_id = None
+        
+        # Créer le produit dans la base de données
+        new_product = Product(
+            name=product_name,
+            category=category,
+            boutique_id=boutique_id,
+            target_audience_id=target_audience_id
+        )
+        
+        db.session.add(new_product)
+        db.session.commit()
+        
+        # Créer l'entrée d'importation
+        imported_product = ImportedProduct(
+            product_id=new_product.id,
+            source_url=aliexpress_url,
+            source="aliexpress",
+            import_status="processing",
+            source_id=aliexpress_importer.extract_aliexpress_product_id(aliexpress_url),
+            optimization_settings={
+                "target_market": target_market,
+                "optimize_seo": request.form.get('optimize_seo') == 'on',
+                "optimize_price": request.form.get('optimize_price') == 'on',
+                "generate_html": request.form.get('generate_html') == 'on',
+                "generate_specs": request.form.get('generate_specs') == 'on',
+                "generate_faq": request.form.get('generate_faq') == 'on',
+                "generate_variants": request.form.get('generate_variants') == 'on'
+            }
+        )
+        
+        db.session.add(imported_product)
+        db.session.commit()
+        
+        # Lancer l'importation en arrière-plan
+        async def process_import_task():
+            try:
+                # Mettre à jour le statut
+                imported_product.import_status = "processing"
+                db.session.commit()
+                
+                # Extraire les données
+                product_data = await aliexpress_importer.extract_aliexpress_product_data(aliexpress_url)
+                imported_product.raw_data = product_data
+                
+                # Optimiser les prix
+                pricing_data = await aliexpress_importer.optimize_pricing_strategy(product_data, target_market)
+                imported_product.pricing_strategy = pricing_data
+                imported_product.original_price = pricing_data.get('original_price', 0)
+                imported_product.optimized_price = pricing_data.get('psychological_price', 0)
+                imported_product.original_currency = product_data.get('devise', 'EUR')
+                
+                # Mettre à jour le produit avec les données extraites
+                new_product.price = pricing_data.get('psychological_price', 0)
+                if product_data.get('images_urls') and len(product_data.get('images_urls', [])) > 0:
+                    new_product.image_url = product_data['images_urls'][0]
+                new_product.base_description = product_data.get('description', '')
+                
+                # Générer le contenu HTML optimisé pour Shopify
+                if imported_product.optimization_settings.get('generate_html'):
+                    template_data = await aliexpress_importer.generate_shopify_html_template(product_data, pricing_data)
+                    imported_product.templates = template_data
+                    
+                    # Mettre à jour les données du produit
+                    new_product.meta_title = template_data.get('meta_title', '')
+                    new_product.meta_description = template_data.get('meta_description', '')
+                    new_product.alt_text = template_data.get('alt_text', '')
+                    new_product.keywords = template_data.get('tags', [])
+                    new_product.generated_title = template_data.get('meta_title', '')
+                    
+                    # Ajouter le HTML généré
+                    if imported_product.optimization_settings.get('generate_html'):
+                        new_product.html_description = template_data.get('html_description', '')
+                    
+                    if imported_product.optimization_settings.get('generate_specs'):
+                        new_product.html_specifications = template_data.get('html_specifications', '')
+                    
+                    if imported_product.optimization_settings.get('generate_faq'):
+                        new_product.html_faq = template_data.get('html_faq', '')
+                
+                # Finaliser l'importation
+                imported_product.import_status = "complete"
+                db.session.commit()
+                
+            except Exception as e:
+                # En cas d'erreur, marquer l'importation comme échouée
+                imported_product.import_status = "failed"
+                imported_product.status_message = str(e)
+                db.session.commit()
+                logging.error(f"Error importing AliExpress product: {e}")
+                raise
+        
+        # Lancer la tâche asynchrone
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(process_import_task())
+        loop.close()
+        
+        flash('Produit importé et optimisé avec succès!', 'success')
+        return redirect(url_for('view_product', product_id=new_product.id))
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erreur lors de l\'importation: {str(e)}', 'danger')
+        logging.error(f"Error importing AliExpress product: {e}")
+        return redirect(url_for('import_aliexpress_form'))
+
+@app.route('/import_aliexpress_bulk', methods=['POST'])
+def import_aliexpress_bulk():
+    """Importer plusieurs produits AliExpress par lot"""
+    bulk_urls = request.form.get('bulk_urls', '').strip().split('\n')
+    bulk_category = request.form.get('bulk_category')
+    bulk_boutique_id = request.form.get('bulk_boutique_id')
+    
+    if not bulk_urls or not bulk_urls[0]:
+        flash('Veuillez entrer au moins une URL AliExpress.', 'danger')
+        return redirect(url_for('import_aliexpress_form'))
+    
+    # Convertir l'ID de boutique en entier si nécessaire
+    if bulk_boutique_id and bulk_boutique_id.isdigit():
+        bulk_boutique_id = int(bulk_boutique_id)
+    else:
+        bulk_boutique_id = None
+    
+    imported_count = 0
+    failed_count = 0
+    
+    for url in bulk_urls:
+        url = url.strip()
+        if not url:
+            continue
+            
+        try:
+            # Extraire l'ID du produit pour générer un nom temporaire
+            product_id = aliexpress_importer.extract_aliexpress_product_id(url)
+            temp_name = f"Produit AliExpress #{product_id}"
+            
+            # Créer le produit dans la base de données
+            new_product = Product(
+                name=temp_name,
+                category=bulk_category,
+                boutique_id=bulk_boutique_id
+            )
+            
+            db.session.add(new_product)
+            db.session.commit()
+            
+            # Créer l'entrée d'importation
+            imported_product = ImportedProduct(
+                product_id=new_product.id,
+                source_url=url,
+                source="aliexpress",
+                import_status="pending",
+                source_id=product_id,
+                optimization_settings={
+                    "target_market": "moyenne_gamme",
+                    "optimize_seo": True,
+                    "optimize_price": True,
+                    "generate_html": True,
+                    "generate_specs": True,
+                    "generate_faq": True,
+                    "generate_variants": True
+                }
+            )
+            
+            db.session.add(imported_product)
+            db.session.commit()
+            
+            imported_count += 1
+            
+        except Exception as e:
+            failed_count += 1
+            logging.error(f"Error in bulk import for URL {url}: {e}")
+            continue
+    
+    if imported_count > 0:
+        flash(f'{imported_count} produits ont été ajoutés à la file d\'importation. Ils seront traités en arrière-plan.', 'success')
+    
+    if failed_count > 0:
+        flash(f'{failed_count} produits n\'ont pas pu être ajoutés à la file d\'importation.', 'warning')
+    
+    return redirect(url_for('products'))
+
+@app.route('/shopify_export/<int:product_id>')
+def shopify_export(product_id):
+    """Afficher la page d'export Shopify pour un produit"""
+    product = Product.query.get_or_404(product_id)
+    return render_template('product_shopify_export.html', product=product)
+
+@app.route('/update_product_html/<int:product_id>', methods=['POST'])
+def update_product_html(product_id):
+    """Mettre à jour le HTML d'un produit via AJAX"""
+    try:
+        data = request.get_json()
+        section = data.get('section')
+        content = data.get('content')
+        
+        product = Product.query.get_or_404(product_id)
+        
+        if section == 'description':
+            product.html_description = content
+        elif section == 'specifications':
+            product.html_specifications = content
+        elif section == 'faq':
+            product.html_faq = content
+        else:
+            return jsonify({'success': False, 'error': 'Section non valide'})
+        
+        db.session.commit()
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        logging.error(f"Error updating product HTML: {e}")
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/export_product_json/<int:product_id>')
+def export_product_json(product_id):
+    """Exporter un produit au format JSON"""
+    product = Product.query.get_or_404(product_id)
+    
+    # Créer un dictionnaire avec toutes les données du produit
+    product_data = {
+        'id': product.id,
+        'name': product.name,
+        'category': product.category,
+        'price': product.price,
+        'base_description': product.base_description,
+        'meta_title': product.meta_title,
+        'meta_description': product.meta_description,
+        'alt_text': product.alt_text,
+        'keywords': product.get_keywords_list(),
+        'html_description': product.html_description,
+        'html_specifications': product.html_specifications,
+        'html_faq': product.html_faq,
+        'image_url': product.image_url,
+        'created_at': product.created_at.isoformat() if product.created_at else None,
+        'updated_at': product.updated_at.isoformat() if product.updated_at else None
+    }
+    
+    # Générer le nom du fichier
+    filename = f"product_{product.id}_{datetime.datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
+    
+    # Créer une réponse JSON téléchargeable
+    response = make_response(json.dumps(product_data, indent=2, ensure_ascii=False))
+    response.headers['Content-Disposition'] = f'attachment; filename={filename}'
+    response.headers['Content-Type'] = 'application/json'
+    
+    return response
+
+@app.route('/regenerate_product_content/<int:product_id>')
+def regenerate_product_content(product_id):
+    """Régénérer le contenu HTML d'un produit"""
+    product = Product.query.get_or_404(product_id)
+    
+    # Vérifier si le produit a été importé depuis AliExpress
+    imported_product = ImportedProduct.query.filter_by(product_id=product.id).first()
+    
+    if not imported_product or not imported_product.raw_data:
+        flash('Impossible de régénérer le contenu: données source non disponibles.', 'danger')
+        return redirect(url_for('shopify_export', product_id=product.id))
+    
+    try:
+        # Régénérer le contenu en arrière-plan
+        async def regenerate_content():
+            try:
+                # Récupérer les données
+                product_data = imported_product.raw_data
+                pricing_data = imported_product.pricing_strategy
+                
+                # Générer un nouveau template HTML
+                template_data = await aliexpress_importer.generate_shopify_html_template(product_data, pricing_data)
+                
+                # Mettre à jour les templates stockés
+                imported_product.templates = template_data
+                
+                # Mettre à jour les données du produit
+                product.meta_title = template_data.get('meta_title', '')
+                product.meta_description = template_data.get('meta_description', '')
+                product.alt_text = template_data.get('alt_text', '')
+                product.keywords = template_data.get('tags', [])
+                product.html_description = template_data.get('html_description', '')
+                product.html_specifications = template_data.get('html_specifications', '')
+                product.html_faq = template_data.get('html_faq', '')
+                
+                # Sauvegarder les modifications
+                db.session.commit()
+                
+            except Exception as e:
+                db.session.rollback()
+                logging.error(f"Error regenerating product content: {e}")
+                raise
+        
+        # Exécuter la tâche asynchrone
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(regenerate_content())
+        loop.close()
+        
+        flash('Contenu régénéré avec succès!', 'success')
+        
+    except Exception as e:
+        flash(f'Erreur lors de la régénération: {str(e)}', 'danger')
+        logging.error(f"Error regenerating product content: {e}")
+    
+    return redirect(url_for('shopify_export', product_id=product.id))
+
 with app.app_context():
     # Create tables
     db.create_all()

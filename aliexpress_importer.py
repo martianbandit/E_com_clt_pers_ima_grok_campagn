@@ -195,12 +195,20 @@ async def optimize_pricing_strategy(product_data: Dict, target_market: str = "mo
     except Exception as e:
         logging.error(f"Erreur lors de l'optimisation de la stratégie de prix: {e}")
         # Retourner une stratégie de prix par défaut en cas d'erreur
+        default_price = 29.99  # Prix par défaut si la base_price n'est pas disponible
+        try:
+            # Essayer d'utiliser base_price s'il est défini
+            price_base = base_price
+        except NameError:
+            # Sinon utiliser le prix par défaut
+            price_base = default_price
+            
         return {
-            "base_price": base_price,
-            "optimal_price": base_price * 2,
-            "psychological_price": base_price * 2,
+            "original_price": price_base,
+            "optimal_price": price_base * 2,
+            "psychological_price": price_base * 2,
             "promo_percent": 0,
-            "promo_price": base_price * 2,
+            "promo_price": price_base * 2,
             "market_segment": target_market,
             "profit_margin": 50,
             "price_factors": {
@@ -209,9 +217,9 @@ async def optimize_pricing_strategy(product_data: Dict, target_market: str = "mo
                 "rating_factor": 1.0
             },
             "price_recommendations": [
-                {"name": "Prix compétitif", "price": base_price * 1.8},
-                {"name": "Prix standard", "price": base_price * 2},
-                {"name": "Prix premium", "price": base_price * 2.2}
+                {"name": "Prix compétitif", "price": price_base * 1.8},
+                {"name": "Prix standard", "price": price_base * 2},
+                {"name": "Prix premium", "price": price_base * 2.2}
             ]
         }
 

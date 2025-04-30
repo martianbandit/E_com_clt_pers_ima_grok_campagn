@@ -1,346 +1,170 @@
 {% extends 'layout.html' %}
 
-{% block title %}Import de Produits AliExpress{% endblock %}
+{% block title %}Import AliExpress{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col">
-            <h1>Import de Produits AliExpress</h1>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Tableau de bord</a></li>
-                    <li class="breadcrumb-item"><a href="{{ url_for('products') }}">Produits</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Import AliExpress</li>
-                </ol>
-            </nav>
-        </div>
-    </div>
-
+    <h1 class="mb-4">Importation AliExpress</h1>
+    
     <div class="row">
-        <div class="col-md-8">
-            <!-- Formulaire d'import simple -->
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Import Rapide</h5>
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary bg-gradient text-white">
+                    <h5 class="card-title mb-0">Importer un produit AliExpress</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ url_for('import_aliexpress_product') }}" method="POST" id="quickImportForm">
+                    <form action="{{ url_for('import_aliexpress_product') }}" method="post">
                         <div class="mb-3">
-                            <label for="aliexpress_url" class="form-label">URL du Produit AliExpress *</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-link"></i></span>
-                                <input type="url" class="form-control" id="aliexpress_url" name="aliexpress_url" 
-                                       placeholder="https://www.aliexpress.com/item/..." required>
-                                <button class="btn btn-outline-secondary" type="button" id="validateURLBtn">
-                                    <i class="fas fa-check"></i> Valider
-                                </button>
-                            </div>
-                            <div class="form-text">Collez l'URL complète du produit AliExpress que vous souhaitez importer.</div>
+                            <label for="aliexpress_url" class="form-label">URL AliExpress</label>
+                            <input type="url" class="form-control" id="aliexpress_url" name="aliexpress_url" 
+                                   placeholder="https://aliexpress.com/item/..." required>
+                            <div class="form-text">Collez l'URL complète d'un produit AliExpress</div>
                         </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="product_name" class="form-label">Nom du Produit *</label>
-                                <input type="text" class="form-control" id="product_name" name="product_name" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="target_market" class="form-label">Positionnement Prix *</label>
-                                <select class="form-select" id="target_market" name="target_market" required>
-                                    <option value="entrée_gamme">Entrée de gamme (+50%)</option>
-                                    <option value="moyenne_gamme" selected>Moyenne gamme (+100%)</option>
-                                    <option value="haut_de_gamme">Haut de gamme (+150%)</option>
-                                    <option value="luxe">Luxe (+250%)</option>
-                                </select>
-                            </div>
+                        
+                        <div class="mb-3">
+                            <label for="product_name" class="form-label">Nom du produit</label>
+                            <input type="text" class="form-control" id="product_name" name="product_name" required>
                         </div>
-
+                        
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Catégorie</label>
+                            <input type="text" class="form-control" id="category" name="category">
+                        </div>
+                        
                         <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="category" class="form-label">Catégorie *</label>
-                                <input type="text" class="form-control" id="category" name="category" required>
-                            </div>
                             <div class="col-md-6">
                                 <label for="boutique_id" class="form-label">Boutique</label>
                                 <select class="form-select" id="boutique_id" name="boutique_id">
-                                    <option value="">Aucune boutique</option>
+                                    <option value="">-- Sélectionner --</option>
                                     {% for boutique in boutiques %}
                                     <option value="{{ boutique.id }}">{{ boutique.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="target_audience_id" class="form-label">Public Cible</label>
+                                <label for="target_audience_id" class="form-label">Public cible</label>
                                 <select class="form-select" id="target_audience_id" name="target_audience_id">
-                                    <option value="">Aucun public cible</option>
+                                    <option value="">-- Sélectionner --</option>
                                     {% for customer in customers %}
                                     <option value="{{ customer.id }}">{{ customer.name }} ({{ customer.age }} ans)</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Options d'Optimisation</label>
-                                <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input" type="checkbox" id="optimize_seo" name="optimize_seo" checked>
-                                    <label class="form-check-label" for="optimize_seo">Optimisation SEO</label>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="optimize_price" name="optimize_price" checked>
-                                    <label class="form-check-label" for="optimize_price">Optimisation prix</label>
-                                </div>
-                            </div>
                         </div>
-
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <label class="form-label">Format de Sortie</label>
-                                <div class="d-flex flex-wrap gap-2">
-                                    <div class="form-check me-3">
-                                        <input class="form-check-input" type="checkbox" value="true" id="generate_html" name="generate_html" checked>
-                                        <label class="form-check-label" for="generate_html">
-                                            HTML Shopify
-                                        </label>
-                                    </div>
-                                    <div class="form-check me-3">
-                                        <input class="form-check-input" type="checkbox" value="true" id="generate_specs" name="generate_specs" checked>
-                                        <label class="form-check-label" for="generate_specs">
-                                            Spécifications techniques
-                                        </label>
-                                    </div>
-                                    <div class="form-check me-3">
-                                        <input class="form-check-input" type="checkbox" value="true" id="generate_faq" name="generate_faq" checked>
-                                        <label class="form-check-label" for="generate_faq">
-                                            FAQ produit
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="true" id="generate_variants" name="generate_variants" checked>
-                                        <label class="form-check-label" for="generate_variants">
-                                            Variantes produit
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-download me-2"></i> Importer et Optimiser
-                            </button>
-                            <div class="form-text text-center">Le processus peut prendre 30 à 60 secondes en fonction de la complexité du produit.</div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Import par lot (mode avancé) -->
-            <div class="card mb-4">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0">Import par Lot (Mode avancé)</h5>
-                </div>
-                <div class="card-body">
-                    <form action="{{ url_for('import_aliexpress_bulk') }}" method="POST" id="bulkImportForm">
+                        
                         <div class="mb-3">
-                            <label for="bulk_urls" class="form-label">URLs des Produits AliExpress (une par ligne)</label>
-                            <textarea class="form-control" id="bulk_urls" name="bulk_urls" rows="4" 
-                                      placeholder="https://www.aliexpress.com/item/..."></textarea>
+                            <label for="target_market" class="form-label">Positionnement marché</label>
+                            <select class="form-select" id="target_market" name="target_market">
+                                <option value="entrée_gamme">Entrée de gamme</option>
+                                <option value="moyenne_gamme" selected>Moyenne gamme</option>
+                                <option value="haut_de_gamme">Haut de gamme</option>
+                                <option value="luxe">Luxe</option>
+                            </select>
                         </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="bulk_category" class="form-label">Catégorie Commune</label>
-                                <input type="text" class="form-control" id="bulk_category" name="bulk_category">
+                        
+                        <div class="mt-4 mb-3">
+                            <h6>Options d'optimisation:</h6>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="optimize_seo" name="optimize_seo" checked>
+                                <label class="form-check-label" for="optimize_seo">Optimiser pour le SEO</label>
                             </div>
-                            <div class="col-md-6">
-                                <label for="bulk_boutique_id" class="form-label">Boutique Commune</label>
-                                <select class="form-select" id="bulk_boutique_id" name="bulk_boutique_id">
-                                    <option value="">Aucune boutique</option>
-                                    {% for boutique in boutiques %}
-                                    <option value="{{ boutique.id }}">{{ boutique.name }}</option>
-                                    {% endfor %}
-                                </select>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="optimize_price" name="optimize_price" checked>
+                                <label class="form-check-label" for="optimize_price">Optimiser le prix</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="generate_html" name="generate_html" checked>
+                                <label class="form-check-label" for="generate_html">Générer la description HTML</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="generate_specs" name="generate_specs" checked>
+                                <label class="form-check-label" for="generate_specs">Générer les spécifications</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="generate_faq" name="generate_faq" checked>
+                                <label class="form-check-label" for="generate_faq">Générer une FAQ</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="generate_variants" name="generate_variants" checked>
+                                <label class="form-check-label" for="generate_variants">Générer des variantes</label>
                             </div>
                         </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-secondary">
-                                <i class="fas fa-tasks me-2"></i> Lancer l'Import par Lot
-                            </button>
+                        
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">Importer et optimiser</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <!-- Liste des derniers imports -->
-            {% if recent_imports %}
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Imports Récents</h5>
+        
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary bg-gradient text-white">
+                    <h5 class="card-title mb-0">Import par lot</h5>
                 </div>
-                <div class="list-group list-group-flush">
-                    {% for import in recent_imports %}
-                    <a href="{{ url_for('view_product', product_id=import.product_id) }}" class="list-group-item list-group-item-action">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-1">{{ import.product.name }}</h6>
-                                <small class="text-muted">{{ import.imported_at.strftime('%d/%m/%Y à %H:%M') }}</small>
-                            </div>
-                            <span class="badge 
-                                {% if import.import_status == 'complete' %}bg-success
-                                {% elif import.import_status == 'processing' %}bg-warning text-dark
-                                {% elif import.import_status == 'failed' %}bg-danger
-                                {% else %}bg-secondary{% endif %}">
-                                {{ import.import_status }}
-                            </span>
+                <div class="card-body">
+                    <form action="{{ url_for('import_aliexpress_bulk') }}" method="post">
+                        <div class="mb-3">
+                            <label for="bulk_urls" class="form-label">URLs (une par ligne)</label>
+                            <textarea class="form-control" id="bulk_urls" name="bulk_urls" rows="5" 
+                                      placeholder="https://aliexpress.com/item/...&#10;https://aliexpress.com/item/..." required></textarea>
                         </div>
-                    </a>
-                    {% endfor %}
+                        
+                        <div class="mb-3">
+                            <label for="bulk_category" class="form-label">Catégorie commune</label>
+                            <input type="text" class="form-control" id="bulk_category" name="bulk_category">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="bulk_boutique_id" class="form-label">Boutique</label>
+                            <select class="form-select" id="bulk_boutique_id" name="bulk_boutique_id">
+                                <option value="">-- Sélectionner --</option>
+                                {% for boutique in boutiques %}
+                                <option value="{{ boutique.id }}">{{ boutique.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-secondary">Importer le lot</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if recent_imports %}
+            <div class="card shadow-sm">
+                <div class="card-header bg-info bg-gradient text-white">
+                    <h5 class="card-title mb-0">Imports récents</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for import_item in recent_imports %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-0">{% if import_item.product %}{{ import_item.product.name }}{% else %}Produit #{{ import_item.product_id }}{% endif %}</h6>
+                                    <small class="text-muted">{{ import_item.source_url|truncate(50) }}</small>
+                                </div>
+                                <span class="badge rounded-pill 
+                                    {% if import_item.import_status == 'complete' %}bg-success
+                                    {% elif import_item.import_status == 'processing' %}bg-warning
+                                    {% elif import_item.import_status == 'failed' %}bg-danger
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ import_item.import_status }}
+                                </span>
+                            </div>
+                            {% if import_item.import_status == 'complete' and import_item.product %}
+                            <a href="{{ url_for('view_product', product_id=import_item.product_id) }}" class="btn btn-sm btn-outline-primary mt-2">Voir produit</a>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
             {% endif %}
-
-            <!-- Guide d'utilisation -->
-            <div class="card mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Guide d'Utilisation</h5>
-                </div>
-                <div class="card-body">
-                    <div class="accordion" id="accordionGuide">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Trouver l'URL AliExpress
-                                </button>
-                            </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
-                                <div class="accordion-body">
-                                    <ol class="mb-0">
-                                        <li>Recherchez un produit sur AliExpress</li>
-                                        <li>Ouvrez la page du produit</li>
-                                        <li>Copiez l'URL complète depuis la barre d'adresse</li>
-                                        <li>L'URL doit ressembler à: <code>https://www.aliexpress.com/item/1234567890.html</code></li>
-                                    </ol>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    Options d'Optimisation
-                                </button>
-                            </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
-                                <div class="accordion-body">
-                                    <ul class="mb-0">
-                                        <li><strong>SEO</strong>: Optimise les titres, méta-descriptions et textes alternatifs</li>
-                                        <li><strong>Prix</strong>: Calcule un prix optimal en fonction du marché cible</li>
-                                        <li><strong>HTML Shopify</strong>: Génère du code HTML compatible avec l'éditeur Shopify</li>
-                                        <li><strong>Variantes</strong>: Détecte et structure les variantes du produit (couleurs, tailles)</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                    Positionnement Prix
-                                </button>
-                            </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
-                                <div class="accordion-body">
-                                    <ul class="mb-0">
-                                        <li><strong>Entrée de gamme</strong>: +50% sur le prix AliExpress</li>
-                                        <li><strong>Moyenne gamme</strong>: +100% sur le prix AliExpress</li>
-                                        <li><strong>Haut de gamme</strong>: +150% sur le prix AliExpress</li>
-                                        <li><strong>Luxe</strong>: +250% sur le prix AliExpress</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Validation de l'URL AliExpress
-    const validateURLBtn = document.getElementById('validateURLBtn');
-    const aliexpressUrlInput = document.getElementById('aliexpress_url');
-    
-    if (validateURLBtn && aliexpressUrlInput) {
-        validateURLBtn.addEventListener('click', function() {
-            const url = aliexpressUrlInput.value.trim();
-            
-            if (!url) {
-                showAlert('Veuillez entrer une URL AliExpress', 'warning');
-                return;
-            }
-            
-            // Vérifier si l'URL semble être une URL AliExpress valide
-            const aliexpressRegex = /aliexpress\.com\/item\/\d+\.html/i;
-            if (!aliexpressRegex.test(url)) {
-                showAlert('L\'URL ne semble pas être une URL de produit AliExpress valide', 'danger');
-                return;
-            }
-            
-            showAlert('URL AliExpress valide!', 'success');
-        });
-    }
-    
-    // Soumission du formulaire d'import rapide
-    const quickImportForm = document.getElementById('quickImportForm');
-    if (quickImportForm) {
-        quickImportForm.addEventListener('submit', function(e) {
-            const url = aliexpressUrlInput.value.trim();
-            const productName = document.getElementById('product_name').value.trim();
-            
-            if (!url || !productName) {
-                e.preventDefault();
-                showAlert('Veuillez remplir tous les champs obligatoires', 'warning');
-                return;
-            }
-            
-            // Afficher un indicateur de chargement
-            const submitBtn = this.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Importation en cours...';
-        });
-    }
-    
-    // Fonction pour afficher des alertes
-    function showAlert(message, type = 'info') {
-        const alertPlaceholder = document.getElementById('alert-placeholder');
-        if (!alertPlaceholder) return;
-        
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = `
-            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        `;
-        
-        alertPlaceholder.append(wrapper);
-        
-        // Auto-dismiss après 5 secondes
-        setTimeout(() => {
-            const alert = wrapper.querySelector('.alert');
-            if (alert) {
-                const bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            }
-        }, 5000);
-    }
-});
-</script>
 {% endblock %}
