@@ -465,17 +465,49 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None)
     Returns:
         URL of the generated image
     """
-    niche = ""
-    if customer.get("interests"):
-        niche = customer["interests"][0]
-        
-    # First, enhance the prompt for this specific customer and niche
-    enhanced_prompt = asyncio.run(generate_image_prompt_async(grok_client, customer, niche, base_prompt))
+    import os
+    import logging
+    from openai import OpenAI
     
-    # Then, generate the image using the enhanced prompt and optional parameters
-    return asyncio.run(generate_boutique_image_async(
-        grok_client, 
-        enhanced_prompt, 
-        image_data=image_data,
-        style=style
-    ))
+    try:
+        # Extraire le créneau de marché à partir des intérêts du client, si disponible
+        niche = ""
+        if customer.get("interests") and len(customer["interests"]) > 0:
+            niche = customer["interests"][0]
+        
+        # Améliorer le prompt si possible, sinon utiliser le prompt de base
+        try:
+            enhanced_prompt = asyncio.run(generate_image_prompt_async(grok_client, customer, niche, base_prompt))
+        except Exception as e:
+            logging.warning(f"Could not enhance prompt: {e}, using base prompt instead")
+            enhanced_prompt = base_prompt
+        
+        # Ajouter le style au prompt si spécifié
+        final_prompt = enhanced_prompt
+        if style:
+            final_prompt = f"{enhanced_prompt} Style: {style}."
+            
+        # Si des données d'image sont fournies, mentionner cela dans le prompt
+        if image_data:
+            final_prompt = f"{final_prompt} Based on the provided reference image."
+            
+        # Utiliser OpenAI directement pour la génération d'images
+        openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        
+        response = openai_client.images.generate(
+            model="dall-e-3",
+            prompt=final_prompt,
+            n=1,
+            size="1024x1024",
+        )
+        
+        # Extraire l'URL de l'image de la réponse
+        if hasattr(response, 'data') and len(response.data) > 0 and hasattr(response.data[0], 'url'):
+            return response.data[0].url
+        else:
+            logging.error("No image URL in OpenAI response")
+            return "https://placehold.co/600x400/grey/white?text=Image+Generation+Failed"
+            
+    except Exception as e:
+        logging.error(f"Error generating marketing image: {e}")
+        return "https://placehold.co/600x400/grey/white?text=Image+Generation+Failed"
