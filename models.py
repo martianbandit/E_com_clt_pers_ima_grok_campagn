@@ -58,6 +58,7 @@ class Customer(db.Model):
     purchased_products = db.Column(JSONB, nullable=True)  # Produits déjà achetés par le client
     niche_attributes = db.Column(JSONB, nullable=True)  # Attributs supplémentaires liés à la niche
     profile_data = db.Column(JSONB, nullable=True)  # Store full profile as JSON with better Postgres support
+    usage_count = db.Column(db.Integer, default=0)  # Compteur d'utilisation du profil client
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

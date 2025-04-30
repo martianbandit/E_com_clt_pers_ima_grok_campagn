@@ -485,6 +485,9 @@ def generate_customer_persona_db(customer_id):
     customer = Customer.query.get_or_404(customer_id)
     
     try:
+        # Incrémenter le compteur d'utilisation du profil
+        customer.usage_count = (customer.usage_count or 0) + 1
+        
         # Préparer les données du profil pour la génération
         profile = customer.profile_data if customer.profile_data else {
             'name': customer.name,
@@ -596,6 +599,9 @@ def generate_customer_avatar(customer_id):
     customer = Customer.query.get_or_404(customer_id)
     
     try:
+        # Incrémenter le compteur d'utilisation du profil
+        customer.usage_count = (customer.usage_count or 0) + 1
+        
         # Vérifier si le client a un avatar_prompt
         if not customer.avatar_prompt:
             return jsonify({
