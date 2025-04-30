@@ -563,13 +563,64 @@ async def generate_boutique_marketing_content_async(
     customer: dict,
     niche: str,
     campaign_type: str,
+    boutique_info: dict = None,
     model: str = GROK_3
 ) -> str:
+    """
+    Génère du contenu marketing personnalisé pour un client spécifique en tenant compte
+    des informations de la boutique.
+    
+    Args:
+        client: AsyncOpenAI client
+        customer: Dictionnaire contenant les données client
+        niche: Niche de marché
+        campaign_type: Type de campagne (email, social, sms, ad, product_description)
+        boutique_info: Informations sur la boutique (optionnel)
+        model: Modèle Grok à utiliser
+        
+    Returns:
+        String contenant le contenu marketing généré
+    """
     # Extract customer data for personalization
     name = customer.get("name", "valued customer")
     language = customer.get("language", "English")
     interests = ", ".join(customer.get("interests", []))
     persona = customer.get("persona", "")
+    
+    # Récupérer les informations de la boutique si le customer est lié à une boutique
+    if not boutique_info and isinstance(customer, dict) and customer.get('boutique_id'):
+        try:
+            from models import Boutique
+            boutique = Boutique.query.get(customer.get('boutique_id'))
+            if boutique:
+                boutique_info = {
+                    "name": boutique.name,
+                    "description": boutique.description,
+                    "target_demographic": boutique.target_demographic
+                }
+        except Exception as boutique_err:
+            logger.warning(f"Could not retrieve boutique information from customer: {boutique_err}")
+    
+    # Préparer le contexte de la boutique pour le prompt
+    boutique_context = ""
+    if boutique_info and isinstance(boutique_info, dict):
+        boutique_name = boutique_info.get("name", "")
+        boutique_description = boutique_info.get("description", "")
+        boutique_target = boutique_info.get("target_demographic", "")
+        
+        if boutique_name or boutique_description or boutique_target:
+            boutique_context = f"""
+            BOUTIQUE INFORMATION:
+            Name: {boutique_name}
+            Description: {boutique_description}
+            Target Demographic: {boutique_target}
+            
+            SPECIAL REQUIREMENTS:
+            - Incorporate the boutique's unique identity and values into the content
+            - Reference the boutique's specific products, style, or offerings
+            - Ensure the tone matches the boutique's brand voice
+            - Create a natural connection between the customer's needs and the boutique's offerings
+            """
     
     # Determine the appropriate content type based on campaign
     content_type_map = {
@@ -591,6 +642,8 @@ async def generate_boutique_marketing_content_async(
     
     Customer Persona:
     {persona}
+    
+    {boutique_context}
     
     Your task:
     1. Write the {content_type} in {language} language
@@ -625,6 +678,7 @@ async def generate_image_prompt_async(
     customer: dict,
     niche: str,
     base_prompt: str,
+    boutique_info: dict = None,
     model: str = GROK_3
 ) -> dict:
     """
@@ -645,10 +699,47 @@ async def generate_image_prompt_async(
     location = customer.get("location", "")
     age = customer.get("age", "")
     
+    # Récupérer les informations de la boutique si le customer est lié à une boutique
+    if not boutique_info and isinstance(customer, dict) and customer.get('boutique_id'):
+        try:
+            from models import Boutique
+            boutique = Boutique.query.get(customer.get('boutique_id'))
+            if boutique:
+                boutique_info = {
+                    "name": boutique.name,
+                    "description": boutique.description,
+                    "target_demographic": boutique.target_demographic
+                }
+        except Exception as boutique_err:
+            logger.warning(f"Could not retrieve boutique information from customer: {boutique_err}")
+    
+    # Préparer le contexte de la boutique pour le prompt
+    boutique_context = ""
+    if boutique_info and isinstance(boutique_info, dict):
+        boutique_name = boutique_info.get("name", "")
+        boutique_description = boutique_info.get("description", "")
+        boutique_target = boutique_info.get("target_demographic", "")
+        
+        if boutique_name or boutique_description or boutique_target:
+            boutique_context = f"""
+            BOUTIQUE BRANDING:
+            Name: {boutique_name}
+            Description: {boutique_description}
+            Target Demographic: {boutique_target}
+            
+            BRAND CONSISTENCY REQUIREMENTS:
+            - Incorporate the boutique's visual identity and aesthetic into the image
+            - Use colors, textures and styles that align with the boutique's brand
+            - Ensure the image clearly represents the boutique's market positioning
+            - Create visual elements that support the boutique's specific value proposition
+            """
+    
     # Extraction des mots-clés pertinents pour le SEO
     keywords = [niche]
     if interests:
         keywords.extend([interest.strip() for interest in interests.split(',')[:3]])
+    if boutique_info and boutique_info.get("name"):
+        keywords.append(boutique_info.get("name"))
     
     meta_prompt = f"""
     Create an extraordinarily rich and vivid image generation prompt for a {niche} boutique marketing visual optimized for SEO and targeted marketing.
@@ -660,6 +751,8 @@ async def generate_image_prompt_async(
     - Location: {location}
     - Age: {age}
     - Persona Insights: {persona[:250]}...
+    
+    {boutique_context}
     
     VISUAL STORYTELLING REQUIREMENTS:
     
@@ -860,8 +953,17 @@ def generate_customers(niche, niche_description, num_customers=5, generation_par
         # Toujours fermer la boucle pour éviter les fuites de ressources
         loop.close()
 
-def generate_customer_persona(customer):
-    """Generate a detailed persona for a customer profile"""
+def generate_customer_persona(customer, boutique_id=None):
+    """
+    Generate a detailed persona for a customer profile
+    
+    Args:
+        customer: Customer data dict
+        boutique_id: Optional ID of the boutique to use for context
+    
+    Returns:
+        String containing the generated persona
+    """
     import logging
     
     niche = ""  # Extract from interests or other attributes
@@ -875,7 +977,7 @@ def generate_customer_persona(customer):
     try:
         # Exécuter la fonction asynchrone avec un timeout
         return loop.run_until_complete(asyncio.wait_for(
-            generate_customer_persona_async(grok_client, customer, niche),
+            generate_customer_persona_async(grok_client, customer, niche, boutique_id),
             timeout=20.0
         ))
     except asyncio.TimeoutError:
@@ -914,7 +1016,7 @@ def generate_marketing_content(customer, campaign_type):
     finally:
         loop.close()
 
-def generate_marketing_image(customer, base_prompt, image_data=None, style=None):
+def generate_marketing_image(customer, base_prompt, image_data=None, style=None, boutique_id=None):
     """
     Generate a personalized marketing image for a customer with SEO optimization
     
@@ -923,6 +1025,7 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None)
         base_prompt: Base text prompt for image generation
         image_data: Optional base64 encoded image data
         style: Optional style to apply (watercolor, oil painting, photorealistic, etc)
+        boutique_id: Optional ID of the boutique for branding consistency
         
     Returns:
         Dictionary with image URL and SEO metadata (or just URL string for backward compatibility)
@@ -938,6 +1041,37 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None)
         if customer.get("interests") and len(customer["interests"]) > 0:
             niche = customer["interests"][0]
         
+        # Récupérer les informations de la boutique si un ID est fourni
+        boutique_info = None
+        if boutique_id:
+            try:
+                from models import Boutique
+                boutique = Boutique.query.get(boutique_id)
+                if boutique:
+                    boutique_info = {
+                        "name": boutique.name,
+                        "description": boutique.description,
+                        "target_demographic": boutique.target_demographic
+                    }
+                    logging.info(f"Using boutique information from boutique_id: {boutique.name}")
+            except Exception as boutique_err:
+                logging.warning(f"Could not retrieve boutique information: {boutique_err}")
+        
+        # Si le client est associé à une boutique, utiliser cette information
+        if not boutique_info and customer.get("boutique_id"):
+            try:
+                from models import Boutique
+                boutique = Boutique.query.get(customer.get("boutique_id"))
+                if boutique:
+                    boutique_info = {
+                        "name": boutique.name,
+                        "description": boutique.description,
+                        "target_demographic": boutique.target_demographic
+                    }
+                    logging.info(f"Using boutique information from customer association: {boutique.name}")
+            except Exception as boutique_err:
+                logging.warning(f"Could not retrieve boutique information from customer: {boutique_err}")
+        
         # Générer un prompt optimisé et des métadonnées SEO
         try:
             # Créer une nouvelle boucle d'événements pour la génération du prompt
@@ -947,7 +1081,13 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None)
             try:
                 # Exécuter avec un timeout pour éviter les blocages
                 prompt_data = prompt_loop.run_until_complete(asyncio.wait_for(
-                    generate_image_prompt_async(grok_client, customer, niche, base_prompt),
+                    generate_image_prompt_async(
+                        grok_client, 
+                        customer, 
+                        niche, 
+                        base_prompt,
+                        boutique_info=boutique_info
+                    ),
                     timeout=15.0
                 ))
                 
