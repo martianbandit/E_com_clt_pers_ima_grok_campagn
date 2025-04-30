@@ -42,10 +42,16 @@ class Customer(db.Model):
     name = db.Column(db.String(100), nullable=False)
     age = db.Column(db.Integer, nullable=True)
     location = db.Column(db.String(100), nullable=True)
+    country_code = db.Column(db.String(2), nullable=True)  # ISO Country code (US, FR, etc.)
     gender = db.Column(db.String(20), nullable=True)
     language = db.Column(db.String(50), nullable=True)
     interests = db.Column(db.Text, nullable=True)  # Stored as comma-separated values
     preferred_device = db.Column(db.String(50), nullable=True)
+    income_level = db.Column(db.String(50), nullable=True)  # budget, middle, affluent, luxury
+    education = db.Column(db.String(50), nullable=True)  # high school, bachelor, master, etc.
+    occupation = db.Column(db.String(100), nullable=True)  # job title or profession
+    social_media = db.Column(JSONB, nullable=True)  # Store usage frequency for different platforms
+    shopping_frequency = db.Column(db.String(50), nullable=True)  # rarely, occasionally, frequently, very frequently
     persona = db.Column(db.Text, nullable=True)
     profile_data = db.Column(JSONB, nullable=True)  # Store full profile as JSON with better Postgres support
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -73,14 +79,37 @@ class Customer(db.Model):
         interests = profile_dict.get('interests', [])
         interests_str = ', '.join(interests) if interests else None
         
+        # Extract country code from location if available
+        location = profile_dict.get('location', '')
+        country_code = None
+        if ',' in location:
+            # Try to parse country code from location (e.g., "New York, US")
+            try:
+                country_code = location.split(',')[-1].strip()
+                if len(country_code) > 2:
+                    # This is a full country name, not a code
+                    country_code = None
+            except:
+                country_code = None
+                
+        # Use explicit country code if available
+        if profile_dict.get('country_code'):
+            country_code = profile_dict.get('country_code')
+            
         return cls(
             name=profile_dict.get('name'),
             age=profile_dict.get('age'),
             location=profile_dict.get('location'),
+            country_code=country_code,
             gender=profile_dict.get('gender'),
             language=profile_dict.get('language'),
             interests=interests_str,
             preferred_device=profile_dict.get('preferred_device'),
+            income_level=profile_dict.get('income_level'),
+            education=profile_dict.get('education'),
+            occupation=profile_dict.get('occupation'),
+            social_media=profile_dict.get('social_media'),
+            shopping_frequency=profile_dict.get('shopping_frequency'),
             persona=profile_dict.get('persona'),
             profile_data=profile_dict,
             niche_market_id=niche_market_id

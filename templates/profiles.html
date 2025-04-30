@@ -11,10 +11,10 @@
     </div>
     <div class="card-body">
         <form action="/profiles" method="POST">
-            <div class="row">
-                <div class="col-md-4">
+            <div class="row mb-3">
+                <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="niche_id" class="form-label">Select Niche Market</label>
+                        <label for="niche_id" class="form-label">Niche Market</label>
                         <select class="form-select" id="niche_id" name="niche_id" required>
                             <option value="">Choose a niche...</option>
                             {% for niche in niches %}
@@ -33,16 +33,71 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="mb-3 form-check mt-4">
                         <input type="checkbox" class="form-check-input" id="persist_to_db" name="persist_to_db">
                         <label class="form-check-label" for="persist_to_db">Save to Database</label>
                     </div>
                 </div>
-                <div class="col-md-3 d-flex align-items-end">
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="target_country" class="form-label">Target Country</label>
+                        <select class="form-select" id="target_country" name="target_country">
+                            <option value="">Any (Global Mix)</option>
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="GB">United Kingdom</option>
+                            <option value="FR">France</option>
+                            <option value="DE">Germany</option>
+                            <option value="IT">Italy</option>
+                            <option value="ES">Spain</option>
+                            <option value="JP">Japan</option>
+                            <option value="AU">Australia</option>
+                            <option value="BR">Brazil</option>
+                            <option value="IN">India</option>
+                            <option value="CN">China</option>
+                            <option value="MX">Mexico</option>
+                        </select>
+                        <small class="form-text text-muted">Choose a country to generate customer profiles from that specific region</small>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="age_range" class="form-label">Age Range</label>
+                        <select class="form-select" id="age_range" name="age_range">
+                            <option value="">Any (Mixed Ages)</option>
+                            <option value="18-25">18-25 years</option>
+                            <option value="26-35">26-35 years</option>
+                            <option value="36-50">36-50 years</option>
+                            <option value="51-65">51-65 years</option>
+                            <option value="66+">66+ years</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="income_level" class="form-label">Income Level</label>
+                        <select class="form-select" id="income_level" name="income_level">
+                            <option value="">Any (Mixed Income Levels)</option>
+                            <option value="budget">Budget-conscious</option>
+                            <option value="middle">Middle income</option>
+                            <option value="affluent">Affluent</option>
+                            <option value="luxury">Luxury consumers</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 d-flex align-items-end">
                     <div class="mb-3 w-100">
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="fas fa-users me-2"></i> Generate Profiles
+                            <i class="fas fa-users me-2"></i> Generate Customer Profiles
                         </button>
                     </div>
                 </div>

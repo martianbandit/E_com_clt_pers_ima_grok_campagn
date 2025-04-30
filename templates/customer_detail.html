@@ -49,13 +49,70 @@
                     
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Localisation</div>
-                        <div class="col-md-8">{{ customer.location }}</div>
+                        <div class="col-md-8">
+                            {{ customer.location }}
+                            {% if customer.country_code %}
+                                <span class="badge bg-secondary ms-2">{{ customer.country_code }}</span>
+                            {% endif %}
+                        </div>
                     </div>
                     
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Langue</div>
                         <div class="col-md-8">{{ customer.language }}</div>
                     </div>
+                    
+                    {% if customer.occupation %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Profession</div>
+                        <div class="col-md-8">{{ customer.occupation }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if customer.education %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Niveau d'éducation</div>
+                        <div class="col-md-8">{{ customer.education }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if customer.income_level %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Niveau de revenu</div>
+                        <div class="col-md-8">
+                            {% if customer.income_level == 'budget' %}
+                                <span class="badge bg-secondary">Budget-conscious</span>
+                            {% elif customer.income_level == 'middle' %}
+                                <span class="badge bg-info">Middle income</span>
+                            {% elif customer.income_level == 'affluent' %}
+                                <span class="badge bg-success">Affluent</span>
+                            {% elif customer.income_level == 'luxury' %}
+                                <span class="badge bg-warning">Luxury consumer</span>
+                            {% else %}
+                                {{ customer.income_level }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if customer.shopping_frequency %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Fréquence d'achat</div>
+                        <div class="col-md-8">
+                            {% if customer.shopping_frequency == 'rarely' %}
+                                <span class="badge bg-light text-dark">Rarement</span>
+                            {% elif customer.shopping_frequency == 'occasionally' %}
+                                <span class="badge bg-info">Occasionnellement</span>
+                            {% elif customer.shopping_frequency == 'frequently' %}
+                                <span class="badge bg-primary">Fréquemment</span>
+                            {% elif customer.shopping_frequency == 'very frequently' %}
+                                <span class="badge bg-success">Très fréquemment</span>
+                            {% else %}
+                                {{ customer.shopping_frequency }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
                     
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Centres d'intérêt</div>
@@ -76,6 +133,21 @@
                         <div class="col-md-4 fw-bold">Appareil préféré</div>
                         <div class="col-md-8">{{ customer.preferred_device }}</div>
                     </div>
+                    
+                    {% if customer.social_media %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Réseaux sociaux</div>
+                        <div class="col-md-8">
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for platform, usage in customer.social_media.items() %}
+                                    <div class="social-badge">
+                                        <strong>{{ platform }}</strong>: {{ usage }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                     
                     <div class="row mb-3">
                         <div class="col-md-4 fw-bold">Marché de niche</div>
