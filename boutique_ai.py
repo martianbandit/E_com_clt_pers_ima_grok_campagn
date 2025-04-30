@@ -213,6 +213,7 @@ async def generate_enhanced_customer_data_async(
     customer: dict,
     niche: str,
     existing_personas: list = None,
+    boutique_info: dict = None,
     model: str = GROK_3
 ) -> dict:
     """
@@ -250,6 +251,28 @@ async def generate_enhanced_customer_data_async(
         for i, persona in enumerate(existing_personas[:3]):  # Limiter à 3 pour éviter un prompt trop long
             existing_personas_summary += f"Persona {i+1}:\n{persona[:200]}...\n\n"
     
+    # Intégrer les informations de la boutique si disponibles
+    boutique_context = ""
+    if boutique_info and isinstance(boutique_info, dict):
+        boutique_name = boutique_info.get("name", "")
+        boutique_description = boutique_info.get("description", "")
+        boutique_target = boutique_info.get("target_demographic", "")
+        
+        if boutique_name or boutique_description or boutique_target:
+            boutique_context = f"""
+            BOUTIQUE INFORMATION:
+            Name: {boutique_name}
+            Description: {boutique_description}
+            Target Demographic: {boutique_target}
+            
+            SPECIAL REQUIREMENTS:
+            - Create a persona that would be an ideal customer for this specific boutique
+            - Align their interests and preferences with the boutique's offerings and style
+            - Ensure the persona would be part of the target demographic while maintaining diversity
+            - Include specific reasons why this person would be drawn to this boutique
+            - Consider how the boutique's identity resonates with this customer's values
+            """
+    
     # Craft a creative and vibrant boutique-specific persona generation prompt
     prompt = f"""
     Create an extraordinarily vivid and multi-dimensional persona for a {niche} boutique customer with these specific characteristics:
@@ -263,6 +286,8 @@ async def generate_enhanced_customer_data_async(
     
     Purchase History:
     {purchase_str}
+    
+    {boutique_context}
     
     {existing_personas_summary}
     
@@ -447,25 +472,65 @@ async def generate_customer_persona_async(
     client: AsyncOpenAI,
     customer: dict,
     niche: str,
+    boutique_id: int = None,
     model: str = GROK_3
 ) -> str:
     """
     Version simplifiée pour la compatibilité avec le code existant.
     Utilise la fonction enhanced et retourne uniquement le persona.
+    
+    Args:
+        client: AsyncOpenAI client
+        customer: Dictionnaire contenant les données client
+        niche: Niche de marché
+        boutique_id: ID de la boutique associée (optionnel)
+        model: Modèle Grok à utiliser
+        
+    Returns:
+        String contenant le persona généré
     """
     try:
-        from models import Customer
+        from models import Customer, Boutique
+        from app import db
         
         # Récupérer tous les personas existants pour éviter la répétition
         existing_personas = []
         # Une requête SQL serait idéale, mais nous éviterons les dépendances de DB ici
         # et laissons cette partie vide pour l'instant
         
+        # Récupérer les informations de la boutique si disponibles
+        boutique_info = None
+        if boutique_id:
+            try:
+                boutique = Boutique.query.get(boutique_id)
+                if boutique:
+                    boutique_info = {
+                        "name": boutique.name,
+                        "description": boutique.description,
+                        "target_demographic": boutique.target_demographic
+                    }
+            except Exception as boutique_err:
+                logger.warning(f"Could not retrieve boutique information: {boutique_err}")
+        
+        # Si le customer a une boutique_id, récupérer cette boutique
+        if not boutique_info and isinstance(customer, dict) and customer.get('boutique_id'):
+            try:
+                boutique = Boutique.query.get(customer.get('boutique_id'))
+                if boutique:
+                    boutique_info = {
+                        "name": boutique.name,
+                        "description": boutique.description,
+                        "target_demographic": boutique.target_demographic
+                    }
+            except Exception as boutique_err:
+                logger.warning(f"Could not retrieve boutique information from customer: {boutique_err}")
+        
         enhanced_data = await generate_enhanced_customer_data_async(
             client=client,
             customer=customer,
             niche=niche,
             existing_personas=existing_personas,
+            boutique_info=boutique_info,
             model=model
         )
         
