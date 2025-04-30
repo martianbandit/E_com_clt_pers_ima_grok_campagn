@@ -348,17 +348,39 @@ async def generate_image_prompt_async(
     niche: str,
     base_prompt: str,
     model: str = GROK_3
-) -> str:
+) -> dict:
+    """
+    Génère un prompt optimisé pour la création d'images marketing ciblées et SEO-friendly
+    
+    Args:
+        client: AsyncOpenAI client
+        customer: Dictionnaire contenant les données client
+        niche: Niche de marché
+        base_prompt: Prompt de base fourni par l'utilisateur
+        model: Modèle Grok à utiliser
+        
+    Returns:
+        Dictionnaire contenant le prompt optimisé, les mots-clés SEO et d'autres métadonnées
+    """
     interests = ", ".join(customer.get("interests", []))
     persona = customer.get("persona", "")
+    location = customer.get("location", "")
+    age = customer.get("age", "")
+    
+    # Extraction des mots-clés pertinents pour le SEO
+    keywords = [niche]
+    if interests:
+        keywords.extend([interest.strip() for interest in interests.split(',')[:3]])
     
     meta_prompt = f"""
-    Create an extraordinarily rich and vivid image generation prompt for a {niche} boutique marketing visual.
+    Create an extraordinarily rich and vivid image generation prompt for a {niche} boutique marketing visual optimized for SEO and targeted marketing.
     
     STARTING CONCEPT: {base_prompt}
     
     CUSTOMER PROFILE:
     - Interests: {interests}
+    - Location: {location}
+    - Age: {age}
     - Persona Insights: {persona[:250]}...
     
     VISUAL STORYTELLING REQUIREMENTS:
@@ -387,10 +409,19 @@ async def generate_image_prompt_async(
        - Include elements that address their specific pain points related to {niche}
        - Develop a visual hierarchy that guides them toward conversion
     
-    Craft a detailed, evocative image prompt (5-7 sentences) that would generate an image perfectly tailored 
-    to this customer's aesthetic sensibilities and psychological triggers. The prompt should 
-    be highly specific, using vivid descriptive language with particular attention to details
-    that would resonate with this unique customer profile.
+    5. SEO & MARKET TARGETING OPTIMIZATION
+       - Incorporate searchable industry-standard elements that shoppers look for
+       - Include clear product visualization that matches search intent
+       - Consider elements that are trending in {niche} market searches
+       - Ensure the image has a clear focal point that reads well in thumbnails
+    
+    DELIVERABLE FORMAT:
+    Provide your response in JSON format with these fields:
+    1. "prompt": a detailed, evocative image prompt (5-7 sentences) that would generate an image perfectly tailored to this customer
+    2. "alt_text": a concise, SEO-rich alternative text description (max 125 chars)
+    3. "keywords": 3-5 most relevant SEO keywords for this image
+    4. "image_title": SEO-optimized title for the image (max 60 chars)
+    5. "description": longer SEO-rich description for marketing copy (1-2 sentences)
     """
     
     try:
@@ -398,16 +429,50 @@ async def generate_image_prompt_async(
             model=model,
             messages=[{"role": "user", "content": meta_prompt}],
             temperature=0.8,
-            max_tokens=400,
+            max_tokens=700,
+            response_format={"type": "json_object"}
         )
         
         if not response.choices or not response.choices[0].message.content:
-            return base_prompt
+            return {"prompt": base_prompt, "keywords": keywords}
+        
+        try:
+            # Tenter de parser le JSON retourné
+            import json
+            result = json.loads(response.choices[0].message.content)
             
-        return response.choices[0].message.content
+            # S'assurer que toutes les clés nécessaires sont présentes
+            if "prompt" not in result:
+                result["prompt"] = base_prompt
+            if "keywords" not in result:
+                result["keywords"] = keywords
+            if "alt_text" not in result:
+                result["alt_text"] = f"{niche} marketing image for {customer.get('name', 'customer')}"
+            if "image_title" not in result:
+                result["image_title"] = f"{niche} - {base_prompt[:30]}..."
+            if "description" not in result:
+                result["description"] = f"Custom {niche} marketing image tailored for {customer.get('name', 'customers')} with interests in {interests}"
+                
+            return result
+        except json.JSONDecodeError:
+            # Si le JSON est invalide, extraire le prompt du texte brut
+            content = response.choices[0].message.content
+            return {
+                "prompt": content,
+                "keywords": keywords,
+                "alt_text": f"{niche} marketing image",
+                "image_title": f"{niche} - {base_prompt[:30]}...",
+                "description": f"Custom {niche} marketing image"
+            }
     except Exception as e:
         logger.error(f"Error generating image prompt: {e}")
-        return base_prompt
+        return {
+            "prompt": base_prompt,
+            "keywords": keywords,
+            "alt_text": f"{niche} marketing image",
+            "image_title": f"{niche} - {base_prompt[:30]}...",
+            "description": f"Custom {niche} marketing image"
+        }
 
 # Generate boutique-specific marketing image
 async def generate_boutique_image_async(
@@ -573,7 +638,7 @@ def generate_marketing_content(customer, campaign_type):
 
 def generate_marketing_image(customer, base_prompt, image_data=None, style=None):
     """
-    Generate a personalized marketing image for a customer
+    Generate a personalized marketing image for a customer with SEO optimization
     
     Args:
         customer: Customer data dict
@@ -582,10 +647,11 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None)
         style: Optional style to apply (watercolor, oil painting, photorealistic, etc)
         
     Returns:
-        URL of the generated image
+        Dictionary with image URL and SEO metadata (or just URL string for backward compatibility)
     """
     import os
     import logging
+    import time
     from openai import OpenAI
     
     try:
@@ -594,7 +660,7 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None)
         if customer.get("interests") and len(customer["interests"]) > 0:
             niche = customer["interests"][0]
         
-        # Améliorer le prompt si possible, sinon utiliser le prompt de base
+        # Générer un prompt optimisé et des métadonnées SEO
         try:
             # Créer une nouvelle boucle d'événements pour la génération du prompt
             prompt_loop = asyncio.new_event_loop()
@@ -602,21 +668,57 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None)
             
             try:
                 # Exécuter avec un timeout pour éviter les blocages
-                enhanced_prompt = prompt_loop.run_until_complete(asyncio.wait_for(
+                prompt_data = prompt_loop.run_until_complete(asyncio.wait_for(
                     generate_image_prompt_async(grok_client, customer, niche, base_prompt),
                     timeout=15.0
                 ))
+                
+                # Extraire le prompt et les métadonnées
+                if isinstance(prompt_data, dict) and "prompt" in prompt_data:
+                    enhanced_prompt = prompt_data["prompt"]
+                    seo_metadata = {
+                        "keywords": prompt_data.get("keywords", [niche]),
+                        "alt_text": prompt_data.get("alt_text", f"{niche} marketing image"),
+                        "image_title": prompt_data.get("image_title", f"{niche} - {base_prompt[:30]}..."),
+                        "description": prompt_data.get("description", f"Custom {niche} marketing image")
+                    }
+                else:
+                    enhanced_prompt = prompt_data if isinstance(prompt_data, str) else base_prompt
+                    seo_metadata = {
+                        "keywords": [niche],
+                        "alt_text": f"{niche} marketing image",
+                        "image_title": f"{niche} - {base_prompt[:30]}...",
+                        "description": f"Custom {niche} marketing image"
+                    }
             except asyncio.TimeoutError:
                 logging.warning("Timeout lors de l'amélioration du prompt, utilisation du prompt de base")
                 enhanced_prompt = base_prompt
+                seo_metadata = {
+                    "keywords": [niche],
+                    "alt_text": f"{niche} marketing image",
+                    "image_title": f"{niche} - {base_prompt[:30]}...",
+                    "description": f"Custom {niche} marketing image"
+                }
             except Exception as e:
                 logging.warning(f"Could not enhance prompt: {e}, using base prompt instead")
                 enhanced_prompt = base_prompt
+                seo_metadata = {
+                    "keywords": [niche],
+                    "alt_text": f"{niche} marketing image",
+                    "image_title": f"{niche} - {base_prompt[:30]}...",
+                    "description": f"Custom {niche} marketing image"
+                }
             finally:
                 prompt_loop.close()
         except Exception as e:
             logging.warning(f"Erreur lors de la configuration de la boucle asyncio: {e}, utilisation du prompt de base")
             enhanced_prompt = base_prompt
+            seo_metadata = {
+                "keywords": [niche],
+                "alt_text": f"{niche} marketing image",
+                "image_title": f"{niche} - {base_prompt[:30]}...",
+                "description": f"Custom {niche} marketing image"
+            }
         
         # Ajouter le style au prompt si spécifié
         final_prompt = enhanced_prompt
@@ -630,20 +732,62 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None)
         # Utiliser OpenAI directement pour la génération d'images
         openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
         
-        response = openai_client.images.generate(
-            model="dall-e-3",
-            prompt=final_prompt,
-            n=1,
-            size="1024x1024",
-        )
+        # Ajouter des éléments SEO supplémentaires au prompt final
+        seo_enhanced_prompt = f"{final_prompt} The image should be clear and distinct with good product visibility optimized for online marketing."
         
-        # Extraire l'URL de l'image de la réponse
-        if hasattr(response, 'data') and len(response.data) > 0 and hasattr(response.data[0], 'url'):
-            return response.data[0].url
-        else:
-            logging.error("No image URL in OpenAI response")
-            return "https://placehold.co/600x400/grey/white?text=Image+Generation+Failed"
-            
+        # Génération de l'image avec des tentatives de récupération en cas d'échec
+        max_retries = 2
+        retry_count = 0
+        
+        while retry_count <= max_retries:
+            try:
+                response = openai_client.images.generate(
+                    model="dall-e-3",
+                    prompt=seo_enhanced_prompt,
+                    n=1,
+                    size="1024x1024",
+                )
+                
+                # Extraire l'URL de l'image de la réponse
+                if hasattr(response, 'data') and len(response.data) > 0 and hasattr(response.data[0], 'url'):
+                    image_url = response.data[0].url
+                    
+                    # Construction du nom de fichier SEO-friendly
+                    timestamp = int(time.time())
+                    name_part = customer.get("name", "customer").lower().replace(" ", "-")
+                    niche_part = niche.lower().replace(" ", "-")
+                    image_filename = f"{niche_part}-{name_part}-{timestamp}.png"
+                    
+                    # Ajouter toutes les métadonnées dans un dictionnaire
+                    result = {
+                        "url": image_url,
+                        "filename": image_filename,
+                        "alt_text": seo_metadata["alt_text"],
+                        "title": seo_metadata["image_title"],
+                        "description": seo_metadata["description"],
+                        "keywords": seo_metadata["keywords"],
+                        "prompt": enhanced_prompt
+                    }
+                    
+                    # Pour la compatibilité avec le code existant, retourner uniquement l'URL
+                    # Cette ligne peut être modifiée si le code appelant est mis à jour pour utiliser les métadonnées
+                    return image_url
+                else:
+                    logging.error("No image URL in OpenAI response")
+                    retry_count += 1
+                    if retry_count <= max_retries:
+                        logging.info(f"Retrying image generation (attempt {retry_count}/{max_retries})...")
+                        time.sleep(2)  # Attendre avant de réessayer
+                    else:
+                        return "https://placehold.co/600x400/grey/white?text=Image+Generation+Failed"
+            except Exception as e:
+                logging.error(f"Error generating image on attempt {retry_count+1}: {e}")
+                retry_count += 1
+                if retry_count <= max_retries:
+                    logging.info(f"Retrying image generation (attempt {retry_count}/{max_retries})...")
+                    time.sleep(2)  # Attendre avant de réessayer
+                else:
+                    return "https://placehold.co/600x400/grey/white?text=Image+Generation+Failed"
     except Exception as e:
-        logging.error(f"Error generating marketing image: {e}")
+        logging.error(f"Error in overall image generation process: {e}")
         return "https://placehold.co/600x400/grey/white?text=Image+Generation+Failed"
