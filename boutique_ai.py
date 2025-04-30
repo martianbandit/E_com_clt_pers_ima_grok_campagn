@@ -125,36 +125,47 @@ async def generate_boutique_customers(
             income_constraint = f"All customers should be {income_description} shoppers with income_level set to '{income_level}'."
     
     prompt = f"""
-    Generate {num_customers} sample customers for a boutique focused on {niche}.
+    Generate {num_customers} diverse and vibrant customer profiles for a boutique specializing in {niche}.
     Boutique description: {niche_description}
     
+    CREATE HIGHLY UNIQUE PROFILES:
+    - Ensure an even gender distribution (approximately 50/50)
+    - Create a diverse age range (18-75+) with special focus on underrepresented age groups like seniors and young adults
+    - Include diversity in education levels (from high school to doctorate)
+    - Vary income levels (budget, middle, affluent, and luxury)
+    - Create unique occupation combinations that challenge stereotypes
+    - Invent distinctive shopping patterns and brand affinities
+    - Generate creative interests that surprise but remain relevant to the niche
+    
     The customers should have the following attributes:
-    - name: str
-    - age: int
-    - location: str
+    - name: str (create culturally diverse names representative of different ethnicities and backgrounds)
+    - age: int (distribute across age ranges 18-25, 26-35, 36-45, 46-55, 56-65, 66-75, 76+)
+    - location: str (use specific neighborhoods and cultural districts, not just city centers)
     - country_code: str (2-letter ISO code, e.g., 'US', 'FR', 'JP')
-    - gender: Gender
-    - language: str
-    - purchase_history: list[Item]
-    - interests: list[str]
-    - search_history: dict[str, str]
-    - preferred_device: str
+    - gender: Gender (MALE, FEMALE - ensure balanced distribution)
+    - language: str (include primary language and secondary languages when appropriate)
+    - purchase_history: list[Item] (range from first-time buyers to loyal customers with product progression stories)
+    - interests: list[str] (include at least 5 specific, nuanced interests directly relevant to {niche})
+    - search_history: dict[str, str] (reflect knowledge journey and discovery patterns unique to each customer)
+    - preferred_device: str (consider age and lifestyle for realistic device preferences)
     - income_level: str (one of: 'budget', 'middle', 'affluent', 'luxury')
-    - education: str (e.g., 'high school', 'bachelor', 'master', 'doctorate')
-    - occupation: str
-    - social_media: dict[str, str] (platform name and usage frequency)
+    - education: str (e.g., 'high school', 'bachelor', 'master', 'doctorate', 'self-taught', 'vocational training')
+    - occupation: str (be creative and specific with job titles and sectors)
+    - social_media: dict[str, str] (platform name and usage frequency - match to age and lifestyle realistically)
     - shopping_frequency: str (one of: 'rarely', 'occasionally', 'frequently', 'very frequently')
 
-    Here are the attributes of an Item:
-    - name: str (make this relevant to the {niche} niche)
-    - category: str (make this relevant to the {niche} niche)
-    - price: float (make this realistic for {niche} products)
-    - purchase_date: str (in YYYY-MM-DD format)
+    For Item objects in purchase_history:
+    - name: str (create distinctive, brand-specific product names that feel like real catalog items)
+    - category: str (use specific product categories and subcategories relevant to {niche})
+    - price: float (create realistic prices with appropriate variation and precision)
+    - purchase_date: str (create purchase patterns over time, in YYYY-MM-DD format, most recent within the last 6 months)
 
-    Each customer should be varied and distinct from the others: 
-    - Ensure the customers are realistic for the {niche} market
-    - Include appropriate languages based on the customer's location
-    - Make sure purchase history, interests, and search history are highly relevant to the {niche} niche
+    CRITICAL DIVERSITY REQUIREMENTS:
+    - Customers must have deeply varied backstories and motivations 
+    - Include surprising customer profiles that challenge traditional market assumptions
+    - Create a rich spectrum of lifestyle patterns and value systems
+    - Include customers with different levels of expertise in the {niche} area
+    - Include unusual combinations of interests that still realistically connect to the {niche}
     - Have 70% of customers be in the target demographic for this niche, and 30% be potential new audiences
     {location_constraint}
     {age_constraint}
@@ -201,9 +212,9 @@ async def generate_customer_persona_async(
         purchases.append(f"{item.get('name')} ({item.get('category')}) - ${item.get('price')}")
     purchase_str = "\n".join(purchases)
     
-    # Craft a boutique-specific persona generation prompt
+    # Craft a creative and vibrant boutique-specific persona generation prompt
     prompt = f"""
-    Create a detailed, compelling persona for a customer of a {niche} boutique with the following information:
+    Create an extraordinarily vivid and multi-dimensional persona for a {niche} boutique customer with these specific characteristics:
     
     Name: {name}
     Age: {age}
@@ -215,15 +226,41 @@ async def generate_customer_persona_async(
     Purchase History:
     {purchase_str}
     
-    This persona should tell a rich story about this customer that helps understand:
-    1. Their relationship with the {niche} market
-    2. Their shopping habits and preferences
-    3. Their lifestyle and values
-    4. What motivates their purchasing decisions
-    5. What kind of personalized marketing would resonate with them
+    PERSONA GENERATION REQUIREMENTS:
+    
+    1. PSYCHOLOGICAL DIMENSION
+       - Craft a unique psychological profile with distinctive personality traits
+       - Create specific emotional triggers and sensitivities related to {niche}
+       - Develop nuanced motivational drives beyond obvious ones
+       - Include surprising psychological insights that defy stereotypical assumptions
+    
+    2. LIFESTYLE PORTRAIT
+       - Paint a detailed picture of their daily rituals and routines
+       - Describe their home environment and personal aesthetic in vivid detail
+       - Illustrate their social circles and relationships as they relate to {niche}
+       - Include specific challenges or pain points in their lifestyle
+    
+    3. SHOPPING PSYCHOLOGY
+       - Explain their discovery process for new products
+       - Detail how they evaluate quality and value in the {niche} space
+       - Describe their emotional relationship with purchasing decisions
+       - Illustrate their post-purchase behavior and satisfaction patterns
+    
+    4. CONTENT & MARKETING PREFERENCES  
+       - Identify specific media channels where they spend time
+       - Note their sensitivity to different marketing approaches (humor, emotion, data)
+       - Detail the aesthetic styles and visual language that attracts them
+       - Explain how they prefer to receive communication (tone, format, frequency)
+    
+    5. RELATIONSHIP WITH THE NICHE
+       - Create a compelling backstory for how they discovered this niche
+       - Describe their level of expertise and confidence in the {niche} market
+       - Detail their aspirational goals related to the {niche}
+       - Include specific frustrations or unmet needs within the {niche} space
     
     Write in second person as if you're directly describing the customer to the boutique owner.
-    The persona should be 3-4 paragraphs long, vivid and specific.
+    The persona should be 3-4 paragraphs long, vibrant and specific, with memorable details.
+    Avoid generic descriptions - make this person feel utterly unique and immediately recognizable.
     """
     
     try:
@@ -316,23 +353,44 @@ async def generate_image_prompt_async(
     persona = customer.get("persona", "")
     
     meta_prompt = f"""
-    Create a detailed image generation prompt for a {niche} boutique marketing image.
+    Create an extraordinarily rich and vivid image generation prompt for a {niche} boutique marketing visual.
     
-    Base idea: {base_prompt}
+    STARTING CONCEPT: {base_prompt}
     
-    Customer interests: {interests}
+    CUSTOMER PROFILE:
+    - Interests: {interests}
+    - Persona Insights: {persona[:250]}...
     
-    Customer persona summary: {persona[:200]}...
+    VISUAL STORYTELLING REQUIREMENTS:
     
-    Your task is to enhance this base prompt to:
-    1. Appeal specifically to this customer's aesthetic preferences
-    2. Incorporate visual elements from the {niche} niche
-    3. Suggest specific colors, styles, and composition that would resonate with this customer
-    4. Create a visually striking image that will catch this customer's attention
-    5. Make it feel personalized to their tastes
+    1. AESTHETIC ALIGNMENT
+       - Identify a specific visual style that would deeply resonate with this customer's taste profile
+       - Consider cultural references from their background and interests
+       - Suggest a distinctive color palette that captures their emotional associations with {niche}
+       - Define lighting approaches that evoke the right mood for this customer
     
-    Write a detailed, specific image generation prompt that would create an image perfect for this customer.
-    The prompt should be 3-5 sentences long and extremely detailed.
+    2. SYMBOLIC ELEMENTS
+       - Include powerful visual symbols that connect to the customer's values
+       - Create unexpected juxtapositions or elements that surprise while remaining relevant
+       - Incorporate subtle details that only someone passionate about {niche} would notice
+       - Balance aspirational elements with authentic, relatable touches
+    
+    3. COMPOSITIONAL STRATEGY  
+       - Design a focal point that immediately grabs this specific customer's attention
+       - Suggest composition techniques that align with their aesthetic sensibilities
+       - Define perspective approaches that create the right emotional distance
+       - Balance white space and visual density based on their cognitive preferences
+    
+    4. EMOTIONAL RESONANCE
+       - Target specific emotional triggers that motivate this customer
+       - Create visual contrast that reflects their decision-making patterns
+       - Include elements that address their specific pain points related to {niche}
+       - Develop a visual hierarchy that guides them toward conversion
+    
+    Craft a detailed, evocative image prompt (5-7 sentences) that would generate an image perfectly tailored 
+    to this customer's aesthetic sensibilities and psychological triggers. The prompt should 
+    be highly specific, using vivid descriptive language with particular attention to details
+    that would resonate with this unique customer profile.
     """
     
     try:
