@@ -164,4 +164,23 @@ def search_similar_products(product_description: str, campaign_id: int, niche: s
     """
     Wrapper synchrone pour la fonction de recherche de produits similaires.
     """
-    return asyncio.run(find_similar_products(product_description, campaign_id, niche, max_results))
+    import logging
+    
+    # Créer une nouvelle boucle d'événements
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
+    try:
+        # Exécuter la fonction asynchrone avec un timeout pour éviter les blocages
+        return loop.run_until_complete(asyncio.wait_for(
+            find_similar_products(product_description, campaign_id, niche, max_results),
+            timeout=30.0
+        ))
+    except asyncio.TimeoutError:
+        logging.error(f"Timeout lors de la recherche de produits similaires pour la campagne {campaign_id}")
+        return []
+    except Exception as e:
+        logging.error(f"Erreur lors de la recherche de produits similaires: {str(e)}")
+        return []
+    finally:
+        loop.close()

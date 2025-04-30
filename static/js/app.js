@@ -1,4 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Utilitaire pour ajouter des écouteurs d'événements de manière sécurisée
+    function addSafeEventListener(elementId, eventType, callback) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.addEventListener(eventType, callback);
+        }
+    }
     // Initialize Bootstrap tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -9,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
     var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
         return new bootstrap.Popover(popoverTriggerEl)
+    });
+    
+    // Gestion sécurisée du bouton de sauvegarde de niche (s'il existe)
+    addSafeEventListener('saveNewNicheBtn', 'click', function() {
+        // Logique de sauvegarde de niche si nécessaire
     });
 
     // Handle boutique form submission

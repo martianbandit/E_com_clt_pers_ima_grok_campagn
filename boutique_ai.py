@@ -482,33 +482,94 @@ def generate_customers(niche, niche_description, num_customers=5, generation_par
     """
     if generation_params is None:
         generation_params = {}
-        
-    customers_obj = asyncio.run(generate_boutique_customers(
-        grok_client, 
-        niche, 
-        niche_description, 
-        num_customers,
-        target_country=generation_params.get('target_country', ''),
-        age_range=generation_params.get('age_range', ''),
-        income_level=generation_params.get('income_level', '')
-    ))
     
-    # Convert to a list of dictionaries for JSON serialization
-    return [customer.dict() for customer in customers_obj.customers]
+    # Créer une nouvelle boucle d'événements pour éviter les conflits avec d'autres boucles
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
+    try:
+        # Exécuter la fonction asynchrone avec un timeout de 30 secondes pour éviter les blocages
+        customers_obj = loop.run_until_complete(asyncio.wait_for(
+            generate_boutique_customers(
+                grok_client, 
+                niche, 
+                niche_description, 
+                num_customers,
+                target_country=generation_params.get('target_country', ''),
+                age_range=generation_params.get('age_range', ''),
+                income_level=generation_params.get('income_level', '')
+            ), 
+            timeout=30.0
+        ))
+        
+        # Convert to a list of dictionaries for JSON serialization
+        return [customer.dict() for customer in customers_obj.customers]
+    except asyncio.TimeoutError:
+        # En cas de timeout, retourner un message d'erreur lisible
+        logging.error(f"Timeout lors de la génération des profils clients pour {niche}")
+        # Retourner un tableau vide pour éviter les erreurs
+        return []
+    except Exception as e:
+        # Gérer les autres exceptions
+        logging.error(f"Erreur lors de la génération des profils clients: {str(e)}")
+        return []
+    finally:
+        # Toujours fermer la boucle pour éviter les fuites de ressources
+        loop.close()
 
 def generate_customer_persona(customer):
     """Generate a detailed persona for a customer profile"""
+    import logging
+    
     niche = ""  # Extract from interests or other attributes
     if customer.get("interests"):
         niche = customer["interests"][0]  # Use first interest as niche if not specified
-    return asyncio.run(generate_customer_persona_async(grok_client, customer, niche))
+    
+    # Créer une nouvelle boucle d'événements
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
+    try:
+        # Exécuter la fonction asynchrone avec un timeout
+        return loop.run_until_complete(asyncio.wait_for(
+            generate_customer_persona_async(grok_client, customer, niche),
+            timeout=20.0
+        ))
+    except asyncio.TimeoutError:
+        logging.error(f"Timeout lors de la génération du persona pour {customer.get('name', 'client inconnu')}")
+        return "Impossible de générer un persona en raison d'un délai d'attente dépassé. Veuillez réessayer."
+    except Exception as e:
+        logging.error(f"Erreur lors de la génération du persona: {str(e)}")
+        return f"Erreur lors de la génération du persona: {str(e)}"
+    finally:
+        loop.close()
 
 def generate_marketing_content(customer, campaign_type):
     """Generate personalized marketing content for a customer"""
+    import logging
+    
     niche = ""
     if customer.get("interests"):
         niche = customer["interests"][0]
-    return asyncio.run(generate_boutique_marketing_content_async(grok_client, customer, niche, campaign_type))
+    
+    # Créer une nouvelle boucle d'événements
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
+    try:
+        # Exécuter la fonction asynchrone avec un timeout
+        return loop.run_until_complete(asyncio.wait_for(
+            generate_boutique_marketing_content_async(grok_client, customer, niche, campaign_type),
+            timeout=25.0
+        ))
+    except asyncio.TimeoutError:
+        logging.error(f"Timeout lors de la génération du contenu marketing pour {customer.get('name', 'client inconnu')}")
+        return "Impossible de générer du contenu marketing en raison d'un délai d'attente dépassé. Veuillez réessayer."
+    except Exception as e:
+        logging.error(f"Erreur lors de la génération du contenu marketing: {str(e)}")
+        return f"Erreur lors de la génération du contenu marketing: {str(e)}"
+    finally:
+        loop.close()
 
 def generate_marketing_image(customer, base_prompt, image_data=None, style=None):
     """
@@ -535,9 +596,26 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None)
         
         # Améliorer le prompt si possible, sinon utiliser le prompt de base
         try:
-            enhanced_prompt = asyncio.run(generate_image_prompt_async(grok_client, customer, niche, base_prompt))
+            # Créer une nouvelle boucle d'événements pour la génération du prompt
+            prompt_loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(prompt_loop)
+            
+            try:
+                # Exécuter avec un timeout pour éviter les blocages
+                enhanced_prompt = prompt_loop.run_until_complete(asyncio.wait_for(
+                    generate_image_prompt_async(grok_client, customer, niche, base_prompt),
+                    timeout=15.0
+                ))
+            except asyncio.TimeoutError:
+                logging.warning("Timeout lors de l'amélioration du prompt, utilisation du prompt de base")
+                enhanced_prompt = base_prompt
+            except Exception as e:
+                logging.warning(f"Could not enhance prompt: {e}, using base prompt instead")
+                enhanced_prompt = base_prompt
+            finally:
+                prompt_loop.close()
         except Exception as e:
-            logging.warning(f"Could not enhance prompt: {e}, using base prompt instead")
+            logging.warning(f"Erreur lors de la configuration de la boucle asyncio: {e}, utilisation du prompt de base")
             enhanced_prompt = base_prompt
         
         # Ajouter le style au prompt si spécifié
