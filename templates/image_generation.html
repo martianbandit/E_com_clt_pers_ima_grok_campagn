@@ -1,17 +1,17 @@
 {% extends 'layout.html' %}
 
-{% block title %}Génération d'Images Marketing Optimisées{% endblock %}
+{% block title %}{{ _('Optimized Marketing Image Generation') }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <div class="row mb-4">
         <div class="col">
-            <h1>Générateur d'Images Marketing</h1>
-            <p class="lead">Créez des images marketing personnalisées et optimisées pour vos clients</p>
+            <h1>{{ _('Marketing Image Generator') }}</h1>
+            <p class="lead">{{ _('Create personalized and optimized marketing images for your customers') }}</p>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Tableau de bord</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Générateur d'Images</li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">{{ _('Dashboard') }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ _('Image Generator') }}</li>
                 </ol>
             </nav>
         </div>
@@ -21,37 +21,37 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-palette me-2"></i> Création d'Image Marketing</h5>
+                    <h5 class="mb-0"><i class="fas fa-palette me-2"></i> {{ _('Marketing Image Creation') }}</h5>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('image_generation') }}" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label for="title" class="form-label">Titre de la campagne</label>
-                            <input type="text" class="form-control" id="title" name="title" placeholder="Nom de votre campagne d'images">
+                            <label for="title" class="form-label">{{ _('Campaign Title') }}</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="{{ _('Name of your image campaign') }}">
                         </div>
                         
                         <div class="mb-3">
-                            <label for="customer_id" class="form-label">Client</label>
+                            <label for="customer_id" class="form-label">{{ _('Customer') }}</label>
                             <select class="form-select" id="customer_id" name="customer_id" required>
-                                <option value="">Sélectionner un client</option>
+                                <option value="">{{ _('Select a customer') }}</option>
                                 {% for customer in saved_customers %}
                                 <option value="{{ customer.id }}">{{ customer.name }} - {{ customer.location }}</option>
                                 {% endfor %}
                             </select>
-                            <small class="form-text text-muted">L'image sera personnalisée en fonction du profil et des préférences du client.</small>
+                            <small class="form-text text-muted">{{ _('The image will be customized based on the customer\'s profile and preferences.') }}</small>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="base_prompt" class="form-label">Description d'image (prompt)</label>
-                            <textarea class="form-control" id="base_prompt" name="base_prompt" rows="3" placeholder="Décrivez l'image que vous souhaitez générer..." required></textarea>
-                            <small class="form-text text-muted">Soyez spécifique: objet principal, ambiance, couleurs, style, etc.</small>
+                            <label for="base_prompt" class="form-label">{{ _('Image Description (prompt)') }}</label>
+                            <textarea class="form-control" id="base_prompt" name="base_prompt" rows="3" placeholder="{{ _('Describe the image you want to generate...') }}" required></textarea>
+                            <small class="form-text text-muted">{{ _('Be specific: main object, mood, colors, style, etc.') }}</small>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="style" class="form-label">Style artistique</label>
+                                <label for="style" class="form-label">{{ _('Artistic Style') }}</label>
                                 <select class="form-select" id="style" name="style">
-                                    <option value="">Style par défaut</option>
+                                    <option value="">{{ _('Default Style') }}</option>
                                     {% for style in available_styles %}
                                     <option value="{{ style.id }}">{{ style.name }}</option>
                                     {% endfor %}
@@ -59,9 +59,9 @@
                             </div>
                             
                             <div class="col-md-6 mb-3">
-                                <label for="reference_image" class="form-label">Image de référence (optionnel)</label>
+                                <label for="reference_image" class="form-label">{{ _('Reference Image (optional)') }}</label>
                                 <input type="file" class="form-control" id="reference_image" name="reference_image" accept="image/*">
-                                <small class="form-text text-muted">Téléchargez une image pour servir de référence visuelle.</small>
+                                <small class="form-text text-muted">{{ _('Upload an image to serve as a visual reference.') }}</small>
                             </div>
                         </div>
                         
@@ -70,7 +70,7 @@
                                 <div class="card-header bg-success text-white">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h6 class="mb-0">
-                                            <i class="fas fa-search me-2"></i> Options SEO avancées
+                                            <i class="fas fa-search me-2"></i> {{ _('Advanced SEO Options') }}
                                         </h6>
                                         <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#seoOptions">
                                             <i class="fas fa-cog"></i>
@@ -80,25 +80,25 @@
                                 <div class="collapse" id="seoOptions">
                                     <div class="card-body">
                                         <div class="alert alert-success mb-3">
-                                            <i class="fas fa-magic me-2"></i> L'IA générera automatiquement des métadonnées SEO optimisées pour votre image. Vous pouvez aussi personnaliser ces éléments ci-dessous.
+                                            <i class="fas fa-magic me-2"></i> {{ _('AI will automatically generate optimized SEO metadata for your image. You can also customize these elements below.') }}
                                         </div>
                                         
                                         <div class="mb-3">
-                                            <label for="seo_keywords" class="form-label">Mots-clés SEO (séparés par des virgules)</label>
-                                            <input type="text" class="form-control" id="seo_keywords" name="seo_keywords" placeholder="Ex: mode, luxe, éthique, tendance">
-                                            <small class="form-text text-muted">Mots-clés pertinents pour améliorer le référencement de l'image</small>
+                                            <label for="seo_keywords" class="form-label">{{ _('SEO Keywords (comma separated)') }}</label>
+                                            <input type="text" class="form-control" id="seo_keywords" name="seo_keywords" placeholder="{{ _('Ex: fashion, luxury, ethical, trendy') }}">
+                                            <small class="form-text text-muted">{{ _('Relevant keywords to improve image search ranking') }}</small>
                                         </div>
                                         
                                         <div class="mb-3">
-                                            <label for="seo_alt_text" class="form-label">Texte alternatif (alt)</label>
-                                            <input type="text" class="form-control" id="seo_alt_text" name="seo_alt_text" maxlength="125" placeholder="Description concise de l'image pour l'accessibilité et le SEO">
-                                            <small class="form-text text-muted">125 caractères max. Essentiel pour l'accessibilité et le référencement</small>
+                                            <label for="seo_alt_text" class="form-label">{{ _('Alternative Text (alt)') }}</label>
+                                            <input type="text" class="form-control" id="seo_alt_text" name="seo_alt_text" maxlength="125" placeholder="{{ _('Concise description of the image for accessibility and SEO') }}">
+                                            <small class="form-text text-muted">{{ _('125 characters max. Essential for accessibility and SEO') }}</small>
                                         </div>
                                         
                                         <div class="mb-3">
-                                            <label for="seo_title" class="form-label">Titre SEO de l'image</label>
-                                            <input type="text" class="form-control" id="seo_title" name="seo_title" maxlength="60" placeholder="Titre optimisé pour le référencement">
-                                            <small class="form-text text-muted">60 caractères max. Utilisé dans les résultats de recherche d'images</small>
+                                            <label for="seo_title" class="form-label">{{ _('SEO Image Title') }}</label>
+                                            <input type="text" class="form-control" id="seo_title" name="seo_title" maxlength="60" placeholder="{{ _('Optimized title for search ranking') }}">
+                                            <small class="form-text text-muted">{{ _('60 characters max. Used in image search results') }}</small>
                                         </div>
                                     </div>
                                 </div>
@@ -107,17 +107,17 @@
                         
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="find_similar_products" name="find_similar_products">
-                            <label class="form-check-label" for="find_similar_products">Trouver des produits similaires sur AliExpress</label>
-                            <small class="form-text text-muted d-block">L'IA cherchera des produits correspondants sur AliExpress pour enrichir votre campagne marketing.</small>
+                            <label class="form-check-label" for="find_similar_products">{{ _('Find similar products on AliExpress') }}</label>
+                            <small class="form-text text-muted d-block">{{ _('AI will search for matching products on AliExpress to enhance your marketing campaign.') }}</small>
                         </div>
                         
                         <div class="alert alert-info" role="alert">
-                            <i class="fas fa-info-circle me-2"></i> L'IA analysera le profil client et améliorera automatiquement votre prompt pour créer une image optimisée pour ce client spécifique.
+                            <i class="fas fa-info-circle me-2"></i> {{ _('AI will analyze the customer profile and automatically enhance your prompt to create an image optimized for this specific customer.') }}
                         </div>
                         
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-magic me-2"></i> Générer l'image
+                                <i class="fas fa-magic me-2"></i> {{ _('Generate Image') }}
                             </button>
                         </div>
                     </form>
@@ -128,47 +128,47 @@
         <div class="col-md-4">
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i> Conseils</h5>
+                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i> {{ _('Tips') }}</h5>
                 </div>
                 <div class="card-body">
-                    <h6>Pour de meilleurs résultats:</h6>
+                    <h6>{{ _('For better results:') }}</h6>
                     <ul>
-                        <li>Soyez détaillé et précis dans votre description</li>
-                        <li>Mentionnez les éléments visuels importants</li>
-                        <li>Précisez l'ambiance et les émotions souhaitées</li>
-                        <li>Utilisez une image de référence pour guider le style</li>
-                        <li>Choisissez un style adapté à votre boutique</li>
+                        <li>{{ _('Be detailed and precise in your description') }}</li>
+                        <li>{{ _('Mention important visual elements') }}</li>
+                        <li>{{ _('Specify the desired mood and emotions') }}</li>
+                        <li>{{ _('Use a reference image to guide the style') }}</li>
+                        <li>{{ _('Choose a style that suits your boutique') }}</li>
                     </ul>
                     
-                    <h6 class="mt-3">Optimisation SEO:</h6>
+                    <h6 class="mt-3">{{ _('SEO Optimization:') }}</h6>
                     <ul>
-                        <li>Utilisez des mots-clés pertinents pour votre niche</li>
-                        <li>Créez un texte alternatif (alt) descriptif et avec mots-clés</li>
-                        <li>Donnez un titre SEO court et accrocheur</li>
-                        <li>Incluez votre nom de marque dans les métadonnées</li>
-                        <li>Privilégiez des images avec un sujet clair et bien visible</li>
+                        <li>{{ _('Use relevant keywords for your niche') }}</li>
+                        <li>{{ _('Create descriptive alt text with keywords') }}</li>
+                        <li>{{ _('Make your SEO title short and catchy') }}</li>
+                        <li>{{ _('Include your brand name in metadata') }}</li>
+                        <li>{{ _('Prioritize images with clear and visible subjects') }}</li>
                     </ul>
                     
-                    <p class="mb-0 small text-muted">Le système améliorera automatiquement votre prompt et les métadonnées SEO en fonction du profil client pour maximiser la personnalisation, l'impact et la visibilité.</p>
+                    <p class="mb-0 small text-muted">{{ _('The system will automatically enhance your prompt and SEO metadata based on the customer profile to maximize personalization, impact, and visibility.') }}</p>
                 </div>
             </div>
             
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-th me-2"></i> Exemples de prompts</h5>
+                    <h5 class="mb-0"><i class="fas fa-th me-2"></i> {{ _('Prompt Examples') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-2">
-                        <h6>Pour la mode:</h6>
-                        <p class="small">"Une robe élégante rouge flottant sur un mannequin invisible, dans un décor urbain avec des reflets de lumière dorée"</p>
+                        <h6>{{ _('For fashion:') }}</h6>
+                        <p class="small">{{ _('"An elegant red dress floating on an invisible mannequin, in an urban setting with golden light reflections"') }}</p>
                     </div>
                     <div class="mb-2">
-                        <h6>Pour les accessoires:</h6>
-                        <p class="small">"Un sac à main en cuir premium sur une table en marbre avec des plantes tropicales en arrière-plan et une lumière douce"</p>
+                        <h6>{{ _('For accessories:') }}</h6>
+                        <p class="small">{{ _('"A premium leather handbag on a marble table with tropical plants in the background and soft lighting"') }}</p>
                     </div>
                     <div class="mb-0">
-                        <h6>Pour la décoration:</h6>
-                        <p class="small mb-0">"Une table basse en bois dans un salon minimaliste scandinave, avec une tasse de café et un livre ouvert"</p>
+                        <h6>{{ _('For decoration:') }}</h6>
+                        <p class="small mb-0">{{ _('"A wooden coffee table in a minimalist Scandinavian living room, with a coffee cup and an open book"') }}</p>
                     </div>
                 </div>
             </div>
@@ -179,11 +179,11 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0"><i class="fas fa-history me-2"></i> Images générées récemment</h5>
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i> {{ _('Recently Generated Images') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        {# Afficher les campagnes avec images #}
+                        {# Display campaigns with images #}
                         {% set image_count = 0 %}
                         {% set max_images = 6 %}
                         {% set has_image_campaigns = false %}
@@ -198,11 +198,11 @@
                                             <div class="position-relative">
                                                 <img src="{{ campaign.image_url }}" 
                                                      class="card-img-top" 
-                                                     alt="{{ campaign.image_alt_text or 'Image marketing' }}" 
+                                                     alt="{{ campaign.image_alt_text or _('Marketing image') }}" 
                                                      title="{{ campaign.image_title or campaign.title }}">
                                                 {% if campaign.image_alt_text or campaign.image_title or campaign.image_keywords %}
                                                 <div class="position-absolute top-0 end-0 m-2">
-                                                    <span class="badge bg-success" title="Image optimisée pour le référencement">SEO</span>
+                                                    <span class="badge bg-success" title="{{ _('SEO optimized image') }}">SEO</span>
                                                 </div>
                                                 {% endif %}
                                             </div>
@@ -211,18 +211,19 @@
                                                 <p class="card-text small">{{ campaign.content }}</p>
                                                 {% if campaign.image_keywords %}
                                                 <div class="d-flex flex-wrap gap-1 my-2">
-                                                    {% for keyword in campaign.get_seo_keywords()|slice(0, 3) %}
-                                                    <span class="badge bg-light text-dark">{{ keyword }}</span>
+                                                    {% set keywords = campaign.image_keywords.split(',') %}
+                                                    {% for keyword in keywords[:3] %}
+                                                        <span class="badge bg-light text-dark">{{ keyword }}</span>
                                                     {% endfor %}
-                                                    {% if campaign.get_seo_keywords()|length > 3 %}
-                                                    <span class="badge bg-light text-dark">+{{ campaign.get_seo_keywords()|length - 3 }}</span>
+                                                    {% if keywords|length > 3 %}
+                                                        <span class="badge bg-light text-dark">+{{ keywords|length - 3 }}</span>
                                                     {% endif %}
                                                 </div>
                                                 {% endif %}
                                                 <p class="card-text">
-                                                    <small class="text-muted">Client: {{ campaign.customer.name }}</small>
+                                                    <small class="text-muted">{{ _('Customer') }}: {{ campaign.customer.name }}</small>
                                                 </p>
-                                                <a href="{{ url_for('view_campaign', campaign_id=campaign.id) }}" class="btn btn-sm btn-outline-primary">Voir les détails</a>
+                                                <a href="{{ url_for('view_campaign', campaign_id=campaign.id) }}" class="btn btn-sm btn-outline-primary">{{ _('View details') }}</a>
                                             </div>
                                         </div>
                                     </div>
@@ -232,7 +233,7 @@
                         
                         {% if not has_image_campaigns %}
                             <div class="col-12 text-center py-5">
-                                <p class="text-muted">Aucune image générée pour le moment.</p>
+                                <p class="text-muted">{{ _('No images generated yet.') }}</p>
                             </div>
                         {% endif %}
                     </div>
