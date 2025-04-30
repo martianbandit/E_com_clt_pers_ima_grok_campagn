@@ -699,6 +699,9 @@ def image_generation():
             if not customer:
                 flash('Client invalide sélectionné', 'danger')
                 return redirect(url_for('image_generation'))
+                
+            # Incrémenter le compteur d'utilisation du profil
+            customer.usage_count = (customer.usage_count or 0) + 1
             
             # Convertir le client en dictionnaire pour l'API
             profile = customer.profile_data if customer.profile_data else {

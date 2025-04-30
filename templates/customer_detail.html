@@ -164,6 +164,16 @@
                         <div class="col-md-4 fw-bold">Créé le</div>
                         <div class="col-md-8">{{ customer.created_at.strftime('%d/%m/%Y à %H:%M') }}</div>
                     </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Utilisation</div>
+                        <div class="col-md-8">
+                            <span class="badge {% if customer.usage_count > 10 %}bg-success{% elif customer.usage_count > 0 %}bg-primary{% else %}bg-secondary{% endif %}">
+                                {{ customer.usage_count or 0 }} fois
+                            </span>
+                            <small class="text-muted ms-2">Nombre de fois que ce profil a été utilisé pour générer du contenu marketing</small>
+                        </div>
+                    </div>
                 </div>
             </div>
             

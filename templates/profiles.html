@@ -243,6 +243,7 @@
                             <th>Language</th>
                             <th>Niche</th>
                             <th>Created</th>
+                            <th>Usage</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -261,6 +262,11 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ customer.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <span class="badge {% if customer.usage_count > 10 %}bg-success{% elif customer.usage_count > 0 %}bg-primary{% else %}bg-secondary{% endif %}">
+                                        {{ customer.usage_count or 0 }}
+                                    </span>
+                                </td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ url_for('view_customer', customer_id=customer.id) }}" class="btn btn-primary">
