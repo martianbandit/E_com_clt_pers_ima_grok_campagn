@@ -604,9 +604,31 @@ def generate_customer_avatar(customer_id):
         
         # Utiliser asyncio pour exécuter la génération d'image asynchrone
         async def generate_avatar():
+            # Ajouter les informations de la boutique au prompt
+            boutique_info = None
+            if customer.boutique_id:
+                try:
+                    boutique = customer.boutique
+                    if boutique:
+                        boutique_info = {
+                            "name": boutique.name,
+                            "description": boutique.description,
+                            "target_demographic": boutique.target_demographic
+                        }
+                        # Enrichir le prompt avec des informations de la boutique
+                        enhanced_prompt = f"{customer.avatar_prompt} This avatar should reflect the style and aesthetic of '{boutique.name}' boutique, which is {boutique.description}."
+                    else:
+                        enhanced_prompt = customer.avatar_prompt
+                except Exception as e:
+                    logging.warning(f"Could not retrieve boutique information: {e}")
+                    enhanced_prompt = customer.avatar_prompt
+            else:
+                enhanced_prompt = customer.avatar_prompt
+                
+            # Générer l'image avec les informations de contexte enrichies
             avatar_url = await generate_boutique_image_async(
                 client=grok_client,
-                image_prompt=customer.avatar_prompt
+                image_prompt=enhanced_prompt
             )
             return avatar_url
         
