@@ -2,18 +2,35 @@ import os
 import json
 import asyncio
 import logging
-from openai import AsyncOpenAI
 from enum import Enum
-from pydantic import BaseModel, Field
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
+import random
+import time
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Load environment variables
-from dotenv import load_dotenv
-load_dotenv()
+try:
+    from openai import AsyncOpenAI, OpenAI
+except ImportError:
+    logger.warning("OpenAI package not found. Some functionality may be limited.")
+    
+try:
+    from pydantic import BaseModel, Field
+except ImportError:
+    logger.warning("Pydantic package not found. Some functionality may be limited.")
+    # Create stub class for compatibility
+    class BaseModel:
+        pass
+    Field = lambda *args, **kwargs: None
+
+# Load environment variables if dotenv is available
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    logger.warning("python-dotenv package not found. Skipping .env loading.")
 
 # Grok model constants
 GROK_3 = "grok-3-fast"
@@ -191,13 +208,27 @@ async def generate_boutique_customers(
         raise
 
 # Generate richly detailed persona for a customer profile
-async def generate_customer_persona_async(
+async def generate_enhanced_customer_data_async(
     client: AsyncOpenAI,
     customer: dict,
     niche: str,
+    existing_personas: list = None,
     model: str = GROK_3
-) -> str:
-    # Extract customer data for prompt
+) -> dict:
+    """
+    Génère un persona client enrichi avec avatar et attributs spécifiques à la niche.
+    Cette version améliorée assure une diversité entre les profils générés.
+    
+    Args:
+        client: AsyncOpenAI client
+        customer: Dictionnaire contenant les données client
+        niche: Niche de marché
+        existing_personas: Liste de personas existants pour éviter les répétitions
+        model: Modèle Grok à utiliser
+        
+    Returns:
+        Dictionnaire contenant le persona, l'URL de l'avatar et les attributs de niche
+    """
     name = customer.get("name", "Unknown")
     age = customer.get("age", 0)
     location = customer.get("location", "Unknown")
@@ -212,6 +243,13 @@ async def generate_customer_persona_async(
         purchases.append(f"{item.get('name')} ({item.get('category')}) - ${item.get('price')}")
     purchase_str = "\n".join(purchases)
     
+    # Fournir une liste des personas existants au modèle pour éviter la répétition
+    existing_personas_summary = ""
+    if existing_personas and len(existing_personas) > 0:
+        existing_personas_summary = "ALREADY CREATED PERSONAS TO AVOID DUPLICATING (MAKE SURE TO CREATE SOMETHING COMPLETELY DIFFERENT):\n\n"
+        for i, persona in enumerate(existing_personas[:3]):  # Limiter à 3 pour éviter un prompt trop long
+            existing_personas_summary += f"Persona {i+1}:\n{persona[:200]}...\n\n"
+    
     # Craft a creative and vibrant boutique-specific persona generation prompt
     prompt = f"""
     Create an extraordinarily vivid and multi-dimensional persona for a {niche} boutique customer with these specific characteristics:
@@ -225,6 +263,8 @@ async def generate_customer_persona_async(
     
     Purchase History:
     {purchase_str}
+    
+    {existing_personas_summary}
     
     PERSONA GENERATION REQUIREMENTS:
     
@@ -261,22 +301,195 @@ async def generate_customer_persona_async(
     Write in second person as if you're directly describing the customer to the boutique owner.
     The persona should be 3-4 paragraphs long, vibrant and specific, with memorable details.
     Avoid generic descriptions - make this person feel utterly unique and immediately recognizable.
+    
+    DIVERSITY REQUIREMENTS:
+    - Give this persona a unique cultural background if relevant
+    - Create a diversity of professional backgrounds, not just obvious matches for the {niche}
+    - Include diverse origins, lifestyles, values, and interests beyond the {niche} itself
+    - Avoid stereotypical connections between demographics and interests
     """
     
     try:
         response = await client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            temperature=0.8,
+            temperature=0.9,  # Augmenter la température pour plus de créativité
             max_tokens=800,
         )
         
         if not response.choices or not response.choices[0].message.content:
             raise ValueError("No persona generated")
             
-        return response.choices[0].message.content
+        persona_text = response.choices[0].message.content
+        
+        # Génération de l'avatar prompt
+        avatar_prompt = f"""
+        Create a detailed prompt for generating a profile picture avatar for this specific customer persona:
+        
+        Customer Name: {name}
+        Age: {age}
+        Gender: {gender}
+        Location: {location}
+        Interests: {interests}
+        Niche Market: {niche}
+        
+        Persona: 
+        {persona_text[:200]}...
+        
+        Create an avatar prompt that:
+        1. Describes a professional headshot/portrait style image
+        2. Includes distinctive visual characteristics based on the persona
+        3. Suggests appropriate clothing and accessories related to the {niche} niche
+        4. Specifies background elements that reflect their lifestyle or interests
+        5. Indicates appropriate lighting and mood that matches their personality
+        6. DOES NOT include any text or words in the image itself
+        
+        The prompt should be detailed yet concise (maximum 100 words), focusing on visual elements only.
+        Format your response as just the prompt text, without explanations or extra information.
+        """
+        
+        avatar_response = await client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": avatar_prompt}],
+            temperature=0.8,
+            max_tokens=250,
+        )
+        
+        avatar_text_prompt = avatar_response.choices[0].message.content
+        
+        # Génération des attributs spécifiques à la niche
+        niche_attributes_prompt = f"""
+        Based on this customer persona in the {niche} niche, create a JSON object with specialized attributes 
+        specific to this niche and customer. Include:
+        
+        1. Preferred sub-categories within {niche}
+        2. Ideal price range/budget for {niche} purchases
+        3. Favorite brands or designers in the {niche} space
+        4. Special requirements or preferences (sizes, materials, styles, etc.)
+        5. Collection focus or themes they're building
+        
+        Persona summary:
+        {persona_text[:300]}...
+        
+        Return ONLY a valid JSON object with these attributes. Example format:
+        {{
+            "preferred_subcategories": ["example1", "example2"],
+            "price_range": "Description of their budget level",
+            "favorite_brands": ["brand1", "brand2"],
+            "special_preferences": {{
+                "key1": "value1",
+                "key2": "value2"
+            }},
+            "collection_themes": ["theme1", "theme2"]
+        }}
+        """
+        
+        niche_attr_response = await client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": niche_attributes_prompt}],
+            temperature=0.7,
+            max_tokens=400,
+            response_format={"type": "json_object"}
+        )
+        
+        niche_attributes = json.loads(niche_attr_response.choices[0].message.content)
+        
+        # Génération d'exemples de produits achetés
+        purchase_history_prompt = f"""
+        Based on this customer persona in the {niche} niche, create a JSON array of 3-5 products they have 
+        purchased in the past. Each product should include:
+        
+        1. Product name
+        2. Category
+        3. Brand
+        4. Price range
+        5. When they purchased it (approximate date)
+        6. Brief reason for purchase
+        
+        Persona summary:
+        {persona_text[:300]}...
+        
+        Return ONLY a valid JSON array with these products. Example format:
+        [
+            {{
+                "name": "Product Name",
+                "category": "Category",
+                "brand": "Brand Name",
+                "price": "$XX-$XXX",
+                "purchase_date": "Month Year",
+                "purchase_reason": "Brief reason"
+            }},
+            ...
+        ]
+        """
+        
+        purchase_response = await client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": purchase_history_prompt}],
+            temperature=0.7,
+            max_tokens=600,
+            response_format={"type": "json_object"}
+        )
+        
+        purchased_products = json.loads(purchase_response.choices[0].message.content)
+        
+        return {
+            "persona": persona_text,
+            "avatar_prompt": avatar_text_prompt,
+            "niche_attributes": niche_attributes,
+            "purchased_products": purchased_products
+        }
     except Exception as e:
-        logger.error(f"Error generating customer persona: {e}")
+        logger.error(f"Error generating enhanced customer data: {e}")
+        raise
+
+async def generate_customer_persona_async(
+    client: AsyncOpenAI,
+    customer: dict,
+    niche: str,
+    model: str = GROK_3
+) -> str:
+    """
+    Version simplifiée pour la compatibilité avec le code existant.
+    Utilise la fonction enhanced et retourne uniquement le persona.
+    """
+    try:
+        from models import Customer
+        
+        # Récupérer tous les personas existants pour éviter la répétition
+        existing_personas = []
+        # Une requête SQL serait idéale, mais nous éviterons les dépendances de DB ici
+        # et laissons cette partie vide pour l'instant
+        
+        enhanced_data = await generate_enhanced_customer_data_async(
+            client=client,
+            customer=customer,
+            niche=niche,
+            existing_personas=existing_personas,
+            model=model
+        )
+        
+        # Mise à jour du customer avec les nouvelles données
+        if isinstance(customer, dict) and 'id' in customer:
+            # Si nous sommes dans un contexte où nous pouvons mettre à jour le modèle Customer
+            try:
+                # Tentons de mettre à jour les attributs additionnels
+                from app import db
+                
+                customer_id = customer.get('id')
+                if customer_id:
+                    customer_obj = Customer.query.get(customer_id)
+                    if customer_obj:
+                        customer_obj.purchased_products = enhanced_data.get('purchased_products')
+                        customer_obj.niche_attributes = enhanced_data.get('niche_attributes')
+                        # L'avatar_url sera mis à jour séparément après génération de l'image
+                        db.session.commit()
+            except Exception as update_err:
+                logger.warning(f"Could not update additional customer attributes: {update_err}")
+        
+        return enhanced_data["persona"]
+    except Exception as e:
+        logger.error(f"Error in generate_customer_persona_async: {e}")
         raise
 
 # Generate boutique-specific marketing content for a customer
