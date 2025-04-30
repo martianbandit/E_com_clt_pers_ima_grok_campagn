@@ -27,35 +27,46 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">
-                            <i class="fas fa-home me-1"></i> Home
+                            <i class="fas fa-home me-1"></i> {{ _('Home') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == '/dashboard' %}active{% endif %}" href="/dashboard">
-                            <i class="fas fa-chart-line me-1"></i> Dashboard
+                            <i class="fas fa-chart-line me-1"></i> {{ _('Dashboard') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == '/profiles' %}active{% endif %}" href="/profiles">
-                            <i class="fas fa-users me-1"></i> Customer Profiles
+                            <i class="fas fa-users me-1"></i> {{ _('Customer Profiles') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == '/campaigns' %}active{% endif %}" href="/campaigns">
-                            <i class="fas fa-bullhorn me-1"></i> Campaigns
+                            <i class="fas fa-bullhorn me-1"></i> {{ _('Campaigns') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == '/image_generation' %}active{% endif %}" href="/image_generation">
-                            <i class="fas fa-image me-1"></i> Image Generator
+                            <i class="fas fa-image me-1"></i> {{ _('Image Generator') }}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == '/products' %}active{% endif %}" href="/products">
-                            <i class="fas fa-box-open me-1"></i> Fiches Produits
+                            <i class="fas fa-box-open me-1"></i> {{ _('Products') }}
                         </a>
                     </li>
                 </ul>
+                <div class="d-flex align-items-center">
+                    <!-- Theme Toggle Button -->
+                    <button id="themeToggle" class="btn btn-outline-light btn-sm me-2" type="button">
+                        <i class="fas fa-adjust"></i>
+                    </button>
+                    <!-- Language Toggle Buttons -->
+                    <div class="btn-group btn-group-sm me-2">
+                        <a href="{{ url_for('change_language', lang='en') }}" class="btn btn-outline-light {% if session.get('language', 'en') == 'en' %}active{% endif %}">EN</a>
+                        <a href="{{ url_for('change_language', lang='fr') }}" class="btn btn-outline-light {% if session.get('language', 'en') == 'fr' %}active{% endif %}">FR</a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -82,10 +93,10 @@
             <div class="row">
                 <div class="col-md-6">
                     <h5 class="text-light">Boutique AI Marketing</h5>
-                    <p class="text-muted">Hyper-personalized marketing solutions for boutique retailers and niche markets.</p>
+                    <p class="text-muted">{{ _('Hyper-personalized marketing solutions for boutique retailers and niche markets.') }}</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <p class="text-muted">&copy; 2023 Boutique AI Marketing. All rights reserved.</p>
+                    <p class="text-muted">&copy; 2023 Boutique AI Marketing. {{ _('All rights reserved.') }}</p>
                 </div>
             </div>
         </div>
@@ -96,6 +107,28 @@
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
     <script src="{{ url_for('static', filename='js/loading.js') }}"></script>
+    <script>
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                html.setAttribute('data-bs-theme', savedTheme);
+            }
+            
+            // Toggle theme on button click
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = html.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                html.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+        });
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
