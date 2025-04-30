@@ -1,118 +1,124 @@
 {% extends 'layout.html' %}
 
-{% block title %}Boutique AI Marketing - Home{% endblock %}
+{% block title %}Boutique AI Marketing - Hyper-Personalized Marketing{% endblock %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-dark rounded-3">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Boutique AI Marketing</h1>
-        <p class="col-md-8 fs-4">Hyper-personalized marketing for boutiques and niche retailers powered by advanced AI.</p>
-        <a href="/dashboard" class="btn btn-primary btn-lg">
-            <i class="fas fa-rocket me-2"></i> Get Started
+<div class="jumbotron bg-dark text-white p-5 rounded mb-5">
+    <h1 class="display-4">Hyper-Personalized Marketing</h1>
+    <p class="lead">Create highly targeted marketing campaigns for boutique niches using advanced AI</p>
+    <hr class="my-4">
+    <p>
+        This application uses Grok AI and other language models to generate personalized customer profiles, detailed personas, 
+        and tailored marketing content across languages, formats, and tones in mere seconds.
+    </p>
+    <div class="mt-4">
+        <a class="btn btn-primary btn-lg me-2" href="{{ url_for('profiles') }}" role="button">
+            <i class="fas fa-users me-2"></i> Generate Profiles
+        </a>
+        <a class="btn btn-success btn-lg" href="{{ url_for('campaigns') }}" role="button">
+            <i class="fas fa-bullhorn me-2"></i> Create Campaigns
         </a>
     </div>
 </div>
 
-<div class="row mb-5">
+<div class="row">
     <div class="col-md-4 mb-4">
         <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i> Customer Profiles</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">
-                    <i class="fas fa-user-check text-primary me-2"></i>
-                    Customer Profiling
-                </h5>
-                <p class="card-text">Generate detailed customer profiles and personas specifically tailored to your boutique's target market.</p>
+                <p>
+                    Generate synthetic customer profiles based on different niche markets. 
+                    Each profile includes demographic information, interests, purchase history, and other relevant attributes.
+                </p>
+                <p>
+                    AI creates diverse and realistic profiles that can be used to test and refine your marketing strategies.
+                </p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('profiles') }}" class="btn btn-outline-primary">Explore Profiles</a>
+                </div>
             </div>
         </div>
     </div>
+
     <div class="col-md-4 mb-4">
         <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-id-card me-2"></i> Detailed Personas</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">
-                    <i class="fas fa-bullhorn text-success me-2"></i>
-                    Personalized Marketing
-                </h5>
-                <p class="card-text">Create hyper-personalized marketing content that resonates with each customer's unique preferences and needs.</p>
+                <p>
+                    Transform basic customer profiles into rich, detailed personas that bring your target audience to life.
+                </p>
+                <p>
+                    These written portraits capture their lifestyle, motivations, pain points, and purchasing behaviors in vivid detail.
+                </p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('profiles') }}" class="btn btn-outline-success">Generate Personas</a>
+                </div>
             </div>
         </div>
     </div>
+
     <div class="col-md-4 mb-4">
         <div class="card h-100">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-bullhorn me-2"></i> Personalized Campaigns</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">
-                    <i class="fas fa-image text-info me-2"></i>
-                    AI Image Generation
-                </h5>
-                <p class="card-text">Generate custom marketing images that perfectly match your boutique's aesthetic and appeal to your target audience.</p>
+                <p>
+                    Create hyper-personalized marketing campaigns based on your customer profiles and personas.
+                </p>
+                <p>
+                    Tailored content for different campaign types, including email, social media posts, advertisements, 
+                    and product descriptions in the customer's language and local vernacular.
+                </p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('campaigns') }}" class="btn btn-outline-info">Create Campaigns</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-lg-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">How It Works</h5>
+<div class="row mt-4">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i> Marketing Metrics</h5>
             </div>
             <div class="card-body">
-                <ol class="list-group list-group-numbered mb-0">
-                    <li class="list-group-item d-flex">
-                        <div class="ms-2">
-                            <div class="fw-bold">Define Your Niche</div>
-                            Set up your boutique and define your niche market characteristics
-                        </div>
-                    </li>
-                    <li class="list-group-item d-flex">
-                        <div class="ms-2">
-                            <div class="fw-bold">Generate Customer Profiles</div>
-                            Create detailed customer profiles specifically tailored to your niche
-                        </div>
-                    </li>
-                    <li class="list-group-item d-flex">
-                        <div class="ms-2">
-                            <div class="fw-bold">Develop Customer Personas</div>
-                            Transform profiles into rich, detailed customer personas
-                        </div>
-                    </li>
-                    <li class="list-group-item d-flex">
-                        <div class="ms-2">
-                            <div class="fw-bold">Create Personalized Content</div>
-                            Generate marketing campaigns tailored to each customer persona
-                        </div>
-                    </li>
-                </ol>
+                <p>
+                    Track and analyze the performance of your marketing activities with built-in metrics and monitoring.
+                </p>
+                <p>
+                    Measure success rates for profile generation, persona creation, content generation, 
+                    and image creation to optimize your marketing process.
+                </p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('metrics_view') }}" class="btn btn-outline-warning">View Metrics</a>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-6 mb-4">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Features</h5>
+
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="fas fa-store me-2"></i> Boutique Niches</h5>
             </div>
             <div class="card-body">
-                <ul class="list-group">
-                    <li class="list-group-item d-flex align-items-center">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <div>Niche-specific customer profile generation</div>
-                    </li>
-                    <li class="list-group-item d-flex align-items-center">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <div>Detailed persona development for boutique customers</div>
-                    </li>
-                    <li class="list-group-item d-flex align-items-center">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <div>Multilingual marketing content for global boutiques</div>
-                    </li>
-                    <li class="list-group-item d-flex align-items-center">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <div>AI-generated images tailored to your boutique aesthetic</div>
-                    </li>
-                    <li class="list-group-item d-flex align-items-center">
-                        <i class="fas fa-check-circle text-success me-2"></i>
-                        <div>Campaign creation for email, social media, and more</div>
-                    </li>
-                </ul>
+                <p>
+                    Explore predefined niche markets for boutique businesses or create your own.
+                </p>
+                <p>
+                    Each niche comes with key characteristics that help generate more relevant customer profiles 
+                    and more effective marketing content.
+                </p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">Explore Niches</a>
+                </div>
             </div>
         </div>
     </div>

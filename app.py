@@ -3,6 +3,7 @@ import json
 import logging
 import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
+from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
