@@ -42,6 +42,39 @@ grok_client = AsyncOpenAI(
     api_key=os.environ.get("XAI_API_KEY")
 )
 
+# Initialize OpenAI client
+openai_client = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY")
+)
+
+def get_openai_client(api_key=None):
+    """
+    Get an OpenAI client instance
+    
+    Args:
+        api_key: Optional API key to use instead of environment variable
+        
+    Returns:
+        OpenAI client instance
+    """
+    if api_key:
+        return OpenAI(api_key=api_key)
+    return openai_client
+
+def get_grok_client(api_key=None):
+    """
+    Get a Grok client instance
+    
+    Args:
+        api_key: Optional API key to use instead of environment variable
+        
+    Returns:
+        AsyncOpenAI client instance configured for X.AI API
+    """
+    if api_key:
+        return AsyncOpenAI(base_url="https://api.x.ai/v1", api_key=api_key)
+    return grok_client
+
 # Define data models for structured outputs
 class Gender(str, Enum):
     MALE = "MALE"

@@ -13,6 +13,7 @@ class Boutique(db.Model):
     
     # Relations
     customers = db.relationship('Customer', backref='boutique', lazy=True)
+    personas = db.relationship('CustomerPersona', backref='boutique', lazy=True)
     
     def __repr__(self):
         return f'<Boutique {self.name}>'
@@ -27,6 +28,7 @@ class NicheMarket(db.Model):
     
     # Relations
     customers = db.relationship('Customer', backref='niche_market', lazy=True)
+    personas = db.relationship('CustomerPersona', backref='niche_market', lazy=True)
     
     def __repr__(self):
         return f'<NicheMarket {self.name}>'
@@ -36,6 +38,118 @@ class NicheMarket(db.Model):
         if not self.key_characteristics:
             return []
         return [char.strip() for char in self.key_characteristics.split(',')]
+
+# Table d'association entre Customer et CustomerPersona
+class CustomerPersonaAssociation(db.Model):
+    """Association table between Customers and CustomerPersonas"""
+    id = db.Column(db.Integer, primary_key=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
+    persona_id = db.Column(db.Integer, db.ForeignKey('customer_persona.id'), nullable=False)
+    relevance_score = db.Column(db.Float, nullable=True)  # Score de pertinence (0-1)
+    is_primary = db.Column(db.Boolean, default=False)  # Indique si c'est le persona principal du client
+    notes = db.Column(db.Text, nullable=True)  # Notes sur l'association
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relation avec Customer et CustomerPersona
+    customer = db.relationship("Customer", back_populates="persona_associations")
+    persona = db.relationship("CustomerPersona", back_populates="customer_associations")
+    
+    def __repr__(self):
+        return f'<CustomerPersonaAssociation {self.customer_id}-{self.persona_id}>'
+
+class CustomerPersona(db.Model):
+    """Model for storing detailed customer personas"""
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)  # Titre du persona (ex: "Jeune maman urbaine")
+    description = db.Column(db.Text, nullable=False)  # Description complète du persona
+    primary_goal = db.Column(db.String(255), nullable=True)  # Objectif principal du persona
+    pain_points = db.Column(db.Text, nullable=True)  # Points de douleur/frustrations
+    buying_triggers = db.Column(db.Text, nullable=True)  # Déclencheurs d'achat
+    
+    # Caractéristiques démographiques
+    age_range = db.Column(db.String(50), nullable=True)  # Tranche d'âge (ex: "25-34")
+    gender_affinity = db.Column(db.String(50), nullable=True)  # Affinité de genre
+    location_type = db.Column(db.String(50), nullable=True)  # Type de localisation (urbain, rural, etc.)
+    income_bracket = db.Column(db.String(50), nullable=True)  # Tranche de revenus
+    education_level = db.Column(db.String(50), nullable=True)  # Niveau d'éducation
+    
+    # Caractéristiques psychographiques
+    values = db.Column(JSONB, nullable=True)  # Valeurs importantes
+    interests = db.Column(JSONB, nullable=True)  # Centres d'intérêt
+    lifestyle = db.Column(db.Text, nullable=True)  # Style de vie
+    personality_traits = db.Column(JSONB, nullable=True)  # Traits de personnalité
+    
+    # Comportements de consommation
+    buying_habits = db.Column(db.Text, nullable=True)  # Habitudes d'achat
+    brand_affinities = db.Column(JSONB, nullable=True)  # Affinités de marque
+    price_sensitivity = db.Column(db.String(50), nullable=True)  # Sensibilité aux prix
+    decision_factors = db.Column(JSONB, nullable=True)  # Facteurs de décision d'achat
+    
+    # Communication et médias
+    preferred_channels = db.Column(JSONB, nullable=True)  # Canaux de communication préférés
+    content_preferences = db.Column(db.Text, nullable=True)  # Préférences de contenu
+    social_media_behavior = db.Column(JSONB, nullable=True)  # Comportement sur les réseaux sociaux
+    
+    # Attributs spécifiques à la niche
+    niche_specific_attributes = db.Column(JSONB, nullable=True)  # Attributs spécifiques à la niche
+    custom_fields = db.Column(JSONB, nullable=True)  # Champs personnalisés pour flexibilité
+    
+    # Avatar et représentation visuelle
+    avatar_url = db.Column(db.Text, nullable=True)  # URL de l'avatar
+    avatar_prompt = db.Column(db.Text, nullable=True)  # Prompt utilisé pour générer l'avatar
+    
+    # Métadonnées
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Foreign keys
+    niche_market_id = db.Column(db.Integer, db.ForeignKey('niche_market.id'), nullable=True)
+    boutique_id = db.Column(db.Integer, db.ForeignKey('boutique.id'), nullable=True)
+    
+    # Relations
+    customer_associations = db.relationship("CustomerPersonaAssociation", back_populates="persona")
+    customers = db.relationship(
+        "Customer",
+        secondary="customer_persona_association",
+        viewonly=True,
+        backref=db.backref("associated_personas", lazy="dynamic")
+    )
+    
+    def __repr__(self):
+        return f'<CustomerPersona {self.title}>'
+    
+    @classmethod
+    def create_from_dict(cls, persona_data, niche_market_id=None, boutique_id=None):
+        """Create a CustomerPersona instance from dictionary data"""
+        return cls(
+            title=persona_data.get('title'),
+            description=persona_data.get('description'),
+            primary_goal=persona_data.get('primary_goal'),
+            pain_points=persona_data.get('pain_points'),
+            buying_triggers=persona_data.get('buying_triggers'),
+            age_range=persona_data.get('age_range'),
+            gender_affinity=persona_data.get('gender_affinity'),
+            location_type=persona_data.get('location_type'),
+            income_bracket=persona_data.get('income_bracket'),
+            education_level=persona_data.get('education_level'),
+            values=persona_data.get('values'),
+            interests=persona_data.get('interests'),
+            lifestyle=persona_data.get('lifestyle'),
+            personality_traits=persona_data.get('personality_traits'),
+            buying_habits=persona_data.get('buying_habits'),
+            brand_affinities=persona_data.get('brand_affinities'),
+            price_sensitivity=persona_data.get('price_sensitivity'),
+            decision_factors=persona_data.get('decision_factors'),
+            preferred_channels=persona_data.get('preferred_channels'),
+            content_preferences=persona_data.get('content_preferences'),
+            social_media_behavior=persona_data.get('social_media_behavior'),
+            niche_specific_attributes=persona_data.get('niche_specific_attributes'),
+            custom_fields=persona_data.get('custom_fields'),
+            avatar_url=persona_data.get('avatar_url'),
+            avatar_prompt=persona_data.get('avatar_prompt'),
+            niche_market_id=niche_market_id,
+            boutique_id=boutique_id
+        )
 
 class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -68,6 +182,7 @@ class Customer(db.Model):
     
     # Relations
     campaigns = db.relationship('Campaign', backref='customer', lazy=True)
+    persona_associations = db.relationship("CustomerPersonaAssociation", back_populates="customer")
     
     def __repr__(self):
         return f'<Customer {self.name}>'
@@ -77,6 +192,53 @@ class Customer(db.Model):
         if not self.interests:
             return []
         return [interest.strip() for interest in self.interests.split(',')]
+    
+    def get_primary_persona(self):
+        """Get the primary persona for this customer"""
+        association = CustomerPersonaAssociation.query.filter_by(
+            customer_id=self.id, 
+            is_primary=True
+        ).first()
+        
+        if association:
+            return association.persona
+        return None
+    
+    def assign_persona(self, persona_id, is_primary=False, relevance_score=None, notes=None):
+        """Assign a persona to this customer"""
+        # Check if association already exists
+        existing = CustomerPersonaAssociation.query.filter_by(
+            customer_id=self.id,
+            persona_id=persona_id
+        ).first()
+        
+        if existing:
+            # Update existing association
+            existing.is_primary = is_primary
+            if relevance_score is not None:
+                existing.relevance_score = relevance_score
+            if notes:
+                existing.notes = notes
+            return existing
+        
+        # If setting this as primary, unset any existing primary
+        if is_primary:
+            CustomerPersonaAssociation.query.filter_by(
+                customer_id=self.id,
+                is_primary=True
+            ).update({"is_primary": False})
+        
+        # Create new association
+        association = CustomerPersonaAssociation(
+            customer_id=self.id,
+            persona_id=persona_id,
+            is_primary=is_primary,
+            relevance_score=relevance_score,
+            notes=notes
+        )
+        
+        db.session.add(association)
+        return association
     
     @classmethod
     def from_profile_dict(cls, profile_dict, niche_market_id=None):
