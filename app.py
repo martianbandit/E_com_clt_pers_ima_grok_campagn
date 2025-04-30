@@ -138,7 +138,10 @@ def profiles():
                     "niche_id": niche_id,
                     "niche_name": niche.name,
                     "count": len(customer_profiles),
-                    "persist_to_db": persist_to_db
+                    "persist_to_db": persist_to_db,
+                    "target_country": target_country,
+                    "age_range": age_range,
+                    "income_level": income_level
                 })
                 
                 # Store profiles in the session

@@ -40,12 +40,18 @@ class Customer(BaseModel):
     name: str
     age: int
     location: str
+    country_code: Optional[str] = None
     gender: Gender
     language: str
     purchase_history: List[Item]
     interests: List[str]
     search_history: Dict[str, str]
     preferred_device: str
+    income_level: Optional[str] = None
+    education: Optional[str] = None
+    occupation: Optional[str] = None
+    social_media: Optional[Dict[str, str]] = None
+    shopping_frequency: Optional[str] = None
     persona: Optional[str] = None
 
 class Customers(BaseModel):
@@ -57,8 +63,67 @@ async def generate_boutique_customers(
     niche: str,
     niche_description: str,
     num_customers: int = 5, 
-    model: str = GROK_3
+    model: str = GROK_3,
+    target_country: str = "",
+    age_range: str = "",
+    income_level: str = ""
 ) -> Customers:
+    # Préparer les contraintes de localisation
+    location_constraint = ""
+    if target_country:
+        # Obtenir le nom du pays à partir du code
+        country_name = ""
+        if target_country == "US":
+            country_name = "United States"
+        elif target_country == "CA":
+            country_name = "Canada"
+        elif target_country == "GB":
+            country_name = "United Kingdom"
+        elif target_country == "FR":
+            country_name = "France"
+        elif target_country == "DE":
+            country_name = "Germany"
+        elif target_country == "IT":
+            country_name = "Italy"
+        elif target_country == "ES":
+            country_name = "Spain"
+        elif target_country == "JP":
+            country_name = "Japan"
+        elif target_country == "AU":
+            country_name = "Australia"
+        elif target_country == "BR":
+            country_name = "Brazil"
+        elif target_country == "IN":
+            country_name = "India"
+        elif target_country == "CN":
+            country_name = "China"
+        elif target_country == "MX":
+            country_name = "Mexico"
+        
+        if country_name:
+            location_constraint = f"All customers must be from {country_name}. Use cities and regions within {country_name}. Add the country code '{target_country}' at the end of location values."
+    
+    # Préparer les contraintes d'âge
+    age_constraint = ""
+    if age_range:
+        age_constraint = f"All customers must have ages within the range: {age_range}."
+    
+    # Préparer les contraintes de niveau de revenu
+    income_constraint = ""
+    if income_level:
+        income_description = ""
+        if income_level == "budget":
+            income_description = "budget-conscious, cost-sensitive, value-oriented"
+        elif income_level == "middle":
+            income_description = "middle income, average spending power"
+        elif income_level == "affluent":
+            income_description = "affluent, financially comfortable, higher disposable income"
+        elif income_level == "luxury":
+            income_description = "luxury consumers, high-end, premium buyers"
+        
+        if income_description:
+            income_constraint = f"All customers should be {income_description} shoppers with income_level set to '{income_level}'."
+    
     prompt = f"""
     Generate {num_customers} sample customers for a boutique focused on {niche}.
     Boutique description: {niche_description}
@@ -67,12 +132,18 @@ async def generate_boutique_customers(
     - name: str
     - age: int
     - location: str
+    - country_code: str (2-letter ISO code, e.g., 'US', 'FR', 'JP')
     - gender: Gender
     - language: str
     - purchase_history: list[Item]
     - interests: list[str]
     - search_history: dict[str, str]
     - preferred_device: str
+    - income_level: str (one of: 'budget', 'middle', 'affluent', 'luxury')
+    - education: str (e.g., 'high school', 'bachelor', 'master', 'doctorate')
+    - occupation: str
+    - social_media: dict[str, str] (platform name and usage frequency)
+    - shopping_frequency: str (one of: 'rarely', 'occasionally', 'frequently', 'very frequently')
 
     Here are the attributes of an Item:
     - name: str (make this relevant to the {niche} niche)
@@ -82,11 +153,12 @@ async def generate_boutique_customers(
 
     Each customer should be varied and distinct from the others: 
     - Ensure the customers are realistic for the {niche} market
-    - Include a variety of languages based on where this boutique niche would be popular
-    - Ensure the customers are from countries where this niche would be popular
-    - Ensure the language attribute is set to the most commonly spoken language in that country
+    - Include appropriate languages based on the customer's location
     - Make sure purchase history, interests, and search history are highly relevant to the {niche} niche
     - Have 70% of customers be in the target demographic for this niche, and 30% be potential new audiences
+    {location_constraint}
+    {age_constraint}
+    {income_constraint}
 
     Please set the persona attribute to null for all customers.
     """
@@ -335,9 +407,35 @@ async def generate_boutique_image_async(
 
 # Synchronous wrapper functions for async functions
 
-def generate_customers(niche, niche_description, num_customers=5):
-    """Generate customer profiles for a specific boutique niche"""
-    customers_obj = asyncio.run(generate_boutique_customers(grok_client, niche, niche_description, num_customers))
+def generate_customers(niche, niche_description, num_customers=5, generation_params=None):
+    """
+    Generate customer profiles for a specific boutique niche with optional parameters
+    
+    Args:
+        niche: The niche market name
+        niche_description: Description of the niche market
+        num_customers: Number of customer profiles to generate
+        generation_params: Optional dictionary of parameters including:
+            - target_country: ISO country code to focus customers on (e.g., 'US', 'FR')
+            - age_range: Age range for customers (e.g., '18-25', '26-35')
+            - income_level: Income level bracket (e.g., 'budget', 'affluent')
+    
+    Returns:
+        List of customer profile dictionaries
+    """
+    if generation_params is None:
+        generation_params = {}
+        
+    customers_obj = asyncio.run(generate_boutique_customers(
+        grok_client, 
+        niche, 
+        niche_description, 
+        num_customers,
+        target_country=generation_params.get('target_country', ''),
+        age_range=generation_params.get('age_range', ''),
+        income_level=generation_params.get('income_level', '')
+    ))
+    
     # Convert to a list of dictionaries for JSON serialization
     return [customer.dict() for customer in customers_obj.customers]
 
