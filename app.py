@@ -41,7 +41,9 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
 # Import routes after app initialization
-from models import Boutique, NicheMarket, Customer, Campaign, SimilarProduct, Metric, Product
+from models import Boutique, NicheMarket, Customer, Campaign, SimilarProduct, Metric, Product, ImportedProduct
+import asyncio
+import aliexpress_importer
 from boutique_ai import (
     generate_customers, 
     generate_customer_persona, 

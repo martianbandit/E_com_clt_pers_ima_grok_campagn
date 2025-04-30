@@ -1,12 +1,12 @@
 {% extends 'layout.html' %}
 
-{% block title %}{{ product.name }} - Fiche Produit{% endblock %}
+{% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <div class="row mb-4">
         <div class="col">
-            <h1>{{ product.name }}</h1>
+            <h1>Détails du Produit</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Tableau de bord</a></li>
@@ -18,405 +18,335 @@
     </div>
 
     <div class="row">
-        <div class="col-md-8">
-            <!-- Informations de base du produit -->
+        <div class="col-md-4">
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Informations du produit</h5>
-                    <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-sm btn-outline-light">
-                        <i class="fas fa-edit me-1"></i> Modifier
-                    </a>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        {% if product.image_url %}
-                        <div class="col-md-4 mb-3">
-                            <img src="{{ product.image_url }}" alt="{{ product.alt_text or product.name }}" class="img-fluid rounded product-image">
-                            <small class="d-block text-muted mt-1">Alt text: {{ product.alt_text or 'Non défini' }}</small>
-                        </div>
-                        <div class="col-md-8">
-                        {% else %}
-                        <div class="col-12">
-                        {% endif %}
-                            <div class="row mb-3">
-                                <div class="col-md-4 fw-bold">Nom</div>
-                                <div class="col-md-8">{{ product.name }}</div>
-                            </div>
-                            
-                            <div class="row mb-3">
-                                <div class="col-md-4 fw-bold">Catégorie</div>
-                                <div class="col-md-8">{{ product.category }}</div>
-                            </div>
-                            
-                            <div class="row mb-3">
-                                <div class="col-md-4 fw-bold">Prix</div>
-                                <div class="col-md-8">{{ "%.2f"|format(product.price) }}€</div>
-                            </div>
-                            
-                            {% if product.boutique %}
-                            <div class="row mb-3">
-                                <div class="col-md-4 fw-bold">Boutique</div>
-                                <div class="col-md-8">
-                                    <a href="{{ url_for('view_boutique', boutique_id=product.boutique.id) }}">{{ product.boutique.name }}</a>
-                                </div>
-                            </div>
-                            {% endif %}
-                            
-                            <div class="row mb-3">
-                                <div class="col-md-4 fw-bold">Public cible</div>
-                                <div class="col-md-8">
-                                    {% if product.target_audience %}
-                                    <a href="{{ url_for('view_customer', customer_id=product.target_audience.id) }}">{{ product.target_audience.name }}</a>
-                                    {% else %}
-                                    <span class="text-muted">Non défini</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <div class="row mb-3">
-                                <div class="col-md-4 fw-bold">Créé le</div>
-                                <div class="col-md-8">{{ product.created_at.strftime('%d/%m/%Y à %H:%M') }}</div>
-                            </div>
+                <div class="card-body text-center">
+                    {% if product.image_url %}
+                    <img src="{{ product.image_url }}" alt="{{ product.alt_text or product.name }}" class="img-fluid mb-3" style="max-height: 300px; width: auto;">
+                    {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center p-5 mb-3" style="height: 300px;">
+                        <div>
+                            <i class="fas fa-image fa-4x text-muted mb-3"></i>
+                            <p class="text-muted">Aucune image</p>
                         </div>
                     </div>
+                    {% endif %}
+                    <h2 class="mb-2">{{ product.name }}</h2>
+                    <p class="text-muted mb-3">{{ product.category or 'Aucune catégorie' }}</p>
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <span class="display-6 fw-bold">{{ "%.2f"|format(product.price or 0) }}€</span>
+                        {% if product.boutique %}
+                        <span class="badge bg-primary ms-3">{{ product.boutique.name }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline-primary">
+                            <i class="fas fa-edit me-2"></i> Modifier
+                        </a>
+                        <a href="{{ url_for('shopify_export', product_id=product.id) }}" class="btn btn-success">
+                            <i class="fas fa-file-export me-2"></i> Export Shopify
+                        </a>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteProductModal">
+                            <i class="fas fa-trash-alt me-2"></i> Supprimer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Métadonnées SEO -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Métadonnées SEO</h5>
+                </div>
+                <div class="card-body">
+                    {% if product.meta_title or product.meta_description or product.alt_text or product.keywords %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Meta Title</label>
+                        <p class="mb-0">{{ product.meta_title or '-' }}</p>
+                        {% if product.meta_title %}
+                        <small class="text-muted">{{ product.meta_title|length }}/60 caractères</small>
+                        {% endif %}
+                    </div>
                     
-                    {% if product.base_description %}
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <h6 class="fw-bold">Description de base</h6>
-                            <p>{{ product.base_description }}</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Meta Description</label>
+                        <p class="mb-0">{{ product.meta_description or '-' }}</p>
+                        {% if product.meta_description %}
+                        <small class="text-muted">{{ product.meta_description|length }}/160 caractères</small>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Alt Text</label>
+                        <p class="mb-0">{{ product.alt_text or '-' }}</p>
+                        {% if product.alt_text %}
+                        <small class="text-muted">{{ product.alt_text|length }}/125 caractères</small>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label class="form-label fw-bold">Mots-clés</label>
+                        {% if product.get_keywords_list() %}
+                        <div>
+                            {% for keyword in product.get_keywords_list() %}
+                            <span class="badge bg-secondary me-1 mb-1">{{ keyword }}</span>
+                            {% endfor %}
                         </div>
+                        {% else %}
+                        <p class="mb-0">-</p>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-3">
+                        <i class="fas fa-search fa-2x text-muted mb-3"></i>
+                        <p class="mb-2">Aucune métadonnée SEO</p>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#generateContentModal">
+                            Générer maintenant
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <!-- Description du Produit -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Description</h5>
+                    <div>
+                        {% if product.generated_description %}
+                        <span class="badge bg-success me-2">Optimisé</span>
+                        {% endif %}
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#generateContentModal">
+                            <i class="fas fa-magic me-1"></i> Générer
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if product.generated_description %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Titre Optimisé</label>
+                        <p class="mb-0">{{ product.generated_title }}</p>
+                    </div>
+                    
+                    <div>
+                        <label class="form-label fw-bold">Description Optimisée</label>
+                        <div class="p-3 bg-light rounded">
+                            {{ product.generated_description|nl2br }}
+                        </div>
+                    </div>
+                    {% elif product.base_description %}
+                    <p>{{ product.base_description|nl2br }}</p>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                        <p class="mb-2">Aucune description disponible</p>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateContentModal">
+                            <i class="fas fa-magic me-2"></i> Générer une Description
+                        </button>
                     </div>
                     {% endif %}
                 </div>
             </div>
             
-            <!-- Contenu généré -->
-            {% if product.generated_description %}
+            <!-- HTML Optimisé -->
+            {% if product.html_description or product.html_specifications or product.html_faq %}
             <div class="card mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Contenu généré</h5>
+                <div class="card-header">
+                    <h5 class="mb-0">HTML Optimisé pour Shopify</h5>
                 </div>
                 <div class="card-body">
-                    {% if product.generated_title %}
-                    <div class="mb-4">
-                        <h3 class="product-generated-title">{{ product.generated_title }}</h3>
-                        <small class="text-muted">Titre généré</small>
+                    <div class="d-grid mb-3">
+                        <a href="{{ url_for('shopify_export', product_id=product.id) }}" class="btn btn-success">
+                            <i class="fas fa-file-export me-2"></i> Voir Export Complet
+                        </a>
                     </div>
-                    {% endif %}
-                    
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="product-description-box p-3 border rounded">
-                                {{ product.generated_description|nl2br }}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {% if product.keywords %}
-                    <div class="mb-4">
-                        <h6 class="fw-bold">Mots-clés</h6>
-                        <div class="d-flex flex-wrap gap-1">
-                            {% for keyword in product.get_keywords_list() %}
-                                <span class="badge bg-info text-dark">{{ keyword }}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% endif %}
                     
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="card mb-3">
-                                <div class="card-header bg-light">
-                                    <h6 class="mb-0">Meta Title</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p class="mb-0 text-muted">{{ product.meta_title or 'Non généré' }}</p>
-                                    {% if product.meta_title %}
-                                    <small class="text-muted">{{ product.meta_title|length }}/60 caractères</small>
+                        <div class="col-md-4 text-center">
+                            <div class="border-end h-100 d-flex flex-column align-items-center justify-content-center px-3">
+                                <i class="fas fa-file-code fa-2x mb-2 {% if product.html_description %}text-success{% else %}text-muted{% endif %}"></i>
+                                <h6>Description HTML</h6>
+                                <p class="small text-muted mb-0">
+                                    {% if product.html_description %}
+                                    <span class="text-success">Disponible</span>
+                                    {% else %}
+                                    Non généré
                                     {% endif %}
-                                </div>
+                                </p>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="card mb-3">
-                                <div class="card-header bg-light">
-                                    <h6 class="mb-0">Meta Description</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p class="mb-0 text-muted">{{ product.meta_description or 'Non générée' }}</p>
-                                    {% if product.meta_description %}
-                                    <small class="text-muted">{{ product.meta_description|length }}/160 caractères</small>
+                        <div class="col-md-4 text-center">
+                            <div class="border-end h-100 d-flex flex-column align-items-center justify-content-center px-3">
+                                <i class="fas fa-list-ul fa-2x mb-2 {% if product.html_specifications %}text-success{% else %}text-muted{% endif %}"></i>
+                                <h6>Spécifications</h6>
+                                <p class="small text-muted mb-0">
+                                    {% if product.html_specifications %}
+                                    <span class="text-success">Disponible</span>
+                                    {% else %}
+                                    Non généré
                                     {% endif %}
-                                </div>
+                                </p>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            {% else %}
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="text-center p-4">
-                        <div class="mb-3">
-                            <i class="fas fa-file-alt fa-3x text-muted"></i>
+                        <div class="col-md-4 text-center">
+                            <div class="h-100 d-flex flex-column align-items-center justify-content-center px-3">
+                                <i class="fas fa-question-circle fa-2x mb-2 {% if product.html_faq %}text-success{% else %}text-muted{% endif %}"></i>
+                                <h6>FAQ</h6>
+                                <p class="small text-muted mb-0">
+                                    {% if product.html_faq %}
+                                    <span class="text-success">Disponible</span>
+                                    {% else %}
+                                    Non généré
+                                    {% endif %}
+                                </p>
+                            </div>
                         </div>
-                        <h4>Aucun contenu généré</h4>
-                        <p class="text-muted">Utilisez le générateur de contenu pour créer une description optimisée pour ce produit.</p>
-                        <a href="{{ url_for('products') }}#generate-content" class="btn btn-success">
-                            <i class="fas fa-pen-fancy me-2"></i> Générer du contenu
-                        </a>
                     </div>
                 </div>
             </div>
             {% endif %}
             
-            <!-- Variantes du produit -->
+            <!-- Variantes du Produit -->
             {% if product.variants %}
             <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Variantes du produit</h5>
+                <div class="card-header">
+                    <h5 class="mb-0">Variantes du Produit</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Variante</th>
-                                    <th>Attributs</th>
-                                    <th>Prix</th>
-                                    <th>Disponibilité</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for variant in product.variants %}
                                 <tr>
-                                    <td>{{ variant.titre }}</td>
-                                    <td>
-                                        <div class="d-flex flex-wrap gap-1">
-                                            {% for attr_name, attr_value in variant.attributs.items() %}
-                                            <span class="badge bg-secondary">{{ attr_name }}: {{ attr_value }}</span>
-                                            {% endfor %}
-                                        </div>
-                                    </td>
-                                    <td>{{ variant.prix or "%.2f"|format(product.price) }}€</td>
-                                    <td>
-                                        <span class="badge {% if variant.disponibilite == 'En stock' %}bg-success{% elif variant.disponibilite == 'Rupture de stock' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
-                                            {{ variant.disponibilite }}
-                                        </span>
-                                    </td>
+                                    <td><strong>{{ variant.name }}</strong></td>
+                                    <td>{{ variant.description }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                    
-                    {% if product.variants.grille_tailles %}
-                    <div class="mt-4">
-                        <h6 class="fw-bold">Guide des tailles</h6>
-                        <div class="table-responsive">
-                            <table class="table table-sm table-bordered">
-                                <tbody>
-                                    {% for size_name, size_desc in product.variants.grille_tailles.items() %}
-                                    <tr>
-                                        <th>{{ size_name }}</th>
-                                        <td>{{ size_desc }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
             {% endif %}
             
-            <!-- Analyse comparative -->
+            <!-- Analyse Comparative -->
             {% if product.comparative_analysis %}
             <div class="card mb-4">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0">Analyse comparative</h5>
+                <div class="card-header">
+                    <h5 class="mb-0">Analyse Comparative</h5>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive mb-4">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Critère</th>
-                                    <th>Notre produit</th>
-                                    {% for competitor in product.comparative_analysis.tableau_comparatif[0] %}
-                                        {% if competitor != 'critere' and competitor != 'notre_produit' %}
-                                        <th>{{ competitor|replace('_', ' ')|capitalize }}</th>
-                                        {% endif %}
-                                    {% endfor %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in product.comparative_analysis.tableau_comparatif %}
-                                <tr>
-                                    <th>{{ row.critere }}</th>
-                                    <td>{{ row.notre_produit }}</td>
-                                    {% for competitor in row %}
-                                        {% if competitor != 'critere' and competitor != 'notre_produit' %}
-                                        <td>{{ row[competitor] }}</td>
-                                        {% endif %}
-                                    {% endfor %}
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Positionnement</label>
+                        <p>{{ product.comparative_analysis.positioning }}</p>
                     </div>
                     
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="card h-100">
-                                <div class="card-header bg-success text-white">
-                                    <h6 class="mb-0">Avantages concurrentiels</h6>
-                                </div>
-                                <div class="card-body">
-                                    <ul class="list-group list-group-flush">
-                                        {% for advantage in product.comparative_analysis.avantages_concurrentiels %}
-                                        <li class="list-group-item">{{ advantage }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card h-100">
-                                <div class="card-header bg-warning text-dark">
-                                    <h6 class="mb-0">Éléments d'amélioration</h6>
-                                </div>
-                                <div class="card-body">
-                                    <ul class="list-group list-group-flush">
-                                        {% for improvement in product.comparative_analysis.elements_amelioration %}
-                                        <li class="list-group-item">{{ improvement }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Points Forts</label>
+                        <ul class="mb-0">
+                            {% for strength in product.comparative_analysis.strengths %}
+                            <li>{{ strength }}</li>
+                            {% endfor %}
+                        </ul>
                     </div>
                     
-                    <div class="p-3 bg-light rounded mb-3">
-                        <h6 class="fw-bold">Argument de vente unique</h6>
-                        <p class="mb-0">{{ product.comparative_analysis.argument_vente_unique }}</p>
-                    </div>
-                    
-                    <div class="p-3 bg-light rounded">
-                        <h6 class="fw-bold">Recommandation marketing</h6>
-                        <p class="mb-0">{{ product.comparative_analysis.recommandation_marketing }}</p>
+                    <div>
+                        <label class="form-label fw-bold">Arguments de Vente Uniques</label>
+                        <ul class="mb-0">
+                            {% for usp in product.comparative_analysis.unique_selling_points %}
+                            <li>{{ usp }}</li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </div>
             {% endif %}
-        </div>
-        
-        <div class="col-md-4">
-            <!-- Actions -->
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Actions</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline-primary">
-                            <i class="fas fa-edit me-2"></i> Modifier le produit
-                        </a>
-                        <a href="{{ url_for('products') }}#generate-content" class="btn btn-outline-success">
-                            <i class="fas fa-pen-fancy me-2"></i> Générer du contenu
-                        </a>
-                        <a href="{{ url_for('products') }}#generate-variants" class="btn btn-outline-info">
-                            <i class="fas fa-cubes me-2"></i> Créer des variantes
-                        </a>
-                        <a href="{{ url_for('products') }}#generate-comparison" class="btn btn-outline-warning">
-                            <i class="fas fa-balance-scale me-2"></i> Analyse comparative
-                        </a>
-                        <a href="{{ url_for('export_product', product_id=product.id) }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-file-export me-2"></i> Exporter (JSON)
-                        </a>
-                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteProductModal">
-                            <i class="fas fa-trash me-2"></i> Supprimer ce produit
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Aperçu eCommerce -->
-            <div class="card mb-4">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0">Aperçu eCommerce</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="card product-preview mx-auto" style="max-width: 330px; border: none;">
-                        {% if product.image_url %}
-                        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.alt_text or product.name }}">
-                        {% else %}
-                        <div class="bg-light text-center py-5">
-                            <i class="fas fa-image fa-3x text-muted"></i>
-                            <p class="mt-2 mb-0 text-muted">Aucune image</p>
-                        </div>
-                        {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title">{{ product.generated_title or product.name }}</h5>
-                            <p class="card-text text-truncate">{{ product.meta_description or product.base_description or 'Aucune description disponible' }}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price fw-bold">{{ "%.2f"|format(product.price) }}€</span>
-                                <div>
-                                    {% if product.variants %}
-                                    <span class="badge bg-primary">{{ product.variants|length }} variantes</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Tips SEO -->
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Conseils SEO</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex align-items-center">
-                            <i class="fas {% if product.meta_title and product.meta_title|length > 0 and product.meta_title|length <= 60 %}fa-check-circle text-success{% else %}fa-exclamation-circle text-warning{% endif %} me-2"></i>
-                            <div>
-                                <strong>Meta Title</strong>
-                                <small class="d-block text-muted">Idéalement entre 50-60 caractères</small>
-                            </div>
-                        </li>
-                        <li class="list-group-item d-flex align-items-center">
-                            <i class="fas {% if product.meta_description and product.meta_description|length > 0 and product.meta_description|length <= 160 %}fa-check-circle text-success{% else %}fa-exclamation-circle text-warning{% endif %} me-2"></i>
-                            <div>
-                                <strong>Meta Description</strong>
-                                <small class="d-block text-muted">Idéalement entre 140-160 caractères</small>
-                            </div>
-                        </li>
-                        <li class="list-group-item d-flex align-items-center">
-                            <i class="fas {% if product.alt_text %}fa-check-circle text-success{% else %}fa-exclamation-circle text-warning{% endif %} me-2"></i>
-                            <div>
-                                <strong>Alt Text</strong>
-                                <small class="d-block text-muted">Description de l'image principale</small>
-                            </div>
-                        </li>
-                        <li class="list-group-item d-flex align-items-center">
-                            <i class="fas {% if product.get_keywords_list()|length >= 3 %}fa-check-circle text-success{% else %}fa-exclamation-circle text-warning{% endif %} me-2"></i>
-                            <div>
-                                <strong>Mots-clés</strong>
-                                <small class="d-block text-muted">Privilégier 5-7 mots-clés pertinents</small>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 
-<!-- Modal Suppression -->
+<!-- Modal de génération de contenu -->
+<div class="modal fade" id="generateContentModal" tabindex="-1" aria-labelledby="generateContentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="generateContentModalLabel">Générer du Contenu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('generate_product_content') }}" method="POST">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="target_audience_id" class="form-label">Public Cible</label>
+                        <select class="form-select" id="target_audience_id" name="target_audience_id">
+                            <option value="">Aucun public cible spécifique</option>
+                            {% for customer in customers %}
+                            <option value="{{ customer.id }}">{{ customer.name }} ({{ customer.age }} ans)</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">Sélectionnez un public cible pour personnaliser le contenu selon un persona spécifique.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Éléments à Générer</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="generate_description" name="generate_description" value="1" checked>
+                                    <label class="form-check-label" for="generate_description">Description optimisée</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="generate_meta" name="generate_meta" value="1" checked>
+                                    <label class="form-check-label" for="generate_meta">Métadonnées SEO</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="generate_variants" name="generate_variants" value="1" checked>
+                                    <label class="form-check-label" for="generate_variants">Variantes du produit</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="generate_comparative" name="generate_comparative" value="1">
+                                    <label class="form-check-label" for="generate_comparative">Analyse comparative</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="generation_instructions" class="form-label">Instructions Spécifiques (optionnel)</label>
+                        <textarea class="form-control" id="generation_instructions" name="generation_instructions" rows="2" placeholder="Ex: Mettre l'accent sur le rapport qualité-prix, aspect écologique, etc."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Format de Sortie HTML</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="generate_html" name="generate_html" value="1" checked>
+                            <label class="form-check-label" for="generate_html">Générer du HTML pour Shopify</label>
+                        </div>
+                        <div class="form-text">Si activé, du contenu HTML optimisé pour Shopify sera également généré.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-magic me-2"></i> Générer le Contenu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmation de suppression -->
 <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -426,10 +356,10 @@
             </div>
             <div class="modal-body">
                 <p>Êtes-vous sûr de vouloir supprimer le produit <strong>{{ product.name }}</strong> ?</p>
-                <p class="text-danger"><small>Cette action est irréversible.</small></p>
+                <p class="text-danger mb-0">Cette action ne peut pas être annulée.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
                 <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST">
                     <button type="submit" class="btn btn-danger">Supprimer</button>
                 </form>

@@ -1,296 +1,270 @@
 """
-Module pour la génération de fiches produits optimisées pour le SEO et le marketing
+Module pour la génération de contenu de produit optimisé avec AI
 """
 
 import os
-import logging
 import json
-import asyncio
-from typing import Dict, List, Optional, Union
+import logging
+import datetime
+from typing import Dict, List, Optional, Tuple, Any
 
-# Configuration du client AI
-from boutique_ai import AsyncOpenAI, GROK_3, grok_client
+from boutique_ai import grok_client, GROK_3
 
-async def generate_product_description_async(
-    client: AsyncOpenAI,
-    product_info: Dict,
-    target_audience: Dict,
-    language: str = "fr",
-    style: str = "descriptif",
-    model: str = GROK_3
-) -> Dict:
+async def generate_product_content(
+    product_data: Dict[str, Any],
+    target_audience: Optional[Dict[str, Any]] = None,
+    generate_options: Optional[Dict[str, bool]] = None,
+    instructions: Optional[str] = None
+) -> Dict[str, Any]:
     """
-    Génère une description de produit optimisée pour le SEO et le marketing
+    Génère du contenu optimisé pour un produit
     
     Args:
-        client: Client AsyncOpenAI
-        product_info: Informations sur le produit (nom, catégorie, caractéristiques, etc.)
-        target_audience: Données sur le public cible (persona)
-        language: Code de langue (fr, en, etc.)
-        style: Style de la description (descriptif, technique, émotionnel, etc.)
-        model: Modèle Grok à utiliser
-    
+        product_data: Données du produit
+        target_audience: Données du persona client cible (optionnel)
+        generate_options: Options de génération
+        instructions: Instructions spécifiques pour la génération
+        
     Returns:
-        Dict contenant la description, méta-title, méta-description et texte alternatif
+        Dictionnaire contenant le contenu généré
     """
+    # Options par défaut
+    options = {
+        "generate_description": True,
+        "generate_meta": True,
+        "generate_variants": True,
+        "generate_comparative": False
+    }
+    
+    # Fusionner avec les options fournies
+    if generate_options:
+        options.update(generate_options)
+    
+    # Construire le contexte
+    context = {
+        "product": product_data,
+        "target_audience": target_audience,
+        "options": options,
+        "instructions": instructions
+    }
+    
+    # Générer le prompt
+    prompt = _build_product_content_prompt(context)
+    
     try:
-        # Construire le prompt pour la génération de contenu
-        prompt = f"""
-        Génère une fiche produit complète et optimisée pour le e-commerce en {language.upper()}.
-        
-        INFORMATIONS SUR LE PRODUIT:
-        {json.dumps(product_info, indent=2, ensure_ascii=False)}
-        
-        CLIENT CIBLE:
-        {json.dumps(target_audience, indent=2, ensure_ascii=False)}
-        
-        STYLE DE DESCRIPTION: {style}
-        
-        FORMAT DEMANDÉ (RESPECTER STRICTEMENT CE FORMAT JSON):
-        {{
-            "titre": "Titre accrocheur du produit (max 60 caractères)",
-            "description_courte": "Résumé impactant en 1-2 phrases (max 160 caractères)",
-            "description_complete": "Description détaillée du produit, structurée en plusieurs paragraphes",
-            "points_forts": ["Liste des 3-5 points forts du produit"],
-            "meta_title": "Titre SEO optimisé (max 60 caractères)",
-            "meta_description": "Description SEO optimisée (max 160 caractères)", 
-            "alt_text": "Texte alternatif pour l'image principale (max 125 caractères)",
-            "mots_cles": ["Liste de 5-7 mots-clés pertinents pour le SEO"],
-            "public_cible": "Description du public cible idéal pour ce produit"
-        }}
-        
-        CONSIGNES IMPORTANTES:
-        - Le contenu doit être UNIQUEMENT en {language.upper()}, adaptée au marché francophone
-        - Utiliser un ton professionnel mais accessible, adapté au style {style}
-        - Inclure des termes spécifiques à la niche et au produit
-        - Rendre le contenu persuasif et orienté conversion
-        - Respecter STRICTEMENT les limites de caractères indiquées
-        """
-        
-        # Appeler l'API pour générer la description
-        response = await client.chat.completions.create(
-            model=model,
+        # Appeler l'API
+        response = await grok_client.chat.completions.create(
+            model=GROK_3,
             messages=[
-                {"role": "system", "content": "Tu es un expert en marketing de contenu e-commerce et SEO qui génère des fiches produits optimisées."},
+                {"role": "system", "content": "Tu es un expert en copywriting, e-commerce et SEO spécialisé dans la création de fiches produits optimisées."},
                 {"role": "user", "content": prompt}
             ],
             response_format={"type": "json_object"},
-            max_tokens=2000
+            max_tokens=3000
         )
         
-        # Extraire et traiter la réponse
-        content = json.loads(response.choices[0].message.content)
-        
-        # Ajouter des informations complémentaires
-        content["langue"] = language
-        content["style_description"] = style
-        
-        return content
-        
-    except Exception as e:
-        logging.error(f"Erreur lors de la génération de la description produit: {e}")
-        raise
-
-async def generate_product_variants_async(
-    client: AsyncOpenAI,
-    base_product: Dict,
-    variant_types: List[str],
-    language: str = "fr",
-    model: str = GROK_3
-) -> Dict:
-    """
-    Génère des variantes pour un produit (tailles, couleurs, matériaux, etc.)
-    
-    Args:
-        client: Client AsyncOpenAI
-        base_product: Informations sur le produit de base
-        variant_types: Types de variantes à générer (couleurs, tailles, etc.)
-        language: Code de langue (fr, en, etc.)
-        model: Modèle Grok à utiliser
-    
-    Returns:
-        Dict contenant les variantes du produit
-    """
-    try:
-        # Construire le prompt pour la génération de variantes
-        prompt = f"""
-        Génère des variantes réalistes pour ce produit en {language.upper()}.
-        
-        INFORMATIONS SUR LE PRODUIT DE BASE:
-        {json.dumps(base_product, indent=2, ensure_ascii=False)}
-        
-        TYPES DE VARIANTES DEMANDÉES:
-        {', '.join(variant_types)}
-        
-        FORMAT DEMANDÉ (RESPECTER STRICTEMENT CE FORMAT JSON):
-        {{
-            "variantes": [
-                {{
-                    "id": "identifiant-unique-variante-1",
-                    "titre": "Titre de la variante 1",
-                    "attributs": {{"type_attribut1": "valeur1", "type_attribut2": "valeur2"}},
-                    "prix": "Prix spécifique à cette variante (ou vide si même prix)",
-                    "disponibilite": "En stock / Rupture de stock / Sur commande",
-                    "delai_livraison": "Délai estimé pour cette variante (si différent)"
-                }}
-            ],
-            "grille_tailles": {{}},  // Si applicable, tableau des tailles disponibles
-            "guide_couleurs": {{}},  // Si applicable, correspondance des couleurs
-            "attributs_personnalisables": [] // Liste des attributs que le client peut personnaliser
-        }}
-        
-        CONSIGNES:
-        - Crée entre 3 et 8 variantes réalistes pour ce produit
-        - Les variantes doivent respecter la logique du produit et de sa catégorie
-        - Pour les vêtements, inclure une grille de tailles appropriée
-        - Pour les produits avec couleurs, fournir des descriptions précises des teintes
-        - Tous les attributs doivent être en {language.upper()}
-        - Attribuer des prix cohérents si les variantes ont des prix différents
-        """
-        
-        # Appeler l'API pour générer les variantes
-        response = await client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": "Tu es un expert en e-commerce spécialisé dans la création de variantes de produits optimisées pour les conversions."},
-                {"role": "user", "content": prompt}
-            ],
-            response_format={"type": "json_object"},
-            max_tokens=2000
-        )
-        
-        # Extraire et traiter la réponse
+        # Extraire la réponse
         content = json.loads(response.choices[0].message.content)
         
         # Ajouter des métadonnées
-        content["produit_base"] = base_product.get("nom", "Produit sans nom")
-        content["types_variantes"] = variant_types
-        content["nombre_variantes"] = len(content.get("variantes", []))
+        content["generation_timestamp"] = datetime.datetime.now().isoformat()
         
         return content
-        
+    
     except Exception as e:
-        logging.error(f"Erreur lors de la génération des variantes produit: {e}")
+        logging.error(f"Erreur lors de la génération du contenu produit: {e}")
         raise
 
-async def generate_product_comparison_async(
-    client: AsyncOpenAI,
-    product_info: Dict,
-    competitors: List[Dict],
-    language: str = "fr",
-    model: str = GROK_3
-) -> Dict:
+def _build_product_content_prompt(context: Dict[str, Any]) -> str:
     """
-    Génère une analyse comparative du produit avec ses concurrents
+    Construit le prompt pour la génération de contenu produit
     
     Args:
-        client: Client AsyncOpenAI
-        product_info: Informations sur le produit principal
-        competitors: Liste des informations sur les produits concurrents
-        language: Code de langue (fr, en, etc.)
-        model: Modèle Grok à utiliser
-    
+        context: Contexte pour la génération
+        
     Returns:
-        Dict contenant l'analyse comparative et les points forts/faibles
+        Prompt formaté
+    """
+    product = context["product"]
+    target_audience = context.get("target_audience")
+    options = context.get("options", {})
+    instructions = context.get("instructions", "")
+    
+    # Construire le prompt principal
+    prompt = f"""
+    Je dois créer du contenu optimisé pour ce produit:
+    
+    PRODUIT:
+    - Nom: {product.get('name', '')}
+    - Catégorie: {product.get('category', '')}
+    - Prix: {product.get('price', '0')}€
+    - Description actuelle: {product.get('base_description', '')}
+    """
+    
+    # Ajouter des informations sur l'audience cible si disponible
+    if target_audience:
+        prompt += f"""
+        
+        PUBLIC CIBLE:
+        - Nom: {target_audience.get('name', '')}
+        - Âge: {target_audience.get('age', '')}
+        - Localisation: {target_audience.get('location', '')}
+        - Genre: {target_audience.get('gender', '')}
+        - Intérêts: {', '.join(target_audience.get('interests', []))}
+        - Persona: {target_audience.get('persona', '')}
+        """
+    
+    # Ajouter des instructions spécifiques
+    if instructions:
+        prompt += f"""
+        
+        INSTRUCTIONS SPÉCIFIQUES:
+        {instructions}
+        """
+    
+    # Spécifier les éléments à générer
+    prompt += """
+    
+    ÉLÉMENTS À GÉNÉRER:
+    """
+    
+    if options.get("generate_description", True):
+        prompt += """
+        1. DESCRIPTION OPTIMISÉE:
+           - Un titre optimisé SEO et marketing pour le produit (max 100 caractères)
+           - Une description détaillée et persuasive qui met en valeur les avantages et caractéristiques principales
+           - Le texte doit être optimisé pour le référencement et la conversion
+        """
+    
+    if options.get("generate_meta", True):
+        prompt += """
+        2. MÉTADONNÉES SEO:
+           - Meta title (60 caractères max)
+           - Meta description (160 caractères max)
+           - Alt text pour l'image principale (125 caractères max)
+           - 5-8 mots-clés/tags pertinents
+        """
+    
+    if options.get("generate_variants", True):
+        prompt += """
+        3. VARIANTES DU PRODUIT:
+           - Suggestions de 3-5 variantes potentielles (couleurs, tailles, matériaux, etc.)
+           - Description courte pour chaque variante
+        """
+    
+    if options.get("generate_comparative", False):
+        prompt += """
+        4. ANALYSE COMPARATIVE:
+           - Positionnement par rapport à la concurrence
+           - 3-5 points forts par rapport aux produits similaires
+           - Arguments de vente uniques
+        """
+    
+    # Format de sortie demandé
+    prompt += """
+    
+    Réponds strictement au format JSON suivant:
+    {
+        "generated_title": "Titre optimisé du produit",
+        "generated_description": "Description détaillée et optimisée",
+        "meta_title": "Meta title SEO",
+        "meta_description": "Meta description SEO",
+        "alt_text": "Texte alternatif pour l'image principale",
+        "keywords": ["mot-clé1", "mot-clé2", ...],
+    """
+    
+    if options.get("generate_variants", True):
+        prompt += """
+        "variants": [
+            {"name": "Nom de la variante", "description": "Description courte"},
+            ...
+        ],
+    """
+    
+    if options.get("generate_comparative", False):
+        prompt += """
+        "comparative_analysis": {
+            "positioning": "Positionnement marché",
+            "strengths": ["Point fort 1", "Point fort 2", ...],
+            "unique_selling_points": ["Argument unique 1", "Argument unique 2", ...]
+        },
+    """
+    
+    prompt += """
+        "optimization_notes": "Notes sur l'optimisation effectuée"
+    }
+    """
+    
+    return prompt
+
+async def generate_product_html_templates(
+    product_data: Dict[str, Any],
+    target_market: str = "moyenne_gamme"
+) -> Dict[str, str]:
+    """
+    Génère des templates HTML optimisés pour Shopify
+    
+    Args:
+        product_data: Données du produit
+        target_market: Marché cible (entrée_gamme, moyenne_gamme, haut_de_gamme, luxe)
+        
+    Returns:
+        Dictionnaire contenant les templates HTML générés
     """
     try:
-        # Construire le prompt pour l'analyse comparative
+        # Construire le contexte
+        context = {
+            "product": product_data,
+            "target_market": target_market
+        }
+        
         prompt = f"""
-        Réalise une analyse comparative détaillée entre ce produit et ses concurrents en {language.upper()}.
+        Je dois créer du contenu HTML optimisé pour Shopify à partir de ces données de produit:
         
-        NOTRE PRODUIT:
-        {json.dumps(product_info, indent=2, ensure_ascii=False)}
+        {json.dumps(context, indent=2, ensure_ascii=False)}
         
-        PRODUITS CONCURRENTS:
-        {json.dumps(competitors, indent=2, ensure_ascii=False)}
+        Génère un template HTML complet pour Shopify avec les sections suivantes:
         
-        FORMAT DEMANDÉ (RESPECTER STRICTEMENT CE FORMAT JSON):
-        {{
-            "tableau_comparatif": [
-                {{
-                    "critere": "Nom du critère de comparaison",
-                    "notre_produit": "Performance de notre produit",
-                    "concurrent_1": "Performance du concurrent 1",
-                    "concurrent_2": "Performance du concurrent 2"
-                }}
-            ],
-            "avantages_concurrentiels": [
-                "Liste des 3-5 avantages majeurs de notre produit par rapport aux concurrents"
-            ],
-            "elements_amelioration": [
-                "Points sur lesquels notre produit pourrait s'améliorer (1-3 points)"
-            ],
-            "argument_vente_unique": "Proposition de valeur unique du produit en une phrase",
-            "recommandation_marketing": "Conseil stratégique pour mettre en avant ce produit"
-        }}
+        1. Un bloc HTML principal de description produit avec:
+           - Titre H1 optimisé pour le SEO
+           - Description enrichie avec des éléments de mise en valeur
+           - Liste des caractéristiques principales dans un format attrayant
+           - Appels à l'action persuasifs
+           - Mise en forme professionnelle avec CSS intégré
+         
+        2. Un bloc HTML séparé optimisé pour les spécifications techniques
         
-        CONSIGNES:
-        - Analyse objective des forces et faiblesses de chaque produit
-        - Identification des avantages concurrentiels les plus significatifs
-        - Entre 5 et 8 critères de comparaison pertinents pour cette catégorie de produit
-        - Contenu UNIQUEMENT en {language.upper()}
-        - Orienter l'analyse pour mettre en valeur notre produit de façon honnête
+        3. Un bloc HTML supplémentaire pour la section FAQ du produit (génère des questions/réponses pertinentes)
+        
+        Respecte ces consignes:
+        - Utilise seulement des éléments HTML valides et compatibles avec l'éditeur Shopify
+        - Inclus les classes CSS nécessaires pour un bon rendu
+        - Optimise le contenu pour le SEO et la conversion
+        - Ajoute des microdonnées schema.org pour le référencement
+        - Utilise des éléments HTML5 sémantiques (section, article, etc.)
+        
+        Fournis UNIQUEMENT le résultat au format JSON suivant:
+        {
+            "html_description": "HTML complet pour la description principale",
+            "html_specifications": "HTML pour les spécifications techniques",
+            "html_faq": "HTML pour la section FAQ"
+        }
         """
         
-        # Appeler l'API pour générer l'analyse
-        response = await client.chat.completions.create(
-            model=model,
+        # Appeler l'API pour générer le contenu
+        response = await grok_client.chat.completions.create(
+            model=GROK_3,
             messages=[
-                {"role": "system", "content": "Tu es un expert en analyse concurrentielle et positionnement marketing de produits e-commerce."},
+                {"role": "system", "content": "Tu es un expert en optimisation e-commerce pour Shopify avec une expertise en HTML, CSS et SEO."},
                 {"role": "user", "content": prompt}
             ],
             response_format={"type": "json_object"},
-            max_tokens=2000
+            max_tokens=4000
         )
         
-        # Extraire et traiter la réponse
-        content = json.loads(response.choices[0].message.content)
-        
-        return content
+        # Extraire et retourner le contenu généré
+        return json.loads(response.choices[0].message.content)
         
     except Exception as e:
-        logging.error(f"Erreur lors de la génération de l'analyse comparative: {e}")
+        logging.error(f"Erreur lors de la génération des templates HTML: {e}")
         raise
-
-# Fonctions synchrones (wrappers) pour faciliter l'utilisation
-
-def generate_product_description(
-    product_info: Dict,
-    target_audience: Dict,
-    language: str = "fr",
-    style: str = "descriptif"
-) -> Dict:
-    """Wrapper synchrone pour la génération de description produit"""
-    return asyncio.run(generate_product_description_async(
-        client=grok_client,
-        product_info=product_info,
-        target_audience=target_audience,
-        language=language,
-        style=style
-    ))
-
-def generate_product_variants(
-    base_product: Dict,
-    variant_types: List[str],
-    language: str = "fr"
-) -> Dict:
-    """Wrapper synchrone pour la génération de variantes produit"""
-    return asyncio.run(generate_product_variants_async(
-        client=grok_client,
-        base_product=base_product,
-        variant_types=variant_types,
-        language=language
-    ))
-
-def generate_product_comparison(
-    product_info: Dict,
-    competitors: List[Dict],
-    language: str = "fr"
-) -> Dict:
-    """Wrapper synchrone pour la génération d'analyse comparative"""
-    return asyncio.run(generate_product_comparison_async(
-        client=grok_client,
-        product_info=product_info,
-        competitors=competitors,
-        language=language
-    ))
