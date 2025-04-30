@@ -515,7 +515,12 @@ def generate_customer_persona_db(customer_id):
                 client=grok_client,
                 customer=profile,
                 niche=niche_name,
-                existing_personas=existing_personas
+                existing_personas=existing_personas,
+                boutique_info=None if not customer.boutique_id else {
+                    "name": customer.boutique.name if customer.boutique else "",
+                    "description": customer.boutique.description if customer.boutique else "",
+                    "target_demographic": customer.boutique.target_demographic if customer.boutique else ""
+                }
             )
         
         # Exécuter la fonction asynchrone
@@ -685,7 +690,13 @@ def image_generation():
             user_seo_title = request.form.get('seo_title', '')
             
             # Générer l'image et les métadonnées SEO
-            image_result = generate_marketing_image(profile, base_prompt, image_data, style)
+            image_result = generate_marketing_image(
+                profile, 
+                base_prompt, 
+                image_data=image_data, 
+                style=style,
+                boutique_id=customer.boutique_id if customer.boutique_id else None
+            )
             
             # Déterminer si nous avons reçu une simple URL ou un dictionnaire complet
             if isinstance(image_result, dict) and "url" in image_result:
