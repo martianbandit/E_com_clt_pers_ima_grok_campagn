@@ -53,6 +53,9 @@ class Customer(db.Model):
     social_media = db.Column(JSONB, nullable=True)  # Store usage frequency for different platforms
     shopping_frequency = db.Column(db.String(50), nullable=True)  # rarely, occasionally, frequently, very frequently
     persona = db.Column(db.Text, nullable=True)
+    avatar_url = db.Column(db.Text, nullable=True)  # URL de l'image d'avatar générée pour ce client
+    purchased_products = db.Column(JSONB, nullable=True)  # Produits déjà achetés par le client
+    niche_attributes = db.Column(JSONB, nullable=True)  # Attributs supplémentaires liés à la niche
     profile_data = db.Column(JSONB, nullable=True)  # Store full profile as JSON with better Postgres support
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -95,6 +98,17 @@ class Customer(db.Model):
         # Use explicit country code if available
         if profile_dict.get('country_code'):
             country_code = profile_dict.get('country_code')
+        
+        # Récupérer les produits achetés s'ils existent
+        purchased_products = profile_dict.get('purchase_history', [])
+        if not purchased_products and isinstance(profile_dict.get('purchased_products'), list):
+            purchased_products = profile_dict.get('purchased_products')
+            
+        # Récupérer les attributs de niche s'ils existent
+        niche_attributes = profile_dict.get('niche_attributes', {})
+        
+        # Récupérer l'URL de l'avatar s'il existe
+        avatar_url = profile_dict.get('avatar_url')
             
         return cls(
             name=profile_dict.get('name'),
@@ -111,6 +125,9 @@ class Customer(db.Model):
             social_media=profile_dict.get('social_media'),
             shopping_frequency=profile_dict.get('shopping_frequency'),
             persona=profile_dict.get('persona'),
+            avatar_url=avatar_url,
+            purchased_products=purchased_products,
+            niche_attributes=niche_attributes,
             profile_data=profile_dict,
             niche_market_id=niche_market_id
         )
