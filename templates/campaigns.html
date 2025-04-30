@@ -1,0 +1,147 @@
+{% extends 'layout.html' %}
+
+{% block title %}Boutique AI Marketing - Campaigns{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Marketing Campaigns</h1>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Create New Campaign</h5>
+            </div>
+            <div class="card-body">
+                {% if profiles %}
+                    <form action="/campaigns" method="POST">
+                        <div class="mb-3">
+                            <label for="profile_index" class="form-label">Select Customer Profile</label>
+                            <select class="form-select" id="profile_index" name="profile_index" required>
+                                <option value="">Choose a profile...</option>
+                                {% for profile in profiles %}
+                                    <option value="{{ loop.index0 }}">{{ profile.name }} ({{ profile.location }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Campaign Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="campaign_type" class="form-label">Campaign Type</label>
+                            <select class="form-select" id="campaign_type" name="campaign_type" required>
+                                <option value="email">Email Marketing</option>
+                                <option value="social">Social Media Post</option>
+                                <option value="sms">SMS Message</option>
+                                <option value="ad">Online Advertisement</option>
+                                <option value="product_description">Product Description</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="image_prompt" class="form-label">Image Prompt (Optional)</label>
+                            <textarea class="form-control" id="image_prompt" name="image_prompt" rows="2" placeholder="Describe the image you want to generate for this campaign..."></textarea>
+                            <div class="form-text">Leave blank to skip image generation</div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus-circle me-2"></i>
+                            Create Campaign
+                        </button>
+                    </form>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        You need to generate customer profiles before creating campaigns.
+                        <a href="/profiles" class="alert-link">Go to Profiles</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Campaign Tips</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Email Campaigns</h5>
+                            <i class="fas fa-envelope text-primary"></i>
+                        </div>
+                        <p class="mb-1">Ideal for detailed product announcements, special offers, and personalized recommendations.</p>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Social Media Posts</h5>
+                            <i class="fas fa-hashtag text-info"></i>
+                        </div>
+                        <p class="mb-1">Perfect for visual content, trending topics, and engaging boutique customers in conversation.</p>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">SMS Messages</h5>
+                            <i class="fas fa-sms text-success"></i>
+                        </div>
+                        <p class="mb-1">Great for time-sensitive offers, flash sales, and quick updates for immediate action.</p>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Online Advertisements</h5>
+                            <i class="fas fa-ad text-warning"></i>
+                        </div>
+                        <p class="mb-1">Designed to capture attention quickly with compelling visuals and concise messaging.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="mb-3">Your Campaigns</h2>
+{% if campaigns %}
+    <div class="row">
+        {% for campaign in campaigns %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ campaign.title }}</h5>
+                        <span class="badge bg-primary">{{ campaign.campaign_type }}</span>
+                    </div>
+                    
+                    {% if campaign.image_url %}
+                        <img src="{{ campaign.image_url }}" class="campaign-image" alt="Campaign image">
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <p class="card-text marketing-content">{{ campaign.content }}</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted">Created: {{ campaign.created_at.strftime('%Y-%m-%d') }}</small>
+                            
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit me-1"></i> Edit
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-success">
+                                    <i class="fas fa-paper-plane me-1"></i> Send
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        No campaigns created yet. Use the form to create your first campaign.
+    </div>
+{% endif %}
+{% endblock %}

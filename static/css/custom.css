@@ -1,0 +1,85 @@
+/* Custom styles for Boutique AI Marketing */
+
+.card-boutique {
+    border-left: 4px solid var(--bs-primary);
+    transition: transform 0.2s;
+}
+
+.card-boutique:hover {
+    transform: translateY(-5px);
+}
+
+.card-niche {
+    border-left: 4px solid var(--bs-success);
+    transition: transform 0.2s;
+}
+
+.card-niche:hover {
+    transform: translateY(-5px);
+}
+
+.persona-box {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    height: 200px;
+    overflow-y: auto;
+}
+
+.marketing-content {
+    white-space: pre-line;
+    font-size: 0.9rem;
+}
+
+.customer-profile {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.customer-profile:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    background-color: var(--bs-primary);
+    color: white;
+    padding: 15px;
+}
+
+.interest-tag {
+    display: inline-block;
+    background-color: var(--bs-light);
+    border-radius: 20px;
+    padding: 3px 10px;
+    margin: 3px;
+    font-size: 0.8rem;
+}
+
+.placeholder-content {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bs-secondary);
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 5px;
+}
+
+.campaign-image {
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .persona-box {
+        height: 150px;
+    }
+    
+    .campaign-image {
+        max-height: 200px;
+    }
+}

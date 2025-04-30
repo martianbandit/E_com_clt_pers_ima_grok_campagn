@@ -1,0 +1,332 @@
+import os
+import json
+import asyncio
+import logging
+from openai import AsyncOpenAI
+from enum import Enum
+from pydantic import BaseModel, Field
+from typing import List, Dict, Optional
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
+
+# Grok model constants
+GROK_3 = "grok-3-fast"
+GROK_2_IMAGE = "grok-2-image"
+
+# Initialize Grok client
+grok_client = AsyncOpenAI(
+    base_url="https://api.x.ai/v1", 
+    api_key=os.environ.get("XAI_API_KEY")
+)
+
+# Define data models for structured outputs
+class Gender(str, Enum):
+    MALE = "MALE"
+    FEMALE = "FEMALE"
+
+class Item(BaseModel):
+    name: str
+    category: str
+    price: float
+    purchase_date: str
+
+class Customer(BaseModel):
+    name: str
+    age: int
+    location: str
+    gender: Gender
+    language: str
+    purchase_history: List[Item]
+    interests: List[str]
+    search_history: Dict[str, str]
+    preferred_device: str
+    persona: Optional[str] = None
+
+class Customers(BaseModel):
+    customers: List[Customer]
+
+# Enhanced prompt for generating boutique-specific customer profiles
+async def generate_boutique_customers(
+    client: AsyncOpenAI, 
+    niche: str,
+    niche_description: str,
+    num_customers: int = 5, 
+    model: str = GROK_3
+) -> Customers:
+    prompt = f"""
+    Generate {num_customers} sample customers for a boutique focused on {niche}.
+    Boutique description: {niche_description}
+    
+    The customers should have the following attributes:
+    - name: str
+    - age: int
+    - location: str
+    - gender: Gender
+    - language: str
+    - purchase_history: list[Item]
+    - interests: list[str]
+    - search_history: dict[str, str]
+    - preferred_device: str
+
+    Here are the attributes of an Item:
+    - name: str (make this relevant to the {niche} niche)
+    - category: str (make this relevant to the {niche} niche)
+    - price: float (make this realistic for {niche} products)
+    - purchase_date: str (in YYYY-MM-DD format)
+
+    Each customer should be varied and distinct from the others: 
+    - Ensure the customers are realistic for the {niche} market
+    - Include a variety of languages based on where this boutique niche would be popular
+    - Ensure the customers are from countries where this niche would be popular
+    - Ensure the language attribute is set to the most commonly spoken language in that country
+    - Make sure purchase history, interests, and search history are highly relevant to the {niche} niche
+    - Have 70% of customers be in the target demographic for this niche, and 30% be potential new audiences
+
+    Please set the persona attribute to null for all customers.
+    """
+
+    try:
+        response = await client.beta.chat.completions.parse(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            response_format=Customers,
+            temperature=1.1,
+        )
+
+        if not response.choices[0].message.parsed:
+            raise ValueError("No customer profiles generated")
+
+        return response.choices[0].message.parsed
+    except Exception as e:
+        logger.error(f"Error generating boutique customers: {e}")
+        raise
+
+# Generate richly detailed persona for a customer profile
+async def generate_customer_persona_async(
+    client: AsyncOpenAI,
+    customer: dict,
+    niche: str,
+    model: str = GROK_3
+) -> str:
+    # Extract customer data for prompt
+    name = customer.get("name", "Unknown")
+    age = customer.get("age", 0)
+    location = customer.get("location", "Unknown")
+    gender = customer.get("gender", "Unknown")
+    language = customer.get("language", "English")
+    interests = ", ".join(customer.get("interests", []))
+    purchase_history = customer.get("purchase_history", [])
+    
+    # Format purchase history for prompt
+    purchases = []
+    for item in purchase_history:
+        purchases.append(f"{item.get('name')} ({item.get('category')}) - ${item.get('price')}")
+    purchase_str = "\n".join(purchases)
+    
+    # Craft a boutique-specific persona generation prompt
+    prompt = f"""
+    Create a detailed, compelling persona for a customer of a {niche} boutique with the following information:
+    
+    Name: {name}
+    Age: {age}
+    Location: {location}
+    Gender: {gender}
+    Language: {language}
+    Interests: {interests}
+    
+    Purchase History:
+    {purchase_str}
+    
+    This persona should tell a rich story about this customer that helps understand:
+    1. Their relationship with the {niche} market
+    2. Their shopping habits and preferences
+    3. Their lifestyle and values
+    4. What motivates their purchasing decisions
+    5. What kind of personalized marketing would resonate with them
+    
+    Write in second person as if you're directly describing the customer to the boutique owner.
+    The persona should be 3-4 paragraphs long, vivid and specific.
+    """
+    
+    try:
+        response = await client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.8,
+            max_tokens=800,
+        )
+        
+        if not response.choices or not response.choices[0].message.content:
+            raise ValueError("No persona generated")
+            
+        return response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error generating customer persona: {e}")
+        raise
+
+# Generate boutique-specific marketing content for a customer
+async def generate_boutique_marketing_content_async(
+    client: AsyncOpenAI,
+    customer: dict,
+    niche: str,
+    campaign_type: str,
+    model: str = GROK_3
+) -> str:
+    # Extract customer data for personalization
+    name = customer.get("name", "valued customer")
+    language = customer.get("language", "English")
+    interests = ", ".join(customer.get("interests", []))
+    persona = customer.get("persona", "")
+    
+    # Determine the appropriate content type based on campaign
+    content_type_map = {
+        "email": "marketing email",
+        "social": "social media post",
+        "sms": "SMS message",
+        "ad": "online advertisement",
+        "product_description": "product description"
+    }
+    content_type = content_type_map.get(campaign_type, "marketing content")
+    
+    # Create a boutique-specific marketing prompt
+    prompt = f"""
+    Create a highly personalized {content_type} for a {niche} boutique targeted at this specific customer:
+    
+    Customer Name: {name}
+    Language: {language}
+    Interests: {interests}
+    
+    Customer Persona:
+    {persona}
+    
+    Your task:
+    1. Write the {content_type} in {language} language
+    2. Make it feel personally crafted for this specific customer
+    3. Reference their interests and shopping preferences
+    4. Incorporate elements specific to the {niche} niche
+    5. Use language, tone, and references that would resonate with this customer
+    6. Include a compelling call-to-action relevant to this customer
+    
+    The content should be authentic, emotionally resonant, and make the customer feel understood.
+    """
+    
+    try:
+        response = await client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.9,
+            max_tokens=1000,
+        )
+        
+        if not response.choices or not response.choices[0].message.content:
+            raise ValueError(f"No {content_type} generated")
+            
+        return response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error generating marketing content: {e}")
+        raise
+
+# Generate a prompt for creating boutique-specific marketing images
+async def generate_image_prompt_async(
+    client: AsyncOpenAI,
+    customer: dict,
+    niche: str,
+    base_prompt: str,
+    model: str = GROK_3
+) -> str:
+    interests = ", ".join(customer.get("interests", []))
+    persona = customer.get("persona", "")
+    
+    meta_prompt = f"""
+    Create a detailed image generation prompt for a {niche} boutique marketing image.
+    
+    Base idea: {base_prompt}
+    
+    Customer interests: {interests}
+    
+    Customer persona summary: {persona[:200]}...
+    
+    Your task is to enhance this base prompt to:
+    1. Appeal specifically to this customer's aesthetic preferences
+    2. Incorporate visual elements from the {niche} niche
+    3. Suggest specific colors, styles, and composition that would resonate with this customer
+    4. Create a visually striking image that will catch this customer's attention
+    5. Make it feel personalized to their tastes
+    
+    Write a detailed, specific image generation prompt that would create an image perfect for this customer.
+    The prompt should be 3-5 sentences long and extremely detailed.
+    """
+    
+    try:
+        response = await client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": meta_prompt}],
+            temperature=0.8,
+            max_tokens=400,
+        )
+        
+        if not response.choices or not response.choices[0].message.content:
+            return base_prompt
+            
+        return response.choices[0].message.content
+    except Exception as e:
+        logger.error(f"Error generating image prompt: {e}")
+        return base_prompt
+
+# Generate boutique-specific marketing image
+async def generate_boutique_image_async(
+    client: AsyncOpenAI,
+    image_prompt: str,
+    model: str = GROK_2_IMAGE
+) -> str:
+    try:
+        response = await client.images.generate(
+            model=model,
+            prompt=image_prompt,
+            n=1,
+            size="1024x1024",
+        )
+        
+        if not response.data or not response.data[0].url:
+            raise ValueError("No image generated")
+            
+        return response.data[0].url
+    except Exception as e:
+        logger.error(f"Error generating image: {e}")
+        raise
+
+# Synchronous wrapper functions for async functions
+
+def generate_customers(niche, niche_description, num_customers=5):
+    """Generate customer profiles for a specific boutique niche"""
+    return asyncio.run(generate_boutique_customers(grok_client, niche, niche_description, num_customers))
+
+def generate_customer_persona(customer):
+    """Generate a detailed persona for a customer profile"""
+    niche = ""  # Extract from interests or other attributes
+    if customer.get("interests"):
+        niche = customer["interests"][0]  # Use first interest as niche if not specified
+    return asyncio.run(generate_customer_persona_async(grok_client, customer, niche))
+
+def generate_marketing_content(customer, campaign_type):
+    """Generate personalized marketing content for a customer"""
+    niche = ""
+    if customer.get("interests"):
+        niche = customer["interests"][0]
+    return asyncio.run(generate_boutique_marketing_content_async(grok_client, customer, niche, campaign_type))
+
+def generate_marketing_image(customer, base_prompt):
+    """Generate a personalized marketing image for a customer"""
+    niche = ""
+    if customer.get("interests"):
+        niche = customer["interests"][0]
+    # First, enhance the prompt for this specific customer and niche
+    enhanced_prompt = asyncio.run(generate_image_prompt_async(grok_client, customer, niche, base_prompt))
+    # Then, generate the image using the enhanced prompt
+    return asyncio.run(generate_boutique_image_async(grok_client, enhanced_prompt))
