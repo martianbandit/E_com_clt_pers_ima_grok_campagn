@@ -44,6 +44,7 @@ db.init_app(app)
 from models import Boutique, NicheMarket, Customer, Campaign, SimilarProduct, Metric, Product, ImportedProduct
 import asyncio
 import aliexpress_importer
+import product_generator
 from boutique_ai import (
     generate_customers, 
     generate_customer_persona, 
@@ -1021,179 +1022,116 @@ def delete_product(product_id):
 @app.route('/generate_product_content', methods=['POST'])
 def generate_product_content():
     """Générer du contenu pour un produit (description, variantes, analyse comparative)"""
-    from product_generator import generate_product_description, generate_product_variants, generate_product_comparison
-    
-    action = request.form.get('action', '')
-    product_id = request.form.get('product_id')
-    
-    if not product_id or not product_id.isdigit():
-        flash('Produit invalide sélectionné', 'danger')
-        return redirect(url_for('products'))
-    
-    product = Product.query.get_or_404(int(product_id))
-    
     try:
-        # Génération de description produit
-        if action == 'generate_description':
-            target_audience_id = request.form.get('target_audience_id')
-            if not target_audience_id or not target_audience_id.isdigit():
-                flash('Public cible invalide sélectionné', 'danger')
-                return redirect(url_for('products'))
-            
-            # Récupérer le public cible
-            customer = Customer.query.get_or_404(int(target_audience_id))
-            
-            # Incrémenter le compteur d'utilisation du profil
-            customer.usage_count = (customer.usage_count or 0) + 1
-            
-            # Préparer les données du produit
-            product_info = {
-                'nom': product.name,
-                'categorie': product.category,
-                'prix': product.price,
-                'description': product.base_description,
-                'boutique': product.boutique.name if product.boutique else None
-            }
-            
-            # Préparer les données du public cible
-            target_audience = {
-                'nom': customer.name,
-                'age': customer.age,
-                'sexe': customer.gender,
-                'localisation': customer.location,
-                'interets': customer.get_interests_list(),
-                'niveau_revenu': customer.income_level,
-                'profession': customer.occupation,
-                'education': customer.education,
-                'persona': customer.persona
-            }
-            
-            # Générer la description
-            style = request.form.get('style', 'descriptif')
-            language = request.form.get('language', 'fr')
-            
-            result = generate_product_description(
-                product_info=product_info,
-                target_audience=target_audience,
-                language=language,
-                style=style
-            )
-            
-            # Mettre à jour le produit avec les données générées
-            product.generated_title = result.get('titre')
-            product.generated_description = result.get('description_complete')
-            product.meta_title = result.get('meta_title')
-            product.meta_description = result.get('meta_description')
-            product.alt_text = result.get('alt_text')
-            product.keywords = result.get('mots_cles')
-            product.target_audience_id = customer.id
-            
-            # Enregistrer les modifications
-            db.session.commit()
-            
-            # Log metric pour la génération de description produit
-            log_metric("product_description_generation", {
-                "success": True,
-                "product_id": product.id,
-                "product_name": product.name,
-                "customer_id": customer.id,
-                "language": language,
-                "style": style
-            })
-            
-            flash(f'Description générée avec succès pour "{product.name}"', 'success')
-            
-        # Génération de variantes
-        elif action == 'generate_variants':
-            variant_types = request.form.getlist('variant_types')
-            if not variant_types:
-                flash('Veuillez sélectionner au moins un type de variante', 'warning')
-                return redirect(url_for('products'))
-            
-            # Préparer les données du produit
-            base_product = {
-                'nom': product.name,
-                'categorie': product.category,
-                'prix': product.price,
-                'description': product.base_description or product.generated_description
-            }
-            
-            # Générer les variantes
-            language = request.form.get('language', 'fr')
-            result = generate_product_variants(
-                base_product=base_product,
-                variant_types=variant_types,
-                language=language
-            )
-            
-            # Mettre à jour le produit avec les variantes générées
-            product.variants = result.get('variantes')
-            
-            # Enregistrer les modifications
-            db.session.commit()
-            
-            # Log metric pour la génération de variantes
-            log_metric("product_variants_generation", {
-                "success": True,
-                "product_id": product.id,
-                "product_name": product.name,
-                "variant_types": variant_types,
-                "variants_count": len(result.get('variantes', []))
-            })
-            
-            flash(f'{len(result.get("variantes", []))} variantes générées pour "{product.name}"', 'success')
-            
-        # Génération d'analyse comparative
-        elif action == 'generate_comparison':
-            competitor_names = request.form.get('competitor_names', '')
-            competitor_details = request.form.get('competitor_details', '')
-            
-            if not competitor_names:
-                flash('Veuillez spécifier au moins un produit concurrent', 'warning')
-                return redirect(url_for('products'))
-            
-            # Préparer les données du produit
-            product_info = {
-                'nom': product.name,
-                'categorie': product.category,
-                'prix': product.price,
-                'description': product.base_description or product.generated_description,
-                'avantages': product.generated_description or "Aucune description disponible"
-            }
-            
-            # Préparer les données des concurrents
-            competitor_list = []
-            for idx, name in enumerate(competitor_names.split(',')):
-                competitor = {
-                    'nom': name.strip(),
-                    'details': competitor_details
-                }
-                competitor_list.append(competitor)
-            
-            # Générer l'analyse comparative
-            language = request.form.get('language', 'fr')
-            result = generate_product_comparison(
-                product_info=product_info,
-                competitors=competitor_list,
-                language=language
-            )
-            
-            # Mettre à jour le produit avec l'analyse comparative
-            product.comparative_analysis = result
-            
-            # Enregistrer les modifications
-            db.session.commit()
-            
-            # Log metric pour la génération d'analyse comparative
-            log_metric("product_comparison_generation", {
-                "success": True,
-                "product_id": product.id,
-                "product_name": product.name,
-                "competitors_count": len(competitor_list)
-            })
-            
-            flash(f'Analyse comparative générée pour "{product.name}"', 'success')
+        product_id = request.form.get('product_id')
+        product = Product.query.get_or_404(product_id)
         
+        # Récupérer les options de génération
+        generate_options = {
+            "generate_description": request.form.get('generate_description') == '1',
+            "generate_meta": request.form.get('generate_meta') == '1',
+            "generate_variants": request.form.get('generate_variants') == '1',
+            "generate_comparative": request.form.get('generate_comparative') == '1'
+        }
+        
+        # Récupérer les instructions spécifiques
+        instructions = request.form.get('generation_instructions', '')
+        
+        # Récupérer le public cible si spécifié
+        target_audience = None
+        target_audience_id = request.form.get('target_audience_id')
+        if target_audience_id and target_audience_id.isdigit():
+            customer = Customer.query.get(int(target_audience_id))
+            if customer:
+                target_audience = {
+                    'name': customer.name,
+                    'age': customer.age,
+                    'location': customer.location,
+                    'gender': customer.gender,
+                    'interests': customer.get_interests_list(),
+                    'persona': customer.persona
+                }
+                
+                # Incrémenter le compteur d'utilisation du client
+                customer.usage_count = (customer.usage_count or 0) + 1
+                db.session.commit()
+        
+        # Préparation des données du produit
+        product_data = {
+            'id': product.id,
+            'name': product.name,
+            'category': product.category,
+            'price': product.price,
+            'base_description': product.base_description
+        }
+        
+        async def generate_content():
+            try:
+                # Générer le contenu principal
+                content_result = await product_generator.generate_product_content(
+                    product_data,
+                    target_audience,
+                    generate_options,
+                    instructions
+                )
+                
+                # Générer le HTML si demandé
+                html_templates = None
+                if request.form.get('generate_html') == '1':
+                    html_templates = await product_generator.generate_product_html_templates(
+                        {**product_data, **content_result},
+                        "moyenne_gamme"  # Par défaut, ciblage moyen de gamme
+                    )
+                
+                # Mettre à jour le produit avec le contenu généré
+                if content_result:
+                    if generate_options.get("generate_description"):
+                        product.generated_title = content_result.get('generated_title')
+                        product.generated_description = content_result.get('generated_description')
+                    
+                    if generate_options.get("generate_meta"):
+                        product.meta_title = content_result.get('meta_title')
+                        product.meta_description = content_result.get('meta_description')
+                        product.alt_text = content_result.get('alt_text')
+                        product.keywords = content_result.get('keywords')
+                    
+                    if generate_options.get("generate_variants"):
+                        product.variants = content_result.get('variants')
+                    
+                    if generate_options.get("generate_comparative"):
+                        product.comparative_analysis = content_result.get('comparative_analysis')
+                
+                # Ajouter le HTML généré si disponible
+                if html_templates:
+                    product.html_description = html_templates.get('html_description')
+                    product.html_specifications = html_templates.get('html_specifications')
+                    product.html_faq = html_templates.get('html_faq')
+                
+                # Si un client spécifique a été utilisé, mettre à jour la liaison
+                if target_audience_id and target_audience_id.isdigit():
+                    product.target_audience_id = int(target_audience_id)
+                
+                # Enregistrer les modifications
+                db.session.commit()
+            except Exception as e:
+                logging.error(f"Error during async content generation: {e}")
+                raise
+        
+        # Exécuter la génération en arrière-plan
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(generate_content())
+        loop.close()
+        
+        # Log metric pour la génération
+        log_metric("product_content_generation", {
+            "success": True,
+            "product_id": product.id,
+            "product_name": product.name,
+            "options": generate_options
+        })
+        
+        flash('Contenu généré avec succès!', 'success')
         return redirect(url_for('view_product', product_id=product.id))
         
     except Exception as e:
@@ -1204,8 +1142,7 @@ def generate_product_content():
         # Log metric pour l'échec de génération
         log_metric("product_content_generation", {
             "success": False,
-            "error": str(e),
-            "action": action
+            "error": str(e)
         })
         
         return redirect(url_for('products'))
