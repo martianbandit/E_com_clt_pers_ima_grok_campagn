@@ -211,7 +211,7 @@
                                                 <p class="card-text small">{{ campaign.content }}</p>
                                                 {% if campaign.image_keywords %}
                                                 <div class="d-flex flex-wrap gap-1 my-2">
-                                                    {% set keywords = campaign.image_keywords.split(',') %}
+                                                    {% set keywords = campaign.image_keywords.split(',') if campaign.image_keywords is string else campaign.image_keywords %}
                                                     {% for keyword in keywords[:3] %}
                                                         <span class="badge bg-light text-dark">{{ keyword }}</span>
                                                     {% endfor %}
