@@ -1,20 +1,20 @@
 {% extends 'layout.html' %}
 
-{% block title %}Gestion des Produits{% endblock %}
+{% block title %}{{ _('Product Management') }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <div class="row mb-4">
         <div class="col-md-8">
-            <h1>Gestion des Produits</h1>
+            <h1>{{ _('Product Management') }}</h1>
         </div>
         <div class="col-md-4 text-end">
             <div class="btn-group">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createProductModal">
-                    <i class="fas fa-plus me-2"></i> Nouveau Produit
+                    <i class="fas fa-plus me-2"></i> {{ _('New Product') }}
                 </button>
                 <a href="{{ url_for('import_aliexpress_form') }}" class="btn btn-success">
-                    <i class="fas fa-download me-2"></i> Import AliExpress
+                    <i class="fas fa-download me-2"></i> {{ _('AliExpress Import') }}
                 </a>
             </div>
         </div>
@@ -24,9 +24,9 @@
         <div class="col">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Produits Disponibles</h5>
+                    <h5 class="mb-0">{{ _('Available Products') }}</h5>
                     <div class="input-group" style="width: 300px;">
-                        <input type="text" class="form-control" id="productSearch" placeholder="Rechercher un produit...">
+                        <input type="text" class="form-control" id="productSearch" placeholder="{{ _('Search for a product...') }}">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
                     </div>
                 </div>
@@ -35,11 +35,11 @@
                         <table class="table table-hover mb-0" id="productsTable">
                             <thead>
                                 <tr>
-                                    <th scope="col">Nom</th>
-                                    <th scope="col">Catégorie</th>
-                                    <th scope="col">Prix</th>
-                                    <th scope="col">Boutique</th>
-                                    <th scope="col">Actions</th>
+                                    <th scope="col">{{ _('Name') }}</th>
+                                    <th scope="col">{{ _('Category') }}</th>
+                                    <th scope="col">{{ _('Price') }}</th>
+                                    <th scope="col">{{ _('Boutique') }}</th>
+                                    <th scope="col">{{ _('Actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -91,8 +91,8 @@
                                         <td colspan="5" class="text-center py-4">
                                             <div class="py-3">
                                                 <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                                                <p class="mb-1">Aucun produit disponible</p>
-                                                <p class="text-muted small mb-0">Créez votre premier produit ou importez depuis AliExpress</p>
+                                                <p class="mb-1">{{ _('No products available') }}</p>
+                                                <p class="text-muted small mb-0">{{ _('Create your first product or import from AliExpress') }}</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -109,20 +109,20 @@
         <div class="col-md-6">
             <div class="card h-100">
                 <div class="card-header">
-                    <h5 class="mb-0">Importation de Produits</h5>
+                    <h5 class="mb-0">{{ _('Product Import') }}</h5>
                 </div>
                 <div class="card-body">
-                    <p>Importez directement depuis <strong>AliExpress</strong> et générez :</p>
+                    <p>{{ _('Import directly from') }} <strong>AliExpress</strong> {{ _('and generate:') }}</p>
                     <ul class="fa-ul mb-4">
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>Descriptions optimisées SEO</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>Stratégies de prix intelligentes</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>HTML compatible Shopify</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>Textes alternatifs et métadonnées</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>FAQ et spécifications techniques</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('SEO optimized descriptions') }}</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Intelligent pricing strategies') }}</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Shopify compatible HTML') }}</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Alternative text and metadata') }}</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('FAQ and technical specifications') }}</li>
                     </ul>
                     <div class="d-grid">
                         <a href="{{ url_for('import_aliexpress_form') }}" class="btn btn-success">
-                            <i class="fas fa-download me-2"></i> Importer depuis AliExpress
+                            <i class="fas fa-download me-2"></i> {{ _('Import from AliExpress') }}
                         </a>
                     </div>
                 </div>
@@ -132,20 +132,20 @@
         <div class="col-md-6">
             <div class="card h-100">
                 <div class="card-header">
-                    <h5 class="mb-0">Génération de Contenu</h5>
+                    <h5 class="mb-0">{{ _('Content Generation') }}</h5>
                 </div>
                 <div class="card-body">
-                    <p>Générez du contenu optimisé pour vos produits existants :</p>
+                    <p>{{ _('Generate optimized content for your existing products:') }}</p>
                     <ul class="fa-ul mb-4">
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>Descriptions ciblées par persona client</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>Variantes et options de produit</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>Analyse comparative</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>Optimisation SEO</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>Argumentaire de vente</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Customer persona targeted descriptions') }}</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Product variants and options') }}</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Comparative analysis') }}</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('SEO optimization') }}</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Sales pitch') }}</li>
                     </ul>
                     <div class="d-grid">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateContentModal">
-                            <i class="fas fa-magic me-2"></i> Générer du Contenu
+                            <i class="fas fa-magic me-2"></i> {{ _('Generate Content') }}
                         </button>
                     </div>
                 </div>
@@ -154,39 +154,39 @@
     </div>
 </div>
 
-<!-- Modal de création de produit -->
+<!-- Product creation modal -->
 <div class="modal fade" id="createProductModal" tabindex="-1" aria-labelledby="createProductModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createProductModalLabel">Nouveau Produit</h5>
+                <h5 class="modal-title" id="createProductModalLabel">{{ _('New Product') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ url_for('create_product') }}" method="POST">
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-md-8">
-                            <label for="name" class="form-label">Nom du Produit *</label>
+                            <label for="name" class="form-label">{{ _('Product Name') }} *</label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
                         <div class="col-md-4">
-                            <label for="category" class="form-label">Catégorie</label>
+                            <label for="category" class="form-label">{{ _('Category') }}</label>
                             <input type="text" class="form-control" id="category" name="category">
                         </div>
                     </div>
                     
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="price" class="form-label">Prix</label>
+                            <label for="price" class="form-label">{{ _('Price') }}</label>
                             <div class="input-group">
                                 <input type="number" class="form-control" id="price" name="price" step="0.01" min="0">
                                 <span class="input-group-text">€</span>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="boutique_id" class="form-label">Boutique</label>
+                            <label for="boutique_id" class="form-label">{{ _('Boutique') }}</label>
                             <select class="form-select" id="boutique_id" name="boutique_id">
-                                <option value="">Aucune boutique</option>
+                                <option value="">{{ _('No boutique') }}</option>
                                 {% for boutique in boutiques %}
                                 <option value="{{ boutique.id }}">{{ boutique.name }}</option>
                                 {% endfor %}
@@ -195,18 +195,18 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="base_description" class="form-label">Description</label>
+                        <label for="base_description" class="form-label">{{ _('Description') }}</label>
                         <textarea class="form-control" id="base_description" name="base_description" rows="4"></textarea>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="image_url" class="form-label">URL de l'Image</label>
+                        <label for="image_url" class="form-label">{{ _('Image URL') }}</label>
                         <input type="url" class="form-control" id="image_url" name="image_url" placeholder="https://...">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Créer le Produit</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-primary">{{ _('Create Product') }}</button>
                 </div>
             </form>
         </div>
