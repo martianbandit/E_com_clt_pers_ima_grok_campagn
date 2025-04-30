@@ -78,3 +78,67 @@ msgstr "Avertissement"
 msgid "Info"
 msgstr "Info"
 
+# Page d'accueil
+msgid "Hyper-Personalized Marketing"
+msgstr "Marketing Hyper-Personnalisé"
+
+msgid "Create highly targeted marketing campaigns for boutique niches using advanced AI"
+msgstr "Créez des campagnes marketing hautement ciblées pour les niches de boutique en utilisant l'IA avancée"
+
+msgid "This application uses Grok AI and other language models to generate personalized customer profiles, detailed personas, and tailored marketing content across languages, formats, and tones in mere seconds."
+msgstr "Cette application utilise Grok AI et d'autres modèles de langage pour générer des profils clients personnalisés, des personas détaillés et du contenu marketing sur mesure dans différentes langues, formats et tons en quelques secondes."
+
+msgid "Generate Profiles"
+msgstr "Générer des Profils"
+
+msgid "Explore Profiles"
+msgstr "Explorer les Profils"
+
+msgid "Detailed Personas"
+msgstr "Personas Détaillés"
+
+msgid "Transform basic customer profiles into rich, detailed personas that bring your target audience to life."
+msgstr "Transformez les profils clients de base en personas riches et détaillés qui donnent vie à votre public cible."
+
+msgid "These written portraits capture their lifestyle, motivations, pain points, and purchasing behaviors in vivid detail."
+msgstr "Ces portraits écrits capturent leur style de vie, leurs motivations, leurs points douloureux et leurs comportements d'achat avec beaucoup de détails."
+
+msgid "Generate Personas"
+msgstr "Générer des Personas"
+
+msgid "Personalized Campaigns"
+msgstr "Campagnes Personnalisées"
+
+msgid "Create hyper-personalized marketing campaigns based on your customer profiles and personas."
+msgstr "Créez des campagnes marketing hyper-personnalisées basées sur vos profils clients et personas."
+
+msgid "Tailored content for different campaign types, including email, social media posts, advertisements, and product descriptions in the customer's language and local vernacular."
+msgstr "Contenu sur mesure pour différents types de campagnes, y compris les e-mails, les publications sur les réseaux sociaux, les publicités et les descriptions de produits dans la langue du client et le vernaculaire local."
+
+msgid "Create Campaigns"
+msgstr "Créer des Campagnes"
+
+msgid "Marketing Metrics"
+msgstr "Métriques Marketing"
+
+msgid "Track and analyze the performance of your marketing activities with built-in metrics and monitoring."
+msgstr "Suivez et analysez les performances de vos activités marketing grâce aux métriques et à la surveillance intégrées."
+
+msgid "Measure success rates for profile generation, persona creation, content generation, and image creation to optimize your marketing process."
+msgstr "Mesurez les taux de réussite pour la génération de profils, la création de personas, la génération de contenu et la création d'images pour optimiser votre processus marketing."
+
+msgid "View Metrics"
+msgstr "Voir les Métriques"
+
+msgid "Boutique Niches"
+msgstr "Niches de Boutique"
+
+msgid "Explore predefined niche markets for boutique businesses or create your own."
+msgstr "Explorez des marchés de niche prédéfinis pour les entreprises de boutique ou créez les vôtres."
+
+msgid "Each niche comes with key characteristics that help generate more relevant customer profiles and more effective marketing content."
+msgstr "Chaque niche est associée à des caractéristiques clés qui aident à générer des profils clients plus pertinents et du contenu marketing plus efficace."
+
+msgid "Explore Niches"
+msgstr "Explorer les Niches"
+

@@ -1,22 +1,21 @@
 {% extends 'layout.html' %}
 
-{% block title %}Boutique AI Marketing - Hyper-Personalized Marketing{% endblock %}
+{% block title %}Boutique AI Marketing - {{ _('Hyper-Personalized Marketing') }}{% endblock %}
 
 {% block content %}
 <div class="jumbotron bg-dark text-white p-5 rounded mb-5">
-    <h1 class="display-4">Hyper-Personalized Marketing</h1>
-    <p class="lead">Create highly targeted marketing campaigns for boutique niches using advanced AI</p>
+    <h1 class="display-4">{{ _('Hyper-Personalized Marketing') }}</h1>
+    <p class="lead">{{ _('Create highly targeted marketing campaigns for boutique niches using advanced AI') }}</p>
     <hr class="my-4">
     <p>
-        This application uses Grok AI and other language models to generate personalized customer profiles, detailed personas, 
-        and tailored marketing content across languages, formats, and tones in mere seconds.
+        {{ _('This application uses Grok AI and other language models to generate personalized customer profiles, detailed personas, and tailored marketing content across languages, formats, and tones in mere seconds.') }}
     </p>
     <div class="mt-4">
         <a class="btn btn-primary btn-lg me-2" href="{{ url_for('profiles') }}" role="button">
-            <i class="fas fa-users me-2"></i> Generate Profiles
+            <i class="fas fa-users me-2"></i> {{ _('Generate Profiles') }}
         </a>
         <a class="btn btn-success btn-lg" href="{{ url_for('campaigns') }}" role="button">
-            <i class="fas fa-bullhorn me-2"></i> Create Campaigns
+            <i class="fas fa-bullhorn me-2"></i> {{ _('Create Campaigns') }}
         </a>
     </div>
 </div>
@@ -25,18 +24,17 @@
     <div class="col-md-4 mb-4">
         <div class="card h-100">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i> Customer Profiles</h5>
+                <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i> {{ _('Customer Profiles') }}</h5>
             </div>
             <div class="card-body">
                 <p>
-                    Generate synthetic customer profiles based on different niche markets. 
-                    Each profile includes demographic information, interests, purchase history, and other relevant attributes.
+                    {{ _('Generate synthetic customer profiles based on different niche markets. Each profile includes demographic information, interests, purchase history, and other relevant attributes.') }}
                 </p>
                 <p>
-                    AI creates diverse and realistic profiles that can be used to test and refine your marketing strategies.
+                    {{ _('AI creates diverse and realistic profiles that can be used to test and refine your marketing strategies.') }}
                 </p>
                 <div class="d-grid gap-2">
-                    <a href="{{ url_for('profiles') }}" class="btn btn-outline-primary">Explore Profiles</a>
+                    <a href="{{ url_for('profiles') }}" class="btn btn-outline-primary">{{ _('Explore Profiles') }}</a>
                 </div>
             </div>
         </div>
@@ -45,17 +43,17 @@
     <div class="col-md-4 mb-4">
         <div class="card h-100">
             <div class="card-header bg-success text-white">
-                <h5 class="mb-0"><i class="fas fa-id-card me-2"></i> Detailed Personas</h5>
+                <h5 class="mb-0"><i class="fas fa-id-card me-2"></i> {{ _('Detailed Personas') }}</h5>
             </div>
             <div class="card-body">
                 <p>
-                    Transform basic customer profiles into rich, detailed personas that bring your target audience to life.
+                    {{ _('Transform basic customer profiles into rich, detailed personas that bring your target audience to life.') }}
                 </p>
                 <p>
-                    These written portraits capture their lifestyle, motivations, pain points, and purchasing behaviors in vivid detail.
+                    {{ _('These written portraits capture their lifestyle, motivations, pain points, and purchasing behaviors in vivid detail.') }}
                 </p>
                 <div class="d-grid gap-2">
-                    <a href="{{ url_for('profiles') }}" class="btn btn-outline-success">Generate Personas</a>
+                    <a href="{{ url_for('profiles') }}" class="btn btn-outline-success">{{ _('Generate Personas') }}</a>
                 </div>
             </div>
         </div>
@@ -64,18 +62,17 @@
     <div class="col-md-4 mb-4">
         <div class="card h-100">
             <div class="card-header bg-info text-white">
-                <h5 class="mb-0"><i class="fas fa-bullhorn me-2"></i> Personalized Campaigns</h5>
+                <h5 class="mb-0"><i class="fas fa-bullhorn me-2"></i> {{ _('Personalized Campaigns') }}</h5>
             </div>
             <div class="card-body">
                 <p>
-                    Create hyper-personalized marketing campaigns based on your customer profiles and personas.
+                    {{ _('Create hyper-personalized marketing campaigns based on your customer profiles and personas.') }}
                 </p>
                 <p>
-                    Tailored content for different campaign types, including email, social media posts, advertisements, 
-                    and product descriptions in the customer's language and local vernacular.
+                    {{ _('Tailored content for different campaign types, including email, social media posts, advertisements, and product descriptions in the customer\'s language and local vernacular.') }}
                 </p>
                 <div class="d-grid gap-2">
-                    <a href="{{ url_for('campaigns') }}" class="btn btn-outline-info">Create Campaigns</a>
+                    <a href="{{ url_for('campaigns') }}" class="btn btn-outline-info">{{ _('Create Campaigns') }}</a>
                 </div>
             </div>
         </div>
@@ -86,18 +83,17 @@
     <div class="col-md-6 mb-4">
         <div class="card h-100">
             <div class="card-header bg-warning text-white">
-                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i> Marketing Metrics</h5>
+                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i> {{ _('Marketing Metrics') }}</h5>
             </div>
             <div class="card-body">
                 <p>
-                    Track and analyze the performance of your marketing activities with built-in metrics and monitoring.
+                    {{ _('Track and analyze the performance of your marketing activities with built-in metrics and monitoring.') }}
                 </p>
                 <p>
-                    Measure success rates for profile generation, persona creation, content generation, 
-                    and image creation to optimize your marketing process.
+                    {{ _('Measure success rates for profile generation, persona creation, content generation, and image creation to optimize your marketing process.') }}
                 </p>
                 <div class="d-grid gap-2">
-                    <a href="{{ url_for('metrics_view') }}" class="btn btn-outline-warning">View Metrics</a>
+                    <a href="{{ url_for('metrics_view') }}" class="btn btn-outline-warning">{{ _('View Metrics') }}</a>
                 </div>
             </div>
         </div>
@@ -106,18 +102,17 @@
     <div class="col-md-6 mb-4">
         <div class="card h-100">
             <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0"><i class="fas fa-store me-2"></i> Boutique Niches</h5>
+                <h5 class="mb-0"><i class="fas fa-store me-2"></i> {{ _('Boutique Niches') }}</h5>
             </div>
             <div class="card-body">
                 <p>
-                    Explore predefined niche markets for boutique businesses or create your own.
+                    {{ _('Explore predefined niche markets for boutique businesses or create your own.') }}
                 </p>
                 <p>
-                    Each niche comes with key characteristics that help generate more relevant customer profiles 
-                    and more effective marketing content.
+                    {{ _('Each niche comes with key characteristics that help generate more relevant customer profiles and more effective marketing content.') }}
                 </p>
                 <div class="d-grid gap-2">
-                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">Explore Niches</a>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">{{ _('Explore Niches') }}</a>
                 </div>
             </div>
         </div>
