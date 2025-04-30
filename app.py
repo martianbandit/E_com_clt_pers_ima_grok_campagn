@@ -79,26 +79,69 @@ def profiles():
     if request.method == 'POST':
         niche_id = int(request.form.get('niche_id', 0))
         num_profiles = int(request.form.get('num_profiles', 5))
+        persist_to_db = request.form.get('persist_to_db') == 'on'
         
         try:
             # Generate customer profiles for the selected niche
             niche = NicheMarket.query.get(niche_id)
             if niche:
+                # Generate profiles with AI
                 customer_profiles = generate_customers(niche.name, niche.description, num_profiles)
-                # Store profiles in the session for now
+                
+                # Log metric for profile generation
+                log_metric("profile_generation", {
+                    "success": True,
+                    "niche_id": niche_id,
+                    "niche_name": niche.name,
+                    "count": len(customer_profiles),
+                    "persist_to_db": persist_to_db
+                })
+                
+                # Store profiles in the session
                 session['customer_profiles'] = customer_profiles
-                flash('Successfully generated customer profiles', 'success')
+                
+                # If requested, persist profiles to the database
+                if persist_to_db:
+                    saved_profiles = 0
+                    for profile_dict in customer_profiles:
+                        # Create Customer objects and save to database
+                        customer = Customer.from_profile_dict(profile_dict, niche_id)
+                        db.session.add(customer)
+                        saved_profiles += 1
+                    
+                    db.session.commit()
+                    flash(f'Successfully generated and saved {saved_profiles} customer profiles', 'success')
+                else:
+                    flash('Successfully generated customer profiles (not saved to database)', 'success')
             else:
                 flash('Invalid niche selected', 'danger')
+                log_metric("profile_generation", {
+                    "success": False,
+                    "error": "Invalid niche selected",
+                    "niche_id": niche_id
+                })
         except Exception as e:
             flash(f'Error generating profiles: {str(e)}', 'danger')
             logging.error(f"Error generating profiles: {e}")
+            log_metric("profile_generation", {
+                "success": False,
+                "error": str(e),
+                "niche_id": niche_id
+            })
         
         return redirect(url_for('profiles'))
     
+    # Get data for the page
     niches = NicheMarket.query.all()
     customer_profiles = session.get('customer_profiles', [])
-    return render_template('profiles.html', niches=niches, profiles=customer_profiles)
+    
+    # Get saved profiles from database for display
+    saved_profiles = Customer.query.order_by(Customer.created_at.desc()).limit(20).all()
+    
+    return render_template('profiles.html', 
+                           niches=niches, 
+                           profiles=customer_profiles,
+                           saved_profiles=saved_profiles)
 
 @app.route('/generate_persona/<int:profile_index>', methods=['POST'])
 def generate_persona(profile_index):
