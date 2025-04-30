@@ -68,20 +68,66 @@ def nl2br_filter(s):
     return Markup(s.replace('\n', '<br>'))
 
 # Function to log metrics to the database
-def log_metric(metric_name, data):
-    """Log a metric to the database for monitoring and analytics"""
+def log_metric(metric_name, data, category=None, status=None, response_time=None, customer_id=None):
+    """
+    Fonction améliorée pour enregistrer des métriques dans la base de données
+    
+    Args:
+        metric_name: Nom de la métrique
+        data: Données à enregistrer (dictionnaire)
+        category: Catégorie de la métrique (ai, user, system, etc.)
+        status: État (success, error, warning, info)
+        response_time: Temps de réponse en ms (pour les appels API)
+        customer_id: ID du client associé (si pertinent)
+    
+    Returns:
+        Métrique créée ou None en cas d'erreur
+    """
     try:
+        # Extraire automatiquement le statut des données si non spécifié
+        if status is None and isinstance(data, dict) and 'success' in data:
+            status = 'success' if data['success'] else 'error'
+        
+        # Extraire automatiquement la catégorie si non spécifiée
+        if category is None:
+            # Détection basée sur le nom de la métrique
+            if 'ai_' in metric_name or 'grok_' in metric_name or 'openai_' in metric_name:
+                category = 'ai'
+            elif 'user_' in metric_name:
+                category = 'user'
+            elif 'system_' in metric_name:
+                category = 'system'
+            elif 'generation' in metric_name:
+                category = 'generation'
+            elif 'import' in metric_name:
+                category = 'import'
+            else:
+                category = 'misc'
+        
+        # Créer et sauvegarder la métrique
         metric = Metric(
             name=metric_name,
+            category=category,
+            status=status,
             data=data,
-            created_at=datetime.datetime.utcnow()
+            response_time=response_time,
+            created_at=datetime.datetime.utcnow(),
+            customer_id=customer_id
         )
         db.session.add(metric)
         db.session.commit()
-        logging.info(f"Metric logged: {metric_name} - {json.dumps(data)}")
+        
+        # Journal des métriques importantes ou des erreurs uniquement
+        if status == 'error':
+            logging.error(f"Metric Error: {metric_name} - {json.dumps(data)}")
+        else:
+            logging.info(f"Metric: {metric_name} ({category}) - Status: {status}")
+            
+        return metric
     except Exception as e:
         logging.error(f"Failed to log metric {metric_name}: {e}")
         db.session.rollback()
+        return None
 
 @app.route('/change_language/<string:lang>')
 def change_language(lang):

@@ -369,11 +369,66 @@ class Metric(db.Model):
     """Model for storing application metrics and analytics data"""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    data = db.Column(JSONB, nullable=True)
+    category = db.Column(db.String(50), nullable=True)  # Catégorie de la métrique (ai, user, system, etc.)
+    status = db.Column(db.String(20), nullable=True)    # État (success, error, warning, info)
+    data = db.Column(JSONB, nullable=True)              # Données complètes
+    response_time = db.Column(db.Float, nullable=True)  # Temps de réponse en millisecondes (pour les appels API)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Foreign keys optionnels
+    user_id = db.Column(db.Integer, nullable=True)      # ID utilisateur associé (si pertinent)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id', ondelete='SET NULL'), nullable=True)
+    
+    # Relation avec Customer (optionnelle)
+    customer = db.relationship('Customer', backref=db.backref('metrics', lazy=True))
     
     def __repr__(self):
-        return f'<Metric {self.name}>'
+        return f'<Metric {self.name} ({self.category})>'
+        
+    @staticmethod
+    def get_metrics_summary(category=None, start_date=None, end_date=None, limit=100):
+        """
+        Récupère un résumé des métriques avec filtres optionnels
+        
+        Args:
+            category: Catégorie de métriques à récupérer (optionnel)
+            start_date: Date de début pour filtrer les métriques (optionnel)
+            end_date: Date de fin pour filtrer les métriques (optionnel)
+            limit: Nombre maximum de résultats à retourner (par défaut 100)
+            
+        Returns:
+            Dictionnaire contenant des statistiques résumées et les derniers enregistrements
+        """
+        query = Metric.query
+        
+        # Appliquer les filtres
+        if category:
+            query = query.filter_by(category=category)
+        if start_date:
+            query = query.filter(Metric.created_at >= start_date)
+        if end_date:
+            query = query.filter(Metric.created_at <= end_date)
+            
+        # Récupérer les derniers enregistrements
+        latest_metrics = query.order_by(Metric.created_at.desc()).limit(limit).all()
+        
+        # Calculer les statistiques
+        total_count = query.count()
+        success_count = query.filter_by(status='success').count()
+        error_count = query.filter_by(status='error').count()
+        success_rate = (success_count / total_count * 100) if total_count > 0 else 0
+        
+        # Calculer le temps de réponse moyen (pour les métriques avec temps de réponse)
+        avg_response_time = db.session.query(db.func.avg(Metric.response_time))\
+                           .filter(Metric.response_time.isnot(None)).scalar() or 0
+        
+        return {
+            'total_count': total_count,
+            'success_count': success_count,
+            'error_count': error_count,
+            'success_rate': success_rate,
+            'avg_response_time': avg_response_time,
+            'latest_metrics': latest_metrics
+        }
         
 class Product(db.Model):
     """Model for storing product information and generated content"""
