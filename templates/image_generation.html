@@ -65,6 +65,46 @@
                             </div>
                         </div>
                         
+                        <div class="mb-3">
+                            <div class="card">
+                                <div class="card-header bg-success text-white">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-search me-2"></i> Options SEO avancées
+                                        </h6>
+                                        <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#seoOptions">
+                                            <i class="fas fa-cog"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="collapse" id="seoOptions">
+                                    <div class="card-body">
+                                        <div class="alert alert-success mb-3">
+                                            <i class="fas fa-magic me-2"></i> L'IA générera automatiquement des métadonnées SEO optimisées pour votre image. Vous pouvez aussi personnaliser ces éléments ci-dessous.
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="seo_keywords" class="form-label">Mots-clés SEO (séparés par des virgules)</label>
+                                            <input type="text" class="form-control" id="seo_keywords" name="seo_keywords" placeholder="Ex: mode, luxe, éthique, tendance">
+                                            <small class="form-text text-muted">Mots-clés pertinents pour améliorer le référencement de l'image</small>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="seo_alt_text" class="form-label">Texte alternatif (alt)</label>
+                                            <input type="text" class="form-control" id="seo_alt_text" name="seo_alt_text" maxlength="125" placeholder="Description concise de l'image pour l'accessibilité et le SEO">
+                                            <small class="form-text text-muted">125 caractères max. Essentiel pour l'accessibilité et le référencement</small>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="seo_title" class="form-label">Titre SEO de l'image</label>
+                                            <input type="text" class="form-control" id="seo_title" name="seo_title" maxlength="60" placeholder="Titre optimisé pour le référencement">
+                                            <small class="form-text text-muted">60 caractères max. Utilisé dans les résultats de recherche d'images</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="find_similar_products" name="find_similar_products">
                             <label class="form-check-label" for="find_similar_products">Trouver des produits similaires sur AliExpress</label>
@@ -99,7 +139,17 @@
                         <li>Utilisez une image de référence pour guider le style</li>
                         <li>Choisissez un style adapté à votre boutique</li>
                     </ul>
-                    <p class="mb-0 small text-muted">Le système améliorera automatiquement votre prompt en fonction du profil client pour maximiser la personnalisation et l'impact.</p>
+                    
+                    <h6 class="mt-3">Optimisation SEO:</h6>
+                    <ul>
+                        <li>Utilisez des mots-clés pertinents pour votre niche</li>
+                        <li>Créez un texte alternatif (alt) descriptif et avec mots-clés</li>
+                        <li>Donnez un titre SEO court et accrocheur</li>
+                        <li>Incluez votre nom de marque dans les métadonnées</li>
+                        <li>Privilégiez des images avec un sujet clair et bien visible</li>
+                    </ul>
+                    
+                    <p class="mb-0 small text-muted">Le système améliorera automatiquement votre prompt et les métadonnées SEO en fonction du profil client pour maximiser la personnalisation, l'impact et la visibilité.</p>
                 </div>
             </div>
             
@@ -145,11 +195,33 @@
                                     {% set image_count = image_count + 1 %}
                                     <div class="col-md-4 mb-4">
                                         <div class="card h-100">
-                                            <img src="{{ campaign.image_url }}" class="card-img-top" alt="Image marketing">
+                                            <div class="position-relative">
+                                                <img src="{{ campaign.image_url }}" 
+                                                     class="card-img-top" 
+                                                     alt="{{ campaign.image_alt_text or 'Image marketing' }}" 
+                                                     title="{{ campaign.image_title or campaign.title }}">
+                                                {% if campaign.image_alt_text or campaign.image_title or campaign.image_keywords %}
+                                                <div class="position-absolute top-0 end-0 m-2">
+                                                    <span class="badge bg-success" title="Image optimisée pour le référencement">SEO</span>
+                                                </div>
+                                                {% endif %}
+                                            </div>
                                             <div class="card-body">
                                                 <h6 class="card-title">{{ campaign.title }}</h6>
                                                 <p class="card-text small">{{ campaign.content }}</p>
-                                                <p class="card-text"><small class="text-muted">Client: {{ campaign.customer.name }}</small></p>
+                                                {% if campaign.image_keywords %}
+                                                <div class="d-flex flex-wrap gap-1 my-2">
+                                                    {% for keyword in campaign.get_seo_keywords()|slice(0, 3) %}
+                                                    <span class="badge bg-light text-dark">{{ keyword }}</span>
+                                                    {% endfor %}
+                                                    {% if campaign.get_seo_keywords()|length > 3 %}
+                                                    <span class="badge bg-light text-dark">+{{ campaign.get_seo_keywords()|length - 3 }}</span>
+                                                    {% endif %}
+                                                </div>
+                                                {% endif %}
+                                                <p class="card-text">
+                                                    <small class="text-muted">Client: {{ campaign.customer.name }}</small>
+                                                </p>
                                                 <a href="{{ url_for('view_campaign', campaign_id=campaign.id) }}" class="btn btn-sm btn-outline-primary">Voir les détails</a>
                                             </div>
                                         </div>

@@ -583,29 +583,51 @@ def image_generation():
                 'persona': customer.persona
             }
             
+            # Récupérer les métadonnées SEO fournies par l'utilisateur
+            user_seo_keywords = request.form.get('seo_keywords', '')
+            user_seo_alt_text = request.form.get('seo_alt_text', '')
+            user_seo_title = request.form.get('seo_title', '')
+            
             # Générer l'image et les métadonnées SEO
             image_result = generate_marketing_image(profile, base_prompt, image_data, style)
             
             # Déterminer si nous avons reçu une simple URL ou un dictionnaire complet
             if isinstance(image_result, dict) and "url" in image_result:
                 image_url = image_result["url"]
+                # Combiner les métadonnées générées par l'IA avec celles de l'utilisateur
                 seo_metadata = {
-                    "alt_text": image_result.get("alt_text", ""),
-                    "title": image_result.get("title", ""),
+                    "alt_text": user_seo_alt_text or image_result.get("alt_text", ""),
+                    "title": user_seo_title or image_result.get("title", ""),
                     "description": image_result.get("description", ""),
-                    "keywords": image_result.get("keywords", []),
+                    "keywords": [],
                     "prompt": image_result.get("prompt", base_prompt)
                 }
+                
+                # Traiter les mots-clés (priorité à l'utilisateur, puis l'IA)
+                if user_seo_keywords:
+                    seo_metadata["keywords"] = [k.strip() for k in user_seo_keywords.split(',') if k.strip()]
+                elif "keywords" in image_result and image_result["keywords"]:
+                    seo_metadata["keywords"] = image_result["keywords"]
             else:
                 # Compatible avec l'ancienne version qui retourne juste l'URL
                 image_url = image_result
-                # Extraire les mots-clés des intérêts du client
-                keywords = customer.get_interests_list()
-                if not keywords and customer.niche_market:
-                    keywords = [customer.niche_market.name]
+                
+                # Extraire les mots-clés des intérêts du client si l'utilisateur n'en a pas fourni
+                keywords = []
+                if user_seo_keywords:
+                    keywords = [k.strip() for k in user_seo_keywords.split(',') if k.strip()]
+                else:
+                    keywords = customer.get_interests_list()
+                    if not keywords and customer.niche_market:
+                        keywords = [customer.niche_market.name]
+                
+                # Combiner les métadonnées par défaut avec celles de l'utilisateur
+                default_alt_text = f"Image marketing pour {customer.name} dans la niche {', '.join(keywords[:2]) if keywords else 'boutique'}"
+                default_title = request.form.get('title', f"Image marketing pour {customer.name}")
+                
                 seo_metadata = {
-                    "alt_text": f"Image marketing pour {customer.name} dans la niche {', '.join(keywords[:2]) if keywords else 'boutique'}",
-                    "title": request.form.get('title', f"Image marketing pour {customer.name}"),
+                    "alt_text": user_seo_alt_text or default_alt_text,
+                    "title": user_seo_title or default_title,
                     "description": f"Image générée avec le prompt: {base_prompt}",
                     "keywords": keywords,
                     "prompt": base_prompt
