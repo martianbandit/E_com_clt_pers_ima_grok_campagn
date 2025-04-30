@@ -54,6 +54,7 @@ class Customer(db.Model):
     shopping_frequency = db.Column(db.String(50), nullable=True)  # rarely, occasionally, frequently, very frequently
     persona = db.Column(db.Text, nullable=True)
     avatar_url = db.Column(db.Text, nullable=True)  # URL de l'image d'avatar générée pour ce client
+    avatar_prompt = db.Column(db.Text, nullable=True)  # Prompt utilisé pour générer l'avatar
     purchased_products = db.Column(JSONB, nullable=True)  # Produits déjà achetés par le client
     niche_attributes = db.Column(JSONB, nullable=True)  # Attributs supplémentaires liés à la niche
     profile_data = db.Column(JSONB, nullable=True)  # Store full profile as JSON with better Postgres support
@@ -107,8 +108,9 @@ class Customer(db.Model):
         # Récupérer les attributs de niche s'ils existent
         niche_attributes = profile_dict.get('niche_attributes', {})
         
-        # Récupérer l'URL de l'avatar s'il existe
+        # Récupérer l'URL de l'avatar et le prompt s'ils existent
         avatar_url = profile_dict.get('avatar_url')
+        avatar_prompt = profile_dict.get('avatar_prompt')
             
         return cls(
             name=profile_dict.get('name'),
@@ -126,6 +128,7 @@ class Customer(db.Model):
             shopping_frequency=profile_dict.get('shopping_frequency'),
             persona=profile_dict.get('persona'),
             avatar_url=avatar_url,
+            avatar_prompt=avatar_prompt,
             purchased_products=purchased_products,
             niche_attributes=niche_attributes,
             profile_data=profile_dict,
