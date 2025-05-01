@@ -1925,42 +1925,7 @@ def regenerate_product_content(product_id):
     
     return redirect(url_for('shopify_export', product_id=product.id))
 
-# Routes pour la gestion des personas
-@app.route('/personas')
-def personas():
-    """Page de gestion des personas clients"""
-    from models import CustomerPersona, CustomerPersonaAssociation
-    
-    personas = CustomerPersona.query.all()
-    niches = NicheMarket.query.all()
-    boutiques = Boutique.query.all()
-    customers = Customer.query.all()
-    
-    # Statistiques des personas
-    total_associations = CustomerPersonaAssociation.query.count()
-    primary_personas = CustomerPersonaAssociation.query.filter_by(is_primary=True).count()
-    secondary_personas = CustomerPersonaAssociation.query.filter_by(is_primary=False).count()
-    
-    # Personas par niche
-    personas_by_niche = {}
-    for niche in niches:
-        count = CustomerPersona.query.filter_by(niche_market_id=niche.id).count()
-        personas_by_niche[niche.name] = count
-    
-    # Ajouter "Sans niche" pour les personas sans niche associée
-    no_niche_count = CustomerPersona.query.filter_by(niche_market_id=None).count()
-    if no_niche_count > 0:
-        personas_by_niche[_("Without niche")] = no_niche_count
-    
-    return render_template('personas.html',
-                          personas=personas,
-                          niches=niches,
-                          boutiques=boutiques,
-                          customers=customers,
-                          total_associations=total_associations,
-                          primary_personas=primary_personas,
-                          secondary_personas=secondary_personas,
-                          personas_by_niche=personas_by_niche)
+# Routes supprimées pour la gestion des personas (fonctionnalité déplacée dans la page profil client)
 
 @app.route('/metrics_dashboard')
 def metrics_dashboard():
@@ -2103,56 +2068,8 @@ def metrics_dashboard():
         get_category_color=get_category_color
     )
 
-@app.route('/create_persona', methods=['POST'])
-def create_persona():
-    """Créer un nouveau persona"""
-    try:
-        from models import CustomerPersona
-        import persona_manager
-        
-        # Récupérer les données du formulaire
-        title = request.form.get('title')
-        description = request.form.get('description')
-        niche_market_id = request.form.get('niche_market_id')
-        boutique_id = request.form.get('boutique_id')
-        
-        # Convertir les ID en entiers ou None
-        niche_market_id = int(niche_market_id) if niche_market_id else None
-        boutique_id = int(boutique_id) if boutique_id else None
-        
-        # Données supplémentaires
-        additional_data = {
-            'primary_goal': request.form.get('primary_goal'),
-            'pain_points': request.form.get('pain_points'),
-            'age_range': request.form.get('age_range'),
-            'gender_affinity': request.form.get('gender_affinity'),
-            'income_bracket': request.form.get('income_bracket')
-        }
-        
-        # Traiter les intérêts (liste séparée par des virgules)
-        interests = request.form.get('interests')
-        if interests:
-            additional_data['interests'] = [interest.strip() for interest in interests.split(',')]
-        
-        # Ajouter d'autres champs
-        additional_data['buying_habits'] = request.form.get('buying_habits')
-        
-        # Créer le persona
-        persona = persona_manager.create_persona_from_text(
-            title=title,
-            description=description,
-            niche_market_id=niche_market_id,
-            boutique_id=boutique_id,
-            additional_data=additional_data
-        )
-        
-        flash(_('Persona created successfully'), 'success')
-        return redirect(url_for('personas'))
-    except Exception as e:
-        logging.error(f"Error creating persona: {e}")
-        flash(_('Error creating persona: {}').format(str(e)), 'danger')
-        return redirect(url_for('personas'))
-
+# Routes pour la gestion des personas supprimées (fonctionnalité déplacée dans la page profil client)
+# Conservez seulement la fonction get_persona pour l'API JSON
 @app.route('/persona/<int:persona_id>')
 def get_persona(persona_id):
     """Récupérer les détails d'un persona au format JSON"""
@@ -2232,65 +2149,6 @@ def get_persona(persona_id):
     except Exception as e:
         logging.error(f"Error getting persona details: {e}")
         return jsonify({'error': str(e)}), 500
-
-@app.route('/delete_persona/<int:persona_id>', methods=['POST'])
-def delete_persona(persona_id):
-    """Supprimer un persona"""
-    try:
-        from models import CustomerPersona, CustomerPersonaAssociation
-        
-        persona = CustomerPersona.query.get_or_404(persona_id)
-        
-        # Supprimer d'abord les associations
-        CustomerPersonaAssociation.query.filter_by(persona_id=persona_id).delete()
-        
-        # Puis supprimer le persona
-        db.session.delete(persona)
-        db.session.commit()
-        
-        flash(_('Persona deleted successfully'), 'success')
-    except Exception as e:
-        db.session.rollback()
-        logging.error(f"Error deleting persona: {e}")
-        flash(_('Error deleting persona: {}').format(str(e)), 'danger')
-    
-    return redirect(url_for('personas'))
-
-@app.route('/assign_persona', methods=['POST'])
-def assign_persona():
-    """Assigner un persona à un client"""
-    try:
-        from models import CustomerPersona, Customer
-        import persona_manager
-        
-        # Récupérer les données du formulaire
-        persona_id = int(request.form.get('persona_id'))
-        customer_id = int(request.form.get('customer_id'))
-        is_primary = request.form.get('is_primary') == '1'
-        
-        # Convertir le score de pertinence (0-10 -> 0.0-1.0)
-        relevance_score = float(request.form.get('relevance_score', '0')) / 10.0
-        notes = request.form.get('notes')
-        
-        # Vérifier que le persona et le client existent
-        persona = CustomerPersona.query.get_or_404(persona_id)
-        customer = Customer.query.get_or_404(customer_id)
-        
-        # Créer l'association
-        association = persona_manager.assign_persona_to_customer(
-            customer_id=customer_id,
-            persona_id=persona_id,
-            is_primary=is_primary,
-            relevance_score=relevance_score,
-            notes=notes
-        )
-        
-        flash(_('Persona "{}" assigned to customer "{}" successfully').format(persona.title, customer.name), 'success')
-    except Exception as e:
-        logging.error(f"Error assigning persona: {e}")
-        flash(_('Error assigning persona: {}').format(str(e)), 'danger')
-    
-    return redirect(url_for('personas'))
 
 with app.app_context():
     # Create tables
