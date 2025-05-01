@@ -6,7 +6,7 @@ import sys
 import datetime
 import json
 import logging
-from sqlalchemy import Column, String, Float, Integer, DateTime, Boolean, Text, JSON
+from sqlalchemy import Column, String, Float, Integer, DateTime, Boolean, Text, JSON, inspect
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship, DeclarativeBase
 from sqlalchemy import create_engine, MetaData, Table, ForeignKey
@@ -94,30 +94,46 @@ def run_migration():
                     elif default_value is None:
                         default_clause = " DEFAULT NULL"
                 
-                # Construire et exécuter la commande ALTER TABLE
-                alter_sql = f"ALTER TABLE campaign ADD COLUMN IF NOT EXISTS {column_name} {column_type} {nullable}{default_clause};"
-                logging.info(f"Exécution: {alter_sql}")
+                # Utiliser l'API SQLAlchemy au lieu d'exécuter directement SQL
+                logging.info(f"Ajout de la colonne '{column_name}' de type {column_type}")
                 try:
-                    engine.execute(alter_sql)
-                    logging.info(f"Colonne '{column_name}' ajoutée avec succès.")
+                    with engine.connect() as conn:
+                        # Vérifier si la colonne existe déjà
+                        result = conn.execute(f"SELECT column_name FROM information_schema.columns WHERE table_name = 'campaign' AND column_name = '{column_name}'")
+                        if result.rowcount == 0:
+                            # Convertir le type SQLAlchemy en type SQL
+                            sql_type = str(column_type.compile(dialect=engine.dialect))
+                            # Construire et exécuter la commande ALTER TABLE
+                            alter_sql = f"ALTER TABLE campaign ADD COLUMN {column_name} {sql_type} {nullable}{default_clause};"
+                            conn.execute(alter_sql)
+                            logging.info(f"Colonne '{column_name}' ajoutée avec succès.")
+                        else:
+                            logging.info(f"Colonne '{column_name}' existe déjà, ignorée.")
                 except Exception as e:
                     logging.error(f"Erreur lors de l'ajout de la colonne '{column_name}': {e}")
             
             # Ajouter la contrainte foreign key pour persona_id si elle n'existe pas déjà
             if 'persona_id' in [col['name'] for col in columns_to_add]:
                 try:
-                    fk_sql = "ALTER TABLE campaign ADD CONSTRAINT fk_campaign_persona FOREIGN KEY (persona_id) REFERENCES customer_persona (id);"
-                    engine.execute(fk_sql)
-                    logging.info("Foreign key pour persona_id ajoutée avec succès.")
+                    # Vérifier d'abord si la contrainte existe déjà
+                    with engine.connect() as conn:
+                        result = conn.execute("SELECT constraint_name FROM information_schema.table_constraints WHERE table_name = 'campaign' AND constraint_name = 'fk_campaign_persona'")
+                        if result.rowcount == 0:
+                            fk_sql = "ALTER TABLE campaign ADD CONSTRAINT fk_campaign_persona FOREIGN KEY (persona_id) REFERENCES customer_persona (id);"
+                            conn.execute(fk_sql)
+                            logging.info("Foreign key pour persona_id ajoutée avec succès.")
+                        else:
+                            logging.info("Foreign key pour persona_id existe déjà.")
                 except Exception as e:
                     logging.error(f"Erreur lors de l'ajout de la foreign key: {e}")
             
             # Mettre à jour les statuts par défaut pour les campagnes existantes
             if 'status' in [col['name'] for col in columns_to_add]:
                 try:
-                    update_sql = "UPDATE campaign SET status = 'draft' WHERE status IS NULL;"
-                    engine.execute(update_sql)
-                    logging.info("Statuts par défaut mis à jour pour les campagnes existantes.")
+                    with engine.connect() as conn:
+                        update_sql = "UPDATE campaign SET status = 'draft' WHERE status IS NULL;"
+                        conn.execute(update_sql)
+                        logging.info("Statuts par défaut mis à jour pour les campagnes existantes.")
                 except Exception as e:
                     logging.error(f"Erreur lors de la mise à jour des statuts: {e}")
             
