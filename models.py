@@ -479,6 +479,21 @@ class Campaign(db.Model):
             "keywords": self.get_seo_keywords(),
             "prompt": self.image_prompt or ""
         }
+        
+    def get_target_languages(self):
+        """Retourne la liste des langues cibles de la campagne"""
+        if not self.target_languages:
+            return [self.language or 'en']
+        
+        if isinstance(self.target_languages, list):
+            return self.target_languages
+        elif isinstance(self.target_languages, str):
+            try:
+                return json.loads(self.target_languages)
+            except:
+                return [self.language or 'en']
+        
+        return [self.language or 'en']
 
 class SimilarProduct(db.Model):
     """Model for storing similar products found on AliExpress"""
