@@ -371,4 +371,95 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<!-- Image Generator Modal -->
+<div class="modal fade" id="imageGeneratorModal" tabindex="-1" aria-labelledby="imageGeneratorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="imageGeneratorModalLabel">{{ _('Generate Marketing Images') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('image_generation') }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">{{ _('Image Title') }}</label>
+                        <input type="text" class="form-control" id="title" name="title" placeholder="{{ _('Name for your generated image') }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="product_id" class="form-label">{{ _('Product') }}</label>
+                        <select class="form-select" id="product_id" name="product_id">
+                            <option value="">{{ _('Select a product (optional)') }}</option>
+                            {% for product in products %}
+                            <option value="{{ product.id }}">{{ product.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">{{ _('The image will be associated with this product if selected.') }}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="customer_id" class="form-label">{{ _('Target Audience') }}</label>
+                        <select class="form-select" id="customer_id" name="customer_id">
+                            <option value="">{{ _('No specific target audience') }}</option>
+                            {% for customer in customers %}
+                            <option value="{{ customer.id }}">{{ customer.name }} ({{ customer.location }})</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">{{ _('Select a target audience to customize the image for a specific customer persona.') }}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="base_prompt" class="form-label">{{ _('Image Description') }} <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="base_prompt" name="base_prompt" rows="3" placeholder="{{ _('Describe the image you want to generate...') }}" required></textarea>
+                        <div class="form-text">{{ _('Be specific: main object, mood, colors, style, setting, etc.') }}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="style" class="form-label">{{ _('Style') }}</label>
+                        <select class="form-select" id="style" name="style">
+                            <option value="professional">{{ _('Professional Photography') }}</option>
+                            <option value="lifestyle">{{ _('Lifestyle') }}</option>
+                            <option value="minimalist">{{ _('Minimalist') }}</option>
+                            <option value="artistic">{{ _('Artistic') }}</option>
+                            <option value="retro">{{ _('Retro / Vintage') }}</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Optimization Goals') }}</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="optimize_engagement" name="optimize_engagement" value="1" checked>
+                                    <label class="form-check-label" for="optimize_engagement">{{ _('Boost engagement') }}</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="optimize_conversion" name="optimize_conversion" value="1">
+                                    <label class="form-check-label" for="optimize_conversion">{{ _('Optimize for conversions') }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="optimize_branding" name="optimize_branding" value="1" checked>
+                                    <label class="form-check-label" for="optimize_branding">{{ _('Align with brand identity') }}</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="optimize_seo" name="optimize_seo" value="1">
+                                    <label class="form-check-label" for="optimize_seo">{{ _('SEO optimization') }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
+                    <button type="submit" class="btn btn-info text-white">
+                        <i class="fas fa-magic me-2"></i> {{ _('Generate Image') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
