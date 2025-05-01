@@ -961,8 +961,8 @@ async def generate_boutique_image_async(
             response = xai_client.images.generate(
                 model="grok-2-image-1212",  # Utiliser grok-2-image-1212 qui est le modèle d'image recommandé
                 prompt=final_prompt,
-                n=1,
-                size="1024x1024"
+                n=1
+                # Suppression du paramètre size qui n'est pas supporté par xAI
             )
             
             # Extraire l'URL de l'image de la réponse
