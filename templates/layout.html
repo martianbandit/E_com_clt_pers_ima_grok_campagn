@@ -69,10 +69,48 @@
                     <button id="themeToggle" class="btn btn-outline-light btn-sm me-2" type="button">
                         <i class="fas fa-adjust"></i>
                     </button>
-                    <!-- Language Toggle Buttons -->
-                    <div class="btn-group btn-group-sm me-2">
-                        <a href="{{ url_for('change_language', lang='en') }}" class="btn btn-outline-light {% if session.get('language', 'en') == 'en' %}active{% endif %}">EN</a>
-                        <a href="{{ url_for('change_language', lang='fr') }}" class="btn btn-outline-light {% if session.get('language', 'en') == 'fr' %}active{% endif %}">FR</a>
+                    <!-- Language Selector Dropdown -->
+                    <div class="dropdown me-2">
+                        <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-globe"></i> 
+                            {% set current_lang = session.get('language', 'en') %}
+                            {% if current_lang == 'en' %}
+                                <span class="d-none d-md-inline">English</span>
+                            {% elif current_lang == 'fr' %}
+                                <span class="d-none d-md-inline">Français</span>
+                            {% elif current_lang == 'es' %}
+                                <span class="d-none d-md-inline">Español</span>
+                            {% elif current_lang == 'de' %}
+                                <span class="d-none d-md-inline">Deutsch</span>
+                            {% elif current_lang == 'it' %}
+                                <span class="d-none d-md-inline">Italiano</span>
+                            {% elif current_lang == 'pt' %}
+                                <span class="d-none d-md-inline">Português</span>
+                            {% elif current_lang == 'nl' %}
+                                <span class="d-none d-md-inline">Nederlands</span>
+                            {% elif current_lang == 'zh' %}
+                                <span class="d-none d-md-inline">中文</span>
+                            {% elif current_lang == 'ja' %}
+                                <span class="d-none d-md-inline">日本語</span>
+                            {% elif current_lang == 'ru' %}
+                                <span class="d-none d-md-inline">Русский</span>
+                            {% else %}
+                                <span class="d-none d-md-inline">{{ current_lang | upper }}</span>
+                            {% endif %}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                            <li><a class="dropdown-item {% if session.get('language', 'en') == 'en' %}active{% endif %}" href="{{ url_for('change_language', lang='en') }}">English</a></li>
+                            <li><a class="dropdown-item {% if session.get('language', 'en') == 'fr' %}active{% endif %}" href="{{ url_for('change_language', lang='fr') }}">Français</a></li>
+                            <li><a class="dropdown-item {% if session.get('language', 'en') == 'es' %}active{% endif %}" href="{{ url_for('change_language', lang='es') }}">Español</a></li>
+                            <li><a class="dropdown-item {% if session.get('language', 'en') == 'de' %}active{% endif %}" href="{{ url_for('change_language', lang='de') }}">Deutsch</a></li>
+                            <li><a class="dropdown-item {% if session.get('language', 'en') == 'it' %}active{% endif %}" href="{{ url_for('change_language', lang='it') }}">Italiano</a></li>
+                            <li><a class="dropdown-item {% if session.get('language', 'en') == 'pt' %}active{% endif %}" href="{{ url_for('change_language', lang='pt') }}">Português</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item {% if session.get('language', 'en') == 'nl' %}active{% endif %}" href="{{ url_for('change_language', lang='nl') }}">Nederlands</a></li>
+                            <li><a class="dropdown-item {% if session.get('language', 'en') == 'zh' %}active{% endif %}" href="{{ url_for('change_language', lang='zh') }}">中文</a></li>
+                            <li><a class="dropdown-item {% if session.get('language', 'en') == 'ja' %}active{% endif %}" href="{{ url_for('change_language', lang='ja') }}">日本語</a></li>
+                            <li><a class="dropdown-item {% if session.get('language', 'en') == 'ru' %}active{% endif %}" href="{{ url_for('change_language', lang='ru') }}">Русский</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>

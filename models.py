@@ -8,6 +8,12 @@ class Boutique(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     target_demographic = db.Column(db.String(255), nullable=True)
+    
+    # Colonnes linguistiques
+    language = db.Column(db.String(10), default='en', nullable=False)
+    multilingual_enabled = db.Column(db.Boolean, default=False, nullable=False)
+    supported_languages = db.Column(JSONB, default=lambda: ['en', 'fr'], nullable=False)
+    
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -17,6 +23,21 @@ class Boutique(db.Model):
     
     def __repr__(self):
         return f'<Boutique {self.name}>'
+        
+    def get_supported_languages(self):
+        """Retourne la liste des langues supportées par la boutique"""
+        if not self.supported_languages:
+            return ['en', 'fr']  # Valeurs par défaut
+        
+        if isinstance(self.supported_languages, list):
+            return self.supported_languages
+        elif isinstance(self.supported_languages, str):
+            try:
+                return json.loads(self.supported_languages)
+            except:
+                return ['en', 'fr']
+        
+        return ['en', 'fr']
 
 class NicheMarket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -158,7 +179,8 @@ class Customer(db.Model):
     location = db.Column(db.String(100), nullable=True)
     country_code = db.Column(db.String(2), nullable=True)  # ISO Country code (US, FR, etc.)
     gender = db.Column(db.String(20), nullable=True)
-    language = db.Column(db.String(50), nullable=True)
+    language = db.Column(db.String(50), nullable=True)  # Langue originale du client
+    preferred_language = db.Column(db.String(10), nullable=True)  # Langue préférée (ISO code: fr, en, es, etc.)
     interests = db.Column(db.Text, nullable=True)  # Stored as comma-separated values
     preferred_device = db.Column(db.String(50), nullable=True)
     income_level = db.Column(db.String(50), nullable=True)  # budget, middle, affluent, luxury
@@ -306,6 +328,11 @@ class Campaign(db.Model):
     campaign_type = db.Column(db.String(50), nullable=False)  # email, social, ad, product_description, etc.
     target_audience = db.Column(db.String(100), nullable=True)  # Description brève de l'audience cible
     status = db.Column(db.String(20), default="draft")  # draft, active, paused, completed, archived
+    
+    # Colonnes linguistiques
+    language = db.Column(db.String(10), default='en', nullable=False)  # Langue principale de la campagne
+    multilingual_campaign = db.Column(db.Boolean, default=False, nullable=False)  # Si campagne multilingue
+    target_languages = db.Column(JSONB, default=lambda: ['en'], nullable=False)  # Langues cibles
     
     # Contenu et données
     profile_data = db.Column(JSONB, nullable=True)  # The customer profile this campaign is for

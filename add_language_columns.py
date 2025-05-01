@@ -37,7 +37,7 @@ def run_migration():
             # Ajouter la colonne language si elle n'existe pas déjà
             if 'language' not in metadata.tables['boutique'].columns:
                 logger.info("Ajout de la colonne 'language' à la table 'boutique'")
-                from sqlalchemy.sql import text
+                # Import local text import already available global
                 session.execute(text("""
                     ALTER TABLE boutique
                     ADD COLUMN language VARCHAR(10) DEFAULT 'en';
@@ -70,30 +70,24 @@ def run_migration():
             # Ajouter la colonne language si elle n'existe pas déjà
             if 'language' not in metadata.tables['campaign'].columns:
                 logger.info("Ajout de la colonne 'language' à la table 'campaign'")
-                session.execute(
-                    """
+                session.execute(text("""
                     ALTER TABLE campaign
                     ADD COLUMN language VARCHAR(10) DEFAULT 'en';
-                    """
-                )
+                """))
                 
                 # Ajouter la colonne multilingual_campaign (pour les campagnes multilingues)
                 logger.info("Ajout de la colonne 'multilingual_campaign' à la table 'campaign'")
-                session.execute(
-                    """
+                session.execute(text("""
                     ALTER TABLE campaign
                     ADD COLUMN multilingual_campaign BOOLEAN DEFAULT false;
-                    """
-                )
+                """))
                 
                 # Ajouter la colonne target_languages (JSON array)
                 logger.info("Ajout de la colonne 'target_languages' à la table 'campaign'")
-                session.execute(
-                    """
+                session.execute(text("""
                     ALTER TABLE campaign
                     ADD COLUMN target_languages JSONB DEFAULT '["en"]'::jsonb;
-                    """
-                )
+                """))
                 
                 session.commit()
                 logger.info("Colonnes linguistiques ajoutées avec succès à la table 'campaign'")
@@ -107,12 +101,10 @@ def run_migration():
             # Ajouter la colonne preferred_language si elle n'existe pas déjà
             if 'preferred_language' not in metadata.tables['customer'].columns:
                 logger.info("Ajout de la colonne 'preferred_language' à la table 'customer'")
-                session.execute(
-                    """
+                session.execute(text("""
                     ALTER TABLE customer
                     ADD COLUMN preferred_language VARCHAR(10) DEFAULT NULL;
-                    """
-                )
+                """))
                 
                 session.commit()
                 logger.info("Colonne linguistique ajoutée avec succès à la table 'customer'")
