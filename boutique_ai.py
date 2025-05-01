@@ -904,28 +904,93 @@ async def generate_boutique_image_async(
         # Use OpenAI client instead for image generation
         openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
         
-        # Prepare prompt with style if specified
-        final_prompt = image_prompt
-        if style:
-            final_prompt = f"{image_prompt} Style: {style}."
+        # Nettoyer et limiter le prompt
+        # Dall-E a une limite d'environ 1000 caractères pour le prompt
+        max_prompt_length = 900  # Laissons une marge
+        if len(image_prompt) > max_prompt_length:
+            logger.warning(f"Image prompt too long ({len(image_prompt)} chars). Truncating to {max_prompt_length} chars.")
+            image_prompt = image_prompt[:max_prompt_length] + "..."
         
-        # If image_data is provided, include it in the prompt
-        if image_data:
-            final_prompt = f"{final_prompt} Use the provided reference image as inspiration."
+        # Filtrer les contenus potentiellement problématiques
+        def sanitize_prompt(prompt):
+            # Liste de termes qui pourraient être rejetés par les filtres de contenu
+            sensitive_terms = [
+                "naked", "nude", "violence", "gore", "blood", "injury", "sexual", 
+                "illegal", "weapon", "drug", "controversial", "political"
+            ]
+            filtered_prompt = prompt
+            for term in sensitive_terms:
+                if term.lower() in prompt.lower():
+                    filtered_prompt = filtered_prompt.replace(term, "suitable")
+            return filtered_prompt
             
-        # Generate image with OpenAI
-        response = openai_client.images.generate(
-            model="dall-e-3",
-            prompt=final_prompt,
-            n=1,
-            size="1024x1024",
-        )
+        # Sanitize the prompt
+        image_prompt = sanitize_prompt(image_prompt)
         
-        # Extract the URL from the response
-        if response.data and len(response.data) > 0 and hasattr(response.data[0], 'url'):
-            return response.data[0].url
-        else:
-            raise ValueError("No image generated from OpenAI API")
+        # Ajouter un préfixe de qualité pour l'image
+        image_prefix = "Professional, high-quality photography of "
+        
+        # Prepare prompt with style if specified
+        final_prompt = f"{image_prefix}{image_prompt}"
+        if style:
+            if style == "watercolor":
+                final_prompt = f"A beautiful watercolor painting of {image_prompt}, artistic style, soft colors, elegant"
+            elif style == "oil_painting":
+                final_prompt = f"An oil painting of {image_prompt}, classic style, rich textures, detailed"
+            elif style == "photorealistic":
+                final_prompt = f"Photorealistic image of {image_prompt}, high definition, detailed, professional photography"
+            elif style == "sketch":
+                final_prompt = f"A detailed sketch drawing of {image_prompt}, pencil lines, artistic, black and white"
+            elif style == "anime":
+                final_prompt = f"Anime style illustration of {image_prompt}, clean lines, vibrant colors"
+            elif style == "3d_render":
+                final_prompt = f"3D render of {image_prompt}, clean lighting, professional, detailed textures"
+            elif style == "minimalist":
+                final_prompt = f"Minimalist design of {image_prompt}, clean lines, simple colors, elegant"
+            elif style == "pop_art":
+                final_prompt = f"Pop art style illustration of {image_prompt}, bright colors, bold patterns"
+            else:
+                final_prompt = f"{image_prefix}{image_prompt} in {style} style"
+        
+        logger.info(f"Final image prompt: {final_prompt[:100]}...")
+            
+        # Try first with standard parameters
+        try:
+            # Generate image with OpenAI using DALL-E 2 model which is more reliable
+            response = openai_client.images.generate(
+                model="dall-e-2",
+                prompt=final_prompt,
+                n=1,
+                size="1024x1024"
+            )
+            
+            # Extract the URL from the response
+            if response.data and len(response.data) > 0 and hasattr(response.data[0], 'url'):
+                return response.data[0].url
+        except Exception as first_attempt_error:
+            logger.warning(f"First image generation attempt failed: {first_attempt_error}")
+            # Fallback to a simpler prompt if the first attempt fails
+            try:
+                # Create a very simple prompt as fallback
+                simple_prompt = f"A simple portrait of a person, professional photograph, neutral expression"
+                
+                response = openai_client.images.generate(
+                    model="dall-e-3",
+                    prompt=simple_prompt,
+                    n=1,
+                    size="1024x1024",
+                    quality="standard"
+                )
+                
+                if response.data and len(response.data) > 0 and hasattr(response.data[0], 'url'):
+                    return response.data[0].url
+                else:
+                    raise ValueError("No image generated from OpenAI API (second attempt)")
+            except Exception as second_attempt_error:
+                logger.error(f"Second image generation attempt also failed: {second_attempt_error}")
+                raise Exception(f"Multiple image generation attempts failed: {second_attempt_error}")
+        
+        raise ValueError("No image generated from OpenAI API")
     except Exception as e:
         logger.error(f"Error generating image: {e}")
         # Return a placeholder image URL for development

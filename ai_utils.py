@@ -23,7 +23,10 @@ from app import log_metric
 
 # Constantes pour les modèles
 GROK_MODEL = "grok-2-1212"
+GROK_VISION_MODEL = "grok-2-vision-1212"
 OPENAI_MODEL = "gpt-4o"
+DALL_E_MODEL = "dall-e-3"
+GROK_IMAGE_MODEL = "grok-2-vision-1212"  # Modèle Grok pour les images
 
 def with_ai_error_handling(func):
     """
