@@ -187,8 +187,16 @@
                         {% if customer.avatar_url %}
                         <div class="col-md-3 text-center mb-3 avatar-container">
                             <img src="{{ customer.avatar_url }}" alt="Avatar de {{ customer.name }}" class="img-fluid rounded-circle avatar-image mb-2" style="max-width: 150px; max-height: 150px;">
-                            <div>
+                            <div class="mt-2 mb-2">
                                 <small class="text-muted">Avatar généré</small>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary regenerate-avatar generate-avatar" data-customer-id="{{ customer.id }}">
+                                    <i class="fas fa-sync-alt me-1"></i> Régénérer
+                                </button>
+                            </div>
+                            <div class="avatar-error mt-2 d-none alert alert-danger">
+                                <small class="error-message"></small>
                             </div>
                         </div>
                         <div class="col-md-9">
@@ -207,6 +215,9 @@
                                         <span class="visually-hidden">Chargement...</span>
                                     </div>
                                     <small class="ms-2">Génération de l'avatar en cours...</small>
+                                </div>
+                                <div class="avatar-error mt-2 d-none alert alert-danger">
+                                    <small class="error-message"></small>
                                 </div>
                             </div>
                             {% endif %}
