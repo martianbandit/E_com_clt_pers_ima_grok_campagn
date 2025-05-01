@@ -19,13 +19,20 @@
 
     <div class="row">
         <div class="col-md-8">
-            {% if campaign.image_url %}
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Image de la campagne</h5>
-                    <span class="badge bg-light text-dark">SEO optimisée</span>
+                    <div>
+                        <a href="{{ url_for('generate_campaign_image', campaign_id=campaign.id) }}" class="btn btn-sm btn-light">
+                            <i class="fas fa-sync-alt"></i> {% if campaign.image_url %}Régénérer l'image{% else %}Générer une image{% endif %}
+                        </a>
+                        {% if campaign.image_url %}
+                        <span class="badge bg-light text-dark ms-2">SEO optimisée</span>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="card-body text-center">
+                    {% if campaign.image_url %}
                     <img src="{{ campaign.image_url }}" 
                          alt="{{ campaign.image_alt_text or 'Image de la campagne ' + campaign.title }}" 
                          title="{{ campaign.image_title or campaign.title }}"
@@ -73,9 +80,15 @@
                         </div>
                     </div>
                     {% endif %}
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-image fa-3x text-muted mb-3"></i>
+                        <p>Aucune image n'a été générée pour cette campagne.</p>
+                        <p class="small text-muted">Cliquez sur "Générer une image" pour en créer une basée sur le contenu de la campagne.</p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
-            {% endif %}
             
             <div class="card mb-4">
                 <div class="card-header bg-success text-white">

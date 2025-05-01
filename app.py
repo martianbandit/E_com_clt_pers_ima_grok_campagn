@@ -925,6 +925,67 @@ def view_campaign(campaign_id):
     campaign = Campaign.query.get_or_404(campaign_id)
     return render_template('campaign_detail.html', campaign=campaign)
 
+@app.route('/campaign/<int:campaign_id>/generate-image', methods=['GET', 'POST'])
+def generate_campaign_image(campaign_id):
+    """Générer ou régénérer une image pour une campagne spécifique"""
+    campaign = Campaign.query.get_or_404(campaign_id)
+    
+    try:
+        # Récupérer le profil client associé
+        customer = campaign.customer
+        if not customer:
+            flash(_("Impossible de générer une image : aucun client associé à cette campagne"), 'danger')
+            return redirect(url_for('view_campaign', campaign_id=campaign_id))
+        
+        # Créer un profil utilisable par le générateur d'image
+        profile = {
+            "name": customer.name,
+            "age": customer.age,
+            "location": customer.location,
+            "language": customer.language,
+            "interests": customer.interests,
+            "job": customer.job,
+            "avatar_url": customer.avatar_url
+        }
+        
+        # Générer un prompt si aucun n'est déjà défini
+        image_prompt = campaign.image_prompt
+        if not image_prompt:
+            # Générer un prompt à partir du contenu de la campagne et du profil client
+            from boutique_ai import generate_image_prompt_from_content
+            image_prompt = generate_image_prompt_from_content(
+                campaign_content=campaign.content,
+                campaign_type=campaign.campaign_type,
+                customer_profile=profile
+            )
+        
+        # Générer l'image
+        image_url = generate_marketing_image(profile, image_prompt)
+        
+        # Mettre à jour la campagne
+        campaign.image_url = image_url
+        campaign.image_prompt = image_prompt
+        db.session.commit()
+        
+        # Journal des métriques
+        log_metric(
+            metric_name="campaign_image_generation",
+            data={
+                "campaign_id": campaign.id,
+                "prompt": image_prompt
+            },
+            category="generation",
+            status=True
+        )
+        
+        flash(_("Image de campagne générée avec succès"), 'success')
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"Erreur lors de la génération de l'image de campagne: {e}")
+        flash(_("Erreur lors de la génération de l'image: {}").format(str(e)), 'danger')
+    
+    return redirect(url_for('view_campaign', campaign_id=campaign_id))
+
 @app.route('/campaign/<int:campaign_id>/delete', methods=['GET', 'POST'])
 def delete_campaign(campaign_id):
     """Supprimer une campagne"""

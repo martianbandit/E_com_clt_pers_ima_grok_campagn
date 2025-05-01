@@ -113,9 +113,25 @@
                         <span class="badge bg-primary">{{ campaign.campaign_type }}</span>
                     </div>
                     
-                    {% if campaign.image_url %}
-                        <img src="{{ campaign.image_url }}" class="campaign-image" alt="Campaign image">
-                    {% endif %}
+                    <div class="position-relative">
+                        {% if campaign.image_url %}
+                            <img src="{{ campaign.image_url }}" class="campaign-image" alt="Campaign image">
+                            <a href="{{ url_for('generate_campaign_image', campaign_id=campaign.id) }}" class="btn btn-sm btn-light position-absolute top-0 end-0 m-2" title="Régénérer l'image">
+                                <i class="fas fa-sync-alt"></i>
+                            </a>
+                        {% else %}
+                            <div class="d-flex justify-content-center align-items-center bg-light p-4 text-center" style="min-height: 150px;">
+                                <div>
+                                    <i class="fas fa-image fa-2x text-muted mb-2"></i>
+                                    <div>
+                                        <a href="{{ url_for('generate_campaign_image', campaign_id=campaign.id) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-magic me-1"></i> Générer une image
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
                     
                     <div class="card-body">
                         <p class="card-text marketing-content">{{ campaign.content }}</p>
