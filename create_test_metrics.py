@@ -37,11 +37,7 @@ def generate_test_metrics(count=50):
         # Vérifier si des métriques existent déjà
         existing_count = Metric.query.count()
         if existing_count > 0:
-            logging.info(f"Il y a déjà {existing_count} métriques dans la base de données.")
-            choice = input("Voulez-vous quand même générer de nouvelles métriques? (y/n): ")
-            if choice.lower() != 'y':
-                logging.info("Génération annulée.")
-                return
+            logging.info(f"Il y a déjà {existing_count} métriques dans la base de données. Ajout de nouvelles métriques...")
         
         # Générer les métriques
         for i in range(count):
