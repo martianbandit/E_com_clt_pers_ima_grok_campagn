@@ -34,7 +34,7 @@ except ImportError:
 
 # Grok model constants
 GROK_3 = "grok-3-fast"
-GROK_2_IMAGE = "grok-2-image"
+GROK_2_IMAGE = "grok-2-image-1212"  # le modèle d'image correct de xAI (Grok)
 
 # Initialize Grok client
 grok_client = AsyncOpenAI(
@@ -953,35 +953,27 @@ async def generate_boutique_image_async(
         try:
             logger.info(f"Attempting to generate image with Grok model: {model}")
             
-            # Use Grok client
-            xai_client = OpenAI(base_url="https://api.x.ai/v1", api_key=os.environ.get("XAI_API_KEY"))
+            # Use Grok client with the correct implementation for image generation
+            XAI_API_KEY = os.environ.get("XAI_API_KEY")
+            xai_client = OpenAI(base_url="https://api.x.ai/v1", api_key=XAI_API_KEY)
             
-            # For Grok, we use the chat completions API with text input
-            chat_response = xai_client.chat.completions.create(
-                model=model,
-                messages=[
-                    {
-                        "role": "user", 
-                        "content": [
-                            {"type": "text", "text": f"Generate an image based on this description: {final_prompt}"}
-                        ]
-                    }
-                ],
-                max_tokens=1000
+            # Utiliser la nouvelle méthode correcte pour la génération d'images avec xAI
+            response = xai_client.images.generate(
+                model="grok-2-image-1212",  # Utiliser grok-2-image-1212 qui est le modèle d'image recommandé
+                prompt=final_prompt,
+                n=1,
+                size="1024x1024"
             )
             
-            # Extract the URL from the response
-            if hasattr(chat_response.choices[0].message, 'content'):
-                content = chat_response.choices[0].message.content
-                # Check if content contains a valid image URL
-                if content and (content.startswith('http://') or content.startswith('https://')):
+            # Extraire l'URL de l'image de la réponse
+            if response.data and len(response.data) > 0:
+                image_url = response.data[0].url
+                if image_url:
                     logger.info("Successfully generated image with Grok")
-                    return content
-                else:
-                    logger.warning(f"Grok didn't return a valid image URL: {content[:100]}...")
+                    return image_url
             
-            # If we reach here, Grok didn't produce a valid image URL
-            logger.warning("Falling back to OpenAI for image generation")
+            # Si nous arrivons ici, Grok n'a pas produit d'URL d'image valide
+            logger.warning("Grok didn't return a valid image URL, falling back to OpenAI")
         except Exception as grok_error:
             logger.error(f"Grok image generation failed: {grok_error}")
             logger.warning("Falling back to OpenAI for image generation")
