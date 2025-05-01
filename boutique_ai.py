@@ -1190,6 +1190,56 @@ def generate_marketing_content(customer, campaign_type, boutique_id=None):
     finally:
         loop.close()
 
+def generate_image_prompt_from_content(campaign_content, campaign_type, customer_profile=None):
+    """
+    Generate an optimized image prompt based on campaign content and customer profile
+    
+    Args:
+        campaign_content: Text content of the campaign
+        campaign_type: Type of campaign (email, social, sms, ad)
+        customer_profile: Optional customer profile data
+    
+    Returns:
+        Optimized image prompt string
+    """
+    # Extraire des éléments clés du contenu
+    content_sample = campaign_content[:500]  # Limiter pour éviter les prompts trop longs
+    
+    # Définir un style visuel basé sur le type de campagne
+    style_map = {
+        "email": "professional, clean layout, subtle colors",
+        "social": "vibrant, eye-catching, social media optimized",
+        "sms": "simple, direct, clear messaging",
+        "ad": "polished, conversion-focused, professional",
+        "product": "product-centered, detailed, e-commerce ready"
+    }
+    
+    style = style_map.get(campaign_type, "marketing optimized")
+    
+    # Construire le prompt de base
+    base_prompt = f"Create a high-quality {campaign_type} marketing image that conveys: {content_sample[:100]}... "
+    base_prompt += f"Style: {style}. "
+    
+    # Ajouter des détails du profil client si disponible
+    if customer_profile:
+        # Ajouter des éléments démographiques si disponibles
+        if customer_profile.get('age'):
+            age_group = "young" if customer_profile.get('age', 30) < 30 else "mature" if customer_profile.get('age', 30) < 50 else "senior"
+            base_prompt += f"Target audience: {age_group} "
+            
+        if customer_profile.get('gender'):
+            base_prompt += f"{customer_profile.get('gender')} "
+            
+        # Ajouter des intérêts si disponibles
+        if customer_profile.get('interests') and len(customer_profile.get('interests', [])) > 0:
+            interests = ", ".join(customer_profile.get('interests', [])[:3])
+            base_prompt += f"interested in {interests}. "
+    
+    # Optimisation pour les moteurs de recherche
+    base_prompt += "The image should be optimized for marketing effectiveness with good composition and professional appearance."
+    
+    return base_prompt
+
 def generate_marketing_image(customer, base_prompt, image_data=None, style=None, boutique_id=None):
     """
     Generate a personalized marketing image for a customer with SEO optimization
@@ -1367,8 +1417,9 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None,
                     
                     # Créer une URL d'image placeholder avec le texte du prompt encodé
                     import urllib.parse
-                    encoded_prompt = urllib.parse.quote(seo_enhanced_prompt[:50] + "...")
-                    image_url = f"https://placehold.co/1024x1024/3498db/ffffff?text=Grok+Image+{encoded_prompt}"
+                    encoded_prompt = urllib.parse.quote((seo_enhanced_prompt[:50] + "...").replace(" ", "+"))
+                    # Utiliser un fond bleu plus foncé avec du texte blanc pour un meilleur contraste
+                    image_url = f"https://placehold.co/1024x1024/2c3e50/ffffff?text={encoded_prompt}"
                     
                     # Dans une version production, vous pourriez vouloir utiliser DALL-E comme fallback
                     # si le modèle Grok ne génère pas correctement d'images

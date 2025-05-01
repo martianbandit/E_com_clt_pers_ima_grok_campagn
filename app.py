@@ -933,20 +933,29 @@ def generate_campaign_image(campaign_id):
     try:
         # Récupérer le profil client associé
         customer = campaign.customer
-        if not customer:
-            flash(_("Impossible de générer une image : aucun client associé à cette campagne"), 'danger')
-            return redirect(url_for('view_campaign', campaign_id=campaign_id))
         
-        # Créer un profil utilisable par le générateur d'image
-        profile = {
-            "name": customer.name,
-            "age": customer.age,
-            "location": customer.location,
-            "language": customer.language,
-            "interests": customer.interests,
-            "job": customer.job,
-            "avatar_url": customer.avatar_url
-        }
+        # Créer un profil, même générique si pas de client
+        if customer:
+            profile = {
+                "name": customer.name,
+                "age": customer.age,
+                "location": customer.location,
+                "language": customer.language,
+                "interests": customer.get_interests_list() if hasattr(customer, 'get_interests_list') else customer.interests,
+                "occupation": customer.occupation if hasattr(customer, 'occupation') else "Non spécifié",
+                "avatar_url": customer.avatar_url
+            }
+        else:
+            # Créer un profil générique pour les campagnes sans client
+            profile = {
+                "name": "Utilisateur",
+                "age": 30,
+                "location": "France",
+                "language": "fr",
+                "interests": [campaign.campaign_type or "marketing"],
+                "occupation": "Client potentiel",
+                "avatar_url": None
+            }
         
         # Générer un prompt si aucun n'est déjà défini
         image_prompt = campaign.image_prompt
