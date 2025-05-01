@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-4">
     <div class="row mb-4">
-        <div class="col">
+        <div class="col-md-8">
             <h1>{{ customer.name }}</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -15,6 +15,21 @@
                 </ol>
             </nav>
         </div>
+        {% if customer.avatar_url %}
+        <div class="col-md-4 text-end">
+            <div class="avatar-container text-center">
+                <img src="{{ customer.avatar_url }}" alt="Avatar de {{ customer.name }}" class="img-fluid rounded-circle avatar-image mb-2" style="max-width: 120px; max-height: 120px;">
+                <div>
+                    <button class="btn btn-sm btn-outline-primary regenerate-avatar generate-avatar" data-customer-id="{{ customer.id }}">
+                        <i class="fas fa-sync-alt me-1"></i> Régénérer
+                    </button>
+                </div>
+                <div class="avatar-error mt-2 d-none alert alert-danger">
+                    <small class="error-message"></small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     <div class="row">
@@ -184,28 +199,9 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        {% if customer.avatar_url %}
-                        <div class="col-md-3 text-center mb-3 avatar-container">
-                            <img src="{{ customer.avatar_url }}" alt="Avatar de {{ customer.name }}" class="img-fluid rounded-circle avatar-image mb-2" style="max-width: 150px; max-height: 150px;">
-                            <div class="mt-2 mb-2">
-                                <small class="text-muted">Avatar généré</small>
-                            </div>
-                            <div>
-                                <button class="btn btn-sm btn-outline-primary regenerate-avatar generate-avatar" data-customer-id="{{ customer.id }}">
-                                    <i class="fas fa-sync-alt me-1"></i> Régénérer
-                                </button>
-                            </div>
-                            <div class="avatar-error mt-2 d-none alert alert-danger">
-                                <small class="error-message"></small>
-                            </div>
-                        </div>
-                        <div class="col-md-9">
-                            <p class="persona-text">{{ customer.persona|nl2br }}</p>
-                        </div>
-                        {% else %}
                         <div class="col-12">
                             <p class="persona-text">{{ customer.persona|nl2br }}</p>
-                            {% if customer.avatar_prompt %}
+                            {% if not customer.avatar_url and customer.avatar_prompt %}
                             <div class="mt-3 avatar-container">
                                 <button class="btn btn-sm btn-outline-primary generate-avatar" data-customer-id="{{ customer.id }}">
                                     <i class="fas fa-portrait me-2"></i> Générer un avatar
@@ -222,7 +218,6 @@
                             </div>
                             {% endif %}
                         </div>
-                        {% endif %}
                     </div>
                 </div>
             </div>
