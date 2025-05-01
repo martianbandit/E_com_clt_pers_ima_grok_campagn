@@ -6,6 +6,8 @@ from enum import Enum
 from typing import List, Dict, Optional, Union
 import random
 import time
+from flask import session, current_app
+from flask_babel import gettext as _
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -35,6 +37,147 @@ except ImportError:
 # Grok model constants
 GROK_3 = "grok-3-fast"
 GROK_2_IMAGE = "grok-2-image-1212"  # le modèle d'image correct de xAI (Grok)
+
+def get_prompt_language():
+    """
+    Récupère la langue active pour les prompts en fonction de la session
+    
+    Returns:
+        Code de langue (fr, en, etc.) ou 'en' par défaut
+    """
+    try:
+        # Récupérer la langue de la session si disponible
+        if session and 'language' in session:
+            return session['language']
+        return 'en'  # Langue par défaut
+    except Exception as e:
+        logger.warning(f"Erreur lors de la récupération de la langue: {e}")
+        return 'en'  # Fallback à l'anglais en cas d'erreur
+
+# Dictionnaire de traductions pour les prompts
+PROMPT_TRANSLATIONS = {
+    # Prompts pour la génération de personas clients
+    "customer_persona": {
+        "en": """
+        Create a detailed customer persona for {name}, a {age}-year-old {gender} from {location}.
+
+        Include the following sections in your response:
+
+        1. BACKGROUND & OVERVIEW
+        - Brief background story (2-3 sentences)
+        - Personality traits and general outlook
+        - Life situation and daily challenges
+
+        2. SHOPPING PSYCHOLOGY
+        - Primary motivations for shopping in the {niche} niche
+        - Key pain points and frustrations when shopping
+        - Decision-making factors (price sensitivity, quality focus, etc.)
+        - How they discover new products (social media, word of mouth, etc.)
+
+        3. MARKET SEGMENT INSIGHTS
+        - Where they fit in the overall {niche} market
+        - Specific preferences within the {niche} category
+        - Typical purchase frequency and spending patterns
+        - Brand affinities and loyalty characteristics
+
+        4. CONTENT & MARKETING RECEPTIVITY
+        - Type of marketing messages most likely to resonate
+        - Preferred communication channels
+        - Content format preferences (video, text, visual, etc.)
+        - Tone of voice that appeals to them
+                
+        ADDITIONAL CONTEXT:
+        - Interests: {interests}
+        - Recent purchases: {purchases}
+        
+        STYLE GUIDELINES:
+        - Write in a clear, insightful manner
+        - Create a realistic, three-dimensional person (not a stereotype)
+        - Include specific, memorable details that bring the persona to life
+        - Make the persona feel unique and distinct from other standard customer profiles
+        
+        {existing_personas_summary}
+        {boutique_context}
+        """,
+        
+        "fr": """
+        Créez un persona client détaillé pour {name}, {gender} de {age} ans vivant à {location}.
+
+        Incluez les sections suivantes dans votre réponse:
+
+        1. CONTEXTE & VUE D'ENSEMBLE
+        - Bref récit de fond (2-3 phrases)
+        - Traits de personnalité et perspective générale
+        - Situation de vie et défis quotidiens
+
+        2. PSYCHOLOGIE D'ACHAT
+        - Motivations principales pour acheter dans la niche {niche}
+        - Points de douleur et frustrations lors des achats
+        - Facteurs de décision (sensibilité au prix, focus sur la qualité, etc.)
+        - Comment ils découvrent de nouveaux produits (réseaux sociaux, bouche à oreille, etc.)
+
+        3. APERÇU DU SEGMENT DE MARCHÉ
+        - Où ils se situent dans le marché global de {niche}
+        - Préférences spécifiques dans la catégorie {niche}
+        - Fréquence d'achat typique et habitudes de dépenses
+        - Affinités de marque et caractéristiques de fidélité
+
+        4. RÉCEPTIVITÉ AU CONTENU & MARKETING
+        - Types de messages marketing qui résonnent le plus
+        - Canaux de communication préférés
+        - Préférences de format de contenu (vidéo, texte, visuel, etc.)
+        - Ton de voix qui les attire
+                
+        CONTEXTE SUPPLÉMENTAIRE:
+        - Intérêts: {interests}
+        - Achats récents: {purchases}
+        
+        DIRECTIVES DE STYLE:
+        - Écrivez de manière claire et perspicace
+        - Créez une personne réaliste et tridimensionnelle (pas un stéréotype)
+        - Incluez des détails spécifiques et mémorables qui donnent vie au persona
+        - Faites en sorte que le persona soit unique et distinct des autres profils clients standards
+        
+        {existing_personas_summary}
+        {boutique_context}
+        """
+    },
+    
+    # Autres prompts à ajouter ici...
+}
+
+def get_translated_prompt(prompt_key, language=None, **kwargs):
+    """
+    Récupère un prompt traduit dans la langue spécifiée
+    
+    Args:
+        prompt_key: Clé du prompt dans le dictionnaire PROMPT_TRANSLATIONS
+        language: Code de langue (fr, en, etc.) ou None pour utiliser la langue active
+        **kwargs: Variables à formater dans le template du prompt
+        
+    Returns:
+        Prompt traduit et formaté
+    """
+    if language is None:
+        language = get_prompt_language()
+    
+    # Fallback à l'anglais si la langue n'est pas supportée
+    if language not in PROMPT_TRANSLATIONS.get(prompt_key, {}):
+        language = 'en'
+    
+    prompt_template = PROMPT_TRANSLATIONS.get(prompt_key, {}).get(language, "")
+    
+    if not prompt_template:
+        logger.warning(f"No translation found for prompt {prompt_key} in language {language}")
+        # Fallback à l'anglais si aucune traduction n'est trouvée
+        prompt_template = PROMPT_TRANSLATIONS.get(prompt_key, {}).get('en', "")
+    
+    # Formater le template avec les variables fournies
+    try:
+        return prompt_template.format(**kwargs)
+    except KeyError as e:
+        logger.error(f"Missing key in prompt formatting: {e}")
+        return prompt_template
 
 # Initialize Grok client
 grok_client = AsyncOpenAI(
@@ -306,66 +449,19 @@ async def generate_enhanced_customer_data_async(
             - Consider how the boutique's identity resonates with this customer's values
             """
     
-    # Craft a creative and vibrant boutique-specific persona generation prompt
-    prompt = f"""
-    Create an extraordinarily vivid and multi-dimensional persona for a {niche} boutique customer with these specific characteristics:
-    
-    Name: {name}
-    Age: {age}
-    Location: {location}
-    Gender: {gender}
-    Language: {language}
-    Interests: {interests}
-    
-    Purchase History:
-    {purchase_str}
-    
-    {boutique_context}
-    
-    {existing_personas_summary}
-    
-    PERSONA GENERATION REQUIREMENTS:
-    
-    1. PSYCHOLOGICAL DIMENSION
-       - Craft a unique psychological profile with distinctive personality traits
-       - Create specific emotional triggers and sensitivities related to {niche}
-       - Develop nuanced motivational drives beyond obvious ones
-       - Include surprising psychological insights that defy stereotypical assumptions
-    
-    2. LIFESTYLE PORTRAIT
-       - Paint a detailed picture of their daily rituals and routines
-       - Describe their home environment and personal aesthetic in vivid detail
-       - Illustrate their social circles and relationships as they relate to {niche}
-       - Include specific challenges or pain points in their lifestyle
-    
-    3. SHOPPING PSYCHOLOGY
-       - Explain their discovery process for new products
-       - Detail how they evaluate quality and value in the {niche} space
-       - Describe their emotional relationship with purchasing decisions
-       - Illustrate their post-purchase behavior and satisfaction patterns
-    
-    4. CONTENT & MARKETING PREFERENCES  
-       - Identify specific media channels where they spend time
-       - Note their sensitivity to different marketing approaches (humor, emotion, data)
-       - Detail the aesthetic styles and visual language that attracts them
-       - Explain how they prefer to receive communication (tone, format, frequency)
-    
-    5. RELATIONSHIP WITH THE NICHE
-       - Create a compelling backstory for how they discovered this niche
-       - Describe their level of expertise and confidence in the {niche} market
-       - Detail their aspirational goals related to the {niche}
-       - Include specific frustrations or unmet needs within the {niche} space
-    
-    Write in second person as if you're directly describing the customer to the boutique owner.
-    The persona should be 3-4 paragraphs long, vibrant and specific, with memorable details.
-    Avoid generic descriptions - make this person feel utterly unique and immediately recognizable.
-    
-    DIVERSITY REQUIREMENTS:
-    - Give this persona a unique cultural background if relevant
-    - Create a diversity of professional backgrounds, not just obvious matches for the {niche}
-    - Include diverse origins, lifestyles, values, and interests beyond the {niche} itself
-    - Avoid stereotypical connections between demographics and interests
-    """
+    # Utiliser le système de prompts traduits
+    prompt = get_translated_prompt(
+        "customer_persona",
+        name=name,
+        age=age,
+        gender=gender,
+        location=location,
+        niche=niche,
+        interests=interests,
+        purchases=purchase_str,
+        existing_personas_summary=existing_personas_summary,
+        boutique_context=boutique_context
+    )
     
     try:
         response = await client.chat.completions.create(
