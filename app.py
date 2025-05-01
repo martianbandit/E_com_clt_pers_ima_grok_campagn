@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_babel import gettext as _
-from i18n import babel, get_locale
+from i18n import babel, get_locale, get_supported_languages, get_language_name, get_boutique_languages, is_multilingual_campaign, get_campaign_target_languages
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -139,8 +139,8 @@ def log_metric(metric_name, data, category=None, status=None, response_time=None
 @app.route('/change_language/<string:lang>')
 def change_language(lang):
     """Change the application language"""
-    # Only accept valid languages
-    if lang not in ['en', 'fr']:
+    # Only accept valid languages from the supported list
+    if lang not in get_supported_languages():
         lang = 'en'
     
     # Store the language in the session
@@ -152,6 +152,81 @@ def change_language(lang):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/boutique_language_settings/<int:boutique_id>', methods=['GET'])
+def boutique_language_settings(boutique_id):
+    """Affiche les paramètres linguistiques d'une boutique"""
+    boutique = Boutique.query.get_or_404(boutique_id)
+    supported_languages = get_supported_languages()
+    
+    return render_template('language_settings.html', 
+                          boutique=boutique, 
+                          supported_languages=supported_languages)
+
+@app.route('/save_boutique_language_settings', methods=['POST'])
+def save_boutique_language_settings():
+    """Enregistre les paramètres linguistiques d'une boutique"""
+    boutique_id = request.form.get('boutique_id', type=int)
+    boutique = Boutique.query.get_or_404(boutique_id)
+    
+    # Récupérer les données du formulaire
+    language = request.form.get('language', 'en')
+    multilingual_enabled = request.form.get('multilingual_enabled') == 'on'
+    supported_languages = request.form.getlist('supported_languages')
+    
+    # Vérifier que la langue principale est toujours dans les langues supportées
+    if language not in supported_languages:
+        supported_languages.append(language)
+    
+    # Mettre à jour la boutique
+    boutique.language = language
+    boutique.multilingual_enabled = multilingual_enabled
+    boutique.supported_languages = supported_languages
+    
+    # Sauvegarder les changements
+    db.session.commit()
+    
+    flash(_('Language settings updated successfully'), 'success')
+    
+    return redirect(url_for('dashboard'))
+
+@app.route('/campaign_language_settings/<int:campaign_id>', methods=['GET'])
+def campaign_language_settings(campaign_id):
+    """Affiche les paramètres linguistiques d'une campagne"""
+    campaign = Campaign.query.get_or_404(campaign_id)
+    supported_languages = get_supported_languages()
+    
+    return render_template('campaign_language_settings.html', 
+                          campaign=campaign, 
+                          supported_languages=supported_languages,
+                          get_campaign_target_languages=get_campaign_target_languages)
+
+@app.route('/save_campaign_language_settings', methods=['POST'])
+def save_campaign_language_settings():
+    """Enregistre les paramètres linguistiques d'une campagne"""
+    campaign_id = request.form.get('campaign_id', type=int)
+    campaign = Campaign.query.get_or_404(campaign_id)
+    
+    # Récupérer les données du formulaire
+    language = request.form.get('language', 'en')
+    multilingual_campaign = request.form.get('multilingual_campaign') == 'on'
+    target_languages = request.form.getlist('target_languages')
+    
+    # Vérifier que la langue principale est toujours dans les langues cibles
+    if language not in target_languages:
+        target_languages.append(language)
+    
+    # Mettre à jour la campagne
+    campaign.language = language
+    campaign.multilingual_campaign = multilingual_campaign
+    campaign.target_languages = target_languages
+    
+    # Sauvegarder les changements
+    db.session.commit()
+    
+    flash(_('Campaign language settings updated successfully'), 'success')
+    
+    return redirect(url_for('edit_campaign', campaign_id=campaign.id))
 
 @app.route('/dashboard')
 def dashboard():
