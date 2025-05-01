@@ -165,7 +165,7 @@
                                     <span class="badge bg-danger">✗</span>
                                 {% endif %}
                             </td>
-                            <td>{{ metric.execution_time|round(2) }}s</td>
+                            <td>{% if metric.execution_time %}{{ metric.execution_time|round(2) }}s{% else %}—{% endif %}</td>
                             <td>{{ metric.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                             <td>
                                 <button class="btn btn-sm btn-outline-info metric-details"
@@ -173,7 +173,7 @@
                                         data-name="{{ metric.name }}"
                                         data-category="{{ metric.category or _('Non défini') }}"
                                         data-status="{{ 'Succès' if metric.status else 'Erreur' }}"
-                                        data-time="{{ metric.execution_time|round(2) }}"
+                                        data-time="{% if metric.execution_time %}{{ metric.execution_time|round(2) }}{% endif %}"
                                         data-date="{{ metric.created_at.strftime('%Y-%m-%d %H:%M') }}"
                                         data-data="{{ metric.data|tojson if metric.data else '{}' }}"
                                         data-bs-toggle="modal"
@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('modal-name').textContent = name;
             document.getElementById('modal-category').textContent = category;
             document.getElementById('modal-status').textContent = status;
-            document.getElementById('modal-time').textContent = time + 's';
+            document.getElementById('modal-time').textContent = time ? time + 's' : '—';
             document.getElementById('modal-date').textContent = date;
             document.getElementById('modal-data').textContent = JSON.stringify(data, null, 2);
         });
