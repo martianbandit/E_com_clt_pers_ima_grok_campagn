@@ -92,6 +92,30 @@ def run_migration():
                         ALTER TABLE metric ADD COLUMN category VARCHAR(50);
                     """))
                     logging.info("Colonne category ajoutée avec succès.")
+                    
+                # 4. Ajout de la colonne response_time si elle n'existe pas
+                if 'response_time' not in columns:
+                    logging.info("Ajout de la colonne response_time à la table metric...")
+                    connection.execute(text("""
+                        ALTER TABLE metric ADD COLUMN response_time FLOAT;
+                    """))
+                    logging.info("Colonne response_time ajoutée avec succès.")
+                    
+                # 5. Ajout de la colonne user_id si elle n'existe pas
+                if 'user_id' not in columns:
+                    logging.info("Ajout de la colonne user_id à la table metric...")
+                    connection.execute(text("""
+                        ALTER TABLE metric ADD COLUMN user_id INTEGER;
+                    """))
+                    logging.info("Colonne user_id ajoutée avec succès.")
+                    
+                # 6. Ajout de la colonne customer_id si elle n'existe pas
+                if 'customer_id' not in columns:
+                    logging.info("Ajout de la colonne customer_id à la table metric...")
+                    connection.execute(text("""
+                        ALTER TABLE metric ADD COLUMN customer_id INTEGER;
+                    """))
+                    logging.info("Colonne customer_id ajoutée avec succès.")
                 
                 # Commit de la transaction
                 trans.commit()
