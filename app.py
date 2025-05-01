@@ -758,6 +758,9 @@ def generate_customer_persona_db(customer_id):
     """Générer un persona pour un client dans la base de données"""
     from boutique_ai import generate_enhanced_customer_data_async, AsyncOpenAI, grok_client
     import asyncio
+    import traceback
+    import persona_manager  # Importer le module de gestion des personas
+    from models import CustomerPersona, CustomerPersonaAssociation
     
     customer = Customer.query.get_or_404(customer_id)
     
@@ -817,8 +820,75 @@ def generate_customer_persona_db(customer_id):
         
         db.session.commit()
         
-        # Générer l'avatar avec OpenAI (en arrière-plan ou dans un thread séparé pour ne pas bloquer)
-        # Pour l'instant, nous stockons juste l'avatar_prompt, nous implémenterons la génération d'avatar plus tard
+        # Créer un persona structuré et l'associer au client
+        try:
+            # Vérifier si un persona principal existe déjà pour ce client
+            existing_primary = CustomerPersonaAssociation.query.filter_by(
+                customer_id=customer.id,
+                is_primary=True
+            ).first()
+            
+            # Si un persona principal existe déjà, le mettre à jour
+            if existing_primary:
+                persona = existing_primary.persona
+                # Mettre à jour les champs du persona
+                persona.description = enhanced_data["persona"]
+                persona.niche_specific_attributes = enhanced_data["niche_attributes"]
+                persona.avatar_prompt = enhanced_data["avatar_prompt"]
+                
+                # Extraire les valeurs spécifiques des attributs de niche si disponibles
+                if customer.niche_attributes and isinstance(customer.niche_attributes, dict):
+                    for key, value in customer.niche_attributes.items():
+                        if key == "interests" and value:
+                            persona.interests = value
+                        elif key == "values" and value:
+                            persona.values = value
+                        elif key == "preferred_channels" and value:
+                            persona.preferred_channels = value
+                
+                db.session.commit()
+                logging.info(f"Persona existant mis à jour pour le client {customer.id}: {persona.id}")
+                persona_id = persona.id
+            else:
+                # Créer un nouveau persona
+                persona_title = f"Persona pour {customer.name}"
+                
+                # Extraire les attributs spécifiques pour le persona
+                additional_data = {
+                    'primary_goal': None,  # À compléter ultérieurement
+                    'pain_points': None,  # À compléter ultérieurement
+                    'age_range': f"{customer.age - 5}-{customer.age + 5}" if customer.age else None,
+                    'gender_affinity': customer.gender,
+                    'location_type': "Urbain" if customer.location and any(city in customer.location.lower() for city in ["paris", "lyon", "marseille", "lille", "bordeaux"]) else "Périurbain",
+                    'income_bracket': customer.income_level,
+                    'education_level': customer.education,
+                    'niche_specific_attributes': enhanced_data["niche_attributes"],
+                    'avatar_prompt': enhanced_data["avatar_prompt"]
+                }
+                
+                # Créer le persona
+                new_persona = persona_manager.create_persona_from_text(
+                    title=persona_title,
+                    description=enhanced_data["persona"],
+                    niche_market_id=customer.niche_market_id,
+                    boutique_id=customer.boutique_id,
+                    additional_data=additional_data
+                )
+                
+                # Assigner le persona au client
+                assoc = persona_manager.assign_persona_to_customer(
+                    customer_id=customer.id,
+                    persona_id=new_persona.id,
+                    is_primary=True,
+                    relevance_score=1.0,
+                    notes="Persona généré automatiquement"
+                )
+                
+                logging.info(f"Nouveau persona créé et assigné au client {customer.id}: {new_persona.id}")
+                persona_id = new_persona.id
+        except Exception as persona_error:
+            logging.error(f"Erreur lors de la création du persona structuré: {persona_error}\n{traceback.format_exc()}")
+            # Ne pas échouer toute la requête si cette partie échoue
         
         # Log metric pour la génération de persona
         log_metric("persona_generation", {
@@ -845,7 +915,7 @@ def generate_customer_persona_db(customer_id):
             "error": str(e)
         })
         
-        logging.error(f"Error generating enhanced persona for customer {customer_id}: {e}")
+        logging.error(f"Error generating enhanced persona for customer {customer_id}: {e}\n{traceback.format_exc()}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/campaign/<int:campaign_id>')
