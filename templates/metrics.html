@@ -80,6 +80,7 @@
     </div>
     
     <!-- Graphiques -->
+    {% if total_metrics > 0 %}
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="card h-100">
@@ -87,7 +88,11 @@
                     <h5 class="mb-0">{{ _('Réussites / Erreurs') }}</h5>
                 </div>
                 <div class="card-body">
+                    {% if success_count > 0 or error_count > 0 %}
                     <canvas id="successFailChart"></canvas>
+                    {% else %}
+                    <div class="alert alert-info">{{ _('Aucune donnée réelle disponible pour ce graphique.') }}</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -97,7 +102,11 @@
                     <h5 class="mb-0">{{ _('Catégories') }}</h5>
                 </div>
                 <div class="card-body">
+                    {% if category_counts|length > 0 %}
                     <canvas id="categoryChart"></canvas>
+                    {% else %}
+                    <div class="alert alert-info">{{ _('Aucune donnée réelle disponible pour ce graphique.') }}</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -110,7 +119,11 @@
                     <h5 class="mb-0">{{ _('Temps de réponse moyen des appels API') }}</h5>
                 </div>
                 <div class="card-body">
+                    {% if time_values|length > 0 %}
                     <canvas id="timeChart"></canvas>
+                    {% else %}
+                    <div class="alert alert-info">{{ _('Aucune donnée réelle disponible pour ce graphique.') }}</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -123,11 +136,23 @@
                     <h5 class="mb-0">{{ _('Tendance des métriques') }}</h5>
                 </div>
                 <div class="card-body">
+                    {% if trend_dates|length > 0 %}
                     <canvas id="trendChart"></canvas>
+                    {% else %}
+                    <div class="alert alert-info">{{ _('Aucune donnée réelle disponible pour ce graphique.') }}</div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
+    {% else %}
+    <div class="alert alert-info mt-4">
+        <h4 class="alert-heading">{{ _('Aucune donnée disponible') }}</h4>
+        <p>{{ _('Il n\'y a pas encore de métriques enregistrées pour afficher les statistiques et les graphiques.') }}</p>
+        <hr>
+        <p class="mb-0">{{ _('Les métriques seront automatiquement collectées lors de l\'utilisation de l\'application.') }}</p>
+    </div>
+    {% endif %}
     
     <!-- Liste des métriques récentes -->
     <div class="card">
