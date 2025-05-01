@@ -86,7 +86,14 @@ def log_metric(metric_name, data, category=None, status=None, response_time=None
     try:
         # Extraire automatiquement le statut des données si non spécifié
         if status is None and isinstance(data, dict) and 'success' in data:
-            status = 'success' if data['success'] else 'error'
+            # Conversion explicite en booléen (True/False) au lieu de chaîne de caractères
+            status = True if data['success'] else False
+        elif status == 'success':
+            # Convertir 'success' en True
+            status = True
+        elif status == 'error':
+            # Convertir 'error' en False
+            status = False
         
         # Extraire automatiquement la catégorie si non spécifiée
         if category is None:
@@ -118,7 +125,7 @@ def log_metric(metric_name, data, category=None, status=None, response_time=None
         db.session.commit()
         
         # Journal des métriques importantes ou des erreurs uniquement
-        if status == 'error':
+        if status is False:
             logging.error(f"Metric Error: {metric_name} - {json.dumps(data)}")
         else:
             logging.info(f"Metric: {metric_name} ({category}) - Status: {status}")
@@ -275,13 +282,13 @@ def metrics():
         success_count = Metric.query.filter(
             Metric.created_at >= current_date,
             Metric.created_at < next_date,
-            Metric.status == 'success'
+            Metric.status == True
         ).count()
         
         error_count = Metric.query.filter(
             Metric.created_at >= current_date,
             Metric.created_at < next_date,
-            Metric.status == 'error'
+            Metric.status == False
         ).count()
         
         time_series_data.append({
