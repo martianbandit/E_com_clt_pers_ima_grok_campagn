@@ -272,38 +272,144 @@ class AIManager:
     @with_ai_error_handling
     def generate_image(self,
                       prompt: str,
-                      model: str = "dall-e-3",
+                      model: str = GROK_IMAGE_MODEL,
                       size: str = "1024x1024",
                       metric_name: str = "ai_image_generation",
+                      use_fallback: bool = True,
                       **kwargs) -> str:
         """
-        Génère une image en utilisant l'API d'images
+        Génère une image en utilisant l'API d'images de xAI (Grok) ou OpenAI
         
         Args:
             prompt: Description textuelle de l'image à générer
-            model: Modèle d'image à utiliser
+            model: Modèle d'image à utiliser (GROK_IMAGE_MODEL ou DALL_E_MODEL)
             size: Taille de l'image (1024x1024 par défaut)
             metric_name: Nom de la métrique à enregistrer
+            use_fallback: Si True, utilise OpenAI comme fallback si Grok échoue
             **kwargs: Arguments supplémentaires
             
         Returns:
             URL de l'image générée
         """
-        if not self.openai_client:
-            raise ValueError("OpenAI client not initialized - Required for image generation")
+        # Détermine le client à utiliser en fonction du modèle
+        is_grok_model = model in [GROK_IMAGE_MODEL, GROK_VISION_MODEL, "grok-2-vision-1212", "grok-vision-beta"]
         
-        try:
-            response = self.openai_client.images.generate(
-                model=model,
-                prompt=prompt,
-                n=1,
-                size=size,
-                **kwargs
-            )
-            return response.data[0].url
-        except Exception as e:
-            logging.error(f"Image generation error: {e}")
-            raise
+        # Préparer les paramètres communs
+        params = {
+            "prompt": prompt,
+            "n": 1,
+            "size": size,
+        }
+        
+        # Nettoyer et préparer le prompt selon les exigences des différents modèles
+        if len(prompt) > 1000:
+            logging.warning(f"Prompt too long ({len(prompt)} chars). Truncating.")
+            params["prompt"] = prompt[:1000]
+        
+        # Tentative avec le client principal
+        primary_client = self.grok_client if is_grok_model else self.openai_client
+        primary_model = model if is_grok_model else DALL_E_MODEL
+        
+        if primary_client:
+            try:
+                logging.info(f"Generating image with {primary_model}")
+                
+                # Si c'est un modèle Grok, utiliser la vision API  
+                if is_grok_model:
+                    # Pour les modèles Grok, nous utilisons l'API de chat avec entrée texte et sortie image
+                    chat_response = primary_client.chat.completions.create(
+                        model=primary_model,
+                        messages=[
+                            {
+                                "role": "user", 
+                                "content": [
+                                    {"type": "text", "text": f"Generate an image based on this description: {prompt}"}
+                                ]
+                            }
+                        ],
+                        max_tokens=1000
+                    )
+                    
+                    # Vérifier si la réponse contient une URL d'image valide
+                    if hasattr(chat_response.choices[0].message, 'content'):
+                        # Extraire l'URL de l'image générée - pourrait nécessiter un parsing
+                        content = chat_response.choices[0].message.content
+                        # Vérifier si le contenu est une URL d'image
+                        if content and (content.startswith('http://') or content.startswith('https://')):
+                            return content
+                        else:
+                            logging.warning(f"Grok didn't return a valid image URL: {content[:100]}...")
+                            if not use_fallback:
+                                raise ValueError(f"Invalid image URL from Grok: {content[:100]}...")
+                    else:
+                        logging.warning("Grok didn't return valid content.")
+                        if not use_fallback:
+                            raise ValueError("No valid content returned from Grok.")
+                else:
+                    # Pour OpenAI, utiliser l'API d'images standard
+                    response = primary_client.images.generate(
+                        model=primary_model,
+                        prompt=params["prompt"],
+                        n=params["n"],
+                        size=params["size"],
+                        **kwargs
+                    )
+                    if response.data and len(response.data) > 0 and hasattr(response.data[0], 'url'):
+                        return response.data[0].url
+                    else:
+                        logging.warning("OpenAI didn't return a valid image URL.")
+                        if not use_fallback:
+                            raise ValueError("No valid URL returned from OpenAI.")
+            except Exception as e:
+                logging.error(f"Primary image generation error ({primary_model}): {e}")
+                if not use_fallback:
+                    raise
+                    
+        # Fallback vers l'autre client si disponible
+        if use_fallback:
+            fallback_client = self.openai_client if is_grok_model else self.grok_client
+            fallback_model = DALL_E_MODEL if is_grok_model else GROK_IMAGE_MODEL
+            
+            if fallback_client:
+                try:
+                    logging.info(f"Using fallback model {fallback_model}")
+                    
+                    # Si c'est un fallback vers Grok
+                    if fallback_model in [GROK_IMAGE_MODEL, GROK_VISION_MODEL]:
+                        chat_response = fallback_client.chat.completions.create(
+                            model=fallback_model,
+                            messages=[
+                                {
+                                    "role": "user", 
+                                    "content": [
+                                        {"type": "text", "text": f"Generate an image based on this description: {prompt}"}
+                                    ]
+                                }
+                            ],
+                            max_tokens=1000
+                        )
+                        
+                        if hasattr(chat_response.choices[0].message, 'content'):
+                            content = chat_response.choices[0].message.content
+                            if content and (content.startswith('http://') or content.startswith('https://')):
+                                return content
+                    else:
+                        # Fallback vers OpenAI
+                        response = fallback_client.images.generate(
+                            model=fallback_model,
+                            prompt=params["prompt"],
+                            n=params["n"],
+                            size=params["size"],
+                            **kwargs
+                        )
+                        if response.data and len(response.data) > 0 and hasattr(response.data[0], 'url'):
+                            return response.data[0].url
+                except Exception as e:
+                    logging.error(f"Fallback image generation error ({fallback_model}): {e}")
+                    raise
+        
+        # Si on arrive ici, c'est que ni le client principal ni le fallback n'ont fonctionné
+        raise ValueError("Failed to generate image with both primary and fallback models.")
             
     def extract_json_safely(self, text):
         """Extrait proprement un objet JSON d'un texte, même s'il est entouré d'autres contenus"""

@@ -899,13 +899,8 @@ async def generate_boutique_image_async(
     Returns:
         URL of the generated image
     """
-    # Fallback to OpenAI for image generation since xAI doesn't support it fully yet
     try:
-        # Use OpenAI client instead for image generation
-        openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-        
         # Nettoyer et limiter le prompt
-        # Dall-E a une limite d'environ 1000 caractères pour le prompt
         max_prompt_length = 900  # Laissons une marge
         if len(image_prompt) > max_prompt_length:
             logger.warning(f"Image prompt too long ({len(image_prompt)} chars). Truncating to {max_prompt_length} chars.")
@@ -928,7 +923,7 @@ async def generate_boutique_image_async(
         image_prompt = sanitize_prompt(image_prompt)
         
         # Ajouter un préfixe de qualité pour l'image
-        image_prefix = "Professional, high-quality photography of "
+        image_prefix = "Professional, high-quality image of "
         
         # Prepare prompt with style if specified
         final_prompt = f"{image_prefix}{image_prompt}"
@@ -953,10 +948,50 @@ async def generate_boutique_image_async(
                 final_prompt = f"{image_prefix}{image_prompt} in {style} style"
         
         logger.info(f"Final image prompt: {final_prompt[:100]}...")
-            
-        # Try first with standard parameters
+        
+        # Try using Grok model first (preferred)
         try:
-            # Generate image with OpenAI using DALL-E 2 model which is more reliable
+            logger.info(f"Attempting to generate image with Grok model: {model}")
+            
+            # Use Grok client
+            xai_client = OpenAI(base_url="https://api.x.ai/v1", api_key=os.environ.get("XAI_API_KEY"))
+            
+            # For Grok, we use the chat completions API with text input
+            chat_response = xai_client.chat.completions.create(
+                model=model,
+                messages=[
+                    {
+                        "role": "user", 
+                        "content": [
+                            {"type": "text", "text": f"Generate an image based on this description: {final_prompt}"}
+                        ]
+                    }
+                ],
+                max_tokens=1000
+            )
+            
+            # Extract the URL from the response
+            if hasattr(chat_response.choices[0].message, 'content'):
+                content = chat_response.choices[0].message.content
+                # Check if content contains a valid image URL
+                if content and (content.startswith('http://') or content.startswith('https://')):
+                    logger.info("Successfully generated image with Grok")
+                    return content
+                else:
+                    logger.warning(f"Grok didn't return a valid image URL: {content[:100]}...")
+            
+            # If we reach here, Grok didn't produce a valid image URL
+            logger.warning("Falling back to OpenAI for image generation")
+        except Exception as grok_error:
+            logger.error(f"Grok image generation failed: {grok_error}")
+            logger.warning("Falling back to OpenAI for image generation")
+            
+        # Fallback to OpenAI
+        try:
+            # Use OpenAI client instead for image generation
+            openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+            
+            # Try with DALL-E 2 first (more reliable)
             response = openai_client.images.generate(
                 model="dall-e-2",
                 prompt=final_prompt,
@@ -966,31 +1001,33 @@ async def generate_boutique_image_async(
             
             # Extract the URL from the response
             if response.data and len(response.data) > 0 and hasattr(response.data[0], 'url'):
+                logger.info("Successfully generated image with DALL-E 2")
                 return response.data[0].url
+                
         except Exception as first_attempt_error:
-            logger.warning(f"First image generation attempt failed: {first_attempt_error}")
-            # Fallback to a simpler prompt if the first attempt fails
+            logger.warning(f"OpenAI DALL-E 2 image generation failed: {first_attempt_error}")
+            # Final fallback to a simpler prompt
             try:
                 # Create a very simple prompt as fallback
-                simple_prompt = f"A simple portrait of a person, professional photograph, neutral expression"
+                simple_prompt = f"A simple professional image of {image_prompt}"
                 
                 response = openai_client.images.generate(
-                    model="dall-e-3",
+                    model="dall-e-2",
                     prompt=simple_prompt,
                     n=1,
-                    size="1024x1024",
-                    quality="standard"
+                    size="1024x1024"
                 )
                 
                 if response.data and len(response.data) > 0 and hasattr(response.data[0], 'url'):
+                    logger.info("Successfully generated image with simplified prompt")
                     return response.data[0].url
                 else:
-                    raise ValueError("No image generated from OpenAI API (second attempt)")
+                    raise ValueError("No image generated from OpenAI API (final attempt)")
             except Exception as second_attempt_error:
-                logger.error(f"Second image generation attempt also failed: {second_attempt_error}")
-                raise Exception(f"Multiple image generation attempts failed: {second_attempt_error}")
+                logger.error(f"Final image generation attempt failed: {second_attempt_error}")
+                raise Exception(f"All image generation attempts failed: {second_attempt_error}")
         
-        raise ValueError("No image generated from OpenAI API")
+        raise ValueError("Failed to generate image with any available method")
     except Exception as e:
         logger.error(f"Error generating image: {e}")
         # Return a placeholder image URL for development
