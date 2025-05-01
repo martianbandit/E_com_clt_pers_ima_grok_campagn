@@ -57,6 +57,12 @@
                             <i class="fas fa-chart-bar me-1"></i> {{ _('Métriques') }}
                         </a>
                     </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/osp-tools' %}active{% endif %}" href="/osp-tools">
+                            <i class="fas fa-tools me-1"></i> {{ _('Outils OSP') }}
+                        </a>
+                    </li>
                 </ul>
                 <div class="d-flex align-items-center">
                     <!-- Theme Toggle Button -->
