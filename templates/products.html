@@ -106,7 +106,7 @@
     </div>
 
     <div class="row mb-4">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-header">
                     <h5 class="mb-0">{{ _('Product Import') }}</h5>
@@ -118,7 +118,6 @@
                         <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Intelligent pricing strategies') }}</li>
                         <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Shopify compatible HTML') }}</li>
                         <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Alternative text and metadata') }}</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('FAQ and technical specifications') }}</li>
                     </ul>
                     <div class="d-grid">
                         <a href="{{ url_for('import_aliexpress_form') }}" class="btn btn-success">
@@ -129,7 +128,7 @@
             </div>
         </div>
         
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-header">
                     <h5 class="mb-0">{{ _('Content Generation') }}</h5>
@@ -141,11 +140,32 @@
                         <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Product variants and options') }}</li>
                         <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Comparative analysis') }}</li>
                         <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('SEO optimization') }}</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Sales pitch') }}</li>
                     </ul>
                     <div class="d-grid">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateContentModal">
                             <i class="fas fa-magic me-2"></i> {{ _('Generate Content') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">{{ _('Image Generator') }}</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ _('Create optimized marketing images for your products:') }}</p>
+                    <ul class="fa-ul mb-4">
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('AI-powered image generation') }}</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Product showcases') }}</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Lifestyle imagery') }}</li>
+                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Brand-consistent visuals') }}</li>
+                    </ul>
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#imageGeneratorModal">
+                            <i class="fas fa-image me-2"></i> {{ _('Generate Images') }}
                         </button>
                     </div>
                 </div>

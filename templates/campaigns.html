@@ -64,40 +64,92 @@
     
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Campaign Tips</h5>
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Customer Personas</h5>
+                <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#createPersonaModal">
+                    <i class="fas fa-plus"></i> New Persona
+                </button>
             </div>
-            <div class="card-body">
-                <div class="list-group">
-                    <div class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">Email Campaigns</h5>
-                            <i class="fas fa-envelope text-primary"></i>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% if personas %}
+                        {% for persona in personas %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">{{ persona.name }}</h6>
+                                        <p class="small text-muted mb-1">{{ persona.industry }} - {{ persona.demographic }}</p>
+                                    </div>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary btn-sm view-persona" data-persona-id="{{ persona.id }}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm delete-persona" data-persona-id="{{ persona.id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="list-group-item text-center py-4">
+                            <i class="fas fa-user-circle fa-2x text-muted mb-2"></i>
+                            <p class="mb-0">No personas created yet</p>
                         </div>
-                        <p class="mb-1">Ideal for detailed product announcements, special offers, and personalized recommendations.</p>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">Social Media Posts</h5>
-                            <i class="fas fa-hashtag text-info"></i>
-                        </div>
-                        <p class="mb-1">Perfect for visual content, trending topics, and engaging boutique customers in conversation.</p>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">SMS Messages</h5>
-                            <i class="fas fa-sms text-success"></i>
-                        </div>
-                        <p class="mb-1">Great for time-sensitive offers, flash sales, and quick updates for immediate action.</p>
-                    </div>
-                    <div class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">Online Advertisements</h5>
-                            <i class="fas fa-ad text-warning"></i>
-                        </div>
-                        <p class="mb-1">Designed to capture attention quickly with compelling visuals and concise messaging.</p>
-                    </div>
+                    {% endif %}
                 </div>
+            </div>
+            <div class="card-footer">
+                <p class="small text-muted mb-0">Personas help create personalized campaigns that resonate with specific audience segments.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Persona Modal -->
+<div class="modal fade" id="createPersonaModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Persona</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="personaForm" action="/create_persona" method="POST">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="industry" class="form-label">Industry</label>
+                            <input type="text" class="form-control" id="industry" name="industry" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="demographic" class="form-label">Demographic</label>
+                            <input type="text" class="form-control" id="demographic" name="demographic">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="niche_id" class="form-label">Niche</label>
+                            <select class="form-select" id="niche_id" name="niche_id">
+                                <option value="">Select a niche</option>
+                                {% for niche in niches %}
+                                    <option value="{{ niche.id }}">{{ niche.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submitPersona">Create Persona</button>
             </div>
         </div>
     </div>
