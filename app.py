@@ -2139,3 +2139,173 @@ with app.app_context():
             db.session.add(niche)
         
         db.session.commit()
+
+# --------------------------------------------------------------------------------
+# Routes pour les outils OSP (Open Strategy Partners)
+# --------------------------------------------------------------------------------
+from osp_tools import generate_product_value_map, analyze_content_with_osp_guidelines, apply_seo_guidelines, render_value_map_html
+
+@app.route('/osp-tools')
+def osp_tools():
+    """Page principale des outils OSP"""
+    return render_template('osp_tools.html')
+
+@app.route('/osp-tools/value-map-generator')
+def value_map_generator():
+    """Générateur de carte de valeur produit"""
+    return render_template('osp_tools.html')
+
+@app.route('/osp-tools/content-analyzer')
+def content_analyzer():
+    """Analyseur de contenu selon les directives OSP"""
+    return render_template('osp_tools.html')
+
+@app.route('/osp-tools/seo-optimizer')
+def seo_optimizer():
+    """Optimiseur SEO selon les directives OSP"""
+    return render_template('osp_tools.html')
+
+@app.route('/osp-tools/generate-value-map', methods=['POST'])
+def generate_value_map():
+    """Générer une carte de valeur produit"""
+    try:
+        # Récupérer les données du formulaire
+        product_name = request.form.get('product_name')
+        product_description = request.form.get('product_description')
+        target_audience = request.form.get('target_audience')
+        industry = request.form.get('industry')
+        niche_market = request.form.get('niche_market')
+        
+        # Traiter les listes
+        key_features = request.form.get('key_features', '').strip().split('\n') if request.form.get('key_features') else None
+        competitors = request.form.get('competitors', '').strip().split('\n') if request.form.get('competitors') else None
+        
+        # Générer la carte de valeur
+        value_map = generate_product_value_map(
+            product_name=product_name,
+            product_description=product_description,
+            target_audience=target_audience,
+            industry=industry,
+            niche_market=niche_market,
+            key_features=key_features,
+            competitors=competitors
+        )
+        
+        # Générer le HTML pour l'affichage
+        value_map_html = render_value_map_html(value_map)
+        
+        # Log de la métrique
+        log_metric(
+            metric_name="osp_value_map_generation",
+            data={"product_name": product_name, "industry": industry},
+            category="marketing",
+            status=True,
+            response_time=None
+        )
+        
+        return render_template(
+            'osp_tools.html',
+            value_map=value_map,
+            value_map_html=value_map_html,
+            value_map_json=json.dumps(value_map, indent=2, ensure_ascii=False)
+        )
+    except Exception as e:
+        flash(_("Erreur lors de la génération de la carte de valeur: {}").format(str(e)), 'danger')
+        log_metric(
+            metric_name="osp_value_map_generation",
+            data={"error": str(e)},
+            category="marketing",
+            status=False,
+            response_time=None
+        )
+        return redirect(url_for('osp_tools'))
+
+@app.route('/osp-tools/analyze-content', methods=['POST'])
+def analyze_content():
+    """Analyser du contenu selon les directives OSP"""
+    try:
+        # Récupérer les données du formulaire
+        content = request.form.get('content')
+        content_type = request.form.get('content_type')
+        target_audience = request.form.get('target_audience')
+        industry = request.form.get('industry')
+        
+        # Analyser le contenu
+        content_analysis = analyze_content_with_osp_guidelines(
+            content=content,
+            content_type=content_type,
+            target_audience=target_audience,
+            industry=industry
+        )
+        
+        # Log de la métrique
+        log_metric(
+            metric_name="osp_content_analysis",
+            data={"content_type": content_type, "length": len(content)},
+            category="marketing",
+            status=True,
+            response_time=None
+        )
+        
+        return render_template(
+            'osp_tools.html',
+            content_analysis=content_analysis
+        )
+    except Exception as e:
+        flash(_("Erreur lors de l'analyse du contenu: {}").format(str(e)), 'danger')
+        log_metric(
+            metric_name="osp_content_analysis",
+            data={"error": str(e)},
+            category="marketing",
+            status=False,
+            response_time=None
+        )
+        return redirect(url_for('osp_tools'))
+
+@app.route('/osp-tools/optimize-seo', methods=['POST'])
+def optimize_seo():
+    """Optimiser du contenu pour le SEO selon les directives OSP"""
+    try:
+        # Récupérer les données du formulaire
+        title = request.form.get('title')
+        description = request.form.get('description')
+        page_type = request.form.get('page_type')
+        locale = request.form.get('locale')
+        is_local_business = True if request.form.get('is_local_business') else False
+        
+        # Optimiser le contenu
+        content = {
+            "title": title,
+            "description": description
+        }
+        
+        seo_optimized = apply_seo_guidelines(
+            content=content,
+            page_type=page_type,
+            locale=locale,
+            is_local_business=is_local_business
+        )
+        
+        # Log de la métrique
+        log_metric(
+            metric_name="osp_seo_optimization",
+            data={"page_type": page_type, "locale": locale},
+            category="marketing",
+            status=True,
+            response_time=None
+        )
+        
+        return render_template(
+            'osp_tools.html',
+            seo_optimized=seo_optimized
+        )
+    except Exception as e:
+        flash(_("Erreur lors de l'optimisation SEO: {}").format(str(e)), 'danger')
+        log_metric(
+            metric_name="osp_seo_optimization",
+            data={"error": str(e)},
+            category="marketing",
+            status=False,
+            response_time=None
+        )
+        return redirect(url_for('osp_tools'))

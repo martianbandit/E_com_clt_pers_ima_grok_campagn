@@ -1,0 +1,736 @@
+{% extends "layout.html" %}
+{% block title %}{{ _("Outils Marketing OSP") }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1>{{ _("Outils Marketing OSP") }}</h1>
+            <p class="lead">{{ _("Suite d'outils marketing professionnels basés sur les standards OSP (Open Strategy Partners)") }}</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">{{ _("Générateur de Cartes de Valeur") }}</h3>
+                </div>
+                <div class="card-body">
+                    <p>{{ _("Générez une carte de valeur complète pour votre produit selon la méthodologie OSP, incluant des phrases d'accroche, des déclarations de positionnement et des propositions de valeur percutantes.") }}</p>
+                    <a href="{{ url_for('value_map_generator') }}" class="btn btn-primary">{{ _("Créer une Carte de Valeur") }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="card-title mb-0">{{ _("Analyste de Contenu OSP") }}</h3>
+                </div>
+                <div class="card-body">
+                    <p>{{ _("Analysez votre contenu marketing selon les directives OSP et obtenez des recommandations précises pour l'améliorer, avec un focus sur la clarté, la structure et l'efficacité.") }}</p>
+                    <a href="{{ url_for('content_analyzer') }}" class="btn btn-success">{{ _("Analyser du Contenu") }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3 class="card-title mb-0">{{ _("Guide SEO & Géo-optimisation") }}</h3>
+                </div>
+                <div class="card-body">
+                    <p>{{ _("Optimisez votre contenu pour les moteurs de recherche avec des métadonnées, des balises structurées et des recommandations de géo-localisation selon les meilleures pratiques OSP.") }}</p>
+                    <a href="{{ url_for('seo_optimizer') }}" class="btn btn-info">{{ _("Optimiser pour le SEO") }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h3 class="card-title mb-0">{{ _("Ressources & Documentation") }}</h3>
+                </div>
+                <div class="card-body">
+                    <p>{{ _("Accédez à la documentation complète des outils OSP Marketing et apprenez à appliquer leurs méthodologies dans votre stratégie marketing.") }}</p>
+                    <a href="#" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#resourcesModal">{{ _("Consulter les Ressources") }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour le générateur de cartes de valeur -->
+<div class="modal fade" id="valueMapModal" tabindex="-1" aria-labelledby="valueMapModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="valueMapModalLabel">{{ _("Générateur de Cartes de Valeur") }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="valueMapForm" action="{{ url_for('generate_value_map') }}" method="post">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="product_name" class="form-label">{{ _("Nom du produit") }} *</label>
+                                <input type="text" class="form-control" id="product_name" name="product_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="product_description" class="form-label">{{ _("Description du produit") }} *</label>
+                                <textarea class="form-control" id="product_description" name="product_description" rows="5" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="target_audience" class="form-label">{{ _("Audience cible") }} *</label>
+                                <textarea class="form-control" id="target_audience" name="target_audience" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="industry" class="form-label">{{ _("Secteur d'activité") }} *</label>
+                                <input type="text" class="form-control" id="industry" name="industry" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="niche_market" class="form-label">{{ _("Créneau de marché") }}</label>
+                                <input type="text" class="form-control" id="niche_market" name="niche_market">
+                            </div>
+                            <div class="mb-3">
+                                <label for="key_features" class="form-label">{{ _("Fonctionnalités clés") }}</label>
+                                <textarea class="form-control" id="key_features" name="key_features" rows="3" placeholder="{{ _('Une fonctionnalité par ligne') }}"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="competitors" class="form-label">{{ _("Concurrents") }}</label>
+                                <textarea class="form-control" id="competitors" name="competitors" rows="2" placeholder="{{ _('Un concurrent par ligne') }}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">{{ _("Générer la Carte de Valeur") }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour l'analyste de contenu -->
+<div class="modal fade" id="contentAnalyzerModal" tabindex="-1" aria-labelledby="contentAnalyzerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contentAnalyzerModalLabel">{{ _("Analyste de Contenu OSP") }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="contentAnalyzerForm" action="{{ url_for('analyze_content') }}" method="post">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="content" class="form-label">{{ _("Contenu à analyser") }} *</label>
+                                <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="content_type" class="form-label">{{ _("Type de contenu") }}</label>
+                                <select class="form-select" id="content_type" name="content_type">
+                                    <option value="product_description">{{ _("Description produit") }}</option>
+                                    <option value="landing_page">{{ _("Page d'atterrissage") }}</option>
+                                    <option value="email">{{ _("Email marketing") }}</option>
+                                    <option value="social_media">{{ _("Post réseaux sociaux") }}</option>
+                                    <option value="blog_post">{{ _("Article de blog") }}</option>
+                                    <option value="ad_copy">{{ _("Texte publicitaire") }}</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="target_audience" class="form-label">{{ _("Audience cible") }}</label>
+                                <textarea class="form-control" id="target_audience" name="target_audience" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="industry" class="form-label">{{ _("Secteur d'activité") }}</label>
+                                <input type="text" class="form-control" id="industry" name="industry">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">{{ _("Analyser le Contenu") }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour l'optimiseur SEO -->
+<div class="modal fade" id="seoOptimizerModal" tabindex="-1" aria-labelledby="seoOptimizerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="seoOptimizerModalLabel">{{ _("Optimiseur SEO OSP") }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="seoOptimizerForm" action="{{ url_for('optimize_seo') }}" method="post">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">{{ _("Titre") }} *</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">{{ _("Description") }} *</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="page_type" class="form-label">{{ _("Type de page") }}</label>
+                            <select class="form-select" id="page_type" name="page_type">
+                                <option value="product">{{ _("Produit") }}</option>
+                                <option value="category">{{ _("Catégorie") }}</option>
+                                <option value="landing">{{ _("Landing Page") }}</option>
+                                <option value="blog">{{ _("Blog") }}</option>
+                                <option value="about">{{ _("À propos") }}</option>
+                                <option value="contact">{{ _("Contact") }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="locale" class="form-label">{{ _("Locale") }}</label>
+                            <select class="form-select" id="locale" name="locale">
+                                <option value="fr_FR">Français (France)</option>
+                                <option value="fr_CA">Français (Canada)</option>
+                                <option value="fr_BE">Français (Belgique)</option>
+                                <option value="fr_CH">Français (Suisse)</option>
+                                <option value="en_US">English (US)</option>
+                                <option value="en_GB">English (UK)</option>
+                                <option value="en_CA">English (Canada)</option>
+                                <option value="en_AU">English (Australia)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" value="1" id="is_local_business" name="is_local_business" checked>
+                        <label class="form-check-label" for="is_local_business">
+                            {{ _("Optimiser pour une entreprise locale") }}
+                        </label>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-info">{{ _("Générer l'Optimisation SEO") }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal pour les ressources et la documentation -->
+<div class="modal fade" id="resourcesModal" tabindex="-1" aria-labelledby="resourcesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resourcesModalLabel">{{ _("Ressources & Documentation OSP") }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="accordion" id="resourcesAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                {{ _("Guide SEO & Géo-optimisation") }}
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#resourcesAccordion">
+                            <div class="accordion-body">
+                                <h5>{{ _("Meilleures pratiques pour les Méta Titres") }}</h5>
+                                <ul>
+                                    <li>{{ _("Limiter à 60 caractères maximum") }}</li>
+                                    <li>{{ _("Inclure les mots-clés principaux au début") }}</li>
+                                    <li>{{ _("Être descriptif et pertinent") }}</li>
+                                    <li>{{ _("Utiliser une syntaxe naturelle et engageante") }}</li>
+                                </ul>
+                                
+                                <h5>{{ _("Meilleures pratiques pour les Méta Descriptions") }}</h5>
+                                <ul>
+                                    <li>{{ _("Limiter à 160 caractères maximum") }}</li>
+                                    <li>{{ _("Inclure un appel à l'action clair") }}</li>
+                                    <li>{{ _("Résumer la valeur de la page de manière convaincante") }}</li>
+                                    <li>{{ _("Intégrer naturellement des mots-clés pertinents") }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                {{ _("Cartes de Valeur Produit") }}
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#resourcesAccordion">
+                            <div class="accordion-body">
+                                <h5>{{ _("Structure d'une Carte de Valeur OSP") }}</h5>
+                                <ol>
+                                    <li>{{ _("Phrases d'accroche (Taglines)") }}</li>
+                                    <li>{{ _("Déclarations de positionnement") }}</li>
+                                    <li>{{ _("Propositions de valeur") }}</li>
+                                    <li>{{ _("Points de vente uniques") }}</li>
+                                    <li>{{ _("Segmentation d'audience") }}</li>
+                                    <li>{{ _("Mots-clés prioritaires") }}</li>
+                                </ol>
+                                
+                                <h5>{{ _("Utilisation efficace des Cartes de Valeur") }}</h5>
+                                <ul>
+                                    <li>{{ _("Intégrez les phrases d'accroche dans vos communications marketing") }}</li>
+                                    <li>{{ _("Utilisez les déclarations de positionnement dans vos présentations commerciales") }}</li>
+                                    <li>{{ _("Adaptez votre message selon le segment d'audience ciblé") }}</li>
+                                    <li>{{ _("Exploitez les points de vente uniques dans vos comparaisons concurrentielles") }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                {{ _("Analyse de Contenu OSP") }}
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#resourcesAccordion">
+                            <div class="accordion-body">
+                                <h5>{{ _("Principes d'analyse OSP") }}</h5>
+                                <ol>
+                                    <li>{{ _("Clarté et concision avant tout") }}</li>
+                                    <li>{{ _("Structure logique et progressive") }}</li>
+                                    <li>{{ _("Tonalité adaptée à l'audience") }}</li>
+                                    <li>{{ _("Positionnement stratégique du produit/service") }}</li>
+                                    <li>{{ _("Appels à l'action explicites") }}</li>
+                                    <li>{{ _("Optimisation SEO intelligente") }}</li>
+                                    <li>{{ _("Pertinence pour l'audience cible") }}</li>
+                                </ol>
+                                
+                                <h5>{{ _("Application des recommandations") }}</h5>
+                                <ul>
+                                    <li>{{ _("Priorisez les améliorations selon leur impact potentiel") }}</li>
+                                    <li>{{ _("Testez les modifications sur un échantillon de votre audience") }}</li>
+                                    <li>{{ _("Mesurez l'impact des changements sur les métriques clés") }}</li>
+                                    <li>{{ _("Itérez régulièrement sur votre contenu") }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _("Fermer") }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if value_map %}
+<div class="modal fade" id="valueMapResultModal" tabindex="-1" aria-labelledby="valueMapResultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="valueMapResultModalLabel">{{ _("Carte de Valeur Générée") }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ value_map_html|safe }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _("Fermer") }}</button>
+                <button type="button" class="btn btn-primary" onclick="copyToClipboard('value-map-data')">{{ _("Copier") }}</button>
+                <button type="button" class="btn btn-success" id="saveValueMapBtn">{{ _("Enregistrer") }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<textarea id="value-map-data" style="display: none;">{{ value_map_json }}</textarea>
+{% endif %}
+
+{% if content_analysis %}
+<div class="modal fade" id="contentAnalysisResultModal" tabindex="-1" aria-labelledby="contentAnalysisResultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contentAnalysisResultModalLabel">{{ _("Analyse de Contenu") }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h4>{{ _("Évaluation Globale") }}</h4>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>{{ _("Forces") }}</h5>
+                                <ul>
+                                    {% for strength in content_analysis.strengths %}
+                                    <li>{{ strength }}</li>
+                                    {% endfor %}
+                                </ul>
+                                
+                                <h5>{{ _("Points à Améliorer") }}</h5>
+                                <ul>
+                                    {% for weakness in content_analysis.weaknesses %}
+                                    <li>{{ weakness }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>{{ _("Scores par Critère") }}</h4>
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ _("Critère") }}</th>
+                                            <th>{{ _("Score") }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for criterion, score in content_analysis.scores.items() %}
+                                        <tr>
+                                            <td>{{ criterion }}</td>
+                                            <td>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-{{ 'danger' if score < 2 else 'warning' if score < 4 else 'success' }}" 
+                                                         role="progressbar" 
+                                                         style="width: {{ score * 20 }}%;" 
+                                                         aria-valuenow="{{ score }}" 
+                                                         aria-valuemin="0" 
+                                                         aria-valuemax="5">
+                                                        {{ score }}/5
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <h4>{{ _("Recommandations") }}</h4>
+                        <div class="card">
+                            <div class="card-body">
+                                <ol>
+                                    {% for recommendation in content_analysis.recommendations %}
+                                    <li>{{ recommendation }}</li>
+                                    {% endfor %}
+                                </ol>
+                                
+                                {% if content_analysis.improved_examples %}
+                                <h5>{{ _("Exemples Améliorés") }}</h5>
+                                <div class="examples">
+                                    {% for example in content_analysis.improved_examples %}
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <p><strong>{{ _("Avant") }}:</strong> {{ example.original }}</p>
+                                            <p><strong>{{ _("Après") }}:</strong> {{ example.improved }}</p>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _("Fermer") }}</button>
+                <button type="button" class="btn btn-success" id="saveAnalysisBtn">{{ _("Enregistrer") }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if seo_optimized %}
+<div class="modal fade" id="seoResultModal" tabindex="-1" aria-labelledby="seoResultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="seoResultModalLabel">{{ _("Optimisation SEO") }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5>{{ _("Méta Titres & Descriptions") }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <h6>{{ _("Méta Titre") }}</h6>
+                                <div class="p-2 bg-light rounded mb-2">
+                                    {{ seo_optimized.seo.meta_title }}
+                                    <small class="d-block text-muted">{{ seo_optimized.seo.meta_title|length }} {{ _("caractères") }} ({{ _("max. recommandé: 60") }})</small>
+                                </div>
+                                
+                                <h6>{{ _("Méta Description") }}</h6>
+                                <div class="p-2 bg-light rounded mb-2">
+                                    {{ seo_optimized.seo.meta_description }}
+                                    <small class="d-block text-muted">{{ seo_optimized.seo.meta_description|length }} {{ _("caractères") }} ({{ _("max. recommandé: 160") }})</small>
+                                </div>
+                                
+                                <h6>{{ _("H1 Optimisé") }}</h6>
+                                <div class="p-2 bg-light rounded">
+                                    {{ seo_optimized.seo.h1 }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>{{ _("Aperçu Google") }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="google-preview">
+                                    <div class="title">{{ seo_optimized.seo.meta_title }}</div>
+                                    <div class="url">www.example.com/{{ seo_optimized.seo.url_slug }}</div>
+                                    <div class="description">{{ seo_optimized.seo.meta_description }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5>{{ _("Mots-clés") }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>{{ _("Mots-clés Primaires") }}</h6>
+                                        <ul>
+                                            {% for keyword in seo_optimized.seo.keywords.primary %}
+                                            <li>{{ keyword }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>{{ _("Mots-clés Secondaires") }}</h6>
+                                        <ul>
+                                            {% for keyword in seo_optimized.seo.keywords.secondary %}
+                                            <li>{{ keyword }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>{{ _("Textes Alternatifs") }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <h6>{{ _("Suggestions pour Images") }}</h6>
+                                <ul>
+                                    {% for alt in seo_optimized.seo.alt_text_suggestions %}
+                                    <li>{{ alt }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>{{ _("Données Structurées Schema.org") }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <pre class="bg-light p-3 rounded" style="max-height: 300px; overflow-y: auto;">{{ seo_optimized.seo.schema_markup|tojson(indent=2) }}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if seo_optimized.seo.local_seo %}
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>{{ _("Optimisations SEO Local") }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    {% for tip in seo_optimized.seo.local_seo.tips %}
+                                    <li>{{ tip }}</li>
+                                    {% endfor %}
+                                </ul>
+                                
+                                {% if seo_optimized.seo.local_seo.schema %}
+                                <h6>{{ _("Schema Local Business") }}</h6>
+                                <pre class="bg-light p-3 rounded" style="max-height: 200px; overflow-y: auto;">{{ seo_optimized.seo.local_seo.schema|tojson(indent=2) }}</pre>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _("Fermer") }}</button>
+                <button type="button" class="btn btn-success" id="saveSeoBtn">{{ _("Enregistrer") }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion des modals de formulaires
+    const valueMapLink = document.querySelector('a[href="{{ url_for('value_map_generator') }}"]');
+    if (valueMapLink) {
+        valueMapLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            const valueMapModal = new bootstrap.Modal(document.getElementById('valueMapModal'));
+            valueMapModal.show();
+        });
+    }
+    
+    const contentAnalyzerLink = document.querySelector('a[href="{{ url_for('content_analyzer') }}"]');
+    if (contentAnalyzerLink) {
+        contentAnalyzerLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            const contentAnalyzerModal = new bootstrap.Modal(document.getElementById('contentAnalyzerModal'));
+            contentAnalyzerModal.show();
+        });
+    }
+    
+    const seoOptimizerLink = document.querySelector('a[href="{{ url_for('seo_optimizer') }}"]');
+    if (seoOptimizerLink) {
+        seoOptimizerLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            const seoOptimizerModal = new bootstrap.Modal(document.getElementById('seoOptimizerModal'));
+            seoOptimizerModal.show();
+        });
+    }
+    
+    // Affichage automatique des résultats si disponibles
+    {% if value_map %}
+    const valueMapResultModal = new bootstrap.Modal(document.getElementById('valueMapResultModal'));
+    valueMapResultModal.show();
+    {% endif %}
+    
+    {% if content_analysis %}
+    const contentAnalysisResultModal = new bootstrap.Modal(document.getElementById('contentAnalysisResultModal'));
+    contentAnalysisResultModal.show();
+    {% endif %}
+    
+    {% if seo_optimized %}
+    const seoResultModal = new bootstrap.Modal(document.getElementById('seoResultModal'));
+    seoResultModal.show();
+    {% endif %}
+    
+    // Fonction pour copier le contenu dans le presse-papier
+    window.copyToClipboard = function(elementId) {
+        const element = document.getElementById(elementId);
+        element.select();
+        document.execCommand('copy');
+        
+        // Notification de copie
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3';
+        notification.style.zIndex = '9999';
+        notification.textContent = "{{ _('Copié dans le presse-papier!') }}";
+        document.body.appendChild(notification);
+        
+        setTimeout(function() {
+            notification.remove();
+        }, 2000);
+    };
+});
+</script>
+
+<style>
+.google-preview {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+}
+
+.google-preview .title {
+    color: #1a0dab;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-bottom: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.google-preview .url {
+    color: #006621;
+    font-size: 14px;
+    line-height: 1.3;
+    margin-bottom: 5px;
+}
+
+.google-preview .description {
+    color: #4d5156;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.osp-value-map .taglines-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.osp-value-map .taglines-list .tagline-item {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #0d6efd;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.osp-value-map .position-statements-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.osp-value-map .position-statements-list .position-statement-item {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #198754;
+    border-radius: 4px;
+}
+
+.osp-value-map .keyword-tags {
+    margin-top: 10px;
+}
+
+.osp-value-map h3, .osp-value-map h4, .osp-value-map h5 {
+    margin-top: 1.5rem;
+}
+
+.osp-value-map .card {
+    transition: transform 0.2s ease;
+}
+
+.osp-value-map .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+</style>
+{% endblock %}
