@@ -471,13 +471,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Gestionnaire pour le bouton de génération d'avatar
-    const generateAvatarBtn = document.querySelector('.generate-avatar');
-    if (generateAvatarBtn) {
-        generateAvatarBtn.addEventListener('click', function(e) {
+    // Gestionnaire pour tous les boutons de génération d'avatar
+    const generateAvatarBtns = document.querySelectorAll('.generate-avatar');
+    generateAvatarBtns.forEach(button => {
+        button.addEventListener('click', function(e) {
             e.preventDefault();
             const customerId = this.getAttribute('data-customer-id');
-            const avatarContainer = document.querySelector('.avatar-container');
+            const avatarContainer = this.closest('.avatar-container');
+            const errorContainer = avatarContainer.querySelector('.avatar-error');
+            const errorMessage = errorContainer ? errorContainer.querySelector('.error-message') : null;
+            
+            // Cacher les messages d'erreur précédents
+            if (errorContainer) {
+                errorContainer.classList.add('d-none');
+            }
             
             // Afficher l'animation de chargement
             loadingManager.toggleButtonLoading(this, true);
@@ -502,7 +509,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Recharger la page pour afficher le nouvel avatar
                     window.location.reload();
                 } else {
-                    alert('Erreur lors de la génération de l\'avatar: ' + data.error);
+                    console.error('Erreur lors de la génération de l\'avatar:', data.error);
+                    
+                    // Afficher l'erreur dans le conteneur dédié s'il existe
+                    if (errorContainer && errorMessage) {
+                        errorMessage.textContent = data.error || 'Erreur lors de la génération de l\'avatar';
+                        errorContainer.classList.remove('d-none');
+                    } else {
+                        // Fallback sur alert si le conteneur n'existe pas
+                        alert('Erreur lors de la génération de l\'avatar: ' + data.error);
+                    }
                 }
             })
             .catch(error => {
@@ -513,10 +529,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 loadingManager.toggleButtonLoading(this, false);
                 loadingManager.toggleContentLoading(avatarContainer, false);
                 
-                alert('Une erreur est survenue lors de la génération de l\'avatar.');
+                // Afficher l'erreur dans le conteneur dédié s'il existe
+                if (errorContainer && errorMessage) {
+                    errorMessage.textContent = 'Une erreur est survenue lors de la génération de l\'avatar. Veuillez réessayer.';
+                    errorContainer.classList.remove('d-none');
+                } else {
+                    // Fallback sur alert si le conteneur n'existe pas
+                    alert('Une erreur est survenue lors de la génération de l\'avatar.');
+                }
             });
         });
-    }
+    });
 });
 </script>
 {% endblock %}

@@ -909,11 +909,24 @@ def generate_customer_avatar(customer_id):
                 enhanced_prompt = customer.avatar_prompt
                 
             # Générer l'image avec les informations de contexte enrichies
-            avatar_url = await generate_boutique_image_async(
-                client=grok_client,
-                image_prompt=enhanced_prompt
-            )
-            return avatar_url
+            try:
+                avatar_url = await generate_boutique_image_async(
+                    client=grok_client,
+                    image_prompt=enhanced_prompt
+                )
+                # Vérifier si c'est une URL d'erreur (placeholder)
+                if avatar_url.startswith("https://placehold.co") or "Error" in avatar_url:
+                    raise Exception("L'image n'a pas pu être générée correctement. Le service d'IA a retourné une erreur.")
+                return avatar_url
+            except Exception as img_error:
+                logging.error(f"Error in avatar generation API call: {img_error}")
+                error_details = str(img_error)
+                if "400" in error_details or "invalid_request_error" in error_details:
+                    raise Exception("Le contenu du prompt n'est pas accepté par l'API image. Veuillez régénérer le persona.")
+                elif "429" in error_details or "rate limit" in error_details.lower():
+                    raise Exception("Limite de requêtes atteinte. Veuillez réessayer dans quelques minutes.")
+                else:
+                    raise Exception(f"Erreur lors de la génération de l'avatar: {error_details}")
         
         # Exécuter la fonction asynchrone
         avatar_url = asyncio.run(generate_avatar())
@@ -935,15 +948,35 @@ def generate_customer_avatar(customer_id):
         })
     except Exception as e:
         db.session.rollback()
+        import traceback
+        error_msg = str(e)
+        stack_trace = traceback.format_exc()
+        
         # Log metric pour l'échec de génération
         log_metric("avatar_generation", {
             "success": False,
             "customer_id": customer.id,
-            "error": str(e)
-        })
+            "profile_name": customer.name,
+            "error": error_msg,
+            "stack_trace": stack_trace[:500]  # Tronquer pour éviter les entrées trop longues
+        }, category="generation", status=False)
+    
+        logging.error(f"Error generating avatar for customer {customer_id}: {e}\n{stack_trace}")
         
-        logging.error(f"Error generating avatar for customer {customer_id}: {e}")
-        return jsonify({'error': str(e)}), 500
+        # Formater un message d'erreur plus convivial
+        user_friendly_error = error_msg
+        if "API key" in error_msg.lower() or "openai" in error_msg.lower():
+            user_friendly_error = "Problème de connexion avec le service d'IA. Veuillez vérifier les clés API."
+        elif "timeout" in error_msg.lower():
+            user_friendly_error = "Le délai d'attente a été dépassé. Veuillez réessayer."
+        elif "exceeded" in error_msg.lower() or "quota" in error_msg.lower():
+            user_friendly_error = "Quota d'utilisation dépassé. Veuillez réessayer plus tard."
+        
+        return jsonify({
+            'success': False,
+            'error': user_friendly_error,
+            'details': error_msg
+        }), 500
 
 @app.route('/image_generation', methods=['GET', 'POST'])
 def image_generation():
