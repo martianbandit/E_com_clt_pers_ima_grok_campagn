@@ -143,7 +143,294 @@ PROMPT_TRANSLATIONS = {
         """
     },
     
-    # Autres prompts à ajouter ici...
+    # Prompts pour la génération d'avatar
+    "avatar_generation": {
+        "en": """
+        Create a detailed prompt for generating a profile picture avatar for this specific customer persona:
+        
+        Customer Name: {name}
+        Age: {age}
+        Gender: {gender}
+        Location: {location}
+        Interests: {interests}
+        Niche Market: {niche}
+        
+        Persona: 
+        {persona_excerpt}
+        
+        Create an avatar prompt that:
+        1. Describes a professional headshot/portrait style image
+        2. Includes distinctive visual characteristics based on the persona
+        3. Suggests appropriate clothing and accessories related to the {niche} niche
+        4. Specifies background elements that reflect their lifestyle or interests
+        5. Indicates appropriate lighting and mood that matches their personality
+        6. DOES NOT include any text or words in the image itself
+        
+        The prompt should be detailed yet concise (maximum 100 words), focusing on visual elements only.
+        Format your response as just the prompt text, without explanations or extra information.
+        """,
+        
+        "fr": """
+        Créez un prompt détaillé pour générer une photo de profil avatar pour ce persona client spécifique:
+        
+        Nom du client: {name}
+        Âge: {age}
+        Genre: {gender}
+        Lieu: {location}
+        Intérêts: {interests}
+        Marché de niche: {niche}
+        
+        Persona: 
+        {persona_excerpt}
+        
+        Créez un prompt d'avatar qui:
+        1. Décrit une image de style portrait/photo de profil professionnelle
+        2. Inclut des caractéristiques visuelles distinctives basées sur le persona
+        3. Suggère des vêtements et accessoires appropriés liés à la niche {niche}
+        4. Spécifie des éléments d'arrière-plan qui reflètent son style de vie ou ses intérêts
+        5. Indique un éclairage et une ambiance appropriés qui correspondent à sa personnalité
+        6. NE contient PAS de texte ou de mots dans l'image elle-même
+        
+        Le prompt doit être détaillé mais concis (maximum 100 mots), en se concentrant uniquement sur les éléments visuels.
+        Formatez votre réponse avec uniquement le texte du prompt, sans explications ni informations supplémentaires.
+        """
+    },
+    
+    # Prompts pour la génération de contenu marketing
+    "marketing_content": {
+        "en": """
+        Create personalized {campaign_type} marketing content for {name} based on their customer profile:
+        
+        CUSTOMER PROFILE:
+        {persona}
+        
+        MARKETING CONTENT SPECIFICATIONS:
+        - Campaign Type: {campaign_type}
+        - Target: {name}
+        - Niche Market: {niche}
+        - Key Interests: {interests}
+        - Language: {language}
+        
+        {boutique_context}
+        
+        CONTENT GUIDELINES:
+        1. Create content that speaks directly to this specific customer's needs and motivations
+        2. Address their specific pain points and preferences
+        3. Highlight benefits that would resonate with their particular situation
+        4. Use language, tone and style that will appeal specifically to them
+        5. Include a clear call-to-action that would motivate this specific customer
+        6. Keep the content concise, engaging and emotionally resonant
+        
+        FORMAT FOR DIFFERENT CHANNELS:
+        - Email: Include subject line, greeting, body text and sign-off
+        - Social Media: Create post copy optimized for the platform most relevant to this customer
+        - SMS: Create a brief, compelling message (160 characters max) with clear value proposition
+        - Ad: Include headline, main copy, and call-to-action for digital advertising
+        - Product Description: Create compelling product copy tailored to this customer's interests
+        
+        The content should feel personally created for this specific customer, not generic marketing.
+        """,
+        
+        "fr": """
+        Créez un contenu marketing {campaign_type} personnalisé pour {name} basé sur son profil client:
+        
+        PROFIL CLIENT:
+        {persona}
+        
+        SPÉCIFICATIONS DU CONTENU MARKETING:
+        - Type de campagne: {campaign_type}
+        - Cible: {name}
+        - Marché de niche: {niche}
+        - Intérêts clés: {interests}
+        - Langue: {language}
+        
+        {boutique_context}
+        
+        DIRECTIVES DE CONTENU:
+        1. Créez un contenu qui parle directement aux besoins et motivations de ce client spécifique
+        2. Adressez ses points de douleur et préférences spécifiques
+        3. Soulignez les avantages qui résonneraient avec sa situation particulière
+        4. Utilisez un langage, ton et style qui lui plairont spécifiquement
+        5. Incluez un appel à l'action clair qui motiverait ce client spécifique
+        6. Gardez le contenu concis, engageant et émotionnellement résonnant
+        
+        FORMAT POUR DIFFÉRENTS CANAUX:
+        - Email: Inclure objet, salutation, corps du texte et signature
+        - Médias sociaux: Créer un texte de publication optimisé pour la plateforme la plus pertinente pour ce client
+        - SMS: Créer un message bref et convaincant (160 caractères max) avec une proposition de valeur claire
+        - Publicité: Inclure un titre, texte principal et appel à l'action pour la publicité numérique
+        - Description de produit: Créer un texte de produit convaincant adapté aux intérêts de ce client
+        
+        Le contenu doit sembler personnellement créé pour ce client spécifique, pas un marketing générique.
+        """
+    },
+    
+    # Prompt pour la génération d'image de campagne
+    "campaign_image": {
+        "en": """
+        Create a detailed image prompt for a marketing campaign in the {niche} niche targeted at {customer_name}.
+        
+        CAMPAIGN CONTEXT:
+        {campaign_description}
+        
+        CUSTOMER PROFILE:
+        {customer_profile}
+        
+        BOUTIQUE INFORMATION:
+        {boutique_info}
+        
+        IMAGE REQUIREMENTS:
+        1. Create a vivid, professional marketing image that would resonate with this specific customer
+        2. The image should represent the {niche} niche in an authentic, appealing way
+        3. Focus on visual elements that would attract this specific customer based on their profile
+        4. Include relevant products, environments, or lifestyle elements that connect with their interests
+        5. The image style should match the boutique's branding and aesthetic
+        6. Ensure the image could be used effectively for {campaign_type} marketing
+        7. Do NOT include any text or words in the image itself
+        
+        Create a detailed image prompt (200-300 words) that describes exactly what this marketing image should contain.
+        Focus on visual details, composition, mood, colors, and elements that would make this image effective for this specific customer.
+        """,
+        
+        "fr": """
+        Créez un prompt d'image détaillé pour une campagne marketing dans la niche {niche} ciblant {customer_name}.
+        
+        CONTEXTE DE LA CAMPAGNE:
+        {campaign_description}
+        
+        PROFIL CLIENT:
+        {customer_profile}
+        
+        INFORMATION SUR LA BOUTIQUE:
+        {boutique_info}
+        
+        EXIGENCES D'IMAGE:
+        1. Créez une image marketing vivante et professionnelle qui résonne avec ce client spécifique
+        2. L'image doit représenter la niche {niche} de manière authentique et attrayante
+        3. Concentrez-vous sur les éléments visuels qui attireraient ce client spécifique en fonction de son profil
+        4. Incluez des produits, environnements ou éléments de style de vie pertinents qui correspondent à ses intérêts
+        5. Le style de l'image doit correspondre à l'image de marque et à l'esthétique de la boutique
+        6. Assurez-vous que l'image pourrait être utilisée efficacement pour le marketing {campaign_type}
+        7. N'incluez PAS de texte ou de mots dans l'image elle-même
+        
+        Créez un prompt d'image détaillé (200-300 mots) qui décrit exactement ce que cette image marketing devrait contenir.
+        Concentrez-vous sur les détails visuels, la composition, l'ambiance, les couleurs et les éléments qui rendraient cette image efficace pour ce client spécifique.
+        """
+    },
+    
+    # Prompts pour la génération d'attributs spécifiques à la niche
+    "niche_attributes": {
+        "en": """
+        Based on this customer persona in the {niche} niche, create a JSON object with specialized attributes 
+        specific to this niche and customer. Include:
+        
+        1. Preferred sub-categories within {niche}
+        2. Ideal price range/budget for {niche} purchases
+        3. Favorite brands or designers in the {niche} space
+        4. Special requirements or preferences (sizes, materials, styles, etc.)
+        5. Collection focus or themes they're building
+        
+        Persona summary:
+        {persona_excerpt}
+        
+        Return ONLY a valid JSON object with these attributes. Example format:
+        {
+            "preferred_subcategories": ["example1", "example2"],
+            "price_range": "Description of their budget level",
+            "favorite_brands": ["brand1", "brand2"],
+            "special_preferences": {
+                "key1": "value1",
+                "key2": "value2"
+            },
+            "collection_themes": ["theme1", "theme2"]
+        }
+        """,
+        
+        "fr": """
+        Basé sur ce persona client dans la niche {niche}, créez un objet JSON avec des attributs spécialisés 
+        spécifiques à cette niche et à ce client. Incluez:
+        
+        1. Sous-catégories préférées dans la niche {niche}
+        2. Fourchette de prix/budget idéal pour les achats dans la niche {niche}
+        3. Marques ou créateurs préférés dans l'espace de niche {niche}
+        4. Exigences ou préférences spéciales (tailles, matériaux, styles, etc.)
+        5. Thèmes ou focus de collection qu'ils développent
+        
+        Résumé du persona:
+        {persona_excerpt}
+        
+        Retournez UNIQUEMENT un objet JSON valide avec ces attributs. Format d'exemple:
+        {
+            "sous_categories_preferees": ["exemple1", "exemple2"],
+            "fourchette_prix": "Description de leur niveau de budget",
+            "marques_preferees": ["marque1", "marque2"],
+            "preferences_speciales": {
+                "cle1": "valeur1",
+                "cle2": "valeur2"
+            },
+            "themes_collection": ["theme1", "theme2"]
+        }
+        """
+    },
+    
+    # Prompts pour la génération d'historique d'achat
+    "purchase_history": {
+        "en": """
+        Based on this customer persona in the {niche} niche, create a JSON array of 3-5 products they have 
+        purchased in the past. Each product should include:
+        
+        1. Product name
+        2. Category
+        3. Brand
+        4. Price range
+        5. When they purchased it (approximate date)
+        6. Brief reason for purchase
+        
+        Persona summary:
+        {persona_excerpt}
+        
+        Return ONLY a valid JSON array with these products. Example format:
+        [
+            {
+                "name": "Product Name",
+                "category": "Category",
+                "brand": "Brand Name",
+                "price": "$XX-$XXX",
+                "purchase_date": "Month Year",
+                "purchase_reason": "Brief reason"
+            },
+            ...
+        ]
+        """,
+        
+        "fr": """
+        Basé sur ce persona client dans la niche {niche}, créez un tableau JSON de 3-5 produits qu'ils ont 
+        achetés dans le passé. Chaque produit doit inclure:
+        
+        1. Nom du produit
+        2. Catégorie
+        3. Marque
+        4. Fourchette de prix
+        5. Quand ils l'ont acheté (date approximative)
+        6. Brève raison de l'achat
+        
+        Résumé du persona:
+        {persona_excerpt}
+        
+        Retournez UNIQUEMENT un tableau JSON valide avec ces produits. Format d'exemple:
+        [
+            {
+                "nom": "Nom du Produit",
+                "categorie": "Catégorie",
+                "marque": "Nom de la Marque",
+                "prix": "XX€-XXX€",
+                "date_achat": "Mois Année",
+                "raison_achat": "Raison brève"
+            },
+            ...
+        ]
+        """
+    }
 }
 
 def get_translated_prompt(prompt_key, language=None, **kwargs):
@@ -476,31 +763,17 @@ async def generate_enhanced_customer_data_async(
             
         persona_text = response.choices[0].message.content
         
-        # Génération de l'avatar prompt
-        avatar_prompt = f"""
-        Create a detailed prompt for generating a profile picture avatar for this specific customer persona:
-        
-        Customer Name: {name}
-        Age: {age}
-        Gender: {gender}
-        Location: {location}
-        Interests: {interests}
-        Niche Market: {niche}
-        
-        Persona: 
-        {persona_text[:200]}...
-        
-        Create an avatar prompt that:
-        1. Describes a professional headshot/portrait style image
-        2. Includes distinctive visual characteristics based on the persona
-        3. Suggests appropriate clothing and accessories related to the {niche} niche
-        4. Specifies background elements that reflect their lifestyle or interests
-        5. Indicates appropriate lighting and mood that matches their personality
-        6. DOES NOT include any text or words in the image itself
-        
-        The prompt should be detailed yet concise (maximum 100 words), focusing on visual elements only.
-        Format your response as just the prompt text, without explanations or extra information.
-        """
+        # Génération de l'avatar prompt avec le système de prompts traduits
+        avatar_prompt = get_translated_prompt(
+            "avatar_generation",
+            name=name,
+            age=age,
+            gender=gender,
+            location=location,
+            interests=interests,
+            niche=niche,
+            persona_excerpt=persona_text[:200]
+        )
         
         avatar_response = await client.chat.completions.create(
             model=model,
@@ -511,32 +784,12 @@ async def generate_enhanced_customer_data_async(
         
         avatar_text_prompt = avatar_response.choices[0].message.content
         
-        # Génération des attributs spécifiques à la niche
-        niche_attributes_prompt = f"""
-        Based on this customer persona in the {niche} niche, create a JSON object with specialized attributes 
-        specific to this niche and customer. Include:
-        
-        1. Preferred sub-categories within {niche}
-        2. Ideal price range/budget for {niche} purchases
-        3. Favorite brands or designers in the {niche} space
-        4. Special requirements or preferences (sizes, materials, styles, etc.)
-        5. Collection focus or themes they're building
-        
-        Persona summary:
-        {persona_text[:300]}...
-        
-        Return ONLY a valid JSON object with these attributes. Example format:
-        {{
-            "preferred_subcategories": ["example1", "example2"],
-            "price_range": "Description of their budget level",
-            "favorite_brands": ["brand1", "brand2"],
-            "special_preferences": {{
-                "key1": "value1",
-                "key2": "value2"
-            }},
-            "collection_themes": ["theme1", "theme2"]
-        }}
-        """
+        # Génération des attributs spécifiques à la niche avec le système de prompts traduits
+        niche_attributes_prompt = get_translated_prompt(
+            "niche_attributes",
+            niche=niche,
+            persona_excerpt=persona_text[:300]
+        )
         
         niche_attr_response = await client.chat.completions.create(
             model=model,
@@ -548,34 +801,12 @@ async def generate_enhanced_customer_data_async(
         
         niche_attributes = json.loads(niche_attr_response.choices[0].message.content)
         
-        # Génération d'exemples de produits achetés
-        purchase_history_prompt = f"""
-        Based on this customer persona in the {niche} niche, create a JSON array of 3-5 products they have 
-        purchased in the past. Each product should include:
-        
-        1. Product name
-        2. Category
-        3. Brand
-        4. Price range
-        5. When they purchased it (approximate date)
-        6. Brief reason for purchase
-        
-        Persona summary:
-        {persona_text[:300]}...
-        
-        Return ONLY a valid JSON array with these products. Example format:
-        [
-            {{
-                "name": "Product Name",
-                "category": "Category",
-                "brand": "Brand Name",
-                "price": "$XX-$XXX",
-                "purchase_date": "Month Year",
-                "purchase_reason": "Brief reason"
-            }},
-            ...
-        ]
-        """
+        # Génération d'exemples de produits achetés avec le système de prompts traduits
+        purchase_history_prompt = get_translated_prompt(
+            "purchase_history",
+            niche=niche,
+            persona_excerpt=persona_text[:300]
+        )
         
         purchase_response = await client.chat.completions.create(
             model=model,
@@ -761,29 +992,17 @@ async def generate_boutique_marketing_content_async(
     }
     content_type = content_type_map.get(campaign_type, "marketing content")
     
-    # Create a boutique-specific marketing prompt
-    prompt = f"""
-    Create a highly personalized {content_type} for a {niche} boutique targeted at this specific customer:
-    
-    Customer Name: {name}
-    Language: {language}
-    Interests: {interests}
-    
-    Customer Persona:
-    {persona}
-    
-    {boutique_context}
-    
-    Your task:
-    1. Write the {content_type} in {language} language
-    2. Make it feel personally crafted for this specific customer
-    3. Reference their interests and shopping preferences
-    4. Incorporate elements specific to the {niche} niche
-    5. Use language, tone, and references that would resonate with this customer
-    6. Include a compelling call-to-action relevant to this customer
-    
-    The content should be authentic, emotionally resonant, and make the customer feel understood.
-    """
+    # Utiliser le système de prompts traduits pour le contenu marketing
+    prompt = get_translated_prompt(
+        "marketing_content",
+        name=name,
+        persona=persona,
+        campaign_type=campaign_type,
+        niche=niche,
+        interests=interests,
+        language=language,
+        boutique_context=boutique_context
+    )
     
     try:
         response = await client.chat.completions.create(
@@ -870,59 +1089,16 @@ async def generate_image_prompt_async(
     if boutique_info and boutique_info.get("name"):
         keywords.append(boutique_info.get("name"))
     
-    meta_prompt = f"""
-    Create an extraordinarily rich and vivid image generation prompt for a {niche} boutique marketing visual optimized for SEO and targeted marketing.
-    
-    STARTING CONCEPT: {base_prompt}
-    
-    CUSTOMER PROFILE:
-    - Interests: {interests}
-    - Location: {location}
-    - Age: {age}
-    - Persona Insights: {persona[:250]}...
-    
-    {boutique_context}
-    
-    VISUAL STORYTELLING REQUIREMENTS:
-    
-    1. AESTHETIC ALIGNMENT
-       - Identify a specific visual style that would deeply resonate with this customer's taste profile
-       - Consider cultural references from their background and interests
-       - Suggest a distinctive color palette that captures their emotional associations with {niche}
-       - Define lighting approaches that evoke the right mood for this customer
-    
-    2. SYMBOLIC ELEMENTS
-       - Include powerful visual symbols that connect to the customer's values
-       - Create unexpected juxtapositions or elements that surprise while remaining relevant
-       - Incorporate subtle details that only someone passionate about {niche} would notice
-       - Balance aspirational elements with authentic, relatable touches
-    
-    3. COMPOSITIONAL STRATEGY  
-       - Design a focal point that immediately grabs this specific customer's attention
-       - Suggest composition techniques that align with their aesthetic sensibilities
-       - Define perspective approaches that create the right emotional distance
-       - Balance white space and visual density based on their cognitive preferences
-    
-    4. EMOTIONAL RESONANCE
-       - Target specific emotional triggers that motivate this customer
-       - Create visual contrast that reflects their decision-making patterns
-       - Include elements that address their specific pain points related to {niche}
-       - Develop a visual hierarchy that guides them toward conversion
-    
-    5. SEO & MARKET TARGETING OPTIMIZATION
-       - Incorporate searchable industry-standard elements that shoppers look for
-       - Include clear product visualization that matches search intent
-       - Consider elements that are trending in {niche} market searches
-       - Ensure the image has a clear focal point that reads well in thumbnails
-    
-    DELIVERABLE FORMAT:
-    Provide your response in JSON format with these fields:
-    1. "prompt": a detailed, evocative image prompt (5-7 sentences) that would generate an image perfectly tailored to this customer
-    2. "alt_text": a concise, SEO-rich alternative text description (max 125 chars)
-    3. "keywords": 3-5 most relevant SEO keywords for this image
-    4. "image_title": SEO-optimized title for the image (max 60 chars)
-    5. "description": longer SEO-rich description for marketing copy (1-2 sentences)
-    """
+    # Utiliser le système de prompts traduits pour la génération d'image
+    meta_prompt = get_translated_prompt(
+        "campaign_image",
+        niche=niche,
+        customer_name=customer.get("name", ""),
+        campaign_description=base_prompt,
+        customer_profile=f"Interests: {interests}, Location: {location}, Age: {age}, Persona: {persona[:250]}...",
+        boutique_info=boutique_context,
+        campaign_type=customer.get("campaign_type", "marketing")
+    )
     
     try:
         response = await client.chat.completions.create(
