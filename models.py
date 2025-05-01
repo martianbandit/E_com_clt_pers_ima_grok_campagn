@@ -477,8 +477,9 @@ class Metric(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     category = db.Column(db.String(50), nullable=True)  # Catégorie de la métrique (ai, user, system, etc.)
-    status = db.Column(db.String(20), nullable=True)    # État (success, error, warning, info)
+    status = db.Column(db.Boolean, default=True)        # État (True=succès, False=erreur)
     data = db.Column(JSONB, nullable=True)              # Données complètes
+    execution_time = db.Column(db.Float, nullable=True) # Temps d'exécution en secondes
     response_time = db.Column(db.Float, nullable=True)  # Temps de réponse en millisecondes (pour les appels API)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     # Foreign keys optionnels

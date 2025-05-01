@@ -1775,6 +1775,147 @@ def personas():
                           secondary_personas=secondary_personas,
                           personas_by_niche=personas_by_niche)
 
+@app.route('/metrics_dashboard')
+def metrics_dashboard():
+    """Page d'analyse des métriques de performance"""
+    from models import Metric
+    from datetime import datetime, timedelta
+    
+    # Récupérer les paramètres de filtre
+    category = request.args.get('category', '')
+    start_date_str = request.args.get('start_date', '')
+    end_date_str = request.args.get('end_date', '')
+    limit_str = request.args.get('limit', '50')
+    
+    # Convertir et valider les dates
+    try:
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None
+    except ValueError:
+        flash(_("Format de date de début invalide. Utilisation du format par défaut."), "warning")
+        start_date = None
+    
+    try:
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d') if end_date_str else None
+        if end_date:
+            # Ajouter un jour pour inclure toute la journée de fin
+            end_date = end_date + timedelta(days=1)
+    except ValueError:
+        flash(_("Format de date de fin invalide. Utilisation du format par défaut."), "warning")
+        end_date = None
+    
+    # Convertir la limite
+    try:
+        limit = int(limit_str)
+    except ValueError:
+        limit = 50
+    
+    # Construire la requête de base
+    query = Metric.query
+    
+    # Appliquer les filtres
+    if category:
+        query = query.filter(Metric.category == category)
+    if start_date:
+        query = query.filter(Metric.created_at >= start_date)
+    if end_date:
+        query = query.filter(Metric.created_at <= end_date)
+    
+    # Récupérer le total des métriques (pour les statistiques)
+    total_metrics = query.count()
+    
+    # Valeurs par défaut pour éviter les divisions par zéro
+    success_count = 0
+    error_count = 0
+    success_rate = 0
+    avg_time = 0
+    category_labels = []
+    category_counts = []
+    time_labels = []
+    time_values = []
+    trend_dates = []
+    trend_counts = []
+    
+    # Calculer les statistiques uniquement s'il y a des métriques
+    if total_metrics > 0:
+        # Récupérer les métriques pour l'affichage (triées par date et limitées)
+        metrics = query.order_by(Metric.created_at.desc()).limit(limit).all()
+        
+        # Calculer les statistiques
+        success_count = query.filter(Metric.status == True).count()
+        error_count = total_metrics - success_count
+        success_rate = (success_count / total_metrics * 100) if total_metrics > 0 else 0
+        
+        # Calculer le temps moyen
+        avg_time_result = db.session.query(db.func.avg(Metric.execution_time)).filter(Metric.execution_time != None).scalar()
+        avg_time = avg_time_result if avg_time_result is not None else 0
+        
+        # Données pour le graphique des catégories
+        category_stats = db.session.query(
+            Metric.category, db.func.count(Metric.id)
+        ).group_by(Metric.category).all()
+        
+        category_labels = [cat[0] or _("Non catégorisé") for cat in category_stats]
+        category_counts = [cat[1] for cat in category_stats]
+        
+        # Données pour le graphique des temps de réponse
+        time_stats = db.session.query(
+            Metric.name, db.func.avg(Metric.execution_time)
+        ).filter(Metric.execution_time != None).group_by(Metric.name).order_by(db.func.avg(Metric.execution_time).desc()).limit(10).all()
+        
+        time_labels = [stat[0] for stat in time_stats]
+        time_values = [float(stat[1]) for stat in time_stats]
+        
+        # Données pour le graphique de tendance (nombre de métriques par jour)
+        now = datetime.now()
+        week_ago = now - timedelta(days=7)
+        
+        trend_stats = db.session.query(
+            db.func.date_trunc('day', Metric.created_at).label('date'),
+            db.func.count(Metric.id)
+        ).filter(Metric.created_at >= week_ago).group_by('date').order_by('date').all()
+        
+        trend_dates = [stat[0].strftime('%Y-%m-%d') for stat in trend_stats]
+        trend_counts = [stat[1] for stat in trend_stats]
+    else:
+        # S'il n'y a pas de métriques, initialiser avec une liste vide
+        metrics = []
+    
+    # Fonction pour déterminer la couleur de la catégorie
+    def get_category_color(category):
+        if not category:
+            return 'secondary'
+        
+        color_map = {
+            'ai': 'primary',
+            'generation': 'info',
+            'user': 'success',
+            'system': 'warning',
+            'import': 'danger'
+        }
+        
+        return color_map.get(category.lower(), 'secondary')
+    
+    return render_template(
+        'metrics.html',
+        metrics=metrics,
+        total_metrics=total_metrics,
+        success_count=success_count,
+        error_count=error_count,
+        success_rate=success_rate,
+        avg_time=avg_time,
+        category_labels=category_labels,
+        category_counts=category_counts,
+        time_labels=time_labels,
+        time_values=time_values,
+        trend_dates=trend_dates,
+        trend_counts=trend_counts,
+        category=category,
+        start_date=start_date_str,
+        end_date=end_date_str,
+        limit=limit,
+        get_category_color=get_category_color
+    )
+
 @app.route('/create_persona', methods=['POST'])
 def create_persona():
     """Créer un nouveau persona"""

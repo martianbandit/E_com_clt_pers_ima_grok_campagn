@@ -3,194 +3,223 @@
 {% block title %}{{ _('Métriques et Performances') }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container">
     <h1 class="mb-4">{{ _('Métriques et Performances') }}</h1>
     
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">{{ _('Filtres') }}</h5>
+    <!-- Filtres -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">{{ _('Filtres') }}</h5>
+        </div>
+        <div class="card-body">
+            <form id="filterForm" method="get" action="{{ url_for('metrics_dashboard') }}">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="category" class="form-label">{{ _('Catégorie') }}</label>
+                        <select class="form-select" id="category" name="category">
+                            <option value="" {% if not category %}selected{% endif %}>{{ _('Toutes') }}</option>
+                            <option value="ai" {% if category == 'ai' %}selected{% endif %}>{{ _('IA') }}</option>
+                            <option value="generation" {% if category == 'generation' %}selected{% endif %}>{{ _('Génération') }}</option>
+                            <option value="user" {% if category == 'user' %}selected{% endif %}>{{ _('Utilisateur') }}</option>
+                            <option value="system" {% if category == 'system' %}selected{% endif %}>{{ _('Système') }}</option>
+                            <option value="import" {% if category == 'import' %}selected{% endif %}>{{ _('Import') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="start_date" class="form-label">{{ _('Date de début') }}</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="end_date" class="form-label">{{ _('Date de fin') }}</label>
+                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="limit" class="form-label">{{ _('Nombre de résultats') }}</label>
+                        <select class="form-select" id="limit" name="limit">
+                            <option value="10" {% if limit == 10 %}selected{% endif %}>10</option>
+                            <option value="25" {% if limit == 25 %}selected{% endif %}>25</option>
+                            <option value="50" {% if limit == 50 %}selected{% endif %}>50</option>
+                            <option value="100" {% if limit == 100 %}selected{% endif %}>100</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form method="GET" action="{{ url_for('metrics') }}" class="row g-3">
-                        <div class="col-md-3">
-                            <label for="category" class="form-label">{{ _('Catégorie') }}</label>
-                            <select class="form-select" name="category" id="category">
-                                <option value="">{{ _('Toutes') }}</option>
-                                <option value="ai" {% if selected_category == 'ai' %}selected{% endif %}>{{ _('IA') }}</option>
-                                <option value="generation" {% if selected_category == 'generation' %}selected{% endif %}>{{ _('Génération') }}</option>
-                                <option value="user" {% if selected_category == 'user' %}selected{% endif %}>{{ _('Utilisateur') }}</option>
-                                <option value="system" {% if selected_category == 'system' %}selected{% endif %}>{{ _('Système') }}</option>
-                                <option value="import" {% if selected_category == 'import' %}selected{% endif %}>{{ _('Import') }}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="start_date" class="form-label">{{ _('Date de début') }}</label>
-                            <input type="date" class="form-control" name="start_date" id="start_date" value="{{ start_date }}">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="end_date" class="form-label">{{ _('Date de fin') }}</label>
-                            <input type="date" class="form-control" name="end_date" id="end_date" value="{{ end_date }}">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="limit" class="form-label">{{ _('Nombre de résultats') }}</label>
-                            <select class="form-select" name="limit" id="limit">
-                                <option value="50" {% if limit == 50 %}selected{% endif %}>50</option>
-                                <option value="100" {% if limit == 100 %}selected{% endif %}>100</option>
-                                <option value="200" {% if limit == 200 %}selected{% endif %}>200</option>
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">{{ _('Filtrer') }}</button>
-                            <a href="{{ url_for('metrics') }}" class="btn btn-outline-secondary">{{ _('Réinitialiser') }}</a>
-                        </div>
-                    </form>
+                <div class="d-flex justify-content-end mt-3">
+                    <button type="submit" class="btn btn-primary me-2">{{ _('Filtrer') }}</button>
+                    <a href="{{ url_for('metrics_dashboard') }}" class="btn btn-outline-secondary">{{ _('Réinitialiser') }}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Vue d'ensemble -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ _('Total des métriques') }}</h5>
+                    <h2 class="display-4">{{ total_metrics }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ _('Taux de réussite') }}</h5>
+                    <h2 class="display-4">{{ success_rate|round }}%</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ _('Temps de réponse moyen') }}</h5>
+                    <h2 class="display-4">{{ avg_time|round(2) }}s</h2>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Résumé des métriques -->
+    <!-- Graphiques -->
     <div class="row mb-4">
-        <div class="col-md-6 col-xl-3 mb-3">
-            <div class="card border-0 shadow-sm h-100">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ _('Réussites / Erreurs') }}</h5>
+                </div>
                 <div class="card-body">
-                    <h6 class="text-muted">{{ _('Total des métriques') }}</h6>
-                    <h2 class="mt-2 mb-3">{{ metrics_summary.total_count }}</h2>
-                    <div class="progress">
-                        <div class="progress-bar bg-success" style="width: {{ metrics_summary.success_rate }}%"></div>
-                    </div>
-                    <div class="small mt-2">{{ _('Taux de réussite') }}: {{ "%.1f"|format(metrics_summary.success_rate) }}%</div>
+                    <canvas id="successFailChart"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 col-xl-3 mb-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="text-muted">{{ _('Réussites / Erreurs') }}</h6>
-                    <h2 class="mt-2 mb-3">{{ metrics_summary.success_count }} / {{ metrics_summary.error_count }}</h2>
-                    <div class="d-flex justify-content-between">
-                        <div class="small text-success">{{ _('Réussites') }}: {{ metrics_summary.success_count }}</div>
-                        <div class="small text-danger">{{ _('Erreurs') }}: {{ metrics_summary.error_count }}</div>
-                    </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ _('Catégories') }}</h5>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-xl-3 mb-3">
-            <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ _('Temps de réponse moyen') }}</h6>
-                    <h2 class="mt-2 mb-3">{{ "%.0f"|format(metrics_summary.avg_response_time) }} ms</h2>
-                    <div class="small">{{ _('Temps de réponse moyen des appels API') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-xl-3 mb-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="text-muted">{{ _('Catégories') }}</h6>
-                    <div class="mt-3">
-                        <canvas id="categoriesChart" width="100%" height="80"></canvas>
-                    </div>
+                    <canvas id="categoryChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Graphique des métriques dans le temps -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-primary text-white">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ _('Temps de réponse moyen des appels API') }}</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="timeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
                     <h5 class="mb-0">{{ _('Tendance des métriques') }}</h5>
                 </div>
                 <div class="card-body">
-                    <canvas id="metricsTimeChart" width="100%" height="300"></canvas>
+                    <canvas id="trendChart"></canvas>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Tableau des dernières métriques -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">{{ _('Dernières métriques') }}</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>{{ _('ID') }}</th>
-                                    <th>{{ _('Nom') }}</th>
-                                    <th>{{ _('Catégorie') }}</th>
-                                    <th>{{ _('Statut') }}</th>
-                                    <th>{{ _('Temps') }}</th>
-                                    <th>{{ _('Date') }}</th>
-                                    <th>{{ _('Actions') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for metric in metrics_summary.latest_metrics %}
-                                <tr>
-                                    <td>{{ metric.id }}</td>
-                                    <td>{{ metric.name }}</td>
-                                    <td>
-                                        <span class="badge bg-{{ 'primary' if metric.category == 'ai' else 'info' if metric.category == 'generation' else 'success' if metric.category == 'user' else 'warning' if metric.category == 'system' else 'secondary' }}">
-                                            {{ metric.category or _('Non catégorisé') }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{{ 'success' if metric.status == 'success' else 'danger' if metric.status == 'error' else 'warning' if metric.status == 'warning' else 'info' }}">
-                                            {{ metric.status or _('Non défini') }}
-                                        </span>
-                                    </td>
-                                    <td>{{ "%.0f"|format(metric.response_time) if metric.response_time else '-' }} ms</td>
-                                    <td>{{ metric.created_at.strftime('%d/%m/%Y %H:%M:%S') }}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-outline-primary" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#metricDataModal" 
-                                                data-metric-id="{{ metric.id }}" 
-                                                data-metric-name="{{ metric.name }}"
-                                                data-metric-data="{{ metric.data|tojson }}">
-                                            <i class="bi bi-eye"></i> {{ _('Détails') }}
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <!-- Liste des métriques récentes -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">{{ _('Dernières métriques') }}</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>{{ _('ID') }}</th>
+                            <th>{{ _('Nom') }}</th>
+                            <th>{{ _('Catégorie') }}</th>
+                            <th>{{ _('Statut') }}</th>
+                            <th>{{ _('Temps') }}</th>
+                            <th>{{ _('Date') }}</th>
+                            <th>{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for metric in metrics %}
+                        <tr>
+                            <td>{{ metric.id }}</td>
+                            <td>{{ metric.name }}</td>
+                            <td>
+                                <span class="badge bg-{{ get_category_color(metric.category) }}">
+                                    {{ metric.category or _('Non catégorisé') }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if metric.status %}
+                                    <span class="badge bg-success">✓</span>
+                                {% else %}
+                                    <span class="badge bg-danger">✗</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ metric.execution_time|round(2) }}s</td>
+                            <td>{{ metric.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-info metric-details"
+                                        data-id="{{ metric.id }}"
+                                        data-name="{{ metric.name }}"
+                                        data-category="{{ metric.category or _('Non défini') }}"
+                                        data-status="{{ 'Succès' if metric.status else 'Erreur' }}"
+                                        data-time="{{ metric.execution_time|round(2) }}"
+                                        data-date="{{ metric.created_at.strftime('%Y-%m-%d %H:%M') }}"
+                                        data-data="{{ metric.data|tojson if metric.data else '{}' }}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#metricModal">
+                                    {{ _('Détails') }}
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    
-    <!-- Modal pour afficher les détails d'une métrique -->
-    <div class="modal fade" id="metricDataModal" tabindex="-1" aria-labelledby="metricDataModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="metricDataModalLabel">{{ _('Détails de la métrique') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <h6>{{ _('ID') }}: <span id="modal-metric-id"></span></h6>
-                        <h6>{{ _('Nom') }}: <span id="modal-metric-name"></span></h6>
+</div>
+
+<!-- Modal pour les détails des métriques -->
+<div class="modal fade" id="metricModal" tabindex="-1" aria-labelledby="metricModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="metricModalLabel">{{ _('Détails de la métrique') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>ID:</strong> <span id="modal-id"></span></p>
+                        <p><strong>{{ _('Nom') }}:</strong> <span id="modal-name"></span></p>
+                        <p><strong>{{ _('Catégorie') }}:</strong> <span id="modal-category"></span></p>
                     </div>
-                    <div class="mb-3">
-                        <h6>{{ _('Données JSON') }}:</h6>
-                        <pre id="modal-metric-data" class="bg-light p-3 rounded"></pre>
+                    <div class="col-md-6">
+                        <p><strong>{{ _('Statut') }}:</strong> <span id="modal-status"></span></p>
+                        <p><strong>{{ _('Temps') }}:</strong> <span id="modal-time"></span></p>
+                        <p><strong>{{ _('Date') }}:</strong> <span id="modal-date"></span></p>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Fermer') }}</button>
+                <div class="row">
+                    <div class="col-12">
+                        <h6>{{ _('Données JSON') }}</h6>
+                        <pre id="modal-data" class="bg-light p-3 rounded" style="max-height: 300px; overflow-y: auto;"></pre>
+                    </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Fermer') }}</button>
             </div>
         </div>
     </div>
@@ -198,131 +227,133 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Données pour le graphique des catégories
-    const categoryData = {{ category_stats|tojson }};
-    const categoryLabels = Object.keys(categoryData);
-    const categoryValues = Object.values(categoryData);
+document.addEventListener('DOMContentLoaded', function() {
+    // Données pour les graphiques
+    const successFailData = {
+        labels: ['{{ _('Réussites') }}', '{{ _('Erreurs') }}'],
+        datasets: [{
+            data: [{{ success_count }}, {{ error_count }}],
+            backgroundColor: ['#28a745', '#dc3545'],
+            hoverOffset: 4
+        }]
+    };
     
-    // Graphique des catégories
-    const categoriesCtx = document.getElementById('categoriesChart').getContext('2d');
-    const categoriesChart = new Chart(categoriesCtx, {
-        type: 'doughnut',
-        data: {
-            labels: categoryLabels,
-            datasets: [{
-                data: categoryValues,
-                backgroundColor: [
-                    '#4e73df', // primary
-                    '#36b9cc', // info
-                    '#1cc88a', // success
-                    '#f6c23e', // warning
-                    '#e74a3b', // danger
-                    '#858796'  // secondary
-                ],
-                hoverBackgroundColor: [
-                    '#2e59d9',
-                    '#2c9faf',
-                    '#17a673',
-                    '#dda20a',
-                    '#be2617',
-                    '#60616f'
-                ],
-                hoverBorderColor: "rgba(234, 236, 244, 1)",
-            }],
-        },
-        options: {
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            cutout: '75%',
-        }
-    });
-    
-    // Données pour le graphique des métriques dans le temps
-    const timeData = {{ time_series_data|tojson }};
-    const timeLabels = timeData.map(item => item.date);
-    const successData = timeData.map(item => item.success_count);
-    const errorData = timeData.map(item => item.error_count);
-    
-    // Graphique des métriques dans le temps
-    const timeCtx = document.getElementById('metricsTimeChart').getContext('2d');
-    const timeChart = new Chart(timeCtx, {
-        type: 'line',
-        data: {
-            labels: timeLabels,
-            datasets: [
-                {
-                    label: '{{ _("Réussites") }}',
-                    data: successData,
-                    backgroundColor: 'rgba(28, 200, 138, 0.1)',
-                    borderColor: 'rgba(28, 200, 138, 1)',
-                    borderWidth: 2,
-                    pointBackgroundColor: 'rgba(28, 200, 138, 1)',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'rgba(28, 200, 138, 1)',
-                    tension: 0.3
-                },
-                {
-                    label: '{{ _("Erreurs") }}',
-                    data: errorData,
-                    backgroundColor: 'rgba(231, 74, 59, 0.1)',
-                    borderColor: 'rgba(231, 74, 59, 1)',
-                    borderWidth: 2,
-                    pointBackgroundColor: 'rgba(231, 74, 59, 1)',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'rgba(231, 74, 59, 1)',
-                    tension: 0.3
-                }
+    const categoryData = {
+        labels: {{ category_labels|tojson }},
+        datasets: [{
+            data: {{ category_counts|tojson }},
+            backgroundColor: [
+                '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#5a5c69'
             ],
-        },
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    grid: {
-                        display: false
+            hoverOffset: 4
+        }]
+    };
+    
+    const timeData = {
+        labels: {{ time_labels|tojson }},
+        datasets: [{
+            label: '{{ _('Temps moyen (s)') }}',
+            data: {{ time_values|tojson }},
+            backgroundColor: 'rgba(78, 115, 223, 0.6)',
+            borderColor: 'rgba(78, 115, 223, 1)',
+            borderWidth: 1
+        }]
+    };
+    
+    const trendData = {
+        labels: {{ trend_dates|tojson }},
+        datasets: [{
+            label: '{{ _('Nombre de métriques') }}',
+            data: {{ trend_counts|tojson }},
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    };
+    
+    // Configuration des graphiques
+    const successFailChart = new Chart(
+        document.getElementById('successFailChart'),
+        {
+            type: 'doughnut',
+            data: successFailData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
                     }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
                 }
             }
         }
-    });
+    );
     
-    // Modal pour afficher les détails des métriques
-    const metricDataModal = document.getElementById('metricDataModal');
-    metricDataModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const metricId = button.getAttribute('data-metric-id');
-        const metricName = button.getAttribute('data-metric-name');
-        const metricData = JSON.parse(button.getAttribute('data-metric-data'));
-        
-        const modalTitle = metricDataModal.querySelector('#metricDataModalLabel');
-        const modalMetricId = metricDataModal.querySelector('#modal-metric-id');
-        const modalMetricName = metricDataModal.querySelector('#modal-metric-name');
-        const modalMetricData = metricDataModal.querySelector('#modal-metric-data');
-        
-        modalTitle.textContent = '{{ _("Détails de la métrique") }}: ' + metricName;
-        modalMetricId.textContent = metricId;
-        modalMetricName.textContent = metricName;
-        modalMetricData.textContent = JSON.stringify(metricData, null, 2);
+    const categoryChart = new Chart(
+        document.getElementById('categoryChart'),
+        {
+            type: 'pie',
+            data: categoryData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        }
+    );
+    
+    const timeChart = new Chart(
+        document.getElementById('timeChart'),
+        {
+            type: 'bar',
+            data: timeData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        }
+    );
+    
+    const trendChart = new Chart(
+        document.getElementById('trendChart'),
+        {
+            type: 'line',
+            data: trendData,
+            options: {
+                responsive: true
+            }
+        }
+    );
+    
+    // Gestion du modal de détails
+    const metricButtons = document.querySelectorAll('.metric-details');
+    metricButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+            const category = this.dataset.category;
+            const status = this.dataset.status;
+            const time = this.dataset.time;
+            const date = this.dataset.date;
+            const data = JSON.parse(this.dataset.data);
+            
+            document.getElementById('modal-id').textContent = id;
+            document.getElementById('modal-name').textContent = name;
+            document.getElementById('modal-category').textContent = category;
+            document.getElementById('modal-status').textContent = status;
+            document.getElementById('modal-time').textContent = time + 's';
+            document.getElementById('modal-date').textContent = date;
+            document.getElementById('modal-data').textContent = JSON.stringify(data, null, 2);
+        });
     });
+});
 </script>
 {% endblock %}
