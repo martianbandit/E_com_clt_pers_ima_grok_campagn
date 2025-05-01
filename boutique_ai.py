@@ -1415,11 +1415,15 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None,
                     # 1. Utiliser un service tiers qui convertit des prompts en images
                     # 2. Utiliser directement DALL-E via OpenAI
                     
-                    # Créer une URL d'image placeholder avec le texte du prompt encodé
+                    # Créer une URL d'image placeholder avec un texte court et très visible
                     import urllib.parse
-                    encoded_prompt = urllib.parse.quote((seo_enhanced_prompt[:50] + "...").replace(" ", "+"))
-                    # Utiliser un fond bleu plus foncé avec du texte blanc pour un meilleur contraste
-                    image_url = f"https://placehold.co/1024x1024/2c3e50/ffffff?text={encoded_prompt}"
+                    
+                    # Extraire juste quelques mots-clés pour une meilleure lisibilité
+                    keywords = " ".join(seo_enhanced_prompt.split()[:5]) + "..."
+                    encoded_prompt = urllib.parse.quote(keywords.replace(" ", "+"))
+                    
+                    # Utiliser un fond noir avec du texte jaune pour un contraste maximal et une taille plus grande
+                    image_url = f"https://placehold.co/1024x1024/000000/FFEB3B?text={encoded_prompt}"
                     
                     # Dans une version production, vous pourriez vouloir utiliser DALL-E comme fallback
                     # si le modèle Grok ne génère pas correctement d'images
@@ -1451,7 +1455,7 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None,
                         logging.info(f"Retrying image generation (attempt {retry_count}/{max_retries})...")
                         time.sleep(2)  # Attendre avant de réessayer
                     else:
-                        return "https://placehold.co/600x400/grey/white?text=Image+Generation+Failed"
+                        return "https://placehold.co/800x800/FF0000/FFFFFF?text=Echec+de+génération+d'image"
             except Exception as e:
                 logging.error(f"Error generating image on attempt {retry_count+1}: {e}")
                 retry_count += 1
@@ -1459,7 +1463,7 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None,
                     logging.info(f"Retrying image generation (attempt {retry_count}/{max_retries})...")
                     time.sleep(2)  # Attendre avant de réessayer
                 else:
-                    return "https://placehold.co/600x400/grey/white?text=Image+Generation+Failed"
+                    return "https://placehold.co/800x800/FF0000/FFFFFF?text=Echec+de+génération+d'image"
     except Exception as e:
         logging.error(f"Error in overall image generation process: {e}")
-        return "https://placehold.co/600x400/grey/white?text=Image+Generation+Failed"
+        return "https://placehold.co/800x800/FF0000/FFFFFF?text=Echec+de+génération+d'image"
