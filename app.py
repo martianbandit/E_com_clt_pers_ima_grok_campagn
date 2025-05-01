@@ -56,6 +56,7 @@ from boutique_ai import (
     generate_customers, 
     generate_customer_persona, 
     generate_marketing_content,
+    GROK_2_IMAGE,
     generate_marketing_image
 )
 
@@ -940,7 +941,7 @@ def delete_campaign(campaign_id):
 @app.route('/generate_customer_avatar/<int:customer_id>', methods=['POST'])
 def generate_customer_avatar(customer_id):
     """Générer un avatar pour un client basé sur son persona et ses attributs"""
-    from boutique_ai import generate_boutique_image_async, AsyncOpenAI, grok_client
+    from boutique_ai import generate_boutique_image_async, AsyncOpenAI, grok_client, GROK_2_IMAGE
     import asyncio
     
     customer = Customer.query.get_or_404(customer_id)
@@ -982,7 +983,8 @@ def generate_customer_avatar(customer_id):
             try:
                 avatar_url = await generate_boutique_image_async(
                     client=grok_client,
-                    image_prompt=enhanced_prompt
+                    image_prompt=enhanced_prompt,
+                    model=GROK_2_IMAGE
                 )
                 # Vérifier si c'est une URL d'erreur (placeholder)
                 if avatar_url.startswith("https://placehold.co") or "Error" in avatar_url:
