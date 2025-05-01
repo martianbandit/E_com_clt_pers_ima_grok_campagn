@@ -97,7 +97,9 @@ def generate_test_metrics(count=50):
                 status=status,
                 execution_time=execution_time,
                 data=data,
-                created_at=created_at
+                created_at=created_at,
+                # Ajouter le champ response_time également pour avoir des données complètes
+                response_time=round(execution_time * 1000, 2)  # Convertir en ms
             )
             
             db.session.add(metric)
