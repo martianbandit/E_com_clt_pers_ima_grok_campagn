@@ -347,3 +347,121 @@ msgstr "Persona \"{}\" assigné au client \"{}\" avec succès"
 msgid "Error assigning persona: {}"
 msgstr "Erreur lors de l'assignation du persona : {}"
 
+# Metrics page
+msgid "Métriques et Performances"
+msgstr "Métriques et Performances"
+
+msgid "Métriques"
+msgstr "Métriques"
+
+msgid "Filtres"
+msgstr "Filtres"
+
+msgid "Catégorie"
+msgstr "Catégorie"
+
+msgid "Toutes"
+msgstr "Toutes"
+
+msgid "IA"
+msgstr "IA"
+
+msgid "Génération"
+msgstr "Génération"
+
+msgid "Utilisateur"
+msgstr "Utilisateur"
+
+msgid "Système"
+msgstr "Système"
+
+msgid "Import"
+msgstr "Import"
+
+msgid "Date de début"
+msgstr "Date de début"
+
+msgid "Date de fin"
+msgstr "Date de fin"
+
+msgid "Nombre de résultats"
+msgstr "Nombre de résultats"
+
+msgid "Filtrer"
+msgstr "Filtrer"
+
+msgid "Réinitialiser"
+msgstr "Réinitialiser"
+
+msgid "Total des métriques"
+msgstr "Total des métriques"
+
+msgid "Taux de réussite"
+msgstr "Taux de réussite"
+
+msgid "Réussites / Erreurs"
+msgstr "Réussites / Erreurs"
+
+msgid "Réussites"
+msgstr "Réussites"
+
+msgid "Erreurs"
+msgstr "Erreurs"
+
+msgid "Temps de réponse moyen"
+msgstr "Temps de réponse moyen"
+
+msgid "Temps de réponse moyen des appels API"
+msgstr "Temps de réponse moyen des appels API"
+
+msgid "Catégories"
+msgstr "Catégories"
+
+msgid "Tendance des métriques"
+msgstr "Tendance des métriques"
+
+msgid "Dernières métriques"
+msgstr "Dernières métriques"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Nom"
+msgstr "Nom"
+
+msgid "Statut"
+msgstr "Statut"
+
+msgid "Temps"
+msgstr "Temps"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Non catégorisé"
+msgstr "Non catégorisé"
+
+msgid "Non défini"
+msgstr "Non défini"
+
+msgid "Détails"
+msgstr "Détails"
+
+msgid "Détails de la métrique"
+msgstr "Détails de la métrique"
+
+msgid "Données JSON"
+msgstr "Données JSON"
+
+msgid "Fermer"
+msgstr "Fermer"
+
+msgid "Format de date de début invalide. Utilisation du format par défaut."
+msgstr "Format de date de début invalide. Utilisation du format par défaut."
+
+msgid "Format de date de fin invalide. Utilisation du format par défaut."
+msgstr "Format de date de fin invalide. Utilisation du format par défaut."
+

@@ -176,6 +176,132 @@ def dashboard():
                           total_niches=total_niches,
                           recent_campaigns=recent_campaigns)
 
+@app.route('/metrics')
+def metrics():
+    """Page d'affichage et d'analyse des métriques"""
+    # Récupérer les paramètres de filtre de l'URL
+    category = request.args.get('category')
+    start_date_str = request.args.get('start_date')
+    end_date_str = request.args.get('end_date')
+    limit = int(request.args.get('limit', 100))
+    
+    # Convertir les dates si présentes
+    start_date = None
+    end_date = None
+    
+    if start_date_str:
+        try:
+            start_date = datetime.datetime.strptime(start_date_str, '%Y-%m-%d')
+        except ValueError:
+            flash(_('Format de date de début invalide. Utilisation du format par défaut.'), 'warning')
+    
+    if end_date_str:
+        try:
+            end_date = datetime.datetime.strptime(end_date_str, '%Y-%m-%d')
+            # Ajouter un jour pour inclure toute la journée
+            end_date = end_date + datetime.timedelta(days=1)
+        except ValueError:
+            flash(_('Format de date de fin invalide. Utilisation du format par défaut.'), 'warning')
+    
+    # Récupérer le résumé des métriques
+    metrics_summary = Metric.get_metrics_summary(
+        category=category,
+        start_date=start_date,
+        end_date=end_date,
+        limit=limit
+    )
+    
+    # Statistiques par catégorie
+    category_stats = {}
+    if category:
+        # Si une catégorie est sélectionnée, calculer les sous-catégories (par nom)
+        metrics_by_name = db.session.query(
+            Metric.name, 
+            db.func.count(Metric.id).label('count')
+        ).filter(Metric.category == category).group_by(Metric.name).all()
+        
+        for name, count in metrics_by_name:
+            category_stats[name] = count
+    else:
+        # Sinon, calculer les statistiques par catégorie principale
+        metrics_by_category = db.session.query(
+            Metric.category, 
+            db.func.count(Metric.id).label('count')
+        ).group_by(Metric.category).all()
+        
+        for cat, count in metrics_by_category:
+            if cat:  # Éviter les catégories None
+                category_stats[cat] = count
+            else:
+                category_stats['Non catégorisé'] = count
+    
+    # Données pour la série temporelle
+    time_series_data = []
+    
+    # Déterminer l'intervalle de temps approprié (jour, semaine, mois)
+    if start_date and end_date:
+        delta = end_date - start_date
+        if delta.days > 60:  # Plus de 2 mois
+            interval = 'month'
+        elif delta.days > 14:  # Plus de 2 semaines
+            interval = 'week'
+        else:
+            interval = 'day'
+    else:
+        # Par défaut, utiliser les 30 derniers jours avec intervalle quotidien
+        interval = 'day'
+        if not start_date:
+            start_date = datetime.datetime.utcnow() - datetime.timedelta(days=30)
+        if not end_date:
+            end_date = datetime.datetime.utcnow()
+    
+    # Générer la série temporelle
+    current_date = start_date
+    while current_date <= end_date:
+        if interval == 'day':
+            next_date = current_date + datetime.timedelta(days=1)
+            date_format = '%d/%m/%Y'
+        elif interval == 'week':
+            next_date = current_date + datetime.timedelta(days=7)
+            date_format = '%d/%m/%Y'
+        else:  # month
+            if current_date.month == 12:
+                next_date = datetime.datetime(current_date.year + 1, 1, 1)
+            else:
+                next_date = datetime.datetime(current_date.year, current_date.month + 1, 1)
+            date_format = '%m/%Y'
+        
+        # Compter les métriques dans l'intervalle
+        success_count = Metric.query.filter(
+            Metric.created_at >= current_date,
+            Metric.created_at < next_date,
+            Metric.status == 'success'
+        ).count()
+        
+        error_count = Metric.query.filter(
+            Metric.created_at >= current_date,
+            Metric.created_at < next_date,
+            Metric.status == 'error'
+        ).count()
+        
+        time_series_data.append({
+            'date': current_date.strftime(date_format),
+            'success_count': success_count,
+            'error_count': error_count,
+            'total': success_count + error_count
+        })
+        
+        current_date = next_date
+    
+    return render_template('metrics.html',
+                           metrics_summary=metrics_summary,
+                           category_stats=category_stats,
+                           time_series_data=time_series_data,
+                           selected_category=category,
+                           start_date=start_date_str,
+                           end_date=end_date_str,
+                           limit=limit)
+
 @app.route('/profiles', methods=['GET', 'POST'])
 def profiles():
     if request.method == 'POST':
