@@ -1,0 +1,114 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Campaign Language Settings') }} | Boutique AI Marketing{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-language me-2"></i>{{ _('Campaign Language Settings') }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form id="campaignLanguageForm" method="POST" action="{{ url_for('save_campaign_language_settings') }}">
+                    <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+                    
+                    <!-- Primary Language -->
+                    <div class="mb-4">
+                        <label for="language" class="form-label fw-bold">{{ _('Primary Language') }}</label>
+                        <select class="form-select" id="language" name="language">
+                            {% for code, name in supported_languages.items() %}
+                            <option value="{{ code }}" {% if campaign.language == code %}selected{% endif %}>{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">{{ _('The primary language for this campaign.') }}</div>
+                    </div>
+                    
+                    <!-- Enable Multilingual -->
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="multilingual_campaign" name="multilingual_campaign" 
+                                   {% if campaign.multilingual_campaign %}checked{% endif %}>
+                            <label class="form-check-label fw-bold" for="multilingual_campaign">
+                                {{ _('Generate content in multiple languages') }}
+                            </label>
+                        </div>
+                        <div class="form-text">{{ _('Generate campaign content in multiple languages simultaneously.') }}</div>
+                    </div>
+                    
+                    <!-- Target Languages -->
+                    <div class="mb-4" id="targetLanguagesSection" {% if not campaign.multilingual_campaign %}style="display: none;"{% endif %}>
+                        <label class="form-label fw-bold">{{ _('Target Languages') }}</label>
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                            {% for code, name in supported_languages.items() %}
+                            <div class="col">
+                                <div class="form-check">
+                                    <input class="form-check-input language-checkbox" type="checkbox" 
+                                           id="lang_{{ code }}" name="target_languages" value="{{ code }}"
+                                           {% if code in get_campaign_target_languages(campaign) %}checked{% endif %}
+                                           {% if code == campaign.language %}checked disabled{% endif %}>
+                                    <label class="form-check-label" for="lang_{{ code }}">
+                                        {{ name }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-text">{{ _('Select the languages for this campaign.') }}</div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        {{ _('When multilingual is enabled, content will be generated in all selected languages.') }}
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ url_for('edit_campaign', campaign_id=campaign.id) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>{{ _('Back to Campaign') }}
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>{{ _('Save Settings') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle target languages section
+    const multilingualSwitch = document.getElementById('multilingual_campaign');
+    const targetLanguagesSection = document.getElementById('targetLanguagesSection');
+    
+    multilingualSwitch.addEventListener('change', function() {
+        targetLanguagesSection.style.display = this.checked ? 'block' : 'none';
+    });
+    
+    // Primary language selection
+    const primaryLanguageSelect = document.getElementById('language');
+    const languageCheckboxes = document.querySelectorAll('.language-checkbox');
+    
+    primaryLanguageSelect.addEventListener('change', function() {
+        const primaryLang = this.value;
+        
+        // Reset all checkboxes
+        languageCheckboxes.forEach(checkbox => {
+            checkbox.disabled = false;
+        });
+        
+        // Find and check the primary language checkbox
+        const primaryCheckbox = document.getElementById(`lang_${primaryLang}`);
+        if (primaryCheckbox) {
+            primaryCheckbox.checked = true;
+            primaryCheckbox.disabled = true;
+        }
+    });
+});
+</script>
+{% endblock %}

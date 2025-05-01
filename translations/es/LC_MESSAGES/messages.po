@@ -1,0 +1,189 @@
+# Spanish translations for Boutique AI Marketing.
+# Copyright (C) 2023 Boutique AI Marketing
+# This file is distributed under the same license as the project.
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-11-01 12:00+0000\n"
+"PO-Revision-Date: 2025-05-01 11:00+0000\n"
+"Last-Translator: AI Marketing Team\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Navigation
+msgid "Home"
+msgstr "Inicio"
+
+msgid "Dashboard"
+msgstr "Panel de Control"
+
+msgid "Customer Profiles"
+msgstr "Perfiles de Clientes"
+
+msgid "Campaigns"
+msgstr "Campañas"
+
+msgid "Products"
+msgstr "Productos"
+
+msgid "OSP Tools"
+msgstr "Herramientas OSP"
+
+msgid "Metrics"
+msgstr "Métricas"
+
+# Footer
+msgid "Hyper-personalized marketing solutions for boutique retailers and niche markets."
+msgstr "Soluciones de marketing hiperpersonalizadas para minoristas boutique y mercados de nicho."
+
+msgid "All rights reserved."
+msgstr "Todos los derechos reservados."
+
+# General 
+msgid "Create"
+msgstr "Crear"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Submit"
+msgstr "Enviar"
+
+msgid "Back"
+msgstr "Volver"
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "Previous"
+msgstr "Anterior"
+
+# Customer Profiles
+msgid "Generate New Profile"
+msgstr "Generar Nuevo Perfil"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Age"
+msgstr "Edad"
+
+msgid "Location"
+msgstr "Ubicación"
+
+msgid "Gender"
+msgstr "Género"
+
+msgid "Interests"
+msgstr "Intereses"
+
+msgid "Generate"
+msgstr "Generar"
+
+msgid "Profile Details"
+msgstr "Detalles del Perfil"
+
+msgid "Persona"
+msgstr "Persona"
+
+msgid "Generate Persona"
+msgstr "Generar Persona"
+
+msgid "Generate Avatar"
+msgstr "Generar Avatar"
+
+# Campaigns
+msgid "Create Campaign"
+msgstr "Crear Campaña"
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Target Audience"
+msgstr "Público Objetivo"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Campaign Details"
+msgstr "Detalles de la Campaña"
+
+msgid "Content"
+msgstr "Contenido"
+
+msgid "Generate Content"
+msgstr "Generar Contenido"
+
+msgid "Generate Image"
+msgstr "Generar Imagen"
+
+# Products
+msgid "Create Product"
+msgstr "Crear Producto"
+
+msgid "Import from AliExpress"
+msgstr "Importar de AliExpress"
+
+msgid "Category"
+msgstr "Categoría"
+
+msgid "Price"
+msgstr "Precio"
+
+msgid "Description"
+msgstr "Descripción"
+
+msgid "Generate Content"
+msgstr "Generar Contenido"
+
+# Metrics
+msgid "Metrics Dashboard"
+msgstr "Panel de Métricas"
+
+msgid "Success Rate"
+msgstr "Tasa de Éxito"
+
+msgid "Average Response Time"
+msgstr "Tiempo de Respuesta Promedio"
+
+msgid "Total Requests"
+msgstr "Total de Solicitudes"
+
+# Language and localization
+msgid "Language"
+msgstr "Idioma"
+
+msgid "Multilingual Campaigns"
+msgstr "Campañas Multilingües"
+
+msgid "Target Languages"
+msgstr "Idiomas Objetivo"
+
+msgid "Multilingual Settings"
+msgstr "Configuración Multilingüe"
+
+msgid "Enable multilingual content"
+msgstr "Habilitar contenido multilingüe"
+
+msgid "Primary Language"
+msgstr "Idioma Principal"
+
+msgid "Supported Languages"
+msgstr "Idiomas Soportados"
