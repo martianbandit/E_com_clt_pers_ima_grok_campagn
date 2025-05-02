@@ -36,7 +36,7 @@ except ImportError:
 
 # Grok model constants
 GROK_3 = "grok-3-fast"
-GROK_2_IMAGE = "grok-2-image-1212"  # le modèle d'image correct de xAI (Grok)
+GROK_2_IMAGE = "grok-2-image"  # modèle d'image xAI (Grok)
 
 def get_prompt_language():
     """
