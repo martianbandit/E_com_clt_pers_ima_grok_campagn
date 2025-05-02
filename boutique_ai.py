@@ -1156,7 +1156,9 @@ async def generate_boutique_image_async(
     image_prompt: str,
     model: str = GROK_2_IMAGE,
     image_data=None,
-    style=None
+    style=None,
+    max_retries: int = 3,
+    timeout: int = 60  # Timeout en secondes pour les appels API
 ) -> str:
     """
     Generate a marketing image with Grok's image generation model.
@@ -1167,10 +1169,170 @@ async def generate_boutique_image_async(
         model: Grok model to use
         image_data: Optional base64 encoded image data to use as a starting point
         style: Optional style to apply to the image (e.g., 'watercolor', 'photorealistic')
+        max_retries: Maximum number of retry attempts for transient errors
+        timeout: Timeout in seconds for API calls
     
     Returns:
         URL of the generated image
     """
+    import asyncio
+    import time
+    import random
+    from functools import wraps
+    
+    # Fonction décorateur pour implémentation de retry avec backoff exponentiel 
+    def async_retry_with_backoff(max_retries=3, base_delay=1, max_delay=60):
+        def decorator(func):
+            @wraps(func)
+            async def wrapper(*args, **kwargs):
+                retries = 0
+                while retries < max_retries:
+                    try:
+                        return await func(*args, **kwargs)
+                    except asyncio.TimeoutError:
+                        retries += 1
+                        if retries >= max_retries:
+                            logger.error(f"Operation timed out after {max_retries} retries")
+                            raise
+                        
+                        # Calcul du délai avec jitter pour éviter les tempêtes de requêtes
+                        delay = min(max_delay, base_delay * (2 ** retries))
+                        jitter = random.uniform(0, 0.1 * delay)  # 10% de jitter
+                        total_delay = delay + jitter
+                        
+                        logger.warning(f"Request timed out, retrying in {total_delay:.2f}s (attempt {retries}/{max_retries})")
+                        await asyncio.sleep(total_delay)
+                    except Exception as e:
+                        retries += 1
+                        if retries >= max_retries:
+                            logger.error(f"Operation failed after {max_retries} retries: {e}")
+                            raise
+                        
+                        # Vérifier si l'erreur est transitoire (429, 500, etc.)
+                        if is_transient_error(e):
+                            delay = min(max_delay, base_delay * (2 ** retries))
+                            jitter = random.uniform(0, 0.1 * delay)
+                            total_delay = delay + jitter
+                            
+                            logger.warning(f"Transient error occurred, retrying in {total_delay:.2f}s (attempt {retries}/{max_retries}): {e}")
+                            await asyncio.sleep(total_delay)
+                        else:
+                            # Erreur non transitoire, on arrête les tentatives
+                            logger.error(f"Non-transient error occurred: {e}")
+                            raise
+                            
+                # Ne devrait jamais arriver ici, mais au cas où
+                raise Exception(f"All retry attempts failed after {max_retries} tries")
+            return wrapper
+        return decorator
+    
+    # Fonction pour déterminer si une erreur est transitoire
+    def is_transient_error(error):
+        # Liste des erreurs qui peuvent être considérées comme transitoires
+        transient_errors = [
+            "timeout", "rate limit", "too many requests", "server error",
+            "internal server error", "service unavailable", "gateway timeout",
+            "retry", "connection", "socket", "network", "429", "500", "502", "503", "504"
+        ]
+        
+        error_str = str(error).lower()
+        for term in transient_errors:
+            if term in error_str:
+                return True
+        return False
+    
+    # Fonction pour générer une image avec xAI (Grok) avec timeout
+    @async_retry_with_backoff(max_retries=max_retries)
+    async def generate_xai_image():
+        # Préparer le client et les paramètres
+        XAI_API_KEY = os.environ.get("XAI_API_KEY")
+        xai_client = OpenAI(base_url="https://api.x.ai/v1", api_key=XAI_API_KEY)
+        
+        start_time = time.time()
+        logger.info(f"Starting Grok image generation with model {model}, timeout {timeout}s")
+        
+        try:
+            # Utiliser asyncio.wait_for pour gérer le timeout
+            async def make_api_call():
+                # Utiliser la méthode correcte pour la génération d'images avec xAI
+                response = xai_client.images.generate(
+                    model="grok-2-image",  # Modèle d'image xAI (Grok)
+                    prompt=final_prompt,
+                    n=1
+                    # Suppression du paramètre size qui n'est pas supporté par xAI
+                )
+                return response
+            
+            # Exécuter l'appel API avec un timeout
+            response = await asyncio.wait_for(asyncio.to_thread(make_api_call), timeout=timeout)
+            
+            # Mesurer le temps d'exécution
+            elapsed_time = time.time() - start_time
+            logger.info(f"Grok image generation completed in {elapsed_time:.2f}s")
+            
+            # Extraire l'URL de l'image de la réponse
+            if response.data and len(response.data) > 0:
+                image_url = response.data[0].url
+                if image_url:
+                    logger.info("Successfully generated image with Grok")
+                    return image_url
+            
+            # Si nous arrivons ici, Grok n'a pas produit d'URL d'image valide
+            logger.warning("Grok didn't return a valid image URL")
+            return None
+        except asyncio.TimeoutError:
+            elapsed_time = time.time() - start_time
+            logger.warning(f"Grok image generation timed out after {elapsed_time:.2f}s (timeout set to {timeout}s)")
+            raise
+        except Exception as e:
+            elapsed_time = time.time() - start_time
+            logger.error(f"Grok image generation failed after {elapsed_time:.2f}s: {e}")
+            raise
+    
+    # Fonction pour générer une image avec OpenAI (fallback) avec timeout
+    @async_retry_with_backoff(max_retries=max_retries)
+    async def generate_openai_image(openai_model="dall-e-2", prompt=None):
+        # Préparer le client et les paramètres
+        openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        current_prompt = prompt or final_prompt
+        
+        start_time = time.time()
+        logger.info(f"Starting OpenAI image generation with model {openai_model}, timeout {timeout}s")
+        
+        try:
+            # Utiliser asyncio.wait_for pour gérer le timeout
+            async def make_api_call():
+                response = openai_client.images.generate(
+                    model=openai_model,
+                    prompt=current_prompt,
+                    n=1,
+                    size="1024x1024"
+                )
+                return response
+            
+            # Exécuter l'appel API avec un timeout
+            response = await asyncio.wait_for(asyncio.to_thread(make_api_call), timeout=timeout)
+            
+            # Mesurer le temps d'exécution
+            elapsed_time = time.time() - start_time
+            logger.info(f"OpenAI image generation completed in {elapsed_time:.2f}s")
+            
+            # Extract the URL from the response
+            if response.data and len(response.data) > 0 and hasattr(response.data[0], 'url'):
+                logger.info(f"Successfully generated image with OpenAI {openai_model}")
+                return response.data[0].url
+            
+            logger.warning(f"OpenAI {openai_model} didn't return a valid image URL")
+            return None
+        except asyncio.TimeoutError:
+            elapsed_time = time.time() - start_time
+            logger.warning(f"OpenAI image generation timed out after {elapsed_time:.2f}s (timeout set to {timeout}s)")
+            raise
+        except Exception as e:
+            elapsed_time = time.time() - start_time
+            logger.error(f"OpenAI image generation failed after {elapsed_time:.2f}s: {e}")
+            raise
+    
     try:
         # Nettoyer et limiter le prompt
         max_prompt_length = 900  # Laissons une marge
@@ -1221,75 +1383,55 @@ async def generate_boutique_image_async(
         
         logger.info(f"Final image prompt: {final_prompt[:100]}...")
         
-        # Try using Grok model first (preferred)
+        # Processus complet avec mécanisme de fallback intelligent
         try:
+            # Essayer d'abord avec xAI (Grok)
             logger.info(f"Attempting to generate image with Grok model: {model}")
+            grok_image_url = await generate_xai_image()
             
-            # Use Grok client with the correct implementation for image generation
-            XAI_API_KEY = os.environ.get("XAI_API_KEY")
-            xai_client = OpenAI(base_url="https://api.x.ai/v1", api_key=XAI_API_KEY)
-            
-            # Utiliser la nouvelle méthode correcte pour la génération d'images avec xAI
-            response = xai_client.images.generate(
-                model="grok-2-image",  # Modèle d'image xAI (Grok)
-                prompt=final_prompt,
-                n=1
-                # Suppression du paramètre size qui n'est pas supporté par xAI
-            )
-            
-            # Extraire l'URL de l'image de la réponse
-            if response.data and len(response.data) > 0:
-                image_url = response.data[0].url
-                if image_url:
-                    logger.info("Successfully generated image with Grok")
-                    return image_url
-            
-            # Si nous arrivons ici, Grok n'a pas produit d'URL d'image valide
-            logger.warning("Grok didn't return a valid image URL, falling back to OpenAI")
+            if grok_image_url:
+                return grok_image_url
+            else:
+                logger.warning("Grok image generation didn't return valid URL, falling back to OpenAI")
         except Exception as grok_error:
             logger.error(f"Grok image generation failed: {grok_error}")
             logger.warning("Falling back to OpenAI for image generation")
-            
-        # Fallback to OpenAI
+        
+        # Fallback à OpenAI DALL-E 2 (premier niveau)
         try:
-            # Use OpenAI client instead for image generation
-            openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+            logger.info("Attempting to generate image with OpenAI DALL-E 2")
+            dalle_image_url = await generate_openai_image(openai_model="dall-e-2")
             
-            # Try with DALL-E 2 first (more reliable)
-            response = openai_client.images.generate(
-                model="dall-e-2",
-                prompt=final_prompt,
-                n=1,
-                size="1024x1024"
+            if dalle_image_url:
+                return dalle_image_url
+            else:
+                logger.warning("OpenAI DALL-E 2 didn't return valid URL, trying with simplified prompt")
+        except Exception as dalle_error:
+            logger.error(f"OpenAI DALL-E 2 image generation failed: {dalle_error}")
+            logger.warning("Trying with simplified prompt as final fallback")
+        
+        # Dernier fallback : prompt simplifié avec DALL-E 2
+        try:
+            simple_prompt = f"A simple professional image of {image_prompt}"
+            logger.info(f"Final attempt: Generating image with simplified prompt: {simple_prompt[:50]}...")
+            
+            simple_image_url = await generate_openai_image(
+                openai_model="dall-e-2", 
+                prompt=simple_prompt
             )
             
-            # Extract the URL from the response
-            if response.data and len(response.data) > 0 and hasattr(response.data[0], 'url'):
-                logger.info("Successfully generated image with DALL-E 2")
-                return response.data[0].url
-                
-        except Exception as first_attempt_error:
-            logger.warning(f"OpenAI DALL-E 2 image generation failed: {first_attempt_error}")
-            # Final fallback to a simpler prompt
-            try:
-                # Create a very simple prompt as fallback
-                simple_prompt = f"A simple professional image of {image_prompt}"
-                
-                response = openai_client.images.generate(
-                    model="dall-e-2",
-                    prompt=simple_prompt,
-                    n=1,
-                    size="1024x1024"
-                )
-                
-                if response.data and len(response.data) > 0 and hasattr(response.data[0], 'url'):
-                    logger.info("Successfully generated image with simplified prompt")
-                    return response.data[0].url
-                else:
-                    raise ValueError("No image generated from OpenAI API (final attempt)")
-            except Exception as second_attempt_error:
-                logger.error(f"Final image generation attempt failed: {second_attempt_error}")
-                raise Exception(f"All image generation attempts failed: {second_attempt_error}")
+            if simple_image_url:
+                return simple_image_url
+            else:
+                raise ValueError("No image generated from OpenAI API with simplified prompt (final attempt)")
+        except Exception as final_error:
+            logger.error(f"Final image generation attempt failed: {final_error}")
+            raise Exception(f"All image generation attempts failed. Last error: {final_error}")
+    
+    except Exception as e:
+        logger.error(f"Image generation failed with error: {e}")
+        # En dernier recours, retourner une image de placeholder
+        raise Exception(f"Image generation failed after all attempts: {e}")
         
         raise ValueError("Failed to generate image with any available method")
     except Exception as e:
