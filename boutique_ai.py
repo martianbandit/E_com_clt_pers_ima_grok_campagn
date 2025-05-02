@@ -1231,7 +1231,7 @@ async def generate_boutique_image_async(
             
             # Utiliser la nouvelle méthode correcte pour la génération d'images avec xAI
             response = xai_client.images.generate(
-                model="grok-2-image-1212",  # Utiliser grok-2-image-1212 qui est le modèle d'image recommandé
+                model="grok-2-image",  # Modèle d'image xAI (Grok)
                 prompt=final_prompt,
                 n=1
                 # Suppression du paramètre size qui n'est pas supporté par xAI
