@@ -1810,26 +1810,21 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None,
                 )
                 
                 # Extraire l'URL de l'image de la réponse
-                # Le modèle Grok ne retourne pas directement une URL d'image, mais un message texte
-                # Pour obtenir des images, on doit utiliser un service tiers pour convertir le texte en image
-                # Pour le moment, utilisons un placeholder pour la démonstration
-                
-                # On vérifie si la réponse contient un message
-                if hasattr(response, 'choices') and len(response.choices) > 0:
-                    # Pour les besoins de la démonstration, nous utiliserons un service placeholder
-                    # Dans une implémentation réelle, vous devriez soit:
-                    # 1. Utiliser un service tiers qui convertit des prompts en images
-                    # 2. Utiliser directement DALL-E via OpenAI
-                    
-                    # Créer une URL d'image placeholder avec un texte court et très visible
-                    import urllib.parse
-                    
-                    # Extraire juste quelques mots-clés pour une meilleure lisibilité
-                    keywords = " ".join(seo_enhanced_prompt.split()[:5]) + "..."
-                    encoded_prompt = urllib.parse.quote(keywords.replace(" ", "+"))
-                    
-                    # Utiliser un fond noir avec du texte jaune pour un contraste maximal et une taille plus grande
-                    image_url = f"https://placehold.co/1024x1024/000000/FFEB3B?text={encoded_prompt}"
+                # L'API images.generate de xAI retourne une structure avec data[0].url
+                if hasattr(response, 'data') and len(response.data) > 0:
+                    # Vérifier si l'URL est disponible
+                    if hasattr(response.data[0], 'url'):
+                        # Récupération de l'URL générée par l'API
+                        image_url = response.data[0].url
+                        logging.info(f"Image xAI générée avec succès, URL obtenue")
+                    else:
+                        # Si pour une raison quelconque, l'URL n'est pas disponible
+                        logging.error("L'API xAI a répondu, mais aucune URL d'image n'est disponible")
+                        # Créer un fallback uniquement en cas d'erreur
+                        import urllib.parse
+                        keywords = " ".join(seo_enhanced_prompt.split()[:5]) + "..."
+                        encoded_prompt = urllib.parse.quote(keywords.replace(" ", "+"))
+                        image_url = f"https://placehold.co/1024x1024/000000/FFEB3B?text={encoded_prompt}"
                     
                     # Dans une version production, vous pourriez vouloir utiliser DALL-E comme fallback
                     # si le modèle Grok ne génère pas correctement d'images
