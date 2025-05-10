@@ -321,28 +321,52 @@ def extract_aliexpress_product_id(url: str) -> Optional[str]:
     Returns:
         ID du produit ou None si non trouvé
     """
+    if not url:
+        return None
+        
+    # Ajout de log pour le débogage
+    logger.info(f"Tentative d'extraction de l'ID du produit depuis l'URL: {url}")
+    
     # Essayer plusieurs patterns pour plus de robustesse
     patterns = [
         r'/item/(\d+)\.html',
         r'item_id=(\d+)',
-        r'_(\d+)\.html'
+        r'_(\d+)\.html',
+        r'/(\d+)\.html',
+        r'aliexpress\.com/.*?/(\d+)',
+        r'product/(\d+)',
+        r'/(\d+)(?:\?|$)',
+        r'id=(\d+)',
+        r'p_(\d+)',
+        r'product_id=(\d+)',
+        r'a\.aliexpress\.com/_m([a-zA-Z0-9]+)', # Format d'URL courte a.aliexpress.com/_mXXXXXX
+        r'item/(\d+)'
     ]
     
     for pattern in patterns:
         match = re.search(pattern, url)
         if match:
-            return match.group(1)
+            product_id = match.group(1)
+            logger.info(f"ID de produit extrait avec pattern {pattern}: {product_id}")
+            return product_id
     
     # Essayer d'extraire à partir des paramètres d'URL
-    parsed_url = urlparse(url)
-    params = parse_qs(parsed_url.query)
+    try:
+        parsed_url = urlparse(url)
+        params = parse_qs(parsed_url.query)
+        
+        # Vérifier les paramètres communs pour l'ID
+        param_keys = ['item_id', 'itemId', 'productId', 'id', 'product_id', 'pid', 'skuId']
+        for key in param_keys:
+            if key in params and params[key]:
+                product_id = params[key][0]
+                logger.info(f"ID de produit extrait du paramètre {key}: {product_id}")
+                return product_id
+    except Exception as e:
+        logger.error(f"Erreur lors de l'analyse des paramètres d'URL: {e}")
     
-    # Vérifier les paramètres communs pour l'ID
-    param_keys = ['item_id', 'itemId', 'productId', 'id']
-    for key in param_keys:
-        if key in params and params[key]:
-            return params[key][0]
-    
+    # Si nous n'avons pas pu extraire l'ID, notifier le problème
+    logger.warning(f"Impossible d'extraire l'ID du produit depuis l'URL: {url}")
     return None
 
 # Fonctions synchrones (wrappers) pour faciliter l'utilisation

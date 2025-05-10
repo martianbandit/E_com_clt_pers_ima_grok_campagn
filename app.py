@@ -1733,6 +1733,25 @@ def view_product_analysis():
         return redirect(url_for('import_aliexpress_form'))
     
     return render_template('product_analysis.html', analysis=analysis)
+    
+@app.route('/test_url_extraction', methods=['GET', 'POST'])
+def test_url_extraction():
+    """Tester l'extraction d'ID de produit AliExpress"""
+    result = None
+    url = None
+    
+    if request.method == 'POST':
+        url = request.form.get('url')
+        if url:
+            product_id = aliexpress_importer.extract_aliexpress_product_id(url)
+            result = {
+                'url': url,
+                'product_id': product_id,
+                'status': 'success' if product_id else 'error',
+                'message': f'ID extrait: {product_id}' if product_id else 'Impossible d\'extraire l\'ID du produit'
+            }
+    
+    return render_template('url_extraction_test.html', result=result, url=url)
 
 @app.route('/import_aliexpress_product', methods=['POST'])
 def import_aliexpress_product():
