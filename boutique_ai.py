@@ -1801,20 +1801,12 @@ def generate_marketing_image(customer, base_prompt, image_data=None, style=None,
         
         while retry_count <= max_retries:
             try:
-                # Utiliser xAI pour la génération d'images via l'interface de chat completions
-                response = xai_client.chat.completions.create(
-                    model="grok-2-vision-1212",
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": [
-                                {
-                                    "type": "text",
-                                    "text": f"Generate an image based on this prompt: {seo_enhanced_prompt}"
-                                }
-                            ]
-                        }
-                    ]
+                # Utiliser l'API images.generate correcte pour xAI (comme dans test_xai_image.py)
+                response = xai_client.images.generate(
+                    model="grok-2-image",  # Utiliser le modèle d'image correct
+                    prompt=seo_enhanced_prompt,
+                    n=1
+                    # Pas de paramètre size car non supporté par xAI
                 )
                 
                 # Extraire l'URL de l'image de la réponse
