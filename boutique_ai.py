@@ -1273,11 +1273,12 @@ async def generate_boutique_image_async(
             logger.info(f"Grok image generation completed in {elapsed_time:.2f}s")
             
             # Extraire l'URL de l'image de la réponse
-            if response.data and len(response.data) > 0:
-                image_url = response.data[0].url
-                if image_url:
-                    logger.info("Successfully generated image with Grok")
-                    return image_url
+            if hasattr(response, 'data') and response.data and len(response.data) > 0:
+                if hasattr(response.data[0], 'url'):
+                    image_url = response.data[0].url
+                    if image_url:
+                        logger.info("Successfully generated image with Grok")
+                        return image_url
             
             # Si nous arrivons ici, Grok n'a pas produit d'URL d'image valide
             logger.warning("Grok didn't return a valid image URL")
