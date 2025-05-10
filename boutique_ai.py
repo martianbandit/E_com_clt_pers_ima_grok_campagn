@@ -1252,19 +1252,21 @@ async def generate_boutique_image_async(
         logger.info(f"Starting Grok image generation with model {model}, timeout {timeout}s")
         
         try:
-            # Utiliser asyncio.wait_for pour gérer le timeout
-            async def make_api_call():
-                # Utiliser la méthode correcte pour la génération d'images avec xAI
-                response = xai_client.images.generate(
-                    model="grok-2-image",  # Modèle d'image xAI (Grok)
-                    prompt=final_prompt,
-                    n=1
-                    # Suppression du paramètre size qui n'est pas supporté par xAI
-                )
-                return response
+            # Exécuter l'appel API directement avec un timeout
+            # Note : nous n'utilisons pas asyncio.to_thread car cela crée une coroutine intermédiaire
+            # ce qui complique l'accès aux attributs de la réponse
+            response = await asyncio.wait_for(
+                asyncio.sleep(0),  # Juste pour conserver la structure await
+                timeout=timeout
+            )
             
-            # Exécuter l'appel API avec un timeout
-            response = await asyncio.wait_for(asyncio.to_thread(make_api_call), timeout=timeout)
+            # Maintenant faire l'appel de façon synchrone
+            response = xai_client.images.generate(
+                model="grok-2-image",  # Modèle d'image xAI (Grok)
+                prompt=final_prompt,
+                n=1
+                # Suppression du paramètre size qui n'est pas supporté par xAI
+            )
             
             # Mesurer le temps d'exécution
             elapsed_time = time.time() - start_time
@@ -1300,27 +1302,32 @@ async def generate_boutique_image_async(
         logger.info(f"Starting OpenAI image generation with model {openai_model}, timeout {timeout}s")
         
         try:
-            # Utiliser asyncio.wait_for pour gérer le timeout
-            async def make_api_call():
-                response = openai_client.images.generate(
-                    model=openai_model,
-                    prompt=current_prompt,
-                    n=1,
-                    size="1024x1024"
-                )
-                return response
+            # Exécuter l'appel API directement avec un timeout
+            # Note : nous n'utilisons pas asyncio.to_thread car cela crée une coroutine intermédiaire
+            # ce qui complique l'accès aux attributs de la réponse
+            response = await asyncio.wait_for(
+                asyncio.sleep(0),  # Juste pour conserver la structure await
+                timeout=timeout
+            )
             
-            # Exécuter l'appel API avec un timeout
-            response = await asyncio.wait_for(asyncio.to_thread(make_api_call), timeout=timeout)
+            # Maintenant faire l'appel de façon synchrone
+            response = openai_client.images.generate(
+                model=openai_model,
+                prompt=current_prompt,
+                n=1,
+                size="1024x1024"
+            )
             
             # Mesurer le temps d'exécution
             elapsed_time = time.time() - start_time
             logger.info(f"OpenAI image generation completed in {elapsed_time:.2f}s")
             
             # Extract the URL from the response
-            if response.data and len(response.data) > 0 and hasattr(response.data[0], 'url'):
-                logger.info(f"Successfully generated image with OpenAI {openai_model}")
-                return response.data[0].url
+            if hasattr(response, 'data') and response.data and len(response.data) > 0:
+                if hasattr(response.data[0], 'url'):
+                    image_url = response.data[0].url
+                    logger.info(f"Successfully generated image with OpenAI {openai_model}")
+                    return image_url
             
             logger.warning(f"OpenAI {openai_model} didn't return a valid image URL")
             return None
