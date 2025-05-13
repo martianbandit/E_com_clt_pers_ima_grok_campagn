@@ -19,7 +19,53 @@ except ImportError:
     AsyncOpenAI = object  # Type fictif
     OPENAI_AVAILABLE = False
 
-from app import log_metric
+# Implémenter notre propre version de log_metric pour éviter une dépendance circulaire
+def log_metric(metric_name, data, category=None, status=None, response_time=None, customer_id=None):
+    """
+    Version simplifiée de log_metric pour éviter les références circulaires.
+    Cette version enregistre simplement les métriques dans les logs.
+    
+    Args:
+        metric_name: Nom de la métrique
+        data: Données à enregistrer (dictionnaire)
+        category: Catégorie de la métrique (ai, user, system, etc.)
+        status: État (success, error, warning, info)
+        response_time: Temps de réponse en ms (pour les appels API)
+        customer_id: ID du client associé (si pertinent)
+    """
+    try:
+        # Extraire automatiquement le statut des données si non spécifié
+        if status is None and isinstance(data, dict) and 'success' in data:
+            status = True if data['success'] else False
+        elif status == 'success':
+            status = True
+        elif status == 'error':
+            status = False
+        
+        # Extraire automatiquement la catégorie si non spécifiée
+        if category is None:
+            # Détection basée sur le nom de la métrique
+            if 'ai_' in metric_name or 'grok_' in metric_name or 'openai_' in metric_name:
+                category = 'ai'
+            elif 'user_' in metric_name:
+                category = 'user'
+            elif 'system_' in metric_name:
+                category = 'system'
+            elif 'generation' in metric_name:
+                category = 'generation'
+            elif 'import' in metric_name:
+                category = 'import'
+            else:
+                category = 'misc'
+                
+        # Journal des métriques importantes ou des erreurs uniquement
+        if status is False:
+            logging.error(f"Metric Error: {metric_name} - {json.dumps(data)}")
+        else:
+            logging.info(f"Metric: {metric_name} ({category}) - Status: {status}")
+            
+    except Exception as e:
+        logging.error(f"Failed to log metric {metric_name}: {e}")
 
 # Constantes pour les modèles
 GROK_MODEL = "grok-2-1212"

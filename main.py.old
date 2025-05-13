@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_babel import gettext as _
-from i18n import babel, get_locale, get_supported_languages, get_language_name, get_boutique_languages, is_multilingual_campaign, get_campaign_target_languages
+from app.utils.i18n import babel, get_locale, get_supported_languages, get_language_name, get_boutique_languages, is_multilingual_campaign, get_campaign_target_languages
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -47,139 +47,8 @@ app.config['BABEL_DEFAULT_LOCALE'] = 'en'
 app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
 babel.init_app(app, locale_selector=get_locale)
 
-# Import models after DB initialization
-# Les modèles sont définis ici pour éviter les imports circulaires
-class Boutique(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    niche_market_id = db.Column(db.Integer, db.ForeignKey('niche_market.id'))
-    description = db.Column(db.Text, nullable=True)
-    language = db.Column(db.String(5), default='fr')
-    multilingual_enabled = db.Column(db.Boolean, default=False)
-    supported_languages = db.Column(db.JSON, default=list)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
-
-class NicheMarket(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    key_characteristics = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
-    boutiques = db.relationship('Boutique', backref='niche_market', lazy=True)
-
-class Customer(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=True)
-    email = db.Column(db.String(100), nullable=True)
-    description = db.Column(db.Text, nullable=True)
-    age = db.Column(db.Integer, nullable=True)
-    gender = db.Column(db.String(20), nullable=True)
-    location = db.Column(db.String(100), nullable=True)
-    interests = db.Column(db.Text, nullable=True)
-    pain_points = db.Column(db.Text, nullable=True)
-    goals = db.Column(db.Text, nullable=True)
-    budget = db.Column(db.String(50), nullable=True)
-    buying_habits = db.Column(db.Text, nullable=True)
-    generated_by_ai = db.Column(db.Boolean, default=False)
-    boutique_id = db.Column(db.Integer, db.ForeignKey('boutique.id'), nullable=True)
-    usage_count = db.Column(db.Integer, default=0)
-    avatar_prompt = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
-    campaigns = db.relationship('Campaign', backref='customer', lazy=True)
-
-class Campaign(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
-    boutique_id = db.Column(db.Integer, db.ForeignKey('boutique.id'), nullable=True)
-    marketing_content = db.Column(db.Text, nullable=True)
-    marketing_image_url = db.Column(db.String(255), nullable=True)
-    marketing_image_prompt = db.Column(db.Text, nullable=True)
-    status = db.Column(db.String(20), default='draft')
-    language = db.Column(db.String(5), default='fr')
-    multilingual_campaign = db.Column(db.Boolean, default=False)
-    target_languages = db.Column(db.JSON, default=list)
-    # Metrics
-    impressions = db.Column(db.Integer, default=0)
-    clicks = db.Column(db.Integer, default=0)
-    conversions = db.Column(db.Integer, default=0)
-    engagement_rate = db.Column(db.Float, default=0.0)
-    roi = db.Column(db.Float, default=0.0)
-    cost_per_acquisition = db.Column(db.Float, default=0.0)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
-    
-    # Relation bidirectionnelle personnalisée
-    campaign_customer = db.relationship('Customer', backref='campaigns_rel', foreign_keys=[customer_id])
-
-class Product(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    price = db.Column(db.Float, nullable=True)
-    image_url = db.Column(db.String(255), nullable=True)
-    campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=True)
-    boutique_id = db.Column(db.Integer, db.ForeignKey('boutique.id'), nullable=True)
-    status = db.Column(db.String(20), default='draft')
-    marketing_description = db.Column(db.Text, nullable=True)
-    html_description = db.Column(db.Text, nullable=True)
-    html_details = db.Column(db.Text, nullable=True)
-    html_features = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
-
-class ImportedProduct(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    source_url = db.Column(db.Text, nullable=True)
-    source_id = db.Column(db.String(50), nullable=True)
-    original_data = db.Column(db.JSON, nullable=True)
-    optimized_data = db.Column(db.JSON, nullable=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=True)
-    boutique_id = db.Column(db.Integer, db.ForeignKey('boutique.id'), nullable=True)
-    import_status = db.Column(db.String(20), default='pending')
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
-
-class SimilarProduct(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    url = db.Column(db.Text, nullable=False)
-    price = db.Column(db.Float, nullable=True)
-    image_url = db.Column(db.String(255), nullable=True)
-    source = db.Column(db.String(50), default='aliexpress')
-    campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-
-class Metric(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    data = db.Column(db.JSON, nullable=True)
-    category = db.Column(db.String(50), nullable=True)
-    status = db.Column(db.Boolean, nullable=True)
-    response_time = db.Column(db.Float, nullable=True)  # en millisecondes
-    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-
-    @classmethod
-    def get_metrics_summary(cls, category=None, start_date=None, end_date=None, limit=100):
-        query = cls.query
-        
-        if category:
-            query = query.filter_by(category=category)
-            
-        if start_date:
-            query = query.filter(cls.created_at >= start_date)
-            
-        if end_date:
-            query = query.filter(cls.created_at <= end_date)
-            
-        return query.order_by(cls.created_at.desc()).limit(limit).all()
+# Import routes after app initialization
+from app.models import Boutique, NicheMarket, Customer, Campaign, SimilarProduct, Metric, Product, ImportedProduct
 import asyncio
 import aliexpress_importer
 import product_generator
