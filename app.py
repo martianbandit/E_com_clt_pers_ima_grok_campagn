@@ -2493,7 +2493,7 @@ def seo_optimizer(source_type=None, source_id=None):
 def generate_value_map():
     """Générer une carte de valeur produit"""
     # Import nécessaire des modèles
-    from models import Boutique, Customer, Campaign, Product, CustomerPersona, OSPAnalysis
+    from models import Boutique, Customer, Campaign, Product, CustomerPersona, OSPAnalysis, OSPAnalysisType
     try:
         # Récupérer les données du formulaire
         product_name = request.form.get('product_name')
@@ -2501,6 +2501,17 @@ def generate_value_map():
         target_audience = request.form.get('target_audience')
         industry = request.form.get('industry')
         niche_market = request.form.get('niche_market')
+        
+        # Récupérer les IDs des entités associées (s'ils sont fournis)
+        product_id = request.form.get('product_id', type=int)
+        campaign_id = request.form.get('campaign_id', type=int)
+        persona_id = request.form.get('persona_id', type=int)
+        customer_id = request.form.get('customer_id', type=int)
+        boutique_id = request.form.get('boutique_id', type=int)
+        
+        # Option de sauvegarde
+        should_save = request.form.get('save_result') == 'on'
+        title = request.form.get('title', f"Carte de valeur - {product_name}")
         
         # Traiter les listes
         key_features = request.form.get('key_features', '').strip().split('\n') if request.form.get('key_features') else None
@@ -2527,10 +2538,30 @@ def generate_value_map():
         # Générer le HTML pour l'affichage
         value_map_html = render_value_map_html(value_map)
         
+        # Sauvegarder l'analyse si demandé
+        if should_save:
+            # Créer un nouvel objet OSPAnalysis
+            analysis = OSPAnalysis(
+                analysis_type=OSPAnalysisType.VALUE_MAP,
+                title=title,
+                content=value_map,  # Stockage des données JSON
+                html_result=value_map_html,  # Stockage du HTML généré
+                product_id=product_id,
+                campaign_id=campaign_id,
+                persona_id=persona_id,
+                customer_id=customer_id,
+                boutique_id=boutique_id
+            )
+            
+            db.session.add(analysis)
+            db.session.commit()
+            
+            flash(_("Carte de valeur générée et sauvegardée avec succès."), 'success')
+        
         # Log de la métrique
         log_metric(
             metric_name="osp_value_map_generation",
-            data={"product_name": product_name, "industry": industry},
+            data={"product_name": product_name, "industry": industry, "saved": should_save},
             category="marketing",
             status=True,
             response_time=None
@@ -2540,7 +2571,9 @@ def generate_value_map():
             'osp_tools.html',
             value_map=value_map,
             value_map_html=value_map_html,
-            value_map_json=json.dumps(value_map, indent=2, ensure_ascii=False)
+            value_map_json=json.dumps(value_map, indent=2, ensure_ascii=False),
+            should_save=should_save,
+            title=title
         )
     except Exception as e:
         flash(_("Erreur lors de la génération de la carte de valeur: {}").format(str(e)), 'danger')
