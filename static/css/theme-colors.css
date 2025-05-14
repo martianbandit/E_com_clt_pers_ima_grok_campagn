@@ -88,18 +88,109 @@ body {
 }
 
 /* Navbar */
-.navbar-dark {
+.navbar {
     background-color: var(--navbar-bg);
 }
 
-.navbar-dark .navbar-nav .nav-link {
-    color: var(--nav-link-color);
+[data-bs-theme="dark"] .navbar,
+.theme-dependent.theme-dark {
+    background-color: var(--navbar-bg);
 }
 
-.navbar-dark .navbar-nav .nav-link:hover,
-.navbar-dark .navbar-nav .nav-link:focus,
-.navbar-dark .navbar-nav .nav-link.active {
-    color: var(--nav-link-hover-color);
+[data-bs-theme="dark"] .navbar .navbar-nav .nav-link,
+.theme-dependent.theme-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+[data-bs-theme="dark"] .navbar .navbar-nav .nav-link:hover,
+[data-bs-theme="dark"] .navbar .navbar-nav .nav-link:focus,
+[data-bs-theme="dark"] .navbar .navbar-nav .nav-link.active,
+.theme-dependent.theme-dark .navbar-nav .nav-link:hover,
+.theme-dependent.theme-dark .navbar-nav .nav-link:focus,
+.theme-dependent.theme-dark .navbar-nav .nav-link.active {
+    color: rgba(255, 255, 255, 1);
+}
+
+[data-bs-theme="light"] .navbar,
+.theme-dependent.theme-light {
+    background-color: var(--markeasy-white);
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-bs-theme="light"] .navbar .navbar-nav .nav-link,
+.theme-dependent.theme-light .navbar-nav .nav-link {
+    color: var(--markeasy-dark);
+}
+
+[data-bs-theme="light"] .navbar .navbar-nav .nav-link:hover,
+[data-bs-theme="light"] .navbar .navbar-nav .nav-link:focus,
+[data-bs-theme="light"] .navbar .navbar-nav .nav-link.active,
+.theme-dependent.theme-light .navbar-nav .nav-link:hover,
+.theme-dependent.theme-light .navbar-nav .nav-link:focus,
+.theme-dependent.theme-light .navbar-nav .nav-link.active {
+    color: var(--markeasy-orange);
+}
+
+/* Jumbotron adaptatif */
+.jumbotron.theme-dependent.theme-dark {
+    background-color: var(--markeasy-dark);
+    color: var(--markeasy-white);
+}
+
+.jumbotron.theme-dependent.theme-light {
+    background-color: var(--markeasy-light-gray);
+    color: var(--markeasy-dark);
+}
+
+/* Card Headers adaptables */
+.theme-card-header-primary.theme-dark {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.theme-card-header-primary.theme-light {
+    background-color: #e6f0ff;
+    color: #0d6efd;
+}
+
+.theme-card-header-success.theme-dark {
+    background-color: #198754;
+    color: white;
+}
+
+.theme-card-header-success.theme-light {
+    background-color: #e8f5e9;
+    color: #198754;
+}
+
+.theme-card-header-info.theme-dark {
+    background-color: #0dcaf0;
+    color: white;
+}
+
+.theme-card-header-info.theme-light {
+    background-color: #e3f2fd;
+    color: #0288d1;
+}
+
+.theme-card-header-warning.theme-dark {
+    background-color: #ffc107;
+    color: black;
+}
+
+.theme-card-header-warning.theme-light {
+    background-color: #fff8e1;
+    color: #ff8f00;
+}
+
+.theme-card-header-secondary.theme-dark {
+    background-color: #6c757d;
+    color: white;
+}
+
+.theme-card-header-secondary.theme-light {
+    background-color: #eceff1;
+    color: #455a64;
 }
 
 /* Cards */

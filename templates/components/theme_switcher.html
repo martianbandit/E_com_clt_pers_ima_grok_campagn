@@ -30,8 +30,19 @@
             
             // Mise à jour de l'interface pour refléter le changement
             document.querySelectorAll('.theme-dependent').forEach(function(element) {
-                element.classList.toggle('theme-dark', theme === 'dark');
-                element.classList.toggle('theme-light', theme === 'light');
+                element.classList.remove('theme-dark', 'theme-light');
+                element.classList.add(theme === 'dark' ? 'theme-dark' : 'theme-light');
+            });
+            
+            // Mise à jour des boutons spécifiques
+            document.querySelectorAll('.btn-outline-light').forEach(function(btn) {
+                if (theme === 'light') {
+                    btn.classList.remove('btn-outline-light');
+                    btn.classList.add('btn-outline-dark');
+                } else {
+                    btn.classList.remove('btn-outline-dark');
+                    btn.classList.add('btn-outline-light');
+                }
             });
             
             // Animation du bouton de changement de thème
