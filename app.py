@@ -2347,14 +2347,128 @@ def value_map_generator(source_type=None, source_id=None):
                          campaigns=campaigns)
 
 @app.route('/osp-tools/content-analyzer')
-def content_analyzer():
+@app.route('/osp-tools/content-analyzer/<string:source_type>/<int:source_id>')
+def content_analyzer(source_type=None, source_id=None):
     """Analyseur de contenu selon les directives OSP"""
-    return render_template('osp_tools.html')
+    # Initialisation des données
+    content = ""
+    content_type = "product_description"
+    target_audience = ""
+    industry = ""
+    
+    # Pré-remplir le formulaire si des données source sont fournies
+    if source_type and source_id:
+        if source_type == 'product' and source_id:
+            product = Product.query.get_or_404(source_id)
+            content = product.base_description or product.generated_description or ""
+            if product.target_audience:
+                customer = product.target_audience
+                target_audience = f"{customer.name}, {customer.age} ans, {customer.location}"
+            if product.boutique:
+                industry = product.boutique.name
+        
+        elif source_type == 'campaign' and source_id:
+            campaign = Campaign.query.get_or_404(source_id)
+            content = campaign.content
+            content_type = campaign.campaign_type or "email"
+            target_audience = campaign.target_audience or ""
+            if campaign.customer:
+                customer = campaign.customer
+                target_audience = f"{customer.name}, {customer.age} ans, {customer.location}"
+        
+        elif source_type == 'persona' and source_id:
+            persona = CustomerPersona.query.get_or_404(source_id)
+            content = persona.description
+            target_audience = persona.title
+            if persona.niche_market:
+                industry = persona.niche_market.name
+    
+    # Récupérer les sources de données pour les menus déroulants
+    boutiques = Boutique.query.all()
+    products = Product.query.all()
+    customers = Customer.query.all()
+    personas = CustomerPersona.query.all()
+    campaigns = Campaign.query.all()
+    
+    return render_template('osp_tools.html', 
+                         form_active='content_analyzer',
+                         content=content,
+                         content_type=content_type,
+                         target_audience=target_audience,
+                         industry=industry,
+                         boutiques=boutiques,
+                         products=products,
+                         customers=customers,
+                         personas=personas,
+                         campaigns=campaigns)
 
 @app.route('/osp-tools/seo-optimizer')
-def seo_optimizer():
+@app.route('/osp-tools/seo-optimizer/<string:source_type>/<int:source_id>')
+def seo_optimizer(source_type=None, source_id=None):
     """Optimiseur SEO selon les directives OSP"""
-    return render_template('osp_tools.html')
+    # Initialisation des données
+    title = ""
+    description = ""
+    page_type = "product"
+    locale = "fr_FR"
+    is_local_business = True
+    
+    # Pré-remplir le formulaire si des données source sont fournies
+    if source_type and source_id:
+        if source_type == 'product' and source_id:
+            product = Product.query.get_or_404(source_id)
+            title = product.name
+            description = product.base_description or product.generated_description or ""
+            # Si le produit a un méta titre/description, les utiliser
+            if product.meta_title:
+                title = product.meta_title
+            if product.meta_description:
+                description = product.meta_description
+                
+        elif source_type == 'campaign' and source_id:
+            campaign = Campaign.query.get_or_404(source_id)
+            title = campaign.title
+            description = campaign.content[:200] + "..." if len(campaign.content) > 200 else campaign.content
+            if campaign.campaign_type == 'landing_page':
+                page_type = 'landing'
+            elif campaign.campaign_type == 'product_description':
+                page_type = 'product'
+            
+            # Récupérer la langue de la campagne pour le locale
+            if campaign.language:
+                if campaign.language == 'fr':
+                    locale = 'fr_FR'
+                elif campaign.language == 'en':
+                    locale = 'en_US'
+        
+        elif source_type == 'boutique' and source_id:
+            boutique = Boutique.query.get_or_404(source_id)
+            title = boutique.name
+            description = boutique.description or ""
+            page_type = 'about'
+            
+            # Récupérer la langue de la boutique pour le locale
+            if boutique.language:
+                if boutique.language == 'fr':
+                    locale = 'fr_FR'
+                elif boutique.language == 'en':
+                    locale = 'en_US'
+    
+    # Récupérer les sources de données pour les menus déroulants
+    boutiques = Boutique.query.all()
+    products = Product.query.all()
+    campaigns = Campaign.query.all()
+    
+    return render_template('osp_tools.html', 
+                         form_active='seo_optimizer',
+                         title=title,
+                         description=description,
+                         page_type=page_type,
+                         locale=locale,
+                         is_local_business=is_local_business,
+                         boutiques=boutiques,
+                         products=products,
+                         campaigns=campaigns)
 
 @app.route('/osp-tools/generate-value-map', methods=['POST'])
 def generate_value_map():
