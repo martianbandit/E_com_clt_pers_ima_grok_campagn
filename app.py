@@ -453,6 +453,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/boutique_language_settings/<int:boutique_id>', methods=['GET'])
+@login_required
 def boutique_language_settings(boutique_id):
     """Affiche les paramètres linguistiques d'une boutique"""
     boutique = Boutique.query.get_or_404(boutique_id)
@@ -490,6 +491,7 @@ def save_boutique_language_settings():
     return redirect(url_for('dashboard'))
 
 @app.route('/campaign_language_settings/<int:campaign_id>', methods=['GET'])
+@login_required
 def campaign_language_settings(campaign_id):
     """Affiche les paramètres linguistiques d'une campagne"""
     campaign = Campaign.query.get_or_404(campaign_id)
@@ -799,6 +801,7 @@ def profiles(page=1):
                            pagination=paginated_profiles)
 
 @app.route('/generate_persona/<int:profile_index>', methods=['POST'])
+@login_required
 def generate_persona(profile_index):
     customer_profiles = session.get('customer_profiles', [])
     
