@@ -113,6 +113,11 @@ def logout():
     logout_user()
     flash('Vous avez été déconnecté.', 'info')
     return redirect(url_for('index'))
+    
+@app.route('/user-info')
+def user_info():
+    """Page d'information utilisateur pour le débogage"""
+    return render_template('user_info.html')
 
 # Routes pour l'authentification et le profil utilisateur
 @app.route('/user/profile')
