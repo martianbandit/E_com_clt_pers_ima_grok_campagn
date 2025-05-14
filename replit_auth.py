@@ -36,17 +36,22 @@ def init_auth(app, sqlalchemy_db):
     # Configuration de Flask-Login
     login_manager = LoginManager(app)
     # On définit la vue de login avec une chaîne de caractères
-    login_manager.login_view = "replit_auth.login"
+    login_manager._login_view = "login"  # Using the regular login route instead of replit_auth.login
     login_manager.login_message = "Veuillez vous connecter pour accéder à cette page."
     login_manager.login_message_category = "info"
     
     # User loader
     @login_manager.user_loader
     def load_user(user_id):
-        return User.query.get(user_id)
+        try:
+            # Try to convert to integer for old users
+            return User.query.get(int(user_id))
+        except ValueError:
+            # If ID is not an integer, treat it as a UUID
+            return User.query.get(user_id)
         
-    # Le blueprint est enregistré dans main.py
-    # app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")
+    # Register the Replit blueprint with the app
+    app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")
     
     return login_manager
 

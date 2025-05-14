@@ -23,8 +23,6 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# La configuration de LoginManager est gérée ici
-
 # Rendre current_user et d'autres variables disponibles dans tous les templates
 @app.context_processor
 def inject_template_globals():
@@ -34,11 +32,12 @@ def inject_template_globals():
         min=min,
         max=max
     )
-    
+
 # Configuration du LoginManager
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+# Setting the login view with a string value
+setattr(login_manager, 'login_view', 'login')
 login_manager.login_message = 'Veuillez vous connecter pour accéder à cette page.'
 login_manager.login_message_category = 'warning'
 
@@ -55,6 +54,10 @@ def load_user(user_id):
 # Importation et enregistrement du blueprint d'authentification Google
 from google_auth import google_auth
 app.register_blueprint(google_auth)
+
+# Importation et initialisation de l'authentification Replit
+from replit_auth import init_auth
+init_auth(app, db)
 
 # Routes d'authentification
 @app.route('/login', methods=['GET', 'POST'])

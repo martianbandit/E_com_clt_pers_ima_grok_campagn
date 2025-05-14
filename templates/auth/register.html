@@ -105,11 +105,17 @@
                     </div>
                 </div>
                 
-                <div class="d-grid mb-3">
+                <div class="d-grid gap-3 mb-3">
                     <!-- Connexion via Google -->
                     <a href="{{ url_for('google_auth.login') }}" class="btn btn-light border d-flex align-items-center justify-content-center">
                         <img src="{{ url_for('static', filename='img/google-logo.svg') }}" alt="Google" class="me-2" style="width: 20px;">
                         {{ _('S\'inscrire avec Google') }}
+                    </a>
+                    
+                    <!-- Inscription via Replit -->
+                    <a href="{{ url_for('replit_auth.login') }}" class="btn btn-dark d-flex align-items-center justify-content-center">
+                        <img src="{{ url_for('static', filename='img/replit-logo.svg') }}" alt="Replit" class="me-2" style="width: 20px;">
+                        {{ _('S\'inscrire avec Replit') }}
                     </a>
                 </div>
                 
