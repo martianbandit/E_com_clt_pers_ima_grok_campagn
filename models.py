@@ -966,38 +966,7 @@ class UserActivity(db.Model):
 
 # Ajouter d'autres modèles selon les besoins
 
-# Mapping des types d'analyse OSP
-class OSPAnalysisType(enum.Enum):
-    VALUE_MAP = 'value_map'
-    CONTENT_ANALYSIS = 'content_analysis'
-    SEO_OPTIMIZATION = 'seo_optimization'
-
-# Table pour les analyses OSP
-class OSPAnalysis(db.Model):
-    """Analyses générées par les outils OSP (Open Strategy Partners)"""
-    id = db.Column(db.Integer, primary_key=True)
-    analysis_type = db.Column(db.Enum(OSPAnalysisType), nullable=False)
-    title = db.Column(db.String(255), nullable=False)
-    content = db.Column(JSONB, nullable=True)  # Données brutes
-    html_result = db.Column(db.Text, nullable=True)  # Résultat formaté en HTML
-
-    # Liens potentiels vers d'autres objets
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
-    campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=True)
-    persona_id = db.Column(db.Integer, db.ForeignKey('customer_persona.id'), nullable=True)
-    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
-    boutique_id = db.Column(db.Integer, db.ForeignKey('boutique.id'), nullable=True)
-
-    # Horodatage
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.utcnow)
-
-    # Relations
-    product = db.relationship('Product', backref=db.backref('osp_analyses', lazy=True))
-    campaign = db.relationship('Campaign', backref=db.backref('osp_analyses', lazy=True))
-    persona = db.relationship('CustomerPersona', backref=db.backref('osp_analyses', lazy=True))
-    customer = db.relationship('Customer', backref=db.backref('osp_analyses', lazy=True))
-    boutique = db.relationship('Boutique', backref=db.backref('osp_analyses', lazy=True))
+# Classe OSPAnalysisType est déjà définie plus haut dans le fichier
 
 # Table pour les audits SEO
 class SEOAudit(db.Model):
@@ -1010,7 +979,7 @@ class SEOAudit(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
 
     # Données de l'audit
-    audit_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    audit_date = db.Column(db.DateTime, default=datetime.utcnow)
     score = db.Column(db.Integer, nullable=False)  # Score global sur 100
     results = db.Column(JSONB, nullable=True)  # Résultats complets de l'audit
     locale = db.Column(db.String(10), default='fr_FR')  # Code de langue et région
@@ -1050,8 +1019,8 @@ class SEOKeyword(db.Model):
     status = db.Column(db.String(20), default='neutral')  # 'trending', 'declining', 'opportunity', 'neutral'
 
     # Horodatage
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    last_updated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_updated = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Unicité du mot-clé par locale
     __table_args__ = (
