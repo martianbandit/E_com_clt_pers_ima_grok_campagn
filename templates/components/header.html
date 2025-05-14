@@ -92,10 +92,26 @@
                     </ul>
                 </div>
                 {% else %}
-                <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm me-2">
-                    <i class="fas fa-sign-in-alt me-1"></i>
-                    <span class="d-none d-md-inline">{{ _('Connexion') }}</span>
-                </a>
+                <div class="dropdown me-2">
+                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="authDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-sign-in-alt me-1"></i>
+                        <span class="d-none d-md-inline">{{ _('Connexion') }}</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt me-2"></i>{{ _('Se connecter') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('register') }}"><i class="fas fa-user-plus me-2"></i>{{ _('S\'inscrire') }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><p class="dropdown-item-text small text-muted px-2">{{ _('Ou connectez-vous avec') }}</p></li>
+                        <li><a class="dropdown-item" href="{{ url_for('google_auth.login') }}">
+                            <img src="{{ url_for('static', filename='img/google-logo.svg') }}" alt="Google" class="me-2" style="width: 16px;">
+                            Google
+                        </a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('replit_auth.login') }}">
+                            <img src="{{ url_for('static', filename='img/replit-logo.svg') }}" alt="Replit" class="me-2" style="width: 16px;">
+                            Replit
+                        </a></li>
+                    </ul>
+                </div>
                 {% endif %}
                 
                 <!-- Language Selector Dropdown -->
