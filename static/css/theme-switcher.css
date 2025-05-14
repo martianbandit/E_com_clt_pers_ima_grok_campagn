@@ -1,0 +1,177 @@
+/* MarkEasy - Gestionnaire de thèmes sombre/clair */
+
+/* Variables de thème sombre */
+html[data-bs-theme="dark"] {
+    --bg-primary: #121212;
+    --bg-secondary: #2C2C2C;
+    --bg-tertiary: #3D3D3D;
+    --text-primary: #FFFFFF;
+    --text-secondary: #E0E0E0;
+    --text-muted: #AAAAAA;
+    --border-color: #444444;
+    --accent-color: #FF8C00;
+    --accent-hover: #FF9E2C;
+}
+
+/* Variables de thème clair */
+html[data-bs-theme="light"] {
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F4F4F4;
+    --bg-tertiary: #E9E9E9;
+    --text-primary: #202020;
+    --text-secondary: #404040;
+    --text-muted: #707070;
+    --border-color: #DDDDDD;
+    --accent-color: #FF8C00;
+    --accent-hover: #E67E00;
+}
+
+/* Animation de transition entre les thèmes */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Styling spécifique au thème pour le logo */
+html[data-bs-theme="light"] .markeasy-logo {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+html[data-bs-theme="dark"] .markeasy-logo {
+    filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.1));
+}
+
+/* Button de changement de thème */
+.theme-toggle-btn {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
+}
+
+/* Animation de rotation pour le bouton de thème */
+.theme-toggle-btn.spinning {
+    animation: spin 0.5s ease-in-out;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0); }
+    100% { transform: rotate(180deg); }
+}
+
+.theme-toggle-active {
+    animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Icônes pour les thèmes */
+.theme-icon-light,
+.theme-icon-dark {
+    position: absolute;
+    transition: all 0.3s ease;
+}
+
+html[data-bs-theme="dark"] .theme-icon-light {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+html[data-bs-theme="dark"] .theme-icon-dark {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+html[data-bs-theme="light"] .theme-icon-light {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+html[data-bs-theme="light"] .theme-icon-dark {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Ajustement des couleurs de la navbar en fonction du thème */
+html[data-bs-theme="light"] .navbar {
+    background-color: var(--bg-secondary);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+html[data-bs-theme="dark"] .navbar {
+    background-color: var(--bg-secondary);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Ajustement des couleurs du logo en fonction du thème */
+html[data-bs-theme="light"] .navbar-brand img,
+html[data-bs-theme="light"] .markeasy-logo-large {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+html[data-bs-theme="dark"] .navbar-brand img,
+html[data-bs-theme="dark"] .markeasy-logo-large {
+    filter: drop-shadow(0 2px 4px rgba(255, 140, 0, 0.2));
+}
+
+/* Style des cartes en fonction du thème */
+html[data-bs-theme="light"] .card {
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+}
+
+html[data-bs-theme="dark"] .card {
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+}
+
+/* Style pour le texte en fonction du thème */
+html[data-bs-theme="light"] .text-theme-primary {
+    color: var(--text-primary);
+}
+
+html[data-bs-theme="dark"] .text-theme-primary {
+    color: var(--text-primary);
+}
+
+/* Styles spécifiques pour le footer */
+.theme-footer {
+    transition: all 0.3s ease;
+}
+
+html[data-bs-theme="light"] .theme-footer {
+    background-color: var(--bg-tertiary);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    color: var(--text-secondary);
+}
+
+html[data-bs-theme="dark"] .theme-footer {
+    background-color: var(--bg-secondary);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    color: var(--text-secondary);
+}
+
+/* Style pour le logo dans le footer selon le thème */
+html[data-bs-theme="light"] .theme-footer .markeasy-logo-large {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+html[data-bs-theme="dark"] .theme-footer .markeasy-logo-large {
+    filter: drop-shadow(0 2px 4px rgba(255, 140, 0, 0.2));
+}

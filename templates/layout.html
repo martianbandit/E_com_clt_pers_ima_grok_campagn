@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/ninja-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/markeasy-animations.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-switcher.css') }}">
     {% block head %}{% endblock %}
 </head>
 <body>
@@ -80,8 +81,9 @@
                         <span class="ninja-slogan small">{{ _("Le marketing, c'est facile avec MarkEasy!") }}</span>
                     </div>
                     <!-- Theme Toggle Button -->
-                    <button id="themeToggle" class="btn btn-outline-primary btn-sm me-2" type="button">
-                        <i class="fas fa-adjust"></i>
+                    <button id="themeToggle" class="theme-toggle-btn me-2" type="button" aria-label="Changer le thème">
+                        <span class="theme-icon-light"><i class="fas fa-sun" style="color: #FF8C00;"></i></span>
+                        <span class="theme-icon-dark"><i class="fas fa-moon" style="color: #FF8C00;"></i></span>
                     </button>
                     <!-- Language Selector Dropdown -->
                     <div class="dropdown me-2">
@@ -153,7 +155,7 @@
         {% block content %}{% endblock %}
     </div>
 
-    <footer class="py-4 mt-5" style="background-color: var(--carbon-black);">
+    <footer class="py-4 mt-5 theme-footer">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6">
@@ -185,25 +187,79 @@
     <script src="{{ url_for('static', filename='js/loading.js') }}"></script>
     <script src="{{ url_for('static', filename='js/ninja-interactions.js') }}"></script>
     <script>
-        // Theme toggle functionality
+        // MarkEasy - Fonctionnalité avancée de changement de thème
         document.addEventListener('DOMContentLoaded', function() {
             const themeToggle = document.getElementById('themeToggle');
             const html = document.documentElement;
             
-            // Check for saved theme preference
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                html.setAttribute('data-bs-theme', savedTheme);
+            // Détection du thème préféré du système
+            function getPreferredTheme() {
+                // Vérifier les préférences enregistrées
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme) {
+                    return savedTheme;
+                }
+                
+                // Sinon, détecter les préférences du système
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             }
             
-            // Toggle theme on button click
-            themeToggle.addEventListener('click', function() {
-                const currentTheme = html.getAttribute('data-bs-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            // Appliquer le thème initial
+            function applyTheme(theme) {
+                html.setAttribute('data-bs-theme', theme);
                 
-                html.setAttribute('data-bs-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
+                // Mise à jour de l'interface pour refléter le changement
+                document.querySelectorAll('.theme-dependent').forEach(function(element) {
+                    element.classList.toggle('theme-dark', theme === 'dark');
+                    element.classList.toggle('theme-light', theme === 'light');
+                });
+                
+                // Animation du bouton de changement de thème
+                if (themeToggle) {
+                    themeToggle.classList.add('theme-toggle-active');
+                    setTimeout(() => {
+                        themeToggle.classList.remove('theme-toggle-active');
+                    }, 500);
+                }
+            }
+            
+            // Appliquer le thème préféré
+            const preferredTheme = getPreferredTheme();
+            applyTheme(preferredTheme);
+            
+            // Écouter les changements de thème système
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                if (!localStorage.getItem('theme')) {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
             });
+            
+            // Toggle du thème sur clic
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const currentTheme = html.getAttribute('data-bs-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    // Animation du bouton
+                    this.classList.add('spinning');
+                    
+                    // Appliquer le nouveau thème
+                    applyTheme(newTheme);
+                    
+                    // Enregistrer la préférence
+                    localStorage.setItem('theme', newTheme);
+                    
+                    // Afficher une notification
+                    if (window.showNinjaToast) {
+                        window.showNinjaToast(`Thème ${newTheme === 'dark' ? 'sombre' : 'clair'} activé`, 'info');
+                    }
+                    
+                    // Retirer l'animation
+                    setTimeout(() => {
+                        this.classList.remove('spinning');
+                    }, 300);
+                });
+            }
         });
     </script>
     {% block scripts %}{% endblock %}
