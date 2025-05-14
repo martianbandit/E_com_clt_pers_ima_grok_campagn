@@ -1,0 +1,344 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Paramètres') }} - MarkEasy{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Menu de navigation latéral -->
+        <div class="col-lg-3 mb-4">
+            <div class="card theme-dependent">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ _('Paramètres') }}</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="#account-section" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                        <i class="fas fa-user-cog me-2"></i> {{ _('Compte') }}
+                    </a>
+                    <a href="#security-section" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                        <i class="fas fa-lock me-2"></i> {{ _('Sécurité') }}
+                    </a>
+                    <a href="#notifications-section" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                        <i class="fas fa-bell me-2"></i> {{ _('Notifications') }}
+                    </a>
+                    <a href="#appearance-section" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                        <i class="fas fa-paint-brush me-2"></i> {{ _('Apparence') }}
+                    </a>
+                    <a href="#api-section" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                        <i class="fas fa-key me-2"></i> {{ _('Clés API') }}
+                    </a>
+                    {% if current_user.role == 'admin' %}
+                    <a href="#admin-section" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                        <i class="fas fa-user-shield me-2"></i> {{ _('Administration') }}
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('user_profile') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left me-2"></i> {{ _('Retour au profil') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contenu des paramètres -->
+        <div class="col-lg-9">
+            <div class="tab-content">
+                <!-- Section Compte -->
+                <div class="tab-pane fade show active" id="account-section">
+                    <div class="card theme-dependent mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-user-cog me-2"></i> {{ _('Paramètres du compte') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ url_for('update_account_settings') }}" method="POST">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">{{ _('Nom d\'utilisateur') }}</label>
+                                    <input type="text" class="form-control" id="username" name="username" value="{{ current_user.username or '' }}">
+                                    <div class="form-text">{{ _('Ce nom sera utilisé pour vous identifier dans l\'application.') }}</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">{{ _('Adresse e-mail') }}</label>
+                                    <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email or '' }}">
+                                    <div class="form-text">{{ _('Utilisée pour les notifications et la récupération de compte.') }}</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="language_preference" class="form-label">{{ _('Langue par défaut') }}</label>
+                                    <select class="form-select" id="language_preference" name="language_preference">
+                                        <option value="fr" {% if current_user.language_preference == 'fr' %}selected{% endif %}>Français</option>
+                                        <option value="en" {% if current_user.language_preference == 'en' %}selected{% endif %}>English</option>
+                                        <option value="es" {% if current_user.language_preference == 'es' %}selected{% endif %}>Español</option>
+                                        <option value="de" {% if current_user.language_preference == 'de' %}selected{% endif %}>Deutsch</option>
+                                    </select>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">{{ _('Enregistrer les modifications') }}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section Sécurité -->
+                <div class="tab-pane fade" id="security-section">
+                    <div class="card theme-dependent mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-lock me-2"></i> {{ _('Sécurité du compte') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ url_for('update_password') }}" method="POST">
+                                <div class="mb-3">
+                                    <label for="current_password" class="form-label">{{ _('Mot de passe actuel') }}</label>
+                                    <input type="password" class="form-control" id="current_password" name="current_password" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="new_password" class="form-label">{{ _('Nouveau mot de passe') }}</label>
+                                    <input type="password" class="form-control" id="new_password" name="new_password" required>
+                                    <div class="form-text">{{ _('Utilisez au moins 8 caractères avec des lettres majuscules, minuscules et des chiffres.') }}</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="confirm_password" class="form-label">{{ _('Confirmer le mot de passe') }}</label>
+                                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">{{ _('Modifier le mot de passe') }}</button>
+                            </form>
+                            
+                            <hr class="my-4">
+                            
+                            <h6 class="mb-3">{{ _('Sessions actives') }}</h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered theme-dependent">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ _('Appareil') }}</th>
+                                            <th>{{ _('Localisation') }}</th>
+                                            <th>{{ _('Dernière activité') }}</th>
+                                            <th>{{ _('Actions') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><i class="fas fa-laptop me-2"></i> {{ _('Chrome sur Windows') }}</td>
+                                            <td>Paris, France</td>
+                                            <td>{{ _('Actuellement') }}</td>
+                                            <td><span class="badge bg-success">{{ _('Session actuelle') }}</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section Notifications -->
+                <div class="tab-pane fade" id="notifications-section">
+                    <div class="card theme-dependent mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-bell me-2"></i> {{ _('Préférences de notification') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ url_for('update_notification_preferences') }}" method="POST">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="email_notifications" name="email_notifications" {{ 'checked' if current_user.notification_preferences.get('email', True) else '' }}>
+                                    <label class="form-check-label" for="email_notifications">{{ _('Recevoir des notifications par e-mail') }}</label>
+                                    <div class="form-text">{{ _('Notifications concernant les activités importantes, les mises à jour et les rapports.') }}</div>
+                                </div>
+                                
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="webapp_notifications" name="webapp_notifications" {{ 'checked' if current_user.notification_preferences.get('webapp', True) else '' }}>
+                                    <label class="form-check-label" for="webapp_notifications">{{ _('Notifications dans l\'application') }}</label>
+                                    <div class="form-text">{{ _('Alertes et notifications dans l\'interface web de l\'application.') }}</div>
+                                </div>
+                                
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="marketing_notifications" name="marketing_notifications" {{ 'checked' if current_user.notification_preferences.get('marketing', False) else '' }}>
+                                    <label class="form-check-label" for="marketing_notifications">{{ _('Recevoir des offres et conseils marketing') }}</label>
+                                    <div class="form-text">{{ _('Actualités, offres spéciales et conseils pour optimiser votre expérience.') }}</div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">{{ _('Enregistrer les préférences') }}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section Apparence -->
+                <div class="tab-pane fade" id="appearance-section">
+                    <div class="card theme-dependent mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-paint-brush me-2"></i> {{ _('Apparence') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ url_for('update_appearance_settings') }}" method="POST">
+                                <div class="mb-4">
+                                    <label class="form-label">{{ _('Thème d\'interface') }}</label>
+                                    <div class="d-flex gap-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="theme_preference" id="theme_dark" value="dark" {{ 'checked' if current_user.theme_preference == 'dark' else '' }}>
+                                            <label class="form-check-label" for="theme_dark">
+                                                <div class="theme-option dark p-3 rounded">
+                                                    <i class="fas fa-moon mb-2"></i>
+                                                    <div>{{ _('Sombre') }}</div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="theme_preference" id="theme_light" value="light" {{ 'checked' if current_user.theme_preference == 'light' else '' }}>
+                                            <label class="form-check-label" for="theme_light">
+                                                <div class="theme-option light p-3 rounded">
+                                                    <i class="fas fa-sun mb-2"></i>
+                                                    <div>{{ _('Clair') }}</div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">{{ _('Appliquer les changements') }}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section API -->
+                <div class="tab-pane fade" id="api-section">
+                    <div class="card theme-dependent mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-key me-2"></i> {{ _('Clés API') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-4">{{ _('Gérez vos clés API pour les services externes.') }}</p>
+                            
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0">OpenAI API</h6>
+                                    <span class="badge bg-success">{{ _('Active') }}</span>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <input type="password" class="form-control" value="••••••••••••••••••••••••••••••" readonly>
+                                    <button class="btn btn-outline-secondary" type="button">{{ _('Afficher') }}</button>
+                                    <button class="btn btn-outline-primary" type="button">{{ _('Copier') }}</button>
+                                </div>
+                                <div class="d-flex">
+                                    <button class="btn btn-sm btn-outline-danger me-2">{{ _('Révoquer') }}</button>
+                                    <button class="btn btn-sm btn-outline-primary">{{ _('Regénérer') }}</button>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0">xAI (Grok) API</h6>
+                                    <span class="badge bg-success">{{ _('Active') }}</span>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <input type="password" class="form-control" value="••••••••••••••••••••••••••••••" readonly>
+                                    <button class="btn btn-outline-secondary" type="button">{{ _('Afficher') }}</button>
+                                    <button class="btn btn-outline-primary" type="button">{{ _('Copier') }}</button>
+                                </div>
+                                <div class="d-flex">
+                                    <button class="btn btn-sm btn-outline-danger me-2">{{ _('Révoquer') }}</button>
+                                    <button class="btn btn-sm btn-outline-primary">{{ _('Regénérer') }}</button>
+                                </div>
+                            </div>
+                            
+                            <form action="{{ url_for('add_api_key') }}" method="POST" class="mt-4">
+                                <h6 class="mb-3">{{ _('Ajouter une nouvelle clé API') }}</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <select class="form-select" name="service_name" required>
+                                            <option value="" selected disabled>{{ _('Sélectionner un service') }}</option>
+                                            <option value="openai">OpenAI</option>
+                                            <option value="xai">xAI (Grok)</option>
+                                            <option value="anthropic">Anthropic</option>
+                                            <option value="custom">{{ _('Autre (personnalisé)') }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control" name="api_key" placeholder="{{ _('Entrez votre clé API') }}" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-primary w-100">{{ _('Ajouter') }}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section Admin (si l'utilisateur est admin) -->
+                {% if current_user.role == 'admin' %}
+                <div class="tab-pane fade" id="admin-section">
+                    <div class="card theme-dependent mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-user-shield me-2"></i> {{ _('Administration') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-4">{{ _('Options d\'administration avancées. Soyez prudent avec ces paramètres.') }}</p>
+                            
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                {{ _('Ces actions sont réservées aux administrateurs et peuvent affecter l\'ensemble de l\'application.') }}
+                            </div>
+                            
+                            <div class="d-flex flex-wrap gap-2 mt-4">
+                                <a href="{{ url_for('admin_users') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-users-cog me-2"></i> {{ _('Gérer les utilisateurs') }}
+                                </a>
+                                <a href="{{ url_for('admin_system') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-server me-2"></i> {{ _('Paramètres système') }}
+                                </a>
+                                <a href="{{ url_for('admin_logs') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-clipboard-list me-2"></i> {{ _('Journaux d\'activité') }}
+                                </a>
+                                <a href="{{ url_for('admin_backup') }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-database me-2"></i> {{ _('Sauvegarde et restauration') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.theme-option {
+    width: 120px;
+    height: 120px;
+    border: 2px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.2s;
+}
+
+.theme-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.theme-option.dark {
+    background-color: #2C2C2C;
+    color: #fff;
+}
+
+.theme-option.light {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+input[type="radio"]:checked + label .theme-option {
+    border-color: var(--markeasy-orange);
+    box-shadow: 0 0 0 2px var(--markeasy-orange);
+}
+</style>
+{% endblock %}
