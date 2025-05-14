@@ -1,0 +1,159 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Politique de Remboursement') }} - MarkEasy{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Carte principale de la politique de remboursement -->
+            <div class="card shadow-sm border-success mb-5">
+                <div class="card-header bg-success text-white">
+                    <h1 class="h2 mb-0">
+                        <i class="fas fa-undo-alt me-2"></i>
+                        {{ _('Politique de remboursement à 100%%') }}
+                    </h1>
+                </div>
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <span class="badge bg-success p-2 mb-3" style="font-size: 1.2rem;">{{ _('Satisfaction garantie') }}</span>
+                        <h3 class="h4">{{ _('Remboursement intégral, sans condition, quelle que soit la raison') }}</h3>
+                        <p class="lead text-muted">{{ _('Sans questions. Sans délai. Sans tracas.') }}</p>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="p-3 rounded-circle bg-light d-inline-block mb-3">
+                                <i class="fas fa-heart text-success" style="font-size: 2rem;"></i>
+                            </div>
+                            <h4 class="h5">{{ _('Sans justification') }}</h4>
+                            <p>{{ _('Aucune explication nécessaire, nous respectons votre décision.') }}</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="p-3 rounded-circle bg-light d-inline-block mb-3">
+                                <i class="fas fa-bolt text-success" style="font-size: 2rem;"></i>
+                            </div>
+                            <h4 class="h5">{{ _('Remboursement rapide') }}</h4>
+                            <p>{{ _('Traitement de votre demande en moins de 24 heures.') }}</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="p-3 rounded-circle bg-light d-inline-block mb-3">
+                                <i class="fas fa-shield-alt text-success" style="font-size: 2rem;"></i>
+                            </div>
+                            <h4 class="h5">{{ _('100% sécurisé') }}</h4>
+                            <p>{{ _('Remboursement via votre méthode de paiement d\'origine.') }}</p>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <h3 class="h4 mb-3">{{ _('Comment demander un remboursement ?') }}</h3>
+                    <ol>
+                        <li>{{ _('Envoyez simplement un email à') }} <a href="mailto:contact@markeasy.ai">contact@markeasy.ai</a></li>
+                        <li>{{ _('Indiquez le numéro de transaction ou l\'adresse email utilisée lors de l\'achat') }}</li>
+                        <li>{{ _('C\'est tout ! Nous traiterons votre remboursement immédiatement') }}</li>
+                    </ol>
+                    
+                    <div class="alert alert-success mt-4">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-info-circle fa-2x"></i>
+                            </div>
+                            <div>
+                                <h4 class="alert-heading h5">{{ _('Notre engagement') }}</h4>
+                                <p class="mb-0">{{ _('Chez MarkEasy, nous croyons tellement en la qualité de notre service que nous prenons tout le risque. Si vous n\'êtes pas satisfait, pour quelque raison que ce soit, nous vous remboursons intégralement.') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Carte du programme de tokens -->
+            <div class="card shadow-sm border-primary mb-5">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h3 mb-0">
+                        <i class="fas fa-coins me-2"></i>
+                        {{ _('Programme de tokens gratuits') }}
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <span class="badge bg-primary p-2 mb-3" style="font-size: 1.2rem;">{{ _('Votre avis compte !') }}</span>
+                        <h3 class="h4">{{ _('Obtenez des tokens gratuits en échange de vos précieux retours') }}</h3>
+                        <p class="lead text-muted">{{ _('Participez à l\'amélioration de MarkEasy et soyez récompensé') }}</p>
+                    </div>
+                    
+                    <div class="row mt-4 text-center">
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="py-3">
+                                        <i class="fas fa-comment-alt text-primary" style="font-size: 2.5rem;"></i>
+                                    </div>
+                                    <h4 class="card-title h5">{{ _('Avis simple') }}</h4>
+                                    <p class="card-text">{{ _('Formulaire rapide d\'appréciation') }}</p>
+                                    <div class="mt-3">
+                                        <span class="badge bg-primary rounded-pill p-2">{{ _('50 tokens offerts') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="py-3">
+                                        <i class="fas fa-file-alt text-primary" style="font-size: 2.5rem;"></i>
+                                    </div>
+                                    <h4 class="card-title h5">{{ _('Avis détaillé') }}</h4>
+                                    <p class="card-text">{{ _('Formulaire complet avec suggestions') }}</p>
+                                    <div class="mt-3">
+                                        <span class="badge bg-primary rounded-pill p-2">{{ _('150 tokens offerts') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="py-3">
+                                        <i class="fas fa-video text-primary" style="font-size: 2.5rem;"></i>
+                                    </div>
+                                    <h4 class="card-title h5">{{ _('Témoignage vidéo') }}</h4>
+                                    <p class="card-text">{{ _('Partage d\'expérience en vidéo') }}</p>
+                                    <div class="mt-3">
+                                        <span class="badge bg-primary rounded-pill p-2">{{ _('500 tokens offerts') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-4">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-lightbulb fa-2x"></i>
+                            </div>
+                            <div>
+                                <h4 class="alert-heading h5">{{ _('À quoi servent les tokens ?') }}</h4>
+                                <p class="mb-0">{{ _('Les tokens peuvent être utilisés pour générer du contenu supplémentaire, accéder à des fonctionnalités premium ou être convertis en réduction sur votre abonnement. 1000 tokens = 10€ de réduction !') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="#" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>{{ _('Donnez votre avis maintenant') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>{{ _('Retour à l\'accueil') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

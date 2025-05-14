@@ -613,6 +613,32 @@ def faq():
     """Page de Foire Aux Questions (FAQ)"""
     return render_template('faq.html')
 
+# Routes pour les pages légales
+@app.route('/privacy')
+def privacy_policy():
+    """Politique de confidentialité"""
+    return render_template('legal/privacy.html')
+
+@app.route('/terms')
+def terms_of_service():
+    """Conditions générales d'utilisation"""
+    return render_template('legal/terms.html')
+
+@app.route('/cookies')
+def cookies_policy():
+    """Politique des cookies"""
+    return render_template('legal/cookies.html')
+
+@app.route('/legal')
+def legal_notice():
+    """Mentions légales"""
+    return render_template('legal/legal_notice.html')
+
+@app.route('/refund')
+def refund_policy():
+    """Politique de remboursement et programme de tokens"""
+    return render_template('legal/refund.html')
+
 @app.route('/boutique_language_settings/<int:boutique_id>', methods=['GET'])
 @login_required
 def boutique_language_settings(boutique_id):

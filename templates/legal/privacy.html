@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Politique de Confidentialité') }} - MarkEasy{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="h2 mb-0">{{ _('Politique de confidentialité') }}</h1>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted mb-4">{{ _('Dernière mise à jour : Mai 2025') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('1. Responsable du traitement') }}</h2>
+                    <p><strong>{{ _('Nom :') }}</strong> José Paradis Gravel<br>
+                    <strong>{{ _('Adresse :') }}</strong> 2435 des Seigneurs, Terrebonne, QC<br>
+                    <strong>{{ _('Email :') }}</strong> <a href="mailto:contact@markeasy.ai">contact@markeasy.ai</a><br>
+                    <strong>{{ _('Téléphone :') }}</strong> 1-450-712-2398</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('2. Données collectées') }}</h2>
+                    <ul>
+                        <li>{{ _('Nom') }}</li>
+                        <li>{{ _('Adresse e-mail') }}</li>
+                        <li>{{ _('Informations de paiement (via Stripe)') }}</li>
+                        <li>{{ _('Avis des utilisateurs') }}</li>
+                        <li>{{ _('Questions fréquemment posées') }}</li>
+                        <li>{{ _('Données d\'utilisation et cookies') }}</li>
+                    </ul>
+                    
+                    <h2 class="h4 mt-4">{{ _('3. Finalités de traitement') }}</h2>
+                    <ul>
+                        <li>{{ _('Création et gestion de comptes utilisateurs') }}</li>
+                        <li>{{ _('Gestion des paiements et abonnements') }}</li>
+                        <li>{{ _('Amélioration des services (y compris apprentissage automatique)') }}</li>
+                        <li>{{ _('Réponse aux demandes des utilisateurs') }}</li>
+                    </ul>
+                    
+                    <h2 class="h4 mt-4">{{ _('4. Base légale') }}</h2>
+                    <p>{{ _('Nous collectons vos données avec votre consentement explicite et/ou pour exécuter un contrat.') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('5. Conservation des données') }}</h2>
+                    <p>{{ _('Vos données sont conservées aussi longtemps que nécessaire pour les finalités décrites.') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('6. Vos droits') }}</h2>
+                    <p>{{ _('Vous pouvez accéder à vos données, les corriger, demander leur suppression ou vous opposer à leur traitement.') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('7. Sécurité') }}</h2>
+                    <p>{{ _('Mesures techniques et organisationnelles mises en place pour protéger vos données.') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('8. Tiers et transferts') }}</h2>
+                    <p>{{ _('Utilisation de Stripe pour la gestion des paiements.') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('9. Cookies') }}</h2>
+                    <p>{{ _('Utilisation de cookies pour améliorer l\'expérience utilisateur.') }}</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>{{ _('Retour à l\'accueil') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

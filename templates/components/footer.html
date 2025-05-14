@@ -1,26 +1,201 @@
 {% macro markeasy_footer() %}
-<footer class="py-4 mt-5 theme-footer">
+<footer class="py-5 mt-5 theme-footer">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <div class="d-flex align-items-center mb-3">
-                    <img src="{{ url_for('static', filename='img/markeasy-logo.png') }}" alt="MarkEasy" class="markeasy-logo-large me-2">
+        <!-- Bannière promo remboursement et tokens -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card bg-gradient-primary border-0 shadow-sm">
+                    <div class="card-body p-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h5 class="text-white mb-2">
+                                    <i class="fas fa-shield-alt me-2"></i>{{ _('Satisfaction garantie') }} : 
+                                    <span class="fw-bold">{{ _('Remboursement à 100%% sans condition !') }}</span>
+                                </h5>
+                                <p class="text-white-50 mb-md-0">
+                                    {{ _('Obtenez également des tokens gratuits en partageant votre expérience.') }}
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <a href="{{ url_for('refund_policy') }}" class="btn btn-light">
+                                    <i class="fas fa-info-circle me-1"></i> {{ _('En savoir plus') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h5 class="text-light mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 700;">MarkEasy, {{ _('votre Marketing Ninja') }}</h5>
-                <p class="text-muted" style="font-family: 'Open Sans', sans-serif;">{{ _('Solutions marketing IA hyper-personnalisées pour boutiques et niches spécialisées.') }}</p>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <div class="mb-3">
-                    <span class="ninja-slogan">{{ _("Le marketing, c'est facile avec MarkEasy!") }}</span>
-                </div>
-                <p class="text-muted" style="font-family: 'Open Sans', sans-serif;">&copy; 2025 MarkEasy.ai {{ _('Tous droits réservés.') }}</p>
             </div>
         </div>
-        <div class="row mt-3">
-            <div class="col-12">
-                <div class="ninja-divider"></div>
+        
+        <!-- Logo et informations -->
+        <div class="row align-items-center">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{{ url_for('static', filename='img/markeasy-ninja-new.png') }}" alt="MarkEasy" width="80" class="me-3">
+                    <div>
+                        <h5 class="text-light mb-1" style="font-family: 'Poppins', sans-serif; font-weight: 700;">MarkEasy</h5>
+                        <span class="ninja-slogan">{{ _("Le marketing, c'est facile... quand on a un ninja dans sa poche !") }}</span>
+                    </div>
+                </div>
+                <p class="text-muted mb-3" style="font-family: 'Open Sans', sans-serif;">
+                    {{ _('Solutions marketing IA hyper-personnalisées pour boutiques et niches spécialisées.') }}
+                </p>
+                <p class="mb-0">
+                    <a href="mailto:contact@markeasy.ai" class="text-decoration-none text-light">
+                        <i class="fas fa-envelope me-2"></i>contact@markeasy.ai
+                    </a>
+                </p>
+            </div>
+            
+            <!-- Liens rapides -->
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <h6 class="text-light mb-3 fw-bold">{{ _('Navigation') }}</h6>
+                <ul class="list-unstyled footer-links">
+                    <li class="mb-2">
+                        <a href="{{ url_for('index') }}" class="footer-link">
+                            <i class="fas fa-home me-2"></i>{{ _('Accueil') }}
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ url_for('faq') }}" class="footer-link">
+                            <i class="fas fa-question-circle me-2"></i>{{ _('FAQ') }}
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="footer-link">
+                            <i class="fas fa-bullhorn me-2"></i>{{ _('Tarifs') }}
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="footer-link">
+                            <i class="fas fa-headset me-2"></i>{{ _('Support') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Documents légaux -->
+            <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+                <h6 class="text-light mb-3 fw-bold">{{ _('Documents légaux') }}</h6>
+                <ul class="list-unstyled footer-links">
+                    <li class="mb-2">
+                        <a href="{{ url_for('terms_of_service') }}" class="footer-link">
+                            <i class="fas fa-file-contract me-2"></i>{{ _('Conditions d\'utilisation') }}
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ url_for('privacy_policy') }}" class="footer-link">
+                            <i class="fas fa-user-shield me-2"></i>{{ _('Politique de confidentialité') }}
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ url_for('cookies_policy') }}" class="footer-link">
+                            <i class="fas fa-cookie-bite me-2"></i>{{ _('Politique des cookies') }}
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ url_for('legal_notice') }}" class="footer-link">
+                            <i class="fas fa-gavel me-2"></i>{{ _('Mentions légales') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Remboursement et tokens -->
+            <div class="col-lg-3 col-md-4">
+                <h6 class="text-light mb-3 fw-bold">{{ _('Nos garanties') }}</h6>
+                <ul class="list-unstyled footer-links">
+                    <li class="mb-2">
+                        <a href="{{ url_for('refund_policy') }}" class="footer-link">
+                            <i class="fas fa-undo-alt me-2"></i>{{ _('Remboursement 100%%') }}
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ url_for('refund_policy') }}#tokens" class="footer-link">
+                            <i class="fas fa-coins me-2"></i>{{ _('Programme de tokens') }}
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Réseaux sociaux -->
+                <h6 class="text-light mb-3 mt-4 fw-bold">{{ _('Suivez-nous') }}</h6>
+                <div class="social-icons">
+                    <a href="#" class="social-icon" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="social-icon" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-icon" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="social-icon" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Copyright -->
+        <div class="row mt-4 pt-4 border-top border-secondary">
+            <div class="col-md-6">
+                <p class="text-muted mb-0" style="font-family: 'Open Sans', sans-serif;">
+                    &copy; 2025 MarkEasy.ai {{ _('Tous droits réservés.') }}
+                </p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <p class="text-muted mb-0" style="font-family: 'Open Sans', sans-serif;">
+                    {{ _('Développé avec') }} <i class="fas fa-heart text-danger mx-1"></i> {{ _('par José Paradis Gravel') }}
+                </p>
             </div>
         </div>
     </div>
 </footer>
+
+<!-- Styles supplémentaires pour le footer -->
+<style>
+    .footer-link {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: color 0.3s;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .footer-link:hover {
+        color: white;
+    }
+    
+    .social-icons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .social-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        transition: all 0.3s;
+    }
+    
+    .social-icon:hover {
+        background-color: var(--bs-primary);
+        color: white;
+        transform: translateY(-3px);
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(to right, var(--bs-primary), #4361ee);
+    }
+    
+    .ninja-slogan {
+        color: rgba(255, 255, 255, 0.8);
+        font-style: italic;
+    }
+</style>
 {% endmacro %}

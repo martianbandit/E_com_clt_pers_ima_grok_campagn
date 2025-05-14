@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Mentions Légales') }} - MarkEasy{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="h2 mb-0">{{ _('Mentions légales') }}</h1>
+                </div>
+                <div class="card-body p-4">
+                    <h2 class="h4 mt-3">{{ _('1. Éditeur de l\'application') }}</h2>
+                    <p><strong>{{ _('Nom :') }}</strong> José Paradis Gravel<br>
+                    <strong>{{ _('Adresse :') }}</strong> 2435 des Seigneurs, Terrebonne, QC<br>
+                    <strong>{{ _('Email :') }}</strong> <a href="mailto:contact@markeasy.ai">contact@markeasy.ai</a><br>
+                    <strong>{{ _('Téléphone :') }}</strong> 1-450-712-2398</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('2. Hébergement') }}</h2>
+                    <p>{{ _('Hébergé par Replit (replit.com), États-Unis.') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('3. Propriété intellectuelle') }}</h2>
+                    <p>{{ _('Contenus protégés par le droit de la propriété intellectuelle.') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('4. Responsabilité') }}</h2>
+                    <p>{{ _('L\'éditeur décline toute responsabilité pour tout dommage lié à l\'utilisation.') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('5. Politique de remboursement') }}</h2>
+                    <p>{{ _('Remboursement intégral sans condition, sur simple demande par email.') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('6. Loi applicable') }}</h2>
+                    <p>{{ _('Droit applicable : Québec, Canada.') }}</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>{{ _('Retour à l\'accueil') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

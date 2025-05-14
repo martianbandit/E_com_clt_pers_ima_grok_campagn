@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Politique des Cookies') }} - MarkEasy{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="h2 mb-0">{{ _('Politique relative aux cookies') }}</h1>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted mb-4">{{ _('Dernière mise à jour : Mai 2025') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('1. Qu\'est-ce qu\'un cookie ?') }}</h2>
+                    <p>{{ _('Petit fichier texte déposé sur votre appareil lors de la navigation.') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('2. Types de cookies utilisés') }}</h2>
+                    <ul>
+                        <li>{{ _('Strictement nécessaires') }}</li>
+                        <li>{{ _('Performance (ex. Google Analytics)') }}</li>
+                        <li>{{ _('Fonctionnalité') }}</li>
+                        <li>{{ _('Tiers (ex. Stripe)') }}</li>
+                    </ul>
+                    
+                    <h2 class="h4 mt-4">{{ _('3. Finalités des cookies') }}</h2>
+                    <ul>
+                        <li>{{ _('Amélioration de la plateforme') }}</li>
+                        <li>{{ _('Personnalisation de l\'expérience') }}</li>
+                        <li>{{ _('Paiement sécurisé') }}</li>
+                        <li>{{ _('Statistiques') }}</li>
+                    </ul>
+                    
+                    <h2 class="h4 mt-4">{{ _('4. Consentement') }}</h2>
+                    <p>{{ _('Bandeau informatif lors de la première visite. Consentement requis.') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('5. Gestion des cookies') }}</h2>
+                    <p>{{ _('Modifiables dans les paramètres du navigateur.') }}</p>
+                    
+                    <h2 class="h4 mt-4">{{ _('6. Contact') }}</h2>
+                    <p><a href="mailto:contact@markeasy.ai">contact@markeasy.ai</a></p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>{{ _('Retour à l\'accueil') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
