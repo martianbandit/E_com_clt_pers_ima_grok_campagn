@@ -10,6 +10,9 @@
                 <div class="card-header bg-primary text-white text-center py-3">
                     <h3 class="mb-0">{{ _('Connexion MarkEasy') }}</h3>
                 </div>
+                <div class="text-center mt-3">
+                    <img src="{{ url_for('static', filename='img/markeasy-logo.svg') }}" alt="MarkEasy Logo" class="img-fluid" style="max-width: 200px;">
+                </div>
                 <div class="card-body p-4">
                     {% for category, message in get_flashed_messages(with_categories=true) %}
                     <div class="alert alert-{{ category }}" role="alert">
@@ -30,6 +33,14 @@
                         <a href="{{ url_for('github.login') }}" class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center gap-2 py-2">
                             <img src="{{ url_for('static', filename='img/github-logo.svg') }}" alt="GitHub Logo" width="24" height="24">
                             <span>{{ _('Se connecter avec GitHub') }}</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Connexion avec Google -->
+                    <div class="mb-3">
+                        <a href="{{ url_for('google_auth.login') }}" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2 py-2">
+                            <img src="{{ url_for('static', filename='img/google-logo.svg') }}" alt="Google Logo" width="24" height="24">
+                            <span>{{ _('Se connecter avec Google') }}</span>
                         </a>
                     </div>
                     
