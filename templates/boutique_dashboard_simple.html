@@ -1,0 +1,108 @@
+{% extends 'layout.html' %}
+
+{% block title %}MarkEasy - Tableau de bord des boutiques{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-chart-pie me-2"></i> Tableau de bord des performances par boutique</h1>
+    <div>
+        <a href="/dashboard" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Retour au tableau de bord
+        </a>
+    </div>
+</div>
+
+<div class="alert alert-info">
+    <h4 class="alert-heading"><i class="fas fa-info-circle me-2"></i> Tableau de bord en cours de développement</h4>
+    <p>Le tableau de bord des performances par boutique est en cours de développement.</p>
+    <p>Voici les principales fonctionnalités qui seront disponibles:</p>
+    <ul>
+        <li>Statistiques globales des campagnes par boutique</li>
+        <li>Taux d'engagement et de conversion par type de boutique</li>
+        <li>Graphiques de performance</li>
+        <li>Détails des campagnes par boutique</li>
+    </ul>
+    <hr>
+    <p class="mb-0">Revenez bientôt pour accéder à ces fonctionnalités!</p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-store me-2"></i> Statistiques des boutiques</h5>
+            </div>
+            <div class="card-body">
+                <p>Nombre total de boutiques: <strong>{{ boutique_stats.total_boutiques }}</strong></p>
+                <p>Nombre total de campagnes: <strong>{{ global_stats.total_campaigns }}</strong></p>
+                {% if global_stats.total_views > 0 %}
+                <p>Total des vues: <strong>{{ global_stats.total_views }}</strong></p>
+                {% endif %}
+                {% if global_stats.total_clicks > 0 %}
+                <p>Total des clics: <strong>{{ global_stats.total_clicks }}</strong></p>
+                {% endif %}
+                {% if global_stats.total_conversions > 0 %}
+                <p>Total des conversions: <strong>{{ global_stats.total_conversions }}</strong></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i> Taux de performance</h5>
+            </div>
+            <div class="card-body">
+                <p>Taux d'engagement moyen: <strong>{{ "%.1f"|format(global_stats.avg_engagement_rate) }}%</strong></p>
+                <p>Taux de conversion moyen: <strong>{{ "%.1f"|format(global_stats.avg_conversion_rate) }}%</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if boutique_stats.boutiques %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Liste des boutiques</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Boutique</th>
+                        <th>Campagnes</th>
+                        <th>Actives</th>
+                        <th>Vues</th>
+                        <th>Clics</th>
+                        <th>Conversions</th>
+                        <th>Taux d'engagement</th>
+                        <th>Taux de conversion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for boutique in boutique_stats.boutiques %}
+                        <tr>
+                            <td><strong>{{ boutique.name }}</strong></td>
+                            <td>{{ boutique.total_campaigns }}</td>
+                            <td>{{ boutique.active_campaigns }}</td>
+                            <td>{{ boutique.total_views }}</td>
+                            <td>{{ boutique.total_clicks }}</td>
+                            <td>{{ boutique.total_conversions }}</td>
+                            <td>{{ "%.1f"|format(boutique.engagement_rate) }}%</td>
+                            <td>{{ "%.1f"|format(boutique.conversion_rate) }}%</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    Aucune boutique n'a encore de campagnes.
+</div>
+{% endif %}
+
+{% endblock %}

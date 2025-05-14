@@ -1,69 +1,51 @@
 {% macro toast_script() %}
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
+    <div id="markeasyToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto" id="toastTitle"><i class="fas fa-info-circle me-2"></i> MarkEasy</strong>
+            <small id="toastTime">à l'instant</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fermer"></button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+            Message de notification
+        </div>
+    </div>
+</div>
+
 <script>
-    // Fonction pour créer un toast ninja personnalisé
-    window.showNinjaToast = function(message, type = 'info') {
-        // Supprimer tous les toasts existants
-        const existingToasts = document.querySelectorAll('.ninja-toast');
-        existingToasts.forEach(toast => toast.remove());
-        
-        // Créer un nouveau toast
-        const toast = document.createElement('div');
-        toast.className = `ninja-toast ninja-toast-${type}`;
-        
-        // Déterminer l'icône en fonction du type
-        let icon = 'info-circle';
-        if (type === 'success') icon = 'check-circle';
-        if (type === 'error') icon = 'exclamation-circle';
-        if (type === 'warning') icon = 'exclamation-triangle';
-        
-        // Déterminer les titres traduits
-        let typeTitle = type;
-        switch(type) {
-            case 'success':
-                typeTitle = "{{ _('Succès') }}";
-                break;
-            case 'error':
-                typeTitle = "{{ _('Erreur') }}";
-                break;
-            case 'warning':
-                typeTitle = "{{ _('Avertissement') }}";
-                break;
-            case 'info':
-                typeTitle = "{{ _('Information') }}";
-                break;
-            default:
-                typeTitle = type.charAt(0).toUpperCase() + type.slice(1);
-        }
-        
-        // Créer le contenu du toast
-        toast.innerHTML = `
-            <div class="ninja-toast-header">
-                <span class="ninja-toast-title">
-                    <i class="fas fa-${icon} me-2"></i>
-                    ${typeTitle}
-                </span>
-                <button type="button" class="btn-close" aria-label="{{ _('Fermer') }}" onclick="this.parentElement.parentElement.remove()"></button>
-            </div>
-            <div class="ninja-toast-body">
-                ${message}
-            </div>
-        `;
-        
-        // Ajouter le toast au DOM
-        document.body.appendChild(toast);
-        
-        // Afficher le toast avec une transition
-        setTimeout(() => {
-            toast.classList.add('show');
-        }, 10);
-        
-        // Auto-fermer après 5 secondes
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => {
-                toast.remove();
-            }, 300);
-        }, 5000);
+// Fonction pour afficher une notification toast
+window.showNinjaToast = function(message, type) {
+    const toast = document.getElementById('markeasyToast');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastTime = document.getElementById('toastTime');
+    const toastTitle = document.getElementById('toastTitle');
+    
+    // Mettre à jour le contenu
+    toastMessage.innerText = message;
+    toastTime.innerText = 'à l\'instant';
+    
+    // Mettre à jour l'icône et la couleur selon le type
+    switch(type) {
+        case 'success':
+            toastTitle.innerHTML = '<i class="fas fa-check-circle me-2 text-success"></i> Succès';
+            break;
+        case 'error':
+            toastTitle.innerHTML = '<i class="fas fa-exclamation-circle me-2 text-danger"></i> Erreur';
+            break;
+        case 'warning':
+            toastTitle.innerHTML = '<i class="fas fa-exclamation-triangle me-2 text-warning"></i> Attention';
+            break;
+        case 'info':
+        default:
+            toastTitle.innerHTML = '<i class="fas fa-info-circle me-2 text-primary"></i> Information';
+            break;
     }
+    
+    // Afficher le toast
+    const bsToast = new bootstrap.Toast(toast, {
+        delay: 4000
+    });
+    bsToast.show();
+};
 </script>
 {% endmacro %}

@@ -278,7 +278,7 @@ def boutique_dashboard():
         top_type = max(boutique['campaigns_by_type'].items(), key=lambda x: x[1])
         boutique['top_campaign_type'] = {'type': top_type[0], 'count': top_type[1]}
     
-    return render_template('boutique_dashboard.html',
+    return render_template('boutique_dashboard_simple.html',
                           boutique_stats=boutique_stats,
                           global_stats=global_stats)
 

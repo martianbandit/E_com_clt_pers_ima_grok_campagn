@@ -5,8 +5,6 @@
 {% block head %}
 <!-- Chart.js pour les graphiques -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-<!-- chartjs-plugin-datalabels pour améliorer les labels -->
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <style>
     .stats-card {
         transition: transform 0.3s;
@@ -32,14 +30,6 @@
     
     .progress-thin {
         height: 6px;
-    }
-    
-    .trend-up {
-        color: var(--bs-success);
-    }
-    
-    .trend-down {
-        color: var(--bs-danger);
     }
     
     .boutique-card {
@@ -165,7 +155,7 @@
 </div>
 {% endif %}
 
-<!-- Distribution des campagnes par type (graphique) -->
+<!-- Graphiques de performances -->
 <div class="row mb-4">
     <div class="col-md-6">
         <div class="card shadow-sm">
@@ -374,149 +364,18 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Configuration des couleurs pour les graphiques
-    const colors = [
-        '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', 
-        '#ec4899', '#6366f1', '#14b8a6', '#f97316', '#d946ef'
-    ];
-    
-    // Configuration des graphiques
-    Chart.register(ChartDataLabels);
-    Chart.defaults.font.family = "'Open Sans', sans-serif";
-    Chart.defaults.color = '#6c757d';
-    
-    // Données pour le graphique des types de campagnes
-    {% if global_stats.campaigns_by_type %}
-        const campaignTypesData = {
-            labels: [{% for type, count in global_stats.campaigns_by_type.items() %}'{{ type }}',{% endfor %}],
-            datasets: [{
-                data: [{% for type, count in global_stats.campaigns_by_type.items() %}{{ count }},{% endfor %}],
-                backgroundColor: colors.slice(0, {{ global_stats.campaigns_by_type|length }}),
-                borderWidth: 0,
-                hoverOffset: 15
-            }]
-        };
+    // Remplacer par une alerte indiquant le manque de données
+    document.getElementById('campaignTypesChart').parentNode.innerHTML = 
+        '<div class="alert alert-info text-center p-4">' +
+        '<i class="fas fa-info-circle fa-2x mb-3"></i>' +
+        '<p>Les graphiques seront disponibles lorsque des données de campagne existeront.</p>' +
+        '</div>';
         
-        // Graphique des types de campagnes
-        const campaignTypesChart = new Chart(
-            document.getElementById('campaignTypesChart'),
-            {
-                type: 'doughnut',
-                data: campaignTypesData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '60%',
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            align: 'center',
-                            labels: {
-                                boxWidth: 15,
-                                padding: 15
-                            }
-                        },
-                        datalabels: {
-                            color: '#fff',
-                            font: {
-                                weight: 'bold'
-                            },
-                            formatter: (value, ctx) => {
-                                const total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                const percentage = (value * 100 / total).toFixed(1) + '%';
-                                return value > 0 ? percentage : '';
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => {
-                                    const label = context.label || '';
-                                    const value = context.raw;
-                                    const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    const percentage = (value * 100 / total).toFixed(1) + '%';
-                                    return `${label}: ${value} (${percentage})`;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        );
-    {% endif %}
-    
-    // Données pour le graphique de performance par boutique
-    {% if boutique_stats.boutiques %}
-        const boutiquesWithCampaigns = {{ boutique_stats.boutiques|selectattr('total_campaigns', 'gt', 0)|list|tojson }};
-        
-        if (boutiquesWithCampaigns.length > 0) {
-            const boutiqueLabels = boutiquesWithCampaigns.map(b => b.name);
-            const engagementRates = boutiquesWithCampaigns.map(b => b.engagement_rate);
-            const conversionRates = boutiquesWithCampaigns.map(b => b.conversion_rate);
-            
-            const boutiquePerformanceData = {
-                labels: boutiqueLabels,
-                datasets: [
-                    {
-                        label: "Taux d'engagement (%)",
-                        data: engagementRates,
-                        backgroundColor: '#3b82f6',
-                        borderColor: '#3b82f6',
-                        borderWidth: 2,
-                        tension: 0.3,
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: "Taux de conversion (%)",
-                        data: conversionRates,
-                        backgroundColor: '#10b981',
-                        borderColor: '#10b981',
-                        borderWidth: 2,
-                        tension: 0.3,
-                        yAxisID: 'y'
-                    }
-                ]
-            };
-            
-            // Graphique de performance par boutique
-            const boutiquePerformanceChart = new Chart(
-                document.getElementById('boutiquePerformanceChart'),
-                {
-                    type: 'bar',
-                    data: boutiquePerformanceData,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: '{{ _("Pourcentage (%)") }}'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                position: 'top'
-                            },
-                            datalabels: {
-                                align: 'center',
-                                anchor: 'center',
-                                color: '#fff',
-                                font: {
-                                    weight: 'bold',
-                                    size: 10
-                                },
-                                formatter: (value) => {
-                                    return value > 0 ? value.toFixed(1) + '%' : '';
-                                }
-                            }
-                        }
-                    }
-                }
-            );
-        }
-    {% endif %}
+    document.getElementById('boutiquePerformanceChart').parentNode.innerHTML = 
+        '<div class="alert alert-info text-center p-4">' +
+        '<i class="fas fa-info-circle fa-2x mb-3"></i>' +
+        '<p>Les graphiques seront disponibles lorsque des données de campagne existeront.</p>' +
+        '</div>';
 });
 </script>
 {% endblock %}
