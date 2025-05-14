@@ -636,52 +636,67 @@
         });
         
         // Update niche
-        document.getElementById('updateNicheBtn').addEventListener('click', function() {
-            const nicheId = document.getElementById('editNicheId').value;
-            const name = document.getElementById('editNicheName').value;
-            const description = document.getElementById('editNicheDescription').value;
-            const characteristics = document.getElementById('editNicheCharacteristics').value;
-            
-            if (!name) {
-                showAlert("{{ _('Niche name is required') }}", 'danger');
-                return;
-            }
-            
-            fetch(`/api/niches/${nicheId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: name,
-                    description: description,
-                    key_characteristics: characteristics
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    showAlert("{{ _('Error') }}: " + data.error, 'danger');
-                } else {
-                    showAlert("{{ _('Niche updated successfully') }}", 'success');
-                    bootstrap.Modal.getInstance(document.getElementById('editNicheModal')).hide();
-                    // Reload page to show changes
-                    window.location.reload();
+        const updateNicheBtnEl = document.getElementById('updateNicheBtn');
+        if (updateNicheBtnEl) {
+            updateNicheBtnEl.addEventListener('click', function() {
+                const editNicheIdEl = document.getElementById('editNicheId');
+                const editNicheNameEl = document.getElementById('editNicheName');
+                const editNicheDescriptionEl = document.getElementById('editNicheDescription');
+                const editNicheCharacteristicsEl = document.getElementById('editNicheCharacteristics');
+                
+                if (!editNicheNameEl || !editNicheNameEl.value) {
+                    showAlert("{{ _('Niche name is required') }}", 'danger');
+                    return;
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert("{{ _('Error updating niche') }}", 'danger');
-            });
+                
+                const nicheId = editNicheIdEl ? editNicheIdEl.value : '';
+                const name = editNicheNameEl ? editNicheNameEl.value : '';
+                const description = editNicheDescriptionEl ? editNicheDescriptionEl.value : '';
+                const characteristics = editNicheCharacteristicsEl ? editNicheCharacteristicsEl.value : '';
+                
+                fetch(`/api/niches/${nicheId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        description: description,
+                        key_characteristics: characteristics
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            showAlert("{{ _('Error') }}: " + data.error, 'danger');
+                        } else {
+                            showAlert("{{ _('Niche updated successfully') }}", 'success');
+                            
+                            const editNicheModalEl = document.getElementById('editNicheModal');
+                            if (editNicheModalEl) {
+                                const modalInstance = bootstrap.Modal.getInstance(editNicheModalEl);
+                                if (modalInstance) modalInstance.hide();
+                            }
+                            
+                            // Reload page to show changes
+                            window.location.reload();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showAlert("{{ _('Error updating niche') }}", 'danger');
+                    });
         });
         
         // Delete niche
-        document.getElementById('confirmDeleteNicheBtn').addEventListener('click', function() {
-            const nicheId = this.getAttribute('data-niche-id');
-            
-            fetch(`/api/niches/${nicheId}`, {
-                method: 'DELETE',
-            })
+        const confirmDeleteNicheBtnEl = document.getElementById('confirmDeleteNicheBtn');
+        if (confirmDeleteNicheBtnEl) {
+            confirmDeleteNicheBtnEl.addEventListener('click', function() {
+                const nicheId = this.getAttribute('data-niche-id');
+                
+                fetch(`/api/niches/${nicheId}`, {
+                    method: 'DELETE',
+                })
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
