@@ -1,13 +1,35 @@
-/* Ninja Theme CSS - Elements visuels pour le thème "Marketing Ninja" */
+/* MarkEasy - Theme CSS */
 
 :root {
-    /* Palette de couleurs ninja */
+    /* Palette de couleurs MarkEasy */
     --carbon-black: #2C2C2C;
-    --vibrant-orange: #FF6B00;
+    --vibrant-orange: #FF8C00; /* Correspond au orange du logo MarkEasy */
     --soft-gray: #F4F4F4;
     --pure-white: #FFFFFF;
     --shadow-gray: rgba(0, 0, 0, 0.1);
     --ninja-accent: #513AE8; /* Accent pour les éléments ponctuels */
+    --ninja-red: #FF3B30; /* Rouge pour le bandeau du ninja */
+}
+
+/* Logo MarkEasy */
+.markeasy-logo {
+    height: 40px;
+    display: block;
+}
+
+.markeasy-logo-large {
+    height: 60px;
+    margin-bottom: 1rem;
+}
+
+.markeasy-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--carbon-black) 50%, var(--vibrant-orange) 50%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
 }
 
 /* Élément ninja pour les headers */
