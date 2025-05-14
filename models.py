@@ -644,7 +644,7 @@ class Campaign(db.Model):
             # Calculer les totaux pour les métriques
             total_views = sum(c.view_count for c in campaigns)
             total_clicks = sum(c.click_count for c in campaigns)
-            total_conversions were sum(c.conversion_count for c in campaigns)
+            total_conversions = sum(c.conversion_count for c in campaigns)
 
             # Calculer les taux
             engagement_rate = (total_clicks / total_views * 100) if total_views > 0 else 0
