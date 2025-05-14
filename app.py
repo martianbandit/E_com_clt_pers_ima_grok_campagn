@@ -258,6 +258,29 @@ def dashboard():
                           total_boutiques=total_boutiques,
                           total_niches=total_niches,
                           recent_campaigns=recent_campaigns)
+                          
+@app.route('/boutique_dashboard')
+def boutique_dashboard():
+    """Tableau de bord des performances de campagne par type de boutique"""
+    # Récupérer les statistiques par boutique
+    boutique_stats = Campaign.get_stats_by_boutique_type()
+    
+    # Récupérer les statistiques globales
+    global_stats = Campaign.get_campaign_stats()
+    
+    # Récupérer les types de campagnes les plus performants par boutique
+    for boutique in boutique_stats['boutiques']:
+        if not boutique['campaigns_by_type']:
+            boutique['top_campaign_type'] = None
+            continue
+            
+        # Trouver le type de campagne avec le plus grand nombre
+        top_type = max(boutique['campaigns_by_type'].items(), key=lambda x: x[1])
+        boutique['top_campaign_type'] = {'type': top_type[0], 'count': top_type[1]}
+    
+    return render_template('boutique_dashboard.html',
+                          boutique_stats=boutique_stats,
+                          global_stats=global_stats)
 
 @app.route('/metrics')
 def metrics():

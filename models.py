@@ -463,6 +463,118 @@ class Campaign(db.Model):
             'avg_conversion_rate': (total_conversions / total_clicks * 100) if total_clicks > 0 else 0,
             'campaigns_by_type': types_summary
         }
+        
+    @staticmethod
+    def get_stats_by_boutique_type():
+        """
+        Récupère des statistiques sur les campagnes par type de boutique
+        
+        Returns:
+            Dict avec les statistiques par boutique:
+            {
+                'boutiques': [
+                    {
+                        'id': 1,
+                        'name': 'Boutique Mode Femme',
+                        'total_campaigns': 10,
+                        'active_campaigns': 5,
+                        'total_views': 1500,
+                        'total_clicks': 200,
+                        'total_conversions': 50,
+                        'engagement_rate': 13.33,
+                        'conversion_rate': 25.0,
+                        'campaigns_by_type': {'email': 5, 'social': 3, 'ad': 2}
+                    },
+                    ...
+                ],
+                'total_boutiques': 5,
+                'top_performing': {'id': 1, 'name': 'Boutique Mode Femme', 'conversion_rate': 25.0}
+            }
+        """
+        from sqlalchemy import func
+        
+        # Récupérer toutes les boutiques
+        boutiques = Boutique.query.all()
+        boutique_stats = []
+        
+        # Pour chaque boutique, calculer les statistiques
+        for boutique in boutiques:
+            # Récupérer les campagnes de cette boutique
+            campaigns = Campaign.query.filter_by(boutique_id=boutique.id).all()
+            
+            if not campaigns:
+                # Si pas de campagnes, ajouter des stats vides
+                boutique_stats.append({
+                    'id': boutique.id,
+                    'name': boutique.name,
+                    'description': boutique.description,
+                    'target_demographic': boutique.target_demographic,
+                    'total_campaigns': 0,
+                    'active_campaigns': 0,
+                    'total_views': 0,
+                    'total_clicks': 0,
+                    'total_conversions': 0,
+                    'engagement_rate': 0,
+                    'conversion_rate': 0,
+                    'campaigns_by_type': {}
+                })
+                continue
+            
+            # Compter les campagnes par statut
+            total_campaigns = len(campaigns)
+            active_campaigns = sum(1 for c in campaigns if c.status == "active")
+            
+            # Calculer les totaux pour les métriques
+            total_views = sum(c.view_count for c in campaigns)
+            total_clicks = sum(c.click_count for c in campaigns)
+            total_conversions = sum(c.conversion_count for c in campaigns)
+            
+            # Calculer les taux
+            engagement_rate = (total_clicks / total_views * 100) if total_views > 0 else 0
+            conversion_rate = (total_conversions / total_clicks * 100) if total_clicks > 0 else 0
+            
+            # Regrouper par type de campagne
+            campaigns_by_type = {}
+            for c in campaigns:
+                if c.campaign_type not in campaigns_by_type:
+                    campaigns_by_type[c.campaign_type] = 0
+                campaigns_by_type[c.campaign_type] += 1
+            
+            # Ajouter les statistiques pour cette boutique
+            boutique_stats.append({
+                'id': boutique.id,
+                'name': boutique.name,
+                'description': boutique.description,
+                'target_demographic': boutique.target_demographic,
+                'total_campaigns': total_campaigns,
+                'active_campaigns': active_campaigns,
+                'total_views': total_views,
+                'total_clicks': total_clicks,
+                'total_conversions': total_conversions,
+                'engagement_rate': round(engagement_rate, 2),
+                'conversion_rate': round(conversion_rate, 2),
+                'campaigns_by_type': campaigns_by_type
+            })
+        
+        # Trouver la boutique la plus performante (taux de conversion le plus élevé)
+        top_performing = None
+        if boutique_stats:
+            # Filtrer les boutiques sans campagnes ou sans conversions
+            performing_boutiques = [b for b in boutique_stats if b['total_campaigns'] > 0 and b['conversion_rate'] > 0]
+            
+            if performing_boutiques:
+                top_performing = max(performing_boutiques, key=lambda x: x['conversion_rate'])
+                top_performing = {
+                    'id': top_performing['id'],
+                    'name': top_performing['name'],
+                    'conversion_rate': top_performing['conversion_rate']
+                }
+        
+        return {
+            'boutiques': boutique_stats,
+            'total_boutiques': len(boutiques),
+            'top_performing': top_performing
+        }
     
     @property
     def is_personalized(self):
