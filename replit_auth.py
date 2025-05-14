@@ -36,7 +36,7 @@ def init_auth(app, sqlalchemy_db):
     # Configuration de Flask-Login
     login_manager = LoginManager(app)
     # On définit la vue de login avec une chaîne de caractères
-    login_manager._login_view = "login"  # Using the regular login route instead of replit_auth.login
+    setattr(login_manager, 'login_view', 'login')  # Using the regular login route instead of replit_auth.login
     login_manager.login_message = "Veuillez vous connecter pour accéder à cette page."
     login_manager.login_message_category = "info"
     
