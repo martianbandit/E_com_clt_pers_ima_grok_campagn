@@ -386,7 +386,8 @@ def metrics():
                            limit=limit)
 
 @app.route('/profiles', methods=['GET', 'POST'])
-def profiles():
+@app.route('/profiles/<int:page>', methods=['GET'])
+def profiles(page=1):
     if request.method == 'POST':
         niche_id = int(request.form.get('niche_id', 0))
         num_profiles = int(request.form.get('num_profiles', 5))
@@ -460,13 +461,19 @@ def profiles():
     niches = NicheMarket.query.all()
     customer_profiles = session.get('customer_profiles', [])
     
-    # Get saved profiles from database for display
-    saved_profiles = Customer.query.order_by(Customer.created_at.desc()).limit(20).all()
+    # Configuration de la pagination
+    per_page = 10  # Nombre de profils par page
+    
+    # Get saved profiles from database with pagination
+    paginated_profiles = Customer.query.order_by(Customer.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
     
     return render_template('profiles.html', 
                            niches=niches, 
                            profiles=customer_profiles,
-                           saved_profiles=saved_profiles)
+                           saved_profiles=paginated_profiles.items,
+                           pagination=paginated_profiles)
 
 @app.route('/generate_persona/<int:profile_index>', methods=['POST'])
 def generate_persona(profile_index):
