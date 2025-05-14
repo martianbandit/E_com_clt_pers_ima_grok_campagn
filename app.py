@@ -45,7 +45,12 @@ login_manager.login_message_category = 'warning'
 @login_manager.user_loader
 def load_user(user_id):
     from models import User
-    return User.query.get(int(user_id))
+    try:
+        # Essai de conversion en entier pour les anciens utilisateurs
+        return User.query.get(int(user_id))
+    except ValueError:
+        # Si l'ID n'est pas un entier, il s'agit d'un UUID
+        return User.query.get(user_id)
 
 # Importation et enregistrement du blueprint d'authentification Google
 from google_auth import google_auth
