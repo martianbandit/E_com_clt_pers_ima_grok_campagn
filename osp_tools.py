@@ -409,14 +409,14 @@ def render_value_map_html(value_map: Dict) -> str:
         """
         
         for pain in audience.get("pain_points", []):
-            html += f'<li>{pain}</li>\n'
+            html += f'<li style="color: var(--bs-dark);">{pain}</li>\n'
         
         html += """
                         </ul>
         """
         
         if audience.get("journey_stage"):
-            html += f'<p><strong>Étape du parcours:</strong> {audience.get("journey_stage")}</p>\n'
+            html += f'<p style="color: var(--bs-dark);"><strong>Étape du parcours:</strong> {audience.get("journey_stage")}</p>\n'
         
         html += """
                     </div>
@@ -428,14 +428,14 @@ def render_value_map_html(value_map: Dict) -> str:
             </div>
         </div>
         
-        <div class="keywords-section">
-            <h3>Mots-clés prioritaires</h3>
-            <div class="keyword-tags">
+        <div class="value-map-section">
+            <h3 style="color: var(--bs-dark);">Mots-clés prioritaires</h3>
+            <div class="keyword-tags" style="color: var(--bs-dark);">
     """
     
     # Keywords
     for keyword in value_map.get("keywords", []):
-        html += f'<span class="badge bg-secondary me-2 mb-2">{keyword}</span>\n'
+        html += f'<span class="badge bg-primary text-light me-2 mb-2">{keyword}</span>\n'
     
     html += """
             </div>
