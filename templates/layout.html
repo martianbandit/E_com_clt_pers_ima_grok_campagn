@@ -49,8 +49,8 @@
     {% from 'components/header.html' import markeasy_header %}
     {{ markeasy_header() }}
 
-    <!-- Bannières rotatives (uniquement sur les pages authentifiées) -->
-    {% if current_user.is_authenticated %}
+    <!-- Bannières rotatives -->
+    {% if request.path != '/login' and request.path != '/register' and not request.path.startswith('/auth/') %}
         {% from 'components/rotating_banners.html' import rotating_banners %}
         <div class="container mt-3">
             {{ rotating_banners() }}

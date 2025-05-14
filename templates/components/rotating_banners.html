@@ -39,9 +39,33 @@
                 <div class="banner-text">
                     <h3>{{ _('Parrainez vos amis') }}</h3>
                     <p>{{ _('1000 tokens offerts pour chaque ami inscrit avec votre lien !') }}</p>
-                    <button class="btn btn-light btn-sm mt-2 copy-link-btn" data-ref-link="https://markeasy.ai/ref/{{ current_user.id if current_user.is_authenticated else 'demo' }}">
+                    <button class="btn btn-light btn-sm mt-2 copy-link-btn" data-ref-link="{{ url_for('index', _external=True) }}?ref=share">
                         <i class="fas fa-link me-1"></i>{{ _('Copier mon lien') }}
                     </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bannière 4: Promotion réseaux sociaux -->
+        <div class="banner banner-social-promo" id="banner-4">
+            <div class="banner-content">
+                <div class="banner-icon">
+                    <i class="fas fa-share-alt fa-3x"></i>
+                </div>
+                <div class="banner-text">
+                    <h3>{{ _('Partagez et gagnez !') }}</h3>
+                    <p>{{ _('Publiez notre application sur vos réseaux sociaux et obtenez 500 tokens gratuits !') }}</p>
+                    <div class="social-mini-buttons mt-2">
+                        <a href="https://www.facebook.com/share?url={{ url_for('index', _external=True) }}" target="_blank" class="btn btn-sm btn-light me-1">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?text={{ _('Je viens de découvrir MarkEasy, le marketing IA ultra-performant !') }}&url={{ url_for('index', _external=True) }}" target="_blank" class="btn btn-sm btn-light me-1">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ url_for('index', _external=True) }}" target="_blank" class="btn btn-sm btn-light">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -52,6 +76,7 @@
         <button class="indicator active" data-target="banner-1"></button>
         <button class="indicator" data-target="banner-2"></button>
         <button class="indicator" data-target="banner-3"></button>
+        <button class="indicator" data-target="banner-4"></button>
     </div>
 </div>
 
@@ -135,6 +160,31 @@
         background: linear-gradient(135deg, #3F51B5, #1A237E);
     }
     
+    .banner-social-promo {
+        background: linear-gradient(135deg, #9C27B0, #4A148C);
+    }
+    
+    .social-mini-buttons {
+        display: flex;
+        gap: 0.25rem;
+    }
+    
+    .social-mini-buttons .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+    
+    .social-mini-buttons .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+    }
+    
     .banner-indicators {
         position: absolute;
         bottom: 0.5rem;
@@ -209,15 +259,29 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Rotation automatique des bannières
+        // Rotation automatique des bannières avec effet WOW
         const banners = document.querySelectorAll('.banner');
         const indicators = document.querySelectorAll('.indicator');
         let currentBannerIndex = 0;
         
+        // Initialiser la première bannière comme active
+        banners[0].classList.add('active');
+        indicators[0].classList.add('active');
+        
         function rotateBanners() {
-            // Masquer toutes les bannières
+            // Préparer la transition avec effet de fondu
             banners.forEach(banner => {
-                banner.classList.remove('active');
+                if (banner.classList.contains('active')) {
+                    // Faire disparaître la bannière active avec une animation
+                    banner.style.opacity = '0';
+                    banner.style.transform = 'translateY(20px)';
+                    
+                    // Retirer la classe active après l'animation
+                    setTimeout(() => {
+                        banner.classList.remove('active');
+                        banner.style.visibility = 'hidden';
+                    }, 500);
+                }
             });
             
             // Désactiver tous les indicateurs
@@ -225,15 +289,25 @@
                 indicator.classList.remove('active');
             });
             
-            // Passer à la bannière suivante
-            currentBannerIndex = (currentBannerIndex + 1) % banners.length;
-            
-            // Afficher la bannière courante
-            banners[currentBannerIndex].classList.add('active');
-            indicators[currentBannerIndex].classList.add('active');
+            // Attendre la fin de l'animation de disparition
+            setTimeout(() => {
+                // Passer à la bannière suivante
+                currentBannerIndex = (currentBannerIndex + 1) % banners.length;
+                
+                // Afficher la nouvelle bannière avec animation
+                banners[currentBannerIndex].style.visibility = 'visible';
+                banners[currentBannerIndex].classList.add('active');
+                indicators[currentBannerIndex].classList.add('active');
+                
+                // Animer l'apparition avec un délai pour l'effet séquentiel
+                setTimeout(() => {
+                    banners[currentBannerIndex].style.opacity = '1';
+                    banners[currentBannerIndex].style.transform = 'translateY(0)';
+                }, 50);
+            }, 500);
         }
         
-        // Démarrer la rotation automatique
+        // Démarrer la rotation automatique (3 secondes par bannière)
         let rotationInterval = setInterval(rotateBanners, 3000);
         
         // Permettre le clic sur les indicateurs pour changer de bannière
@@ -242,9 +316,17 @@
                 // Arrêter la rotation automatique
                 clearInterval(rotationInterval);
                 
-                // Masquer toutes les bannières
+                // Faire disparaître la bannière actuelle
                 banners.forEach(banner => {
-                    banner.classList.remove('active');
+                    if (banner.classList.contains('active')) {
+                        banner.style.opacity = '0';
+                        banner.style.transform = 'translateY(20px)';
+                        
+                        setTimeout(() => {
+                            banner.classList.remove('active');
+                            banner.style.visibility = 'hidden';
+                        }, 300);
+                    }
                 });
                 
                 // Désactiver tous les indicateurs
@@ -252,17 +334,27 @@
                     indicator.classList.remove('active');
                 });
                 
-                // Afficher la bannière sélectionnée
-                currentBannerIndex = index;
-                banners[currentBannerIndex].classList.add('active');
-                indicators[currentBannerIndex].classList.add('active');
+                // Attendre la fin de l'animation
+                setTimeout(() => {
+                    // Afficher la bannière sélectionnée
+                    currentBannerIndex = index;
+                    banners[currentBannerIndex].style.visibility = 'visible';
+                    banners[currentBannerIndex].classList.add('active');
+                    indicators[currentBannerIndex].classList.add('active');
+                    
+                    // Animer l'apparition
+                    setTimeout(() => {
+                        banners[currentBannerIndex].style.opacity = '1';
+                        banners[currentBannerIndex].style.transform = 'translateY(0)';
+                    }, 50);
+                }, 300);
                 
                 // Redémarrer la rotation automatique
                 rotationInterval = setInterval(rotateBanners, 3000);
             });
         });
         
-        // Fonctionnalité pour copier le lien de parrainage
+        // Fonctionnalité pour copier le lien de parrainage avec effet visuel amélioré
         const copyLinkBtn = document.querySelector('.copy-link-btn');
         if (copyLinkBtn) {
             copyLinkBtn.addEventListener('click', function() {
@@ -280,15 +372,75 @@
                 // Supprimer l'élément temporaire
                 document.body.removeChild(tempInput);
                 
-                // Afficher l'animation "Copié"
+                // Afficher l'animation "Copié" avec effet amélioré
                 this.classList.add('copied');
                 
-                // Supprimer l'animation après 2 secondes
+                // Créer un élément de notification flottant
+                const notification = document.createElement('div');
+                notification.className = 'copy-notification';
+                notification.innerHTML = '<i class="fas fa-check-circle"></i> Lien copié !';
+                document.body.appendChild(notification);
+                
+                // Animer la notification
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 10);
+                
+                // Supprimer la notification après 2 secondes
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 2000);
+                
+                // Supprimer l'animation du bouton après 2 secondes
                 setTimeout(() => {
                     this.classList.remove('copied');
                 }, 2000);
             });
         }
+        
+        // Ajouter un effet de pulsation aux icônes des réseaux sociaux
+        const socialButtons = document.querySelectorAll('.social-mini-buttons .btn');
+        if (socialButtons.length > 0) {
+            socialButtons.forEach((btn, index) => {
+                // Ajouter un délai différent pour chaque bouton
+                setTimeout(() => {
+                    btn.classList.add('pulse-effect');
+                }, index * 300);
+            });
+        }
     });
 </script>
+
+<style>
+    /* Style pour la notification de copie */
+    .copy-notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: rgba(40, 167, 69, 0.9);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 50px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transform: translateY(30px);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .copy-notification.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    
+    .copy-notification i {
+        font-size: 1.2rem;
+    }
+</style>
 {% endmacro %}
