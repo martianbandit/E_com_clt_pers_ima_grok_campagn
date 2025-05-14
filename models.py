@@ -903,3 +903,39 @@ class ImportedProduct(db.Model):
     
     def __repr__(self):
         return f'<ImportedProduct {self.id} from {self.source}>'
+        
+        
+# Classe UserActivity définie à la fin du fichier pour éviter les références circulaires
+class UserActivity(db.Model):
+    """Modèle pour suivre les activités des utilisateurs"""
+    __tablename__ = 'user_activities'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=False)
+    activity_type = db.Column(db.String(50), nullable=False)  # login, profile_update, create_campaign, etc.
+    description = db.Column(db.Text, nullable=True)
+    ip_address = db.Column(db.String(50), nullable=True)
+    user_agent = db.Column(db.String(255), nullable=True)
+    activity_data = db.Column(JSONB, nullable=True)  # Données supplémentaires sur l'activité (renommé de metadata)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relation avec User
+    user = db.relationship('User', backref=db.backref('user_activities', lazy=True, cascade='all, delete-orphan'))
+    
+    @classmethod
+    def log_activity(cls, user_id, activity_type, description=None, ip_address=None, user_agent=None, metadata=None):
+        """Crée une entrée d'activité pour un utilisateur"""
+        activity = cls(
+            user_id=user_id,
+            activity_type=activity_type,
+            description=description,
+            ip_address=ip_address,
+            user_agent=user_agent,
+            activity_data=metadata  # Utilise activity_data à la place de metadata
+        )
+        db.session.add(activity)
+        return activity
+        
+    @staticmethod
+    def get_recent_activities(user_id, limit=10):
+        """Récupère les activités récentes d'un utilisateur"""
+        return UserActivity.query.filter_by(user_id=user_id).order_by(UserActivity.created_at.desc()).limit(limit).all()
