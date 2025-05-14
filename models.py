@@ -525,7 +525,15 @@ class OSPAnalysis(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     analysis_type = db.Column(db.Enum(OSPAnalysisType), nullable=False)
     title = db.Column(db.String(100), nullable=False)
-    content = db.Column(JSONB, nullable=False)  # Stored as JSON with the analysis results
+    
+    # Input data and results
+    input_data = db.Column(JSONB, nullable=False)  # Stored as JSON with the input parameters
+    output_data = db.Column(JSONB, nullable=False)  # Stored as JSON with the analysis results
+    html_result = db.Column(db.Text, nullable=True)  # Optional HTML rendering of results
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relations avec les autres entités
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
@@ -540,10 +548,6 @@ class OSPAnalysis(db.Model):
     persona = db.relationship('CustomerPersona', backref=db.backref('osp_analyses', lazy=True))
     customer = db.relationship('Customer', backref=db.backref('osp_analyses', lazy=True))
     boutique = db.relationship('Boutique', backref=db.backref('osp_analyses', lazy=True))
-    
-    # Métadonnées
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def __repr__(self):
         return f'<OSPAnalysis {self.id}: {self.analysis_type.value} - {self.title}>'
