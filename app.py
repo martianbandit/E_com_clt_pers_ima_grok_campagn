@@ -2499,6 +2499,13 @@ def generate_value_map():
         key_features = request.form.get('key_features', '').strip().split('\n') if request.form.get('key_features') else None
         competitors = request.form.get('competitors', '').strip().split('\n') if request.form.get('competitors') else None
         
+        # S'assurer que les valeurs ne sont pas None
+        product_name = product_name or ""
+        product_description = product_description or ""
+        target_audience = target_audience or ""
+        industry = industry or ""
+        niche_market = niche_market or ""
+        
         # Générer la carte de valeur
         value_map = generate_product_value_map(
             product_name=product_name,
@@ -2542,6 +2549,8 @@ def generate_value_map():
 @app.route('/osp-tools/analyze-content', methods=['POST'])
 def analyze_content():
     """Analyser du contenu selon les directives OSP"""
+    # Import nécessaire des modèles
+    from models import Boutique, Customer, Campaign, Product, CustomerPersona, OSPAnalysis
     try:
         # Récupérer les données du formulaire
         content = request.form.get('content')
@@ -2584,6 +2593,8 @@ def analyze_content():
 @app.route('/osp-tools/optimize-seo', methods=['POST'])
 def optimize_seo():
     """Optimiser du contenu pour le SEO selon les directives OSP"""
+    # Import nécessaire des modèles
+    from models import Boutique, Campaign, Product, OSPAnalysis
     try:
         # Récupérer les données du formulaire
         title = request.form.get('title')
