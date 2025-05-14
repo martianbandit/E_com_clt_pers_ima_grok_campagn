@@ -49,13 +49,14 @@
     {% from 'components/header.html' import markeasy_header %}
     {{ markeasy_header() }}
 
-    <!-- Bannières rotatives -->
+    <!-- Bannières rotatives temporairement désactivées
     {% if request.path != '/login' and request.path != '/register' and not request.path.startswith('/auth/') %}
         {% from 'components/rotating_banners.html' import rotating_banners %}
         <div class="container mt-3">
             {{ rotating_banners() }}
         </div>
     {% endif %}
+    -->
         
     <!-- Main Content Container -->
     <div class="container mt-4">

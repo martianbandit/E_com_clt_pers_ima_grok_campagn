@@ -181,10 +181,16 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Initialiser les tooltips Bootstrap
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
+        try {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
+            if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+                tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                    new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            }
+        } catch (e) {
+            console.log('Erreur initialisation tooltips:', e);
+        }
         
         // Fonctionnalité pour copier le lien
         const copyLinkBtn = document.querySelector('.copy-link');
