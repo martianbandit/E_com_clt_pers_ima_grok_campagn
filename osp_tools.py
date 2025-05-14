@@ -299,34 +299,34 @@ def render_value_map_html(value_map: Dict) -> str:
     """
     html = """
     <div class="osp-value-map">
-        <div class="taglines-section">
-            <h3>Phrases d'accroche</h3>
-            <ul class="taglines-list">
+        <div class="value-map-section">
+            <h3 style="color: var(--bs-dark);">Phrases d'accroche</h3>
+            <ul class="taglines-list" style="color: var(--bs-dark);">
     """
     
     # Taglines
     for tagline in value_map.get("taglines", []):
-        html += f'<li class="tagline-item">{tagline}</li>\n'
+        html += f'<li class="value-map-item">{tagline}</li>\n'
     
     html += """
             </ul>
         </div>
         
-        <div class="position-statements-section">
-            <h3>Déclarations de positionnement</h3>
-            <ul class="position-statements-list">
+        <div class="value-map-section">
+            <h3 style="color: var(--bs-dark);">Déclarations de positionnement</h3>
+            <ul class="position-statements-list" style="color: var(--bs-dark);">
     """
     
     # Position statements
     for statement in value_map.get("position_statements", []):
-        html += f'<li class="position-statement-item">{statement}</li>\n'
+        html += f'<li class="value-map-item">{statement}</li>\n'
     
     html += """
             </ul>
         </div>
         
-        <div class="value-propositions-section">
-            <h3>Propositions de valeur</h3>
+        <div class="value-map-section">
+            <h3 style="color: var(--bs-dark);">Propositions de valeur</h3>
             <div class="row">
     """
     
@@ -334,17 +334,17 @@ def render_value_map_html(value_map: Dict) -> str:
     for vp in value_map.get("value_propositions", []):
         html += f"""
             <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <h4>{vp.get("title", "")}</h4>
+                <div class="card h-100 bg-light">
+                    <div class="card-header" style="background-color: var(--bs-light); border-bottom: 2px solid var(--bs-primary);">
+                        <h4 style="color: var(--bs-dark);">{vp.get("title", "")}</h4>
                     </div>
-                    <div class="card-body">
-                        <p>{vp.get("description", "")}</p>
-                        <ul>
+                    <div class="card-body" style="color: var(--bs-dark);">
+                        <p style="color: var(--bs-dark);">{vp.get("description", "")}</p>
+                        <ul style="color: var(--bs-dark);">
         """
         
         for benefit in vp.get("benefits", []):
-            html += f'<li>{benefit}</li>\n'
+            html += f'<li style="color: var(--bs-dark);">{benefit}</li>\n'
         
         html += """
                         </ul>
@@ -357,8 +357,8 @@ def render_value_map_html(value_map: Dict) -> str:
             </div>
         </div>
         
-        <div class="unique-selling-points-section">
-            <h3>Points de vente uniques</h3>
+        <div class="value-map-section">
+            <h3 style="color: var(--bs-dark);">Points de vente uniques</h3>
             <div class="row">
     """
     
@@ -366,12 +366,12 @@ def render_value_map_html(value_map: Dict) -> str:
     for usp in value_map.get("unique_selling_points", []):
         html += f"""
             <div class="col-md-6 mb-3">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <h4>{usp.get("title", "")}</h4>
+                <div class="card h-100 bg-light">
+                    <div class="card-header" style="background-color: var(--bs-light); border-bottom: 2px solid var(--bs-success);">
+                        <h4 style="color: var(--bs-dark);">{usp.get("title", "")}</h4>
                     </div>
-                    <div class="card-body">
-                        <p><strong>Avantage comparatif:</strong> {usp.get("comparative_advantage", "")}</p>
+                    <div class="card-body" style="color: var(--bs-dark);">
+                        <p style="color: var(--bs-dark);"><strong>Avantage comparatif:</strong> {usp.get("comparative_advantage", "")}</p>
                     </div>
                 </div>
             </div>
@@ -381,8 +381,8 @@ def render_value_map_html(value_map: Dict) -> str:
             </div>
         </div>
         
-        <div class="audiences-section">
-            <h3>Segments d'audience</h3>
+        <div class="value-map-section">
+            <h3 style="color: var(--bs-dark);">Segments d'audience</h3>
             <div class="row">
     """
     
@@ -390,22 +390,22 @@ def render_value_map_html(value_map: Dict) -> str:
     for audience in value_map.get("audiences", []):
         html += f"""
             <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <h4>{audience.get("segment", "")}</h4>
+                <div class="card h-100 bg-light">
+                    <div class="card-header" style="background-color: var(--bs-light); border-bottom: 2px solid var(--bs-info);">
+                        <h4 style="color: var(--bs-dark);">{audience.get("segment", "")}</h4>
                     </div>
-                    <div class="card-body">
-                        <h5>Besoins</h5>
-                        <ul>
+                    <div class="card-body" style="color: var(--bs-dark);">
+                        <h5 style="color: var(--bs-dark);">Besoins</h5>
+                        <ul style="color: var(--bs-dark);">
         """
         
         for need in audience.get("needs", []):
-            html += f'<li>{need}</li>\n'
+            html += f'<li style="color: var(--bs-dark);">{need}</li>\n'
         
         html += """
                         </ul>
-                        <h5>Points de douleur</h5>
-                        <ul>
+                        <h5 style="color: var(--bs-dark);">Points de douleur</h5>
+                        <ul style="color: var(--bs-dark);">
         """
         
         for pain in audience.get("pain_points", []):
