@@ -1,0 +1,69 @@
+{% macro toast_script() %}
+<script>
+    // Fonction pour créer un toast ninja personnalisé
+    window.showNinjaToast = function(message, type = 'info') {
+        // Supprimer tous les toasts existants
+        const existingToasts = document.querySelectorAll('.ninja-toast');
+        existingToasts.forEach(toast => toast.remove());
+        
+        // Créer un nouveau toast
+        const toast = document.createElement('div');
+        toast.className = `ninja-toast ninja-toast-${type}`;
+        
+        // Déterminer l'icône en fonction du type
+        let icon = 'info-circle';
+        if (type === 'success') icon = 'check-circle';
+        if (type === 'error') icon = 'exclamation-circle';
+        if (type === 'warning') icon = 'exclamation-triangle';
+        
+        // Déterminer les titres traduits
+        let typeTitle = type;
+        switch(type) {
+            case 'success':
+                typeTitle = "{{ _('Succès') }}";
+                break;
+            case 'error':
+                typeTitle = "{{ _('Erreur') }}";
+                break;
+            case 'warning':
+                typeTitle = "{{ _('Avertissement') }}";
+                break;
+            case 'info':
+                typeTitle = "{{ _('Information') }}";
+                break;
+            default:
+                typeTitle = type.charAt(0).toUpperCase() + type.slice(1);
+        }
+        
+        // Créer le contenu du toast
+        toast.innerHTML = `
+            <div class="ninja-toast-header">
+                <span class="ninja-toast-title">
+                    <i class="fas fa-${icon} me-2"></i>
+                    ${typeTitle}
+                </span>
+                <button type="button" class="btn-close" aria-label="{{ _('Fermer') }}" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+            <div class="ninja-toast-body">
+                ${message}
+            </div>
+        `;
+        
+        // Ajouter le toast au DOM
+        document.body.appendChild(toast);
+        
+        // Afficher le toast avec une transition
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+        
+        // Auto-fermer après 5 secondes
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 5000);
+    }
+</script>
+{% endmacro %}

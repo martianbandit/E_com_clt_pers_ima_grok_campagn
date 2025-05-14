@@ -1,0 +1,103 @@
+{% macro markeasy_header() %}
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="{{ url_for('static', filename='img/markeasy-logo.png') }}" alt="MarkEasy" class="markeasy-logo me-2">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">
+                        <i class="fas fa-home me-1"></i> {{ _('Accueil') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/dashboard' %}active{% endif %}" href="/dashboard">
+                        <i class="fas fa-chart-line me-1"></i> {{ _('Tableau de bord') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/profiles' %}active{% endif %}" href="/profiles">
+                        <i class="fas fa-users me-1"></i> {{ _('Profils clients') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/campaigns' %}active{% endif %}" href="/campaigns">
+                        <i class="fas fa-bullhorn me-1"></i> {{ _('Campagnes') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/products' %}active{% endif %}" href="/products">
+                        <i class="fas fa-box-open me-1"></i> {{ _('Fiches Produits') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/metrics_dashboard' %}active{% endif %}" href="/metrics_dashboard">
+                        <i class="fas fa-chart-bar me-1"></i> {{ _('Métriques') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/osp-tools' %}active{% endif %}" href="/osp-tools">
+                        <i class="fas fa-tools me-1"></i> {{ _('Outils OSP') }}
+                    </a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <!-- MarkEasy slogan -->
+                <div class="d-none d-lg-block me-3">
+                    <span class="ninja-slogan small">{{ _("Le marketing, c'est facile avec MarkEasy!") }}</span>
+                </div>
+                <!-- Theme Toggle Button -->
+                {% from 'components/theme_switcher.html' import theme_switcher_button %}
+                {{ theme_switcher_button() }}
+                <!-- Language Selector Dropdown -->
+                <div class="dropdown me-2">
+                    <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-globe"></i> 
+                        {% set current_lang = session.get('language', 'en') %}
+                        {% if current_lang == 'en' %}
+                            <span class="d-none d-md-inline">English</span>
+                        {% elif current_lang == 'fr' %}
+                            <span class="d-none d-md-inline">Français</span>
+                        {% elif current_lang == 'es' %}
+                            <span class="d-none d-md-inline">Español</span>
+                        {% elif current_lang == 'de' %}
+                            <span class="d-none d-md-inline">Deutsch</span>
+                        {% elif current_lang == 'it' %}
+                            <span class="d-none d-md-inline">Italiano</span>
+                        {% elif current_lang == 'pt' %}
+                            <span class="d-none d-md-inline">Português</span>
+                        {% elif current_lang == 'nl' %}
+                            <span class="d-none d-md-inline">Nederlands</span>
+                        {% elif current_lang == 'zh' %}
+                            <span class="d-none d-md-inline">中文</span>
+                        {% elif current_lang == 'ja' %}
+                            <span class="d-none d-md-inline">日本語</span>
+                        {% elif current_lang == 'ru' %}
+                            <span class="d-none d-md-inline">Русский</span>
+                        {% else %}
+                            <span class="d-none d-md-inline">{{ current_lang | upper }}</span>
+                        {% endif %}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                        <li><a class="dropdown-item {% if session.get('language', 'en') == 'en' %}active{% endif %}" href="{{ url_for('change_language', lang='en') }}">English</a></li>
+                        <li><a class="dropdown-item {% if session.get('language', 'en') == 'fr' %}active{% endif %}" href="{{ url_for('change_language', lang='fr') }}">Français</a></li>
+                        <li><a class="dropdown-item {% if session.get('language', 'en') == 'es' %}active{% endif %}" href="{{ url_for('change_language', lang='es') }}">Español</a></li>
+                        <li><a class="dropdown-item {% if session.get('language', 'en') == 'de' %}active{% endif %}" href="{{ url_for('change_language', lang='de') }}">Deutsch</a></li>
+                        <li><a class="dropdown-item {% if session.get('language', 'en') == 'it' %}active{% endif %}" href="{{ url_for('change_language', lang='it') }}">Italiano</a></li>
+                        <li><a class="dropdown-item {% if session.get('language', 'en') == 'pt' %}active{% endif %}" href="{{ url_for('change_language', lang='pt') }}">Português</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item {% if session.get('language', 'en') == 'nl' %}active{% endif %}" href="{{ url_for('change_language', lang='nl') }}">Nederlands</a></li>
+                        <li><a class="dropdown-item {% if session.get('language', 'en') == 'zh' %}active{% endif %}" href="{{ url_for('change_language', lang='zh') }}">中文</a></li>
+                        <li><a class="dropdown-item {% if session.get('language', 'en') == 'ja' %}active{% endif %}" href="{{ url_for('change_language', lang='ja') }}">日本語</a></li>
+                        <li><a class="dropdown-item {% if session.get('language', 'en') == 'ru' %}active{% endif %}" href="{{ url_for('change_language', lang='ru') }}">Русский</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endmacro %}
