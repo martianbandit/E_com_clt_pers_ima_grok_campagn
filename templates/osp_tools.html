@@ -230,6 +230,17 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Option de sauvegarde -->
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="save_result" name="save_result" {% if should_save %}checked{% endif %}>
+                        <label class="form-check-label" for="save_result">{{ _("Sauvegarder cette analyse") }}</label>
+                    </div>
+                    
+                    <div class="mb-3 save-options" {% if not should_save %}style="display: none;"{% endif %}>
+                        <label for="title" class="form-label">{{ _("Titre de l'analyse") }}</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ title or 'Carte de valeur - ' + (product_name or '') }}">
+                    </div>
+                    
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">{{ _("Générer la Carte de Valeur") }}</button>
                     </div>
@@ -346,6 +357,18 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Option de sauvegarde -->
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="save_result" name="save_result" {% if should_save %}checked{% endif %}>
+                        <label class="form-check-label" for="save_result">{{ _("Sauvegarder cette analyse") }}</label>
+                    </div>
+                    
+                    <div class="mb-3 save-options" {% if not should_save %}style="display: none;"{% endif %}>
+                        <label for="title" class="form-label">{{ _("Titre de l'analyse") }}</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ title or 'Analyse de contenu - ' + (content_type or '') }}">
+                    </div>
+                    
                     <div class="d-grid">
                         <button type="submit" class="btn btn-success">{{ _("Analyser le Contenu") }}</button>
                     </div>
