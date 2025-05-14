@@ -1,0 +1,294 @@
+{% macro rotating_banners() %}
+<div class="rotating-banners-container">
+    <!-- Conteneur pour les bannières rotatives -->
+    <div class="rotating-banners">
+        <!-- Bannière 1: Remboursement 100% -->
+        <div class="banner banner-refund active" id="banner-1">
+            <div class="banner-content">
+                <div class="banner-icon">
+                    <i class="fas fa-shield-alt fa-3x"></i>
+                </div>
+                <div class="banner-text">
+                    <h3>{{ _('Satisfaction Garantie') }}</h3>
+                    <p>{{ _('Remboursement à 100%% sans condition, quelle que soit la raison !') }}</p>
+                    <a href="{{ url_for('refund_policy') }}" class="btn btn-light btn-sm mt-2">{{ _('En savoir plus') }}</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bannière 2: Programme de tokens pour feedback -->
+        <div class="banner banner-tokens" id="banner-2">
+            <div class="banner-content">
+                <div class="banner-icon">
+                    <i class="fas fa-coins fa-3x"></i>
+                </div>
+                <div class="banner-text">
+                    <h3>{{ _('Gagnez des Tokens') }}</h3>
+                    <p>{{ _('Obtenez jusqu\'à 500 tokens en partageant votre expérience !') }}</p>
+                    <a href="{{ url_for('refund_policy') }}#tokens" class="btn btn-light btn-sm mt-2">{{ _('Participer') }}</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bannière 3: Programme de parrainage -->
+        <div class="banner banner-referral" id="banner-3">
+            <div class="banner-content">
+                <div class="banner-icon">
+                    <i class="fas fa-users fa-3x"></i>
+                </div>
+                <div class="banner-text">
+                    <h3>{{ _('Parrainez vos amis') }}</h3>
+                    <p>{{ _('1000 tokens offerts pour chaque ami inscrit avec votre lien !') }}</p>
+                    <button class="btn btn-light btn-sm mt-2 copy-link-btn" data-ref-link="https://markeasy.ai/ref/{{ current_user.id if current_user.is_authenticated else 'demo' }}">
+                        <i class="fas fa-link me-1"></i>{{ _('Copier mon lien') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Indicateurs de pagination -->
+    <div class="banner-indicators">
+        <button class="indicator active" data-target="banner-1"></button>
+        <button class="indicator" data-target="banner-2"></button>
+        <button class="indicator" data-target="banner-3"></button>
+    </div>
+</div>
+
+<style>
+    .rotating-banners-container {
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+    
+    .rotating-banners {
+        position: relative;
+        height: 120px;
+    }
+    
+    .banner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        visibility: hidden;
+    }
+    
+    .banner.active {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+        z-index: 2;
+    }
+    
+    .banner-content {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .banner-icon {
+        flex: 0 0 80px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.85);
+        filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+    }
+    
+    .banner-text {
+        flex: 1;
+        padding-left: 1rem;
+        color: white;
+    }
+    
+    .banner-text h3 {
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    
+    .banner-text p {
+        margin-bottom: 0.5rem;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+    
+    .banner-refund {
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    }
+    
+    .banner-tokens {
+        background: linear-gradient(135deg, #FFC107, #FF8F00);
+    }
+    
+    .banner-referral {
+        background: linear-gradient(135deg, #3F51B5, #1A237E);
+    }
+    
+    .banner-indicators {
+        position: absolute;
+        bottom: 0.5rem;
+        right: 1rem;
+        display: flex;
+        gap: 0.5rem;
+        z-index: 3;
+    }
+    
+    .indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.5);
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .indicator.active {
+        background-color: white;
+        transform: scale(1.2);
+    }
+    
+    .copy-link-btn {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .copy-link-btn::after {
+        content: "{{ _('Copié !') }}";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #28a745;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+        color: white;
+    }
+    
+    .copy-link-btn.copied::after {
+        transform: translateY(0);
+    }
+    
+    /* Animation pour l'effet WOW */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes glow {
+        0% { box-shadow: 0 0 0 rgba(255, 255, 255, 0.7); }
+        50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.7); }
+        100% { box-shadow: 0 0 0 rgba(255, 255, 255, 0.7); }
+    }
+    
+    .banner.active .banner-icon i {
+        animation: pulse 2s infinite;
+    }
+    
+    .banner.active .btn {
+        animation: glow 3s infinite;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Rotation automatique des bannières
+        const banners = document.querySelectorAll('.banner');
+        const indicators = document.querySelectorAll('.indicator');
+        let currentBannerIndex = 0;
+        
+        function rotateBanners() {
+            // Masquer toutes les bannières
+            banners.forEach(banner => {
+                banner.classList.remove('active');
+            });
+            
+            // Désactiver tous les indicateurs
+            indicators.forEach(indicator => {
+                indicator.classList.remove('active');
+            });
+            
+            // Passer à la bannière suivante
+            currentBannerIndex = (currentBannerIndex + 1) % banners.length;
+            
+            // Afficher la bannière courante
+            banners[currentBannerIndex].classList.add('active');
+            indicators[currentBannerIndex].classList.add('active');
+        }
+        
+        // Démarrer la rotation automatique
+        let rotationInterval = setInterval(rotateBanners, 3000);
+        
+        // Permettre le clic sur les indicateurs pour changer de bannière
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', function() {
+                // Arrêter la rotation automatique
+                clearInterval(rotationInterval);
+                
+                // Masquer toutes les bannières
+                banners.forEach(banner => {
+                    banner.classList.remove('active');
+                });
+                
+                // Désactiver tous les indicateurs
+                indicators.forEach(indicator => {
+                    indicator.classList.remove('active');
+                });
+                
+                // Afficher la bannière sélectionnée
+                currentBannerIndex = index;
+                banners[currentBannerIndex].classList.add('active');
+                indicators[currentBannerIndex].classList.add('active');
+                
+                // Redémarrer la rotation automatique
+                rotationInterval = setInterval(rotateBanners, 3000);
+            });
+        });
+        
+        // Fonctionnalité pour copier le lien de parrainage
+        const copyLinkBtn = document.querySelector('.copy-link-btn');
+        if (copyLinkBtn) {
+            copyLinkBtn.addEventListener('click', function() {
+                const refLink = this.getAttribute('data-ref-link');
+                
+                // Créer un élément de texte temporaire
+                const tempInput = document.createElement('input');
+                tempInput.value = refLink;
+                document.body.appendChild(tempInput);
+                
+                // Sélectionner et copier le texte
+                tempInput.select();
+                document.execCommand('copy');
+                
+                // Supprimer l'élément temporaire
+                document.body.removeChild(tempInput);
+                
+                // Afficher l'animation "Copié"
+                this.classList.add('copied');
+                
+                // Supprimer l'animation après 2 secondes
+                setTimeout(() => {
+                    this.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    });
+</script>
+{% endmacro %}

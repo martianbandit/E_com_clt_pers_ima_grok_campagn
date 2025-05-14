@@ -207,6 +207,24 @@
                 </div>
             </div>
             
+            <!-- Partage sur les réseaux sociaux -->
+            <div class="card mb-4 shadow-sm border-primary wow-effect">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-share-alt me-2"></i>Partager cette campagne
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% from 'components/social_share_buttons.html' import social_share_buttons %}
+                    {{ social_share_buttons(
+                        campaign_title=campaign.title,
+                        campaign_description=campaign.content[:100] + '...' if campaign.content|length > 100 else campaign.content,
+                        campaign_image_url=campaign.image_url if campaign.image_url else '',
+                        current_url=request.url
+                    ) }}
+                </div>
+            </div>
+            
             {% if campaign.profile_data %}
             <div class="card">
                 <div class="card-header bg-secondary text-white">

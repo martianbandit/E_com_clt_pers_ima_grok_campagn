@@ -49,6 +49,14 @@
     {% from 'components/header.html' import markeasy_header %}
     {{ markeasy_header() }}
 
+    <!-- Bannières rotatives (uniquement sur les pages authentifiées) -->
+    {% if current_user.is_authenticated %}
+        {% from 'components/rotating_banners.html' import rotating_banners %}
+        <div class="container mt-3">
+            {{ rotating_banners() }}
+        </div>
+    {% endif %}
+        
     <!-- Main Content Container -->
     <div class="container mt-4">
         <div id="alert-placeholder"></div>

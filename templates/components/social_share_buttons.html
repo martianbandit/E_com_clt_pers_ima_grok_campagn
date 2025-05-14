@@ -1,0 +1,238 @@
+{% macro social_share_buttons(campaign_title='', campaign_description='', campaign_image_url='', current_url='') %}
+<div class="social-share-container">
+    <div class="social-share-header">
+        <h5 class="mb-2">
+            <i class="fas fa-share-alt me-2"></i>{{ _('Exporter et partager cette campagne') }}
+        </h5>
+        <p class="text-muted small">{{ _('Utilisez ces boutons pour publier votre campagne sur vos réseaux sociaux favoris') }}</p>
+    </div>
+    
+    <div class="social-buttons">
+        <!-- Facebook -->
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ current_url }}&quote={{ campaign_title }}" 
+           target="_blank" 
+           class="social-button facebook-share" 
+           data-toggle="tooltip" 
+           title="{{ _('Partager sur Facebook') }}">
+            <i class="fab fa-facebook-f"></i>
+            <span>Facebook</span>
+        </a>
+        
+        <!-- Twitter/X -->
+        <a href="https://twitter.com/intent/tweet?text={{ campaign_title }}&url={{ current_url }}" 
+           target="_blank" 
+           class="social-button twitter-share" 
+           data-toggle="tooltip" 
+           title="{{ _('Partager sur Twitter/X') }}">
+            <i class="fab fa-twitter"></i>
+            <span>Twitter</span>
+        </a>
+        
+        <!-- LinkedIn -->
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ current_url }}&title={{ campaign_title }}&summary={{ campaign_description }}" 
+           target="_blank" 
+           class="social-button linkedin-share" 
+           data-toggle="tooltip" 
+           title="{{ _('Partager sur LinkedIn') }}">
+            <i class="fab fa-linkedin-in"></i>
+            <span>LinkedIn</span>
+        </a>
+        
+        <!-- Pinterest (pour les images) -->
+        <a href="https://pinterest.com/pin/create/button/?url={{ current_url }}&media={{ campaign_image_url }}&description={{ campaign_title }}" 
+           target="_blank" 
+           class="social-button pinterest-share" 
+           data-toggle="tooltip" 
+           title="{{ _('Épingler sur Pinterest') }}">
+            <i class="fab fa-pinterest-p"></i>
+            <span>Pinterest</span>
+        </a>
+        
+        <!-- Reddit -->
+        <a href="https://www.reddit.com/submit?url={{ current_url }}&title={{ campaign_title }}" 
+           target="_blank" 
+           class="social-button reddit-share" 
+           data-toggle="tooltip" 
+           title="{{ _('Partager sur Reddit') }}">
+            <i class="fab fa-reddit-alien"></i>
+            <span>Reddit</span>
+        </a>
+        
+        <!-- Bouton de copie du lien -->
+        <button class="social-button copy-link" data-url="{{ current_url }}" data-toggle="tooltip" title="{{ _('Copier le lien') }}">
+            <i class="fas fa-link"></i>
+            <span>{{ _('Copier') }}</span>
+        </button>
+    </div>
+    
+    <!-- Exportation en différents formats -->
+    <div class="export-options mt-3">
+        <h6 class="text-muted small mb-2">{{ _('Exporter en') }}:</h6>
+        <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-primary export-pdf">
+                <i class="far fa-file-pdf me-1"></i> PDF
+            </button>
+            <button class="btn btn-outline-primary export-image">
+                <i class="far fa-file-image me-1"></i> {{ _('Image') }}
+            </button>
+            <button class="btn btn-outline-primary export-text">
+                <i class="far fa-file-alt me-1"></i> {{ _('Texte') }}
+            </button>
+            <button class="btn btn-outline-primary export-html">
+                <i class="fas fa-code me-1"></i> HTML
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .social-share-container {
+        background-color: var(--bs-light);
+        border-radius: 10px;
+        padding: 1.25rem;
+        margin: 1.5rem 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .social-share-header h5 {
+        color: var(--bs-primary);
+        font-weight: 600;
+    }
+    
+    .social-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .social-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        min-width: 120px;
+    }
+    
+    .social-button i {
+        font-size: 1.1rem;
+    }
+    
+    .social-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        filter: brightness(1.1);
+    }
+    
+    .facebook-share {
+        background-color: #3b5998;
+    }
+    
+    .twitter-share {
+        background-color: #1da1f2;
+    }
+    
+    .linkedin-share {
+        background-color: #0077b5;
+    }
+    
+    .pinterest-share {
+        background-color: #bd081c;
+    }
+    
+    .reddit-share {
+        background-color: #ff4500;
+    }
+    
+    .copy-link {
+        background-color: #6c757d;
+    }
+    
+    .copy-link.copied {
+        background-color: #28a745;
+    }
+    
+    /* Effet WOW avec animation */
+    @keyframes socialPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.08); }
+        100% { transform: scale(1); }
+    }
+    
+    .social-button:hover i {
+        animation: socialPulse 0.5s ease;
+    }
+    
+    /* Ajout d'une légère animation sur hover pour les boutons d'export */
+    .export-options .btn:hover {
+        transform: translateY(-2px);
+        transition: transform 0.3s ease;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialiser les tooltips Bootstrap
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Fonctionnalité pour copier le lien
+        const copyLinkBtn = document.querySelector('.copy-link');
+        if (copyLinkBtn) {
+            copyLinkBtn.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                
+                // Créer un élément de texte temporaire
+                const tempInput = document.createElement('input');
+                tempInput.value = url;
+                document.body.appendChild(tempInput);
+                
+                // Sélectionner et copier le texte
+                tempInput.select();
+                document.execCommand('copy');
+                
+                // Supprimer l'élément temporaire
+                document.body.removeChild(tempInput);
+                
+                // Mettre à jour le texte et l'apparence du bouton
+                const originalText = this.innerHTML;
+                this.classList.add('copied');
+                this.innerHTML = '<i class="fas fa-check"></i><span>{{ _("Copié !") }}</span>';
+                
+                // Restaurer l'état initial après 2 secondes
+                setTimeout(() => {
+                    this.classList.remove('copied');
+                    this.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+        
+        // Fonctionnalités d'exportation (à implémenter)
+        document.querySelector('.export-pdf')?.addEventListener('click', function() {
+            alert('{{ _("Exportation PDF en cours de développement") }}');
+        });
+        
+        document.querySelector('.export-image')?.addEventListener('click', function() {
+            alert('{{ _("Exportation Image en cours de développement") }}');
+        });
+        
+        document.querySelector('.export-text')?.addEventListener('click', function() {
+            alert('{{ _("Exportation Texte en cours de développement") }}');
+        });
+        
+        document.querySelector('.export-html')?.addEventListener('click', function() {
+            alert('{{ _("Exportation HTML en cours de développement") }}');
+        });
+    });
+</script>
+{% endmacro %}

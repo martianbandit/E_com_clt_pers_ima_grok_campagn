@@ -1,59 +1,299 @@
-/* Animations pour le logo MarkEasy */
+/* Animations pour MarkEasy */
 
-/* Animation pour le logo MarkEasy */
-.markeasy-logo {
-    transition: transform 0.5s ease;
+/* Animation d'entrée pour les cartes avec effet WOW */
+@keyframes wowAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+    }
+    60% {
+        transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
-.navbar-brand:hover .markeasy-logo {
-    animation: markeasy-bounce 0.5s ease;
+/* Animation de flottement pour les éléments attrayants */
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+    100% {
+        transform: translateY(0);
+    }
 }
 
-/* Animation de rebond pour le logo */
-@keyframes markeasy-bounce {
-    0% { transform: translateY(0); }
-    20% { transform: translateY(-10px); }
-    40% { transform: translateY(0); }
-    60% { transform: translateY(-5px); }
-    80% { transform: translateY(0); }
-    100% { transform: translateY(0); }
+/* Animation de scintillement pour attirer l'attention */
+@keyframes sparkle {
+    0% {
+        box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+    }
+    30% {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+    }
 }
 
-/* Animation de pulsation pour le logo footer */
-.markeasy-logo-large {
-    transition: all 0.3s ease;
+/* Animation de rebond pour les boutons */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-15px);
+    }
+    60% {
+        transform: translateY(-7px);
+    }
 }
 
-.markeasy-logo-large:hover {
-    filter: drop-shadow(0 0 8px var(--vibrant-orange));
+/* Animation de rotation 3D pour les cartes */
+@keyframes flipIn {
+    0% {
+        opacity: 0;
+        transform: perspective(400px) rotateY(90deg);
+    }
+    50% {
+        opacity: 1;
+        transform: perspective(400px) rotateY(-10deg);
+    }
+    100% {
+        opacity: 1;
+        transform: perspective(400px) rotateY(0deg);
+    }
 }
 
-/* Animation ninja pour le logo quand on fait défiler la page */
-.scroll-animated .markeasy-logo {
-    animation: ninja-flip 1s ease;
+/* Effet de vague pour les boutons */
+@keyframes ripple {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
+    }
 }
 
-@keyframes ninja-flip {
-    0% { transform: rotateY(0); }
-    50% { transform: rotateY(180deg); }
-    100% { transform: rotateY(360deg); }
+/* Application de l'effet WOW à certains éléments */
+.wow-effect {
+    animation: wowAppear 1s forwards, sparkle 3s 1s infinite;
+    transform-origin: center;
 }
 
-/* Animation pour le texte du slogan */
-.ninja-slogan {
-    display: inline-block;
-    background: linear-gradient(90deg, var(--carbon-black), var(--vibrant-orange));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+/* Effet de rebond pour les boutons importants */
+.bounce-effect {
+    animation: bounce 2s ease infinite;
+}
+
+/* Effet de flottement pour les icônes et petits éléments */
+.float-effect {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Effet de retournement 3D */
+.flip-effect {
+    animation: flipIn 1s forwards;
+    backface-visibility: hidden;
+}
+
+/* Effet d'apparition progressive des éléments de liste */
+.stagger-fade-in > * {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Application des délais d'animation pour l'effet échelonné */
+.stagger-fade-in > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-fade-in > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-fade-in > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-fade-in > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-fade-in > *:nth-child(5) { animation-delay: 0.5s; }
+.stagger-fade-in > *:nth-child(6) { animation-delay: 0.6s; }
+.stagger-fade-in > *:nth-child(7) { animation-delay: 0.7s; }
+.stagger-fade-in > *:nth-child(8) { animation-delay: 0.8s; }
+
+/* Effet de pulsation pour attirer l'attention */
+.pulse-effect {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Effet de brillance pour les éléments sélectionnés */
+.shine-effect {
     position: relative;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
+    overflow: hidden;
 }
 
-.ninja-slogan:hover {
-    transform: scale(1.05);
-    background-position: right center;
+.shine-effect::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+    transform: skewX(-25deg);
+    animation: shine 3s infinite;
 }
+
+@keyframes shine {
+    0% {
+        left: -100%;
+    }
+    20% {
+        left: 100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* Effet de ripple pour les boutons */
+.ripple-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple-effect::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%, -50%);
+    transform-origin: 50% 50%;
+    animation: ripple 2s infinite;
+}
+
+/* Animation spéciale pour les bannières rotatives */
+.banner-transition {
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.banner-transition.active {
+    animation: bannerEnter 0.5s forwards;
+}
+
+@keyframes bannerEnter {
+    0% {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Effet 3D Hover pour les cartes */
+.card-3d-effect {
+    transition: all 0.3s ease;
+    transform-style: preserve-3d;
+}
+
+.card-3d-effect:hover {
+    transform: translateY(-15px) rotateX(5deg);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.07);
+}
+
+/* Animation de focus pour les champs de formulaire */
+.input-focus-effect:focus {
+    animation: focusPulse 1s ease-in-out;
+}
+
+@keyframes focusPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}
+
+/* Animation pour le chargement des sections */
+.section-load {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section-load.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Animation d'entrée pour les notifications */
+@keyframes notificationIn {
+    0% {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    10% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    90% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+}
+
+.notification-anim {
+    animation: notificationIn 5s forwards;
+}
+
+/* Script pour activer l'animation des sections lors du défilement */
+document.addEventListener('DOMContentLoaded', function() {
+    const loadSections = document.querySelectorAll('.section-load');
+    
+    function checkScroll() {
+        loadSections.forEach(section => {
+            const sectionTop = section.getBoundingClientRect().top;
+            if (sectionTop < window.innerHeight - 100) {
+                section.classList.add('loaded');
+            }
+        });
+    }
+    
+    // Vérifier au chargement initial
+    checkScroll();
+    
+    // Vérifier lors du défilement
+    window.addEventListener('scroll', checkScroll);
+});
