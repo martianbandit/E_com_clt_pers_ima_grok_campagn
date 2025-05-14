@@ -23,13 +23,9 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# Simple authentification (sans Replit Auth)
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from werkzeug.security import check_password_hash, generate_password_hash
-
-# Config LoginManager
+# Configuration de Flask-Login
 login_manager = LoginManager(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'replit_auth.login'  # Redirection vers l'authentification Replit
 login_manager.login_message = "Veuillez vous connecter pour accéder à cette page."
 login_manager.login_message_category = "info"
 
