@@ -1,5 +1,9 @@
-from app import app
-from replit_auth import make_replit_blueprint
+from app import app, db
+from flask_login import LoginManager
+from replit_auth import make_replit_blueprint, init_auth
+
+# Initialisation de l'authentification Replit
+login_manager = init_auth(app, db)
 
 # Enregistrement du blueprint d'authentification Replit
 app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")

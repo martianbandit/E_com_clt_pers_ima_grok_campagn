@@ -1,6 +1,7 @@
 import jwt
 import os
 import uuid
+import datetime
 from functools import wraps
 from urllib.parse import urlencode
 
@@ -177,11 +178,55 @@ def save_user(user_claims):
 
 @oauth_authorized.connect
 def logged_in(blueprint, token):
-    user_claims = jwt.decode(token['id_token'],
-                             options={"verify_signature": False})
+    from app import db
+    from models import UserActivity
+    
+    # Décodage du token et récupération des informations utilisateur
+    user_claims = jwt.decode(token['id_token'], 
+                          options={"verify_signature": False})
+    
+    # Sauvegarde de l'utilisateur en base de données
     user = save_user(user_claims)
+    
+    # Connexion de l'utilisateur avec Flask-Login
     login_user(user)
+    
+    # Enregistrement de l'activité de connexion
+    user_agent = request.headers.get('User-Agent', '')
+    ip_address = request.remote_addr or '0.0.0.0'
+    
+    # Enregistrer l'activité de connexion
+    try:
+        # Si la classe UserActivity a une méthode log_activity, l'utiliser
+        if hasattr(UserActivity, 'log_activity'):
+            UserActivity.log_activity(
+                user_id=user.id,
+                activity_type='login',
+                description=f'Connexion Replit depuis {ip_address}',
+                ip_address=ip_address,
+                user_agent=user_agent
+            )
+        # Sinon, essayer de créer une activité manuellement
+        else:
+            activity = UserActivity()
+            activity.user_id = user.id
+            activity.activity_type = 'login'
+            activity.description = f'Connexion Replit depuis {ip_address}'
+            activity.ip_address = ip_address
+            activity.user_agent = user_agent
+            activity.created_at = datetime.datetime.utcnow()
+            db.session.add(activity)
+    except Exception as e:
+        # En cas d'erreur, ne pas bloquer la connexion
+        print(f"Erreur lors de l'enregistrement de l'activité: {e}")
+    
+    # Sauvegarde des modifications
+    db.session.commit()
+    
+    # Stockage du token pour les futures requêtes
     blueprint.token = token
+    
+    # Redirection vers la page demandée initialement
     next_url = session.pop("next_url", None)
     if next_url is not None:
         return redirect(next_url)
