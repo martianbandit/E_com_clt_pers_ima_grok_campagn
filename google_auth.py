@@ -84,7 +84,7 @@ def callback():
 
     user = User.query.filter_by(email=users_email).first()
     if not user:
-        # Création d'un nouvel utilisateur
+        # Création d'un nouvel utilisateur avec ID généré
         user = User()
         user.email = users_email
         user.first_name = users_name
@@ -92,8 +92,12 @@ def callback():
         user.profile_image_url = picture
         user.username = users_email.split("@")[0]
         user.role = "user"
+        # Générer un UUID pour l'ID
+        import uuid
+        user.id = str(uuid.uuid4())
         db.session.add(user)
         db.session.commit()
+        # Après commit, le numeric_id sera automatiquement généré par la BDD
         flash(f"Bienvenue, {users_name}! Votre compte a été créé avec succès.", "success")
     else:
         # Mise à jour des informations de l'utilisateur existant

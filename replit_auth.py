@@ -43,12 +43,18 @@ def init_auth(app, sqlalchemy_db):
     # User loader
     @login_manager.user_loader
     def load_user(user_id):
-        try:
-            # Try to convert to integer for old users
-            return User.query.get(int(user_id))
-        except ValueError:
-            # If ID is not an integer, treat it as a UUID
-            return User.query.get(user_id)
+        user = None
+        
+        # 1. D'abord, essayer de charger l'utilisateur directement avec l'ID sous forme de chaîne
+        if user_id:
+            user = User.query.get(user_id)
+            
+        # 2. Si pas trouvé et que l'ID semble être un nombre, essayer avec conversion en entier
+        if not user and user_id and user_id.isdigit():
+            # Rechercher par ID numérique (pour compatibilité)
+            user = User.query.filter_by(numeric_id=int(user_id)).first()
+        
+        return user
         
     # Register the Replit blueprint with the app
     app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")

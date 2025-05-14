@@ -13,9 +13,11 @@ class OSPAnalysisType(enum.Enum):
 
 # Modèles pour l'authentification Replit
 class User(UserMixin, db.Model):
-    """Modèle pour les utilisateurs authentifiés via Replit"""
+    """Modèle pour les utilisateurs authentifiés via différentes méthodes (Replit/Google/Email)"""
     __tablename__ = 'users'
     id = db.Column(db.String, primary_key=True)
+    # ID numérique pour compatibilité avec les authentifications existantes
+    numeric_id = db.Column(db.Integer, nullable=True)
     email = db.Column(db.String, unique=True, nullable=True)
     first_name = db.Column(db.String, nullable=True)
     last_name = db.Column(db.String, nullable=True)
