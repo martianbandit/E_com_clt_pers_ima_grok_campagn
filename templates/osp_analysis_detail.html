@@ -43,6 +43,63 @@
         background-color: var(--bs-primary);
         color: var(--bs-white);
     }
+    
+    /* Styles pour les analyses formatées */
+    .osp-formatted-content .progress {
+        height: 0.8rem;
+        border-radius: 1rem;
+    }
+    
+    .osp-formatted-content .progress-bar {
+        background-color: var(--bs-primary);
+        border-radius: 1rem;
+    }
+    
+    .osp-formatted-content .card {
+        margin-bottom: 1.5rem;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+        border: none;
+    }
+    
+    .osp-formatted-content .card-header {
+        font-weight: 600;
+    }
+    
+    .osp-formatted-content .list-group-item {
+        border-left: none;
+        border-right: none;
+        padding: 0.75rem 1.25rem;
+    }
+    
+    .osp-formatted-content .list-group-item:last-child {
+        border-bottom: none;
+    }
+    
+    .copy-btn {
+        opacity: 0.5;
+        transition: opacity 0.2s ease;
+    }
+    
+    .copy-btn:hover {
+        opacity: 1;
+    }
+    
+    .example-item {
+        border-left: 4px solid var(--bs-success);
+    }
+    
+    /* Toast de notification pour la copie */
+    .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1050;
+    }
+    
+    .toast {
+        background-color: var(--bs-dark);
+        color: white;
+    }
 </style>
 {% endblock %}
 
@@ -126,11 +183,250 @@
                         {% if analysis.html_result %}
                             {{ analysis.html_result|safe }}
                         {% else %}
-                            <div class="alert alert-info">
-                                {{ _("Cette analyse n'a pas de rendu HTML disponible.") }}
+                            <div class="osp-formatted-content">
+                                {% if analysis.analysis_type.value == 'content_analysis' and analysis.content %}
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-primary text-white">
+                                            <h3 class="mb-0">{{ _("Scores d'analyse") }}</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                {% for score_name, score_value in analysis.content.get('scores', {}).items() %}
+                                                <div class="col-md-6 mb-3">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span class="fw-bold">{{ score_name|replace('_', ' ')|title }}</span>
+                                                        <span class="badge bg-primary">{{ score_value }}/5</span>
+                                                    </div>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" role="progressbar" style="width: {{ score_value * 20 }}%;" aria-valuenow="{{ score_value }}" aria-valuemin="0" aria-valuemax="5">{{ score_value }}/5</div>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card mb-4">
+                                                <div class="card-header bg-success text-white">
+                                                    <h3 class="mb-0">{{ _("Points forts") }}</h3>
+                                                </div>
+                                                <ul class="list-group list-group-flush">
+                                                    {% for strength in analysis.content.get('strengths', []) %}
+                                                    <li class="list-group-item">
+                                                        <i class="bi bi-check-circle-fill text-success me-2"></i> {{ strength }}
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="card mb-4">
+                                                <div class="card-header bg-danger text-white">
+                                                    <h3 class="mb-0">{{ _("Points à améliorer") }}</h3>
+                                                </div>
+                                                <ul class="list-group list-group-flush">
+                                                    {% for weakness in analysis.content.get('weaknesses', []) %}
+                                                    <li class="list-group-item">
+                                                        <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i> {{ weakness }}
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-info text-white">
+                                            <h3 class="mb-0">{{ _("Recommandations") }}</h3>
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            {% for recommendation in analysis.content.get('recommendations', []) %}
+                                            <li class="list-group-item">
+                                                <i class="bi bi-lightbulb-fill text-warning me-2"></i> {{ recommendation }}
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    
+                                    {% if analysis.content.get('improved_examples') %}
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-success text-white">
+                                            <h3 class="mb-0">{{ _("Exemples améliorés") }}</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            {% for example in analysis.content.get('improved_examples', []) %}
+                                            <div class="example-item mb-3 p-3 bg-light rounded">
+                                                {{ example }}
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                
+                                {% elif analysis.analysis_type.value == 'seo_optimization' and analysis.content %}
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-primary text-white">
+                                            <h3 class="mb-0">{{ _("Optimisation SEO") }}</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if analysis.content.get('keyword_analysis') %}
+                                            <div class="mb-4">
+                                                <h4>{{ _("Analyse des mots-clés") }}</h4>
+                                                <div class="bg-light p-3 rounded">
+                                                    {{ analysis.content.get('keyword_analysis')|nl2br|safe }}
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            {% if analysis.content.get('meta_suggestions') %}
+                                            <div class="mb-4">
+                                                <h4>{{ _("Suggestions pour les balises meta") }}</h4>
+                                                <div class="bg-light p-3 rounded">
+                                                    <div class="mb-3">
+                                                        <strong>{{ _("Titre") }}:</strong> {{ analysis.content.get('meta_suggestions', {}).get('title', '') }}
+                                                    </div>
+                                                    <div>
+                                                        <strong>{{ _("Description") }}:</strong> {{ analysis.content.get('meta_suggestions', {}).get('description', '') }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            {% if analysis.content.get('content_suggestions') %}
+                                            <div class="mb-4">
+                                                <h4>{{ _("Suggestions pour le contenu") }}</h4>
+                                                <ul class="list-group">
+                                                    {% for suggestion in analysis.content.get('content_suggestions', []) %}
+                                                    <li class="list-group-item">
+                                                        <i class="bi bi-check2-circle text-success me-2"></i> {{ suggestion }}
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            {% if analysis.content.get('technical_recommendations') %}
+                                            <div class="mb-4">
+                                                <h4>{{ _("Recommandations techniques") }}</h4>
+                                                <ul class="list-group">
+                                                    {% for recommendation in analysis.content.get('technical_recommendations', []) %}
+                                                    <li class="list-group-item">
+                                                        <i class="bi bi-gear-fill text-secondary me-2"></i> {{ recommendation }}
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                
+                                {% elif analysis.analysis_type.value == 'value_map' and analysis.content %}
+                                    <div class="osp-value-map">
+                                        <div class="row mb-4">
+                                            <div class="col-md-6">
+                                                <div class="card">
+                                                    <div class="card-header bg-primary text-white">
+                                                        <h3 class="mb-0">{{ _("Informations produit") }}</h3>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="mb-3">
+                                                            <strong>{{ _("Nom du produit") }}:</strong> {{ analysis.content.get('product_name', '') }}
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <strong>{{ _("Description") }}:</strong> {{ analysis.content.get('product_description', '') }}
+                                                        </div>
+                                                        <div>
+                                                            <strong>{{ _("Marché cible") }}:</strong> {{ analysis.content.get('target_market', '') }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <div class="card">
+                                                    <div class="card-header bg-info text-white">
+                                                        <h3 class="mb-0">{{ _("Caractéristiques principales") }}</h3>
+                                                    </div>
+                                                    <ul class="list-group list-group-flush">
+                                                        {% for feature in analysis.content.get('key_features', []) %}
+                                                        <li class="list-group-item">{{ feature }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="card mb-4">
+                                                    <div class="card-header bg-success text-white">
+                                                        <h3 class="mb-0">{{ _("Titres accrocheurs") }}</h3>
+                                                    </div>
+                                                    <ul class="list-group list-group-flush">
+                                                        {% for headline in analysis.content.get('headlines', []) %}
+                                                        <li class="list-group-item">
+                                                            {{ headline }}
+                                                            <button class="btn btn-sm btn-outline-secondary float-end copy-btn" 
+                                                                    onclick="copyToClipboard('{{ headline|replace("'", "\\'") }}')">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-4">
+                                                <div class="card mb-4">
+                                                    <div class="card-header bg-warning text-dark">
+                                                        <h3 class="mb-0">{{ _("Positionnement") }}</h3>
+                                                    </div>
+                                                    <ul class="list-group list-group-flush">
+                                                        {% for statement in analysis.content.get('positioning_statements', []) %}
+                                                        <li class="list-group-item">
+                                                            {{ statement }}
+                                                            <button class="btn btn-sm btn-outline-secondary float-end copy-btn" 
+                                                                    onclick="copyToClipboard('{{ statement|replace("'", "\\'") }}')">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-4">
+                                                <div class="card mb-4">
+                                                    <div class="card-header bg-danger text-white">
+                                                        <h3 class="mb-0">{{ _("Propositions de valeur") }}</h3>
+                                                    </div>
+                                                    <ul class="list-group list-group-flush">
+                                                        {% for value_prop in analysis.content.get('value_propositions', []) %}
+                                                        <li class="list-group-item">
+                                                            {{ value_prop }}
+                                                            <button class="btn btn-sm btn-outline-secondary float-end copy-btn" 
+                                                                    onclick="copyToClipboard('{{ value_prop|replace("'", "\\'") }}')">
+                                                                <i class="bi bi-clipboard"></i>
+                                                            </button>
+                                                        </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                {% else %}
+                                    <div class="alert alert-info">
+                                        {{ _("Cette analyse n'a pas de rendu HTML disponible.") }}
+                                    </div>
+                                    
+                                    <pre class="bg-light p-3 rounded">{{ analysis.content|tojson(indent=2) }}</pre>
+                                {% endif %}
                             </div>
-                            
-                            <pre class="bg-light p-3 rounded">{{ analysis.content|tojson(indent=2) }}</pre>
                         {% endif %}
                     </div>
                 </div>
@@ -159,4 +455,41 @@
         </div>
     </div>
 </div>
+
+<!-- Toast pour la notification de copie -->
+<div class="toast-container">
+    <div class="toast align-items-center" id="copyToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                {{ _("Texte copié dans le presse-papiers!") }}
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Fonction pour copier du texte dans le presse-papier avec toast de notification
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            // Afficher le toast de notification
+            const toast = new bootstrap.Toast(document.getElementById('copyToast'));
+            toast.show();
+        }, function(err) {
+            console.error('Erreur lors de la copie: ', err);
+            alert("{{ _('Erreur lors de la copie du texte.') }}");
+        });
+    }
+    
+    // Initialiser les tooltips Bootstrap
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    });
+</script>
 {% endblock %}
