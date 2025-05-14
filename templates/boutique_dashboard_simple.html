@@ -164,35 +164,29 @@
 </div>
 {% endif %}
 
+<!-- Graphiques des performances -->
 <div class="row mb-4">
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-store me-2"></i> Statistiques des boutiques</h5>
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Distribution des campagnes par type</h5>
             </div>
             <div class="card-body">
-                <p>Nombre total de boutiques: <strong>{{ boutique_stats.total_boutiques }}</strong></p>
-                <p>Nombre total de campagnes: <strong>{{ global_stats.total_campaigns }}</strong></p>
-                {% if global_stats.total_views > 0 %}
-                <p>Total des vues: <strong>{{ global_stats.total_views }}</strong></p>
-                {% endif %}
-                {% if global_stats.total_clicks > 0 %}
-                <p>Total des clics: <strong>{{ global_stats.total_clicks }}</strong></p>
-                {% endif %}
-                {% if global_stats.total_conversions > 0 %}
-                <p>Total des conversions: <strong>{{ global_stats.total_conversions }}</strong></p>
-                {% endif %}
+                <div style="height: 300px" id="campaignTypesChartContainer">
+                    <canvas id="campaignTypesChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i> Taux de performance</h5>
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Performance par boutique</h5>
             </div>
             <div class="card-body">
-                <p>Taux d'engagement moyen: <strong>{{ "%.1f"|format(global_stats.avg_engagement_rate) }}%</strong></p>
-                <p>Taux de conversion moyen: <strong>{{ "%.1f"|format(global_stats.avg_conversion_rate) }}%</strong></p>
+                <div style="height: 300px" id="boutiquePerformanceChartContainer">
+                    <canvas id="boutiquePerformanceChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -200,13 +194,23 @@
 
 {% if boutique_stats.boutiques %}
 <div class="card shadow-sm mb-4">
-    <div class="card-header">
-        <h5 class="mb-0">Liste des boutiques</h5>
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Performance des boutiques</h5>
+        <div>
+            <button class="btn btn-sm btn-outline-primary" id="viewAsTable">
+                <i class="fas fa-table"></i> Tableau
+            </button>
+            <button class="btn btn-sm btn-outline-primary" id="viewAsCards">
+                <i class="fas fa-th-large"></i> Cartes
+            </button>
+        </div>
     </div>
-    <div class="card-body">
+    
+    <!-- Vue tableau -->
+    <div class="card-body" id="tableView">
         <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
+            <table class="table table-hover">
+                <thead class="table-light">
                     <tr>
                         <th>Boutique</th>
                         <th>Campagnes</th>
@@ -216,23 +220,109 @@
                         <th>Conversions</th>
                         <th>Taux d'engagement</th>
                         <th>Taux de conversion</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for boutique in boutique_stats.boutiques %}
                         <tr>
-                            <td><strong>{{ boutique.name }}</strong></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="boutique-icon me-2 rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                                        <i class="fas fa-store"></i>
+                                    </div>
+                                    <strong>{{ boutique.name }}</strong>
+                                </div>
+                            </td>
                             <td>{{ boutique.total_campaigns }}</td>
                             <td>{{ boutique.active_campaigns }}</td>
                             <td>{{ boutique.total_views }}</td>
                             <td>{{ boutique.total_clicks }}</td>
                             <td>{{ boutique.total_conversions }}</td>
-                            <td>{{ "%.1f"|format(boutique.engagement_rate) }}%</td>
-                            <td>{{ "%.1f"|format(boutique.conversion_rate) }}%</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress flex-grow-1 progress-thin me-2">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ boutique.engagement_rate }}%" aria-valuenow="{{ boutique.engagement_rate }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <span>{{ "%.1f"|format(boutique.engagement_rate) }}%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress flex-grow-1 progress-thin me-2">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ min(100, boutique.conversion_rate * 5) }}%" aria-valuenow="{{ boutique.conversion_rate }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <span>{{ "%.1f"|format(boutique.conversion_rate) }}%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="/boutiques/{{ boutique.id }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-search"></i>
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+    
+    <!-- Vue en cartes (cachée par défaut) -->
+    <div class="card-body d-none" id="cardsView">
+        <div class="row">
+            {% for boutique in boutique_stats.boutiques %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 boutique-card shadow-sm position-relative">
+                        {% if loop.index == 1 and boutique.conversion_rate > 0 %}
+                            <div class="top-performer-badge">
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-trophy"></i> Top performer
+                                </span>
+                            </div>
+                        {% endif %}
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">{{ boutique.name }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <div class="mb-2">Campagnes</div>
+                                    <h4 class="mb-0">{{ boutique.total_campaigns }}</h4>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-2">Actives</div>
+                                    <h4 class="mb-0">{{ boutique.active_campaigns }}</h4>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Taux d'engagement</span>
+                                    <span>{{ "%.1f"|format(boutique.engagement_rate) }}%</span>
+                                </div>
+                                <div class="progress progress-thin">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ boutique.engagement_rate }}%" aria-valuenow="{{ boutique.engagement_rate }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Taux de conversion</span>
+                                    <span>{{ "%.1f"|format(boutique.conversion_rate) }}%</span>
+                                </div>
+                                <div class="progress progress-thin">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ min(100, boutique.conversion_rate * 5) }}%" aria-valuenow="{{ boutique.conversion_rate }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light">
+                            <a href="/boutiques/{{ boutique.id }}" class="btn btn-sm btn-primary w-100">
+                                <i class="fas fa-chart-line me-1"></i> Voir les détails
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -243,4 +333,127 @@
 </div>
 {% endif %}
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle entre les vues tableau et cartes
+    const tableView = document.getElementById('tableView');
+    const cardsView = document.getElementById('cardsView');
+    const viewAsTableBtn = document.getElementById('viewAsTable');
+    const viewAsCardsBtn = document.getElementById('viewAsCards');
+    
+    if (viewAsTableBtn && viewAsCardsBtn) {
+        viewAsTableBtn.addEventListener('click', function() {
+            tableView.classList.remove('d-none');
+            cardsView.classList.add('d-none');
+            viewAsTableBtn.classList.add('active');
+            viewAsCardsBtn.classList.remove('active');
+        });
+        
+        viewAsCardsBtn.addEventListener('click', function() {
+            tableView.classList.add('d-none');
+            cardsView.classList.remove('d-none');
+            viewAsTableBtn.classList.remove('active');
+            viewAsCardsBtn.classList.add('active');
+        });
+    }
+    
+    // Données pour les graphiques
+    {% if boutique_stats.campaign_type_counts %}
+    // Graphique de distribution des campagnes par type
+    const campaignTypesCtx = document.getElementById('campaignTypesChart').getContext('2d');
+    new Chart(campaignTypesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [
+                {% for type, count in boutique_stats.campaign_type_counts.items() %}
+                    "{{ type }}",
+                {% endfor %}
+            ],
+            datasets: [{
+                data: [
+                    {% for type, count in boutique_stats.campaign_type_counts.items() %}
+                        {{ count }},
+                    {% endfor %}
+                ],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(255, 159, 64, 0.7)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+    {% endif %}
+    
+    {% if boutique_stats.boutiques %}
+    // Graphique de performance par boutique
+    const boutiquePerformanceCtx = document.getElementById('boutiquePerformanceChart').getContext('2d');
+    new Chart(boutiquePerformanceCtx, {
+        type: 'bar',
+        data: {
+            labels: [
+                {% for boutique in boutique_stats.boutiques %}
+                    "{{ boutique.name }}",
+                {% endfor %}
+            ],
+            datasets: [{
+                label: 'Taux de conversion (%)',
+                data: [
+                    {% for boutique in boutique_stats.boutiques %}
+                        {{ boutique.conversion_rate }},
+                    {% endfor %}
+                ],
+                backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Taux d\'engagement (%)',
+                data: [
+                    {% for boutique in boutique_stats.boutiques %}
+                        {{ boutique.engagement_rate }},
+                    {% endfor %}
+                ],
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Pourcentage (%)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+    {% endif %}
+});
+</script>
 {% endblock %}
