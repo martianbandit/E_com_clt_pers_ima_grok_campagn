@@ -48,6 +48,46 @@ msgid "All rights reserved."
 msgstr "Tous droits réservés."
 
 # Common UI elements
+msgid "votre Marketing Ninja"
+msgstr "votre Marketing Ninja"
+
+msgid "Le marketing, c'est facile avec MarkEasy!"
+msgstr "Le marketing, c'est facile avec MarkEasy!"
+
+msgid "Solutions marketing hyper-personnalisées pour boutiques et niches spécialisées."
+msgstr "Solutions marketing hyper-personnalisées pour boutiques et niches spécialisées."
+
+msgid "Outils OSP"
+msgstr "Outils OSP"
+
+msgid "Métriques"
+msgstr "Métriques"
+
+# Theme switcher
+msgid "Thème sombre activé"
+msgstr "Thème sombre activé"
+
+msgid "Thème clair activé"
+msgstr "Thème clair activé"
+
+msgid "Changer le thème"
+msgstr "Changer le thème"
+
+# Popup notifications
+msgid "Succès"
+msgstr "Succès"
+
+msgid "Erreur"
+msgstr "Erreur"
+
+msgid "Information"
+msgstr "Information"
+
+msgid "Avertissement"
+msgstr "Avertissement"
+
+msgid "Fermer"
+msgstr "Fermer"
 msgid "Save"
 msgstr "Enregistrer"
 

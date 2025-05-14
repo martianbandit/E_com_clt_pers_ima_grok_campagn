@@ -52,14 +52,33 @@ document.addEventListener('DOMContentLoaded', function() {
         if (type === 'error') icon = 'exclamation-circle';
         if (type === 'warning') icon = 'exclamation-triangle';
         
+        // Déterminer les titres traduits
+        let typeTitle = type;
+        switch(type) {
+            case 'success':
+                typeTitle = '{{ _("Succès") }}';
+                break;
+            case 'error':
+                typeTitle = '{{ _("Erreur") }}';
+                break;
+            case 'warning':
+                typeTitle = '{{ _("Avertissement") }}';
+                break;
+            case 'info':
+                typeTitle = '{{ _("Information") }}';
+                break;
+            default:
+                typeTitle = type.charAt(0).toUpperCase() + type.slice(1);
+        }
+        
         // Créer le contenu du toast
         toast.innerHTML = `
             <div class="ninja-toast-header">
                 <span class="ninja-toast-title">
                     <i class="fas fa-${icon} me-2"></i>
-                    ${type.charAt(0).toUpperCase() + type.slice(1)}
+                    ${typeTitle}
                 </span>
-                <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button>
+                <button type="button" class="btn-close" aria-label="{{ _('Fermer') }}" onclick="this.parentElement.parentElement.remove()"></button>
             </div>
             <div class="ninja-toast-body">
                 ${message}
