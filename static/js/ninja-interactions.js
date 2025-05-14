@@ -1,6 +1,24 @@
 // JavaScript pour les interactions "Ninja Marketing"
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Ajouter l'effet d'animation au défilement pour le logo MarkEasy
+    let lastScrollTop = 0;
+    window.addEventListener('scroll', function() {
+        const st = window.pageYOffset || document.documentElement.scrollTop;
+        const logo = document.querySelector('.markeasy-logo');
+        
+        // Si on défile plus de 100px et on défile vers le bas
+        if (st > 100 && st > lastScrollTop) {
+            if (logo) {
+                logo.classList.add('scroll-animated');
+                setTimeout(function() {
+                    logo.classList.remove('scroll-animated');
+                }, 1000);
+            }
+        }
+        lastScrollTop = st <= 0 ? 0 : st;
+    }, false);
+    
     // Fonction pour gérer l'animation des cartes ninja
     function initNinjaCardEffects() {
         const ninjaCards = document.querySelectorAll('.ninja-card, .card');
@@ -89,7 +107,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Ajouter des interactions pour le logo MarkEasy du footer
+    function initLogoEffects() {
+        const footerLogo = document.querySelector('.markeasy-logo-large');
+        if (footerLogo) {
+            footerLogo.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+            });
+            
+            footerLogo.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+            
+            // Ajouter une interaction de clic pour une animation spéciale
+            footerLogo.addEventListener('click', function(e) {
+                if (!e.ctrlKey) { // Ne pas interférer avec le clic + ctrl (ouvrir dans un nouvel onglet)
+                    e.preventDefault();
+                    this.style.transform = 'rotate(360deg)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                        window.location = '/';
+                    }, 500);
+                }
+            });
+        }
+    }
+    
     // Initialiser tous les effets interactifs
     initNinjaCardEffects();
     initNinjaButtonEffects();
+    initLogoEffects();
 });
