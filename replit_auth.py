@@ -133,53 +133,19 @@ def make_replit_blueprint():
     @replit_bp.route("/logout")
     def logout():
         """Déconnexion de l'utilisateur et suppression du token"""
-        # Enregistrer l'activité de déconnexion si l'utilisateur est connecté
+        # Version simplifiée sans logging pour éviter les erreurs
         try:
-            if current_user and current_user.is_authenticated:
-                from models import UserActivity
-                from app import db
-                user_id = current_user.id
-                user_agent = request.headers.get('User-Agent', '')
-                ip_address = request.remote_addr or '0.0.0.0'
-                
-                # Si UserActivity a une méthode log_activity, l'utiliser
-                if hasattr(UserActivity, 'log_activity'):
-                    UserActivity.log_activity(
-                        user_id=user_id,
-                        activity_type='logout',
-                        description=f'Déconnexion Replit depuis {ip_address}',
-                        ip_address=ip_address,
-                        user_agent=user_agent
-                    )
-                else:
-                    # Sinon, créer manuellement une entrée d'activité
-                    activity = UserActivity()
-                    activity.user_id = user_id
-                    activity.activity_type = 'logout'
-                    activity.description = f'Déconnexion Replit depuis {ip_address}'
-                    db.session.add(activity)
-                    
-                db.session.commit()
+            # Supprimer le token et déconnecter l'utilisateur
+            if hasattr(replit_bp, 'token'):
+                del replit_bp.token
         except Exception as e:
-            print(f"Erreur lors de l'enregistrement de l'activité de déconnexion : {e}")
+            print(f"Erreur lors de la suppression du token: {e}")
         
-        # Supprimer le token et déconnecter l'utilisateur
-        if hasattr(replit_bp, 'token'):
-            del replit_bp.token
+        # Déconnecter l'utilisateur
         logout_user()
         
-        # Rediriger vers la page de déconnexion Replit
-        end_session_endpoint = issuer_url + "/session/end"
-        encoded_params = urlencode({
-            "client_id": repl_id,
-            "post_logout_redirect_uri": request.url_root,
-        })
-        logout_url = f"{end_session_endpoint}?{encoded_params}"
-        
-        # Ajouter un message flash pour indiquer la déconnexion
-        flash('Vous avez été déconnecté avec succès.', 'info')
-        
-        return redirect(logout_url)
+        # Rediriger vers la page d'accueil
+        return redirect(url_for('index'))
 
     @replit_bp.route("/error")
     def error():
