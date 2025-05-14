@@ -54,11 +54,73 @@ app.register_blueprint(google_auth)
 # Routes d'authentification
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Page de choix des méthodes d'authentification"""
+    """Page de connexion avec email/mot de passe + options OAuth"""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+        
+    from forms import LoginForm
+    from models import User
+    from werkzeug.security import check_password_hash
+    from datetime import datetime
+    
+    form = LoginForm()
+    
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        
+        if user and user.password_hash and check_password_hash(user.password_hash, form.password.data):
+            login_user(user, remember=form.remember.data)
+            # Mise à jour des statistiques de connexion
+            user.login_count = (user.login_count or 0) + 1
+            user.last_login_at = datetime.utcnow()
+            db.session.commit()
+            
+            # Redirection vers la page demandée ou la page d'accueil
+            next_page = request.args.get('next')
+            if next_page and next_page.startswith('/'):
+                return redirect(next_page)
+            return redirect(url_for('index'))
+        else:
+            flash('Email ou mot de passe incorrect.', 'danger')
+    
+    return render_template('auth/login.html', form=form)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    """Page d'inscription"""
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     
-    return render_template('auth/login.html')
+    from forms import RegistrationForm
+    from models import User
+    from werkzeug.security import generate_password_hash
+    import uuid
+    from datetime import datetime
+    
+    form = RegistrationForm()
+    
+    if form.validate_on_submit():
+        # Génération d'un ID unique pour la compatibilité avec les utilisateurs OAuth
+        user_id = str(uuid.uuid4())
+        
+        # Création du nouvel utilisateur
+        user = User()
+        user.id = user_id
+        user.username = form.username.data
+        user.email = form.email.data
+        user.password_hash = generate_password_hash(form.password.data)
+        user.role = 'user'
+        user.active = True
+        user.created_at = datetime.utcnow()
+        user.updated_at = datetime.utcnow()
+        
+        db.session.add(user)
+        db.session.commit()
+        
+        flash('Votre compte a été créé avec succès! Vous pouvez maintenant vous connecter.', 'success')
+        return redirect(url_for('login'))
+    
+    return render_template('auth/register.html', form=form)
 
 @app.route('/logout')
 @login_required

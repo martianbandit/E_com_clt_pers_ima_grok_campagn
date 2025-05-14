@@ -21,4 +21,6 @@ dependencies = [
     "pyjwt>=2.10.1",
     "markupsafe>=3.0.2",
     "sqlalchemy>=2.0.40",
+    "flask-wtf>=1.2.2",
+    "requests>=2.32.3",
 ]
