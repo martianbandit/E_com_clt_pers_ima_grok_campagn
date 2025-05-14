@@ -71,37 +71,105 @@
             </div>
             <div class="modal-body">
                 <form id="valueMapForm" action="{{ url_for('generate_value_map') }}" method="post">
+                    <!-- Sélection des sources de données existantes -->
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h5>{{ _("Utiliser des données existantes") }}</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="product_id" class="form-label">{{ _("Produit existant") }}</label>
+                                        <select class="form-select" id="product_id" name="product_id">
+                                            <option value="">{{ _("-- Sélectionner un produit --") }}</option>
+                                            {% if products %}
+                                                {% for product in products %}
+                                                <option value="{{ product.id }}">{{ product.name }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="campaign_id" class="form-label">{{ _("Campagne existante") }}</label>
+                                        <select class="form-select" id="campaign_id" name="campaign_id">
+                                            <option value="">{{ _("-- Sélectionner une campagne --") }}</option>
+                                            {% if campaigns %}
+                                                {% for campaign in campaigns %}
+                                                <option value="{{ campaign.id }}">{{ campaign.title }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="persona_id" class="form-label">{{ _("Persona client") }}</label>
+                                        <select class="form-select" id="persona_id" name="persona_id">
+                                            <option value="">{{ _("-- Sélectionner un persona --") }}</option>
+                                            {% if personas %}
+                                                {% for persona in personas %}
+                                                <option value="{{ persona.id }}">{{ persona.title }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="boutique_id" class="form-label">{{ _("Boutique") }}</label>
+                                        <select class="form-select" id="boutique_id" name="boutique_id">
+                                            <option value="">{{ _("-- Sélectionner une boutique --") }}</option>
+                                            {% if boutiques %}
+                                                {% for boutique in boutiques %}
+                                                <option value="{{ boutique.id }}">{{ boutique.name }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <button type="button" id="loadSelectedData" class="btn btn-secondary btn-sm">{{ _("Charger les données sélectionnées") }}</button>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                    
+                    <!-- Formulaire de saisie manuelle -->
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="product_name" class="form-label">{{ _("Nom du produit") }} *</label>
-                                <input type="text" class="form-control" id="product_name" name="product_name" required>
+                                <input type="text" class="form-control" id="product_name" name="product_name" value="{{ product_name or '' }}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="product_description" class="form-label">{{ _("Description du produit") }} *</label>
-                                <textarea class="form-control" id="product_description" name="product_description" rows="5" required></textarea>
+                                <textarea class="form-control" id="product_description" name="product_description" rows="5" required>{{ product_description or '' }}</textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="target_audience" class="form-label">{{ _("Audience cible") }} *</label>
-                                <textarea class="form-control" id="target_audience" name="target_audience" rows="3" required></textarea>
+                                <textarea class="form-control" id="target_audience" name="target_audience" rows="3" required>{{ target_audience or '' }}</textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="industry" class="form-label">{{ _("Secteur d'activité") }} *</label>
-                                <input type="text" class="form-control" id="industry" name="industry" required>
+                                <input type="text" class="form-control" id="industry" name="industry" value="{{ industry or '' }}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="niche_market" class="form-label">{{ _("Créneau de marché") }}</label>
-                                <input type="text" class="form-control" id="niche_market" name="niche_market">
+                                <input type="text" class="form-control" id="niche_market" name="niche_market" value="{{ niche_market or '' }}">
                             </div>
                             <div class="mb-3">
                                 <label for="key_features" class="form-label">{{ _("Fonctionnalités clés") }}</label>
-                                <textarea class="form-control" id="key_features" name="key_features" rows="3" placeholder="{{ _('Une fonctionnalité par ligne') }}"></textarea>
+                                <textarea class="form-control" id="key_features" name="key_features" rows="3" placeholder="{{ _('Une fonctionnalité par ligne') }}">{{ key_features or '' }}</textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="competitors" class="form-label">{{ _("Concurrents") }}</label>
-                                <textarea class="form-control" id="competitors" name="competitors" rows="2" placeholder="{{ _('Un concurrent par ligne') }}"></textarea>
+                                <textarea class="form-control" id="competitors" name="competitors" rows="2" placeholder="{{ _('Un concurrent par ligne') }}">{{ competitors or '' }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -124,32 +192,100 @@
             </div>
             <div class="modal-body">
                 <form id="contentAnalyzerForm" action="{{ url_for('analyze_content') }}" method="post">
+                    <!-- Sélection des sources de données existantes -->
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h5>{{ _("Utiliser des données existantes") }}</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="product_id" class="form-label">{{ _("Produit existant") }}</label>
+                                        <select class="form-select" id="product_id" name="product_id">
+                                            <option value="">{{ _("-- Sélectionner un produit --") }}</option>
+                                            {% if products %}
+                                                {% for product in products %}
+                                                <option value="{{ product.id }}">{{ product.name }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="campaign_id" class="form-label">{{ _("Campagne existante") }}</label>
+                                        <select class="form-select" id="campaign_id" name="campaign_id">
+                                            <option value="">{{ _("-- Sélectionner une campagne --") }}</option>
+                                            {% if campaigns %}
+                                                {% for campaign in campaigns %}
+                                                <option value="{{ campaign.id }}">{{ campaign.title }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="persona_id" class="form-label">{{ _("Persona client") }}</label>
+                                        <select class="form-select" id="persona_id" name="persona_id">
+                                            <option value="">{{ _("-- Sélectionner un persona --") }}</option>
+                                            {% if personas %}
+                                                {% for persona in personas %}
+                                                <option value="{{ persona.id }}">{{ persona.title }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="boutique_id" class="form-label">{{ _("Boutique") }}</label>
+                                        <select class="form-select" id="boutique_id" name="boutique_id">
+                                            <option value="">{{ _("-- Sélectionner une boutique --") }}</option>
+                                            {% if boutiques %}
+                                                {% for boutique in boutiques %}
+                                                <option value="{{ boutique.id }}">{{ boutique.name }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <button type="button" id="loadSelectedContentData" class="btn btn-secondary btn-sm">{{ _("Charger les données sélectionnées") }}</button>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                    
+                    <!-- Formulaire de saisie manuelle -->
                     <div class="row mb-3">
                         <div class="col-md-8">
                             <div class="mb-3">
                                 <label for="content" class="form-label">{{ _("Contenu à analyser") }} *</label>
-                                <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
+                                <textarea class="form-control" id="content" name="content" rows="10" required>{{ content or '' }}</textarea>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="content_type" class="form-label">{{ _("Type de contenu") }}</label>
                                 <select class="form-select" id="content_type" name="content_type">
-                                    <option value="product_description">{{ _("Description produit") }}</option>
-                                    <option value="landing_page">{{ _("Page d'atterrissage") }}</option>
-                                    <option value="email">{{ _("Email marketing") }}</option>
-                                    <option value="social_media">{{ _("Post réseaux sociaux") }}</option>
-                                    <option value="blog_post">{{ _("Article de blog") }}</option>
-                                    <option value="ad_copy">{{ _("Texte publicitaire") }}</option>
+                                    <option value="product_description" {% if content_type == 'product_description' %}selected{% endif %}>{{ _("Description produit") }}</option>
+                                    <option value="landing_page" {% if content_type == 'landing_page' %}selected{% endif %}>{{ _("Page d'atterrissage") }}</option>
+                                    <option value="email" {% if content_type == 'email' %}selected{% endif %}>{{ _("Email marketing") }}</option>
+                                    <option value="social_media" {% if content_type == 'social_media' %}selected{% endif %}>{{ _("Post réseaux sociaux") }}</option>
+                                    <option value="blog_post" {% if content_type == 'blog_post' %}selected{% endif %}>{{ _("Article de blog") }}</option>
+                                    <option value="ad_copy" {% if content_type == 'ad_copy' %}selected{% endif %}>{{ _("Texte publicitaire") }}</option>
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="target_audience" class="form-label">{{ _("Audience cible") }}</label>
-                                <textarea class="form-control" id="target_audience" name="target_audience" rows="3"></textarea>
+                                <textarea class="form-control" id="target_audience" name="target_audience" rows="3">{{ target_audience or '' }}</textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="industry" class="form-label">{{ _("Secteur d'activité") }}</label>
-                                <input type="text" class="form-control" id="industry" name="industry">
+                                <input type="text" class="form-control" id="industry" name="industry" value="{{ industry or '' }}">
                             </div>
                         </div>
                     </div>
@@ -171,43 +307,98 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="seoOptimizerForm" action="{{ url_for('optimize_seo') }}" method="post">
+                <form id="seoOptimizerForm" action="{{ url_for('apply_seo') }}" method="post">
+                    <!-- Sélection des sources de données existantes -->
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h5>{{ _("Utiliser des données existantes") }}</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="product_id" class="form-label">{{ _("Produit existant") }}</label>
+                                        <select class="form-select" id="product_id" name="product_id">
+                                            <option value="">{{ _("-- Sélectionner un produit --") }}</option>
+                                            {% if products %}
+                                                {% for product in products %}
+                                                <option value="{{ product.id }}">{{ product.name }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="campaign_id" class="form-label">{{ _("Campagne existante") }}</label>
+                                        <select class="form-select" id="campaign_id" name="campaign_id">
+                                            <option value="">{{ _("-- Sélectionner une campagne --") }}</option>
+                                            {% if campaigns %}
+                                                {% for campaign in campaigns %}
+                                                <option value="{{ campaign.id }}">{{ campaign.title }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="boutique_id" class="form-label">{{ _("Boutique") }}</label>
+                                        <select class="form-select" id="boutique_id" name="boutique_id">
+                                            <option value="">{{ _("-- Sélectionner une boutique --") }}</option>
+                                            {% if boutiques %}
+                                                {% for boutique in boutiques %}
+                                                <option value="{{ boutique.id }}">{{ boutique.name }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <button type="button" id="loadSelectedSeoData" class="btn btn-secondary btn-sm">{{ _("Charger les données sélectionnées") }}</button>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                    
+                    <!-- Formulaire de saisie manuelle -->
                     <div class="mb-3">
                         <label for="title" class="form-label">{{ _("Titre") }} *</label>
-                        <input type="text" class="form-control" id="title" name="title" required>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ title or '' }}" required>
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">{{ _("Description") }} *</label>
-                        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                        <textarea class="form-control" id="description" name="description" rows="4" required>{{ description or '' }}</textarea>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="page_type" class="form-label">{{ _("Type de page") }}</label>
                             <select class="form-select" id="page_type" name="page_type">
-                                <option value="product">{{ _("Produit") }}</option>
-                                <option value="category">{{ _("Catégorie") }}</option>
-                                <option value="landing">{{ _("Landing Page") }}</option>
-                                <option value="blog">{{ _("Blog") }}</option>
-                                <option value="about">{{ _("À propos") }}</option>
-                                <option value="contact">{{ _("Contact") }}</option>
+                                <option value="product" {% if page_type == 'product' %}selected{% endif %}>{{ _("Produit") }}</option>
+                                <option value="category" {% if page_type == 'category' %}selected{% endif %}>{{ _("Catégorie") }}</option>
+                                <option value="landing" {% if page_type == 'landing' %}selected{% endif %}>{{ _("Landing Page") }}</option>
+                                <option value="blog" {% if page_type == 'blog' %}selected{% endif %}>{{ _("Blog") }}</option>
+                                <option value="about" {% if page_type == 'about' %}selected{% endif %}>{{ _("À propos") }}</option>
+                                <option value="contact" {% if page_type == 'contact' %}selected{% endif %}>{{ _("Contact") }}</option>
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label for="locale" class="form-label">{{ _("Locale") }}</label>
                             <select class="form-select" id="locale" name="locale">
-                                <option value="fr_FR">Français (France)</option>
-                                <option value="fr_CA">Français (Canada)</option>
-                                <option value="fr_BE">Français (Belgique)</option>
-                                <option value="fr_CH">Français (Suisse)</option>
-                                <option value="en_US">English (US)</option>
-                                <option value="en_GB">English (UK)</option>
-                                <option value="en_CA">English (Canada)</option>
-                                <option value="en_AU">English (Australia)</option>
+                                <option value="fr_FR" {% if locale == 'fr_FR' %}selected{% endif %}>Français (France)</option>
+                                <option value="fr_CA" {% if locale == 'fr_CA' %}selected{% endif %}>Français (Canada)</option>
+                                <option value="fr_BE" {% if locale == 'fr_BE' %}selected{% endif %}>Français (Belgique)</option>
+                                <option value="fr_CH" {% if locale == 'fr_CH' %}selected{% endif %}>Français (Suisse)</option>
+                                <option value="en_US" {% if locale == 'en_US' %}selected{% endif %}>English (US)</option>
+                                <option value="en_GB" {% if locale == 'en_GB' %}selected{% endif %}>English (UK)</option>
+                                <option value="en_CA" {% if locale == 'en_CA' %}selected{% endif %}>English (Canada)</option>
+                                <option value="en_AU" {% if locale == 'en_AU' %}selected{% endif %}>English (Australia)</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" value="1" id="is_local_business" name="is_local_business" checked>
+                        <input class="form-check-input" type="checkbox" value="1" id="is_local_business" name="is_local_business" {% if is_local_business %}checked{% endif %}>
                         <label class="form-check-label" for="is_local_business">
                             {{ _("Optimiser pour une entreprise locale") }}
                         </label>
@@ -220,6 +411,187 @@
         </div>
     </div>
 </div>
+
+<!-- JavaScript pour les intégrations de données -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Bouton pour charger les données de la carte de valeur
+        const loadSelectedDataBtn = document.getElementById('loadSelectedData');
+        if (loadSelectedDataBtn) {
+            loadSelectedDataBtn.addEventListener('click', function() {
+                // Récupérer les valeurs sélectionnées
+                const productId = document.querySelector('#valueMapForm #product_id').value;
+                const campaignId = document.querySelector('#valueMapForm #campaign_id').value;
+                const personaId = document.querySelector('#valueMapForm #persona_id').value;
+                const boutiqueId = document.querySelector('#valueMapForm #boutique_id').value;
+                
+                if (productId || campaignId || personaId || boutiqueId) {
+                    // Rediriger vers la bonne URL en fonction de la sélection
+                    let sourceType, sourceId;
+                    
+                    if (productId) {
+                        sourceType = 'product';
+                        sourceId = productId;
+                    } else if (campaignId) {
+                        sourceType = 'campaign';
+                        sourceId = campaignId;
+                    } else if (personaId) {
+                        sourceType = 'persona';
+                        sourceId = personaId;
+                    } else if (boutiqueId) {
+                        sourceType = 'boutique';
+                        sourceId = boutiqueId;
+                    }
+                    
+                    if (sourceType && sourceId) {
+                        window.location.href = `/osp-tools/value-map-generator/${sourceType}/${sourceId}`;
+                    }
+                } else {
+                    alert("{{ _('Veuillez sélectionner au moins une source de données') }}");
+                }
+            });
+        }
+        
+        // Bouton pour charger les données d'analyse de contenu
+        const loadSelectedContentDataBtn = document.getElementById('loadSelectedContentData');
+        if (loadSelectedContentDataBtn) {
+            loadSelectedContentDataBtn.addEventListener('click', function() {
+                // Récupérer les valeurs sélectionnées
+                const productId = document.querySelector('#contentAnalyzerForm #product_id').value;
+                const campaignId = document.querySelector('#contentAnalyzerForm #campaign_id').value;
+                const personaId = document.querySelector('#contentAnalyzerForm #persona_id').value;
+                const boutiqueId = document.querySelector('#contentAnalyzerForm #boutique_id').value;
+                
+                if (productId || campaignId || personaId || boutiqueId) {
+                    // Rediriger vers la bonne URL en fonction de la sélection
+                    let sourceType, sourceId;
+                    
+                    if (productId) {
+                        sourceType = 'product';
+                        sourceId = productId;
+                    } else if (campaignId) {
+                        sourceType = 'campaign';
+                        sourceId = campaignId;
+                    } else if (personaId) {
+                        sourceType = 'persona';
+                        sourceId = personaId;
+                    } else if (boutiqueId) {
+                        sourceType = 'boutique';
+                        sourceId = boutiqueId;
+                    }
+                    
+                    if (sourceType && sourceId) {
+                        window.location.href = `/osp-tools/content-analyzer/${sourceType}/${sourceId}`;
+                    }
+                } else {
+                    alert("{{ _('Veuillez sélectionner au moins une source de données') }}");
+                }
+            });
+        }
+        
+        // Bouton pour charger les données SEO
+        const loadSelectedSeoDataBtn = document.getElementById('loadSelectedSeoData');
+        if (loadSelectedSeoDataBtn) {
+            loadSelectedSeoDataBtn.addEventListener('click', function() {
+                // Récupérer les valeurs sélectionnées
+                const productId = document.querySelector('#seoOptimizerForm #product_id').value;
+                const campaignId = document.querySelector('#seoOptimizerForm #campaign_id').value;
+                const boutiqueId = document.querySelector('#seoOptimizerForm #boutique_id').value;
+                
+                if (productId || campaignId || boutiqueId) {
+                    // Rediriger vers la bonne URL en fonction de la sélection
+                    let sourceType, sourceId;
+                    
+                    if (productId) {
+                        sourceType = 'product';
+                        sourceId = productId;
+                    } else if (campaignId) {
+                        sourceType = 'campaign';
+                        sourceId = campaignId;
+                    } else if (boutiqueId) {
+                        sourceType = 'boutique';
+                        sourceId = boutiqueId;
+                    }
+                    
+                    if (sourceType && sourceId) {
+                        window.location.href = `/osp-tools/seo-optimizer/${sourceType}/${sourceId}`;
+                    }
+                } else {
+                    alert("{{ _('Veuillez sélectionner au moins une source de données') }}");
+                }
+            });
+        }
+        
+        // Afficher le bon formulaire si form_active est défini
+        {% if form_active %}
+            // Ouvrir automatiquement le bon modal
+            if ('{{ form_active }}' === 'value_map') {
+                const valueMapModal = new bootstrap.Modal(document.getElementById('valueMapModal'));
+                valueMapModal.show();
+            } else if ('{{ form_active }}' === 'content_analyzer') {
+                const contentAnalyzerModal = new bootstrap.Modal(document.getElementById('contentAnalyzerModal'));
+                contentAnalyzerModal.show();
+            } else if ('{{ form_active }}' === 'seo_optimizer') {
+                const seoOptimizerModal = new bootstrap.Modal(document.getElementById('seoOptimizerModal'));
+                seoOptimizerModal.show();
+            }
+        {% endif %}
+        
+        // Afficher la valeur de value_map_html si elle existe
+        {% if value_map_html %}
+            const valueMapModal = new bootstrap.Modal(document.getElementById('valueMapModal'));
+            const valueMapResultsDiv = document.createElement('div');
+            valueMapResultsDiv.innerHTML = `
+                <div class="mt-4">
+                    <h4>{{ _("Résultats de la Carte de Valeur") }}</h4>
+                    <div class="card">
+                        <div class="card-body">
+                            {{ value_map_html|safe }}
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.querySelector('#valueMapModal .modal-body').appendChild(valueMapResultsDiv);
+            valueMapModal.show();
+        {% endif %}
+        
+        // Afficher les résultats d'analyse si analyse_result existe
+        {% if analysis_result %}
+            const contentAnalyzerModal = new bootstrap.Modal(document.getElementById('contentAnalyzerModal'));
+            const analysisResultsDiv = document.createElement('div');
+            analysisResultsDiv.innerHTML = `
+                <div class="mt-4">
+                    <h4>{{ _("Résultats de l'Analyse") }}</h4>
+                    <div class="card">
+                        <div class="card-body">
+                            <pre class="bg-light p-3">{{ analysis_json|safe }}</pre>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.querySelector('#contentAnalyzerModal .modal-body').appendChild(analysisResultsDiv);
+            contentAnalyzerModal.show();
+        {% endif %}
+        
+        // Afficher les résultats SEO si seo_result existe
+        {% if seo_result %}
+            const seoOptimizerModal = new bootstrap.Modal(document.getElementById('seoOptimizerModal'));
+            const seoResultsDiv = document.createElement('div');
+            seoResultsDiv.innerHTML = `
+                <div class="mt-4">
+                    <h4>{{ _("Résultats de l'Optimisation SEO") }}</h4>
+                    <div class="card">
+                        <div class="card-body">
+                            <pre class="bg-light p-3">{{ seo_json|safe }}</pre>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.querySelector('#seoOptimizerModal .modal-body').appendChild(seoResultsDiv);
+            seoOptimizerModal.show();
+        {% endif %}
+    });
+</script>
 
 <!-- Modal pour les ressources et la documentation -->
 <div class="modal fade" id="resourcesModal" tabindex="-1" aria-labelledby="resourcesModalLabel" aria-hidden="true">
