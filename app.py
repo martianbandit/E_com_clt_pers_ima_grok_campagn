@@ -43,26 +43,6 @@ def login():
     # Rediriger vers l'authentification Replit (OAuth)
     return redirect(url_for('replit_auth.login'))
 
-@app.route('/logout')
-def replit_logout():
-    """Déconnexion et redirection vers Replit Auth logout"""
-    # Enregistrer l'activité de déconnexion si l'utilisateur est connecté
-    if current_user.is_authenticated:
-        from models import UserActivity
-        user_agent = request.headers.get('User-Agent')
-        ip_address = request.remote_addr
-        UserActivity.log_activity(
-            user_id=current_user.id,
-            activity_type='logout',
-            description=f'Déconnexion depuis {ip_address}',
-            ip_address=ip_address,
-            user_agent=user_agent
-        )
-        db.session.commit()
-    
-    # Rediriger vers la déconnexion Replit Auth
-    return redirect(url_for('replit_auth.logout'))
-
 # Cette route a été remplacée par la route logout ci-dessus qui redirige vers Replit Auth
     
 @app.route('/user-info')
