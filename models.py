@@ -20,11 +20,62 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String, nullable=True)
     last_name = db.Column(db.String, nullable=True)
     profile_image_url = db.Column(db.String, nullable=True)
+    
+    # Nouveaux champs pour le profil utilisateur
+    username = db.Column(db.String(50), unique=True, nullable=True)
+    password_hash = db.Column(db.String(255), nullable=True)
+    role = db.Column(db.String(20), default='user', nullable=False)  # 'admin', 'user', 'manager', etc.
+    language_preference = db.Column(db.String(10), default='fr', nullable=False)
+    theme_preference = db.Column(db.String(10), default='dark', nullable=False)
+    job_title = db.Column(db.String(100), nullable=True)
+    company = db.Column(db.String(100), nullable=True)
+    phone = db.Column(db.String(20), nullable=True)
+    bio = db.Column(db.Text, nullable=True)
+    address = db.Column(db.Text, nullable=True)
+    notification_preferences = db.Column(JSONB, default=lambda: {
+        'email': True,
+        'webapp': True,
+        'marketing': False
+    })
+    last_login_at = db.Column(db.DateTime, nullable=True)
+    login_count = db.Column(db.Integer, default=0)
+    active = db.Column(db.Boolean, default=True)  # Renamed from is_active to avoid conflict with UserMixin
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime,
                            default=datetime.utcnow,
                            onupdate=datetime.utcnow)
+    
+    def get_user_data(self):
+        """Retourne les données utilisateur pour l'affichage du profil"""
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'profile_image_url': self.profile_image_url,
+            'role': self.role,
+            'language_preference': self.language_preference,
+            'theme_preference': self.theme_preference,
+            'job_title': self.job_title,
+            'company': self.company,
+            'phone': self.phone,
+            'bio': self.bio,
+            'created_at': self.created_at,
+            'last_login_at': self.last_login_at,
+            'login_count': self.login_count
+        }
+        
+    def update_login_stats(self):
+        """Met à jour les statistiques de connexion"""
+        self.last_login_at = datetime.utcnow()
+        self.login_count += 1
+        
+    @property
+    def is_active(self):
+        """Required by Flask-Login"""
+        return self.active
 
 class OAuth(db.Model):
     """Modèle pour les tokens OAuth des utilisateurs"""
@@ -42,6 +93,8 @@ class OAuth(db.Model):
         'provider',
         name='uq_user_browser_session_key_provider',
     ),)
+    
+# UserActivity sera définie à la fin du fichier pour éviter les références circulaires
 
 class Boutique(db.Model):
     id = db.Column(db.Integer, primary_key=True)
