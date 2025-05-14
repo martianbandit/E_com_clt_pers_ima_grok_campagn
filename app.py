@@ -1038,11 +1038,13 @@ def create_boutique():
         db.session.commit()
         
         # Enregistrer l'activité utilisateur
-        log_user_activity(
+        from models import UserActivity
+        activity = UserActivity(
             user_id=current_user.id,
             activity_type="create_boutique",
             description=f"Création de la boutique: {boutique.name}"
         )
+        db.session.add(activity)
         
         return jsonify({'id': boutique.id, 'status': 'success'})
     except Exception as e:
@@ -1050,16 +1052,27 @@ def create_boutique():
         return jsonify({'error': str(e)}), 400
 
 @app.route('/api/niches', methods=['POST'])
+@login_required
 def create_niche():
     data = request.json
     try:
         niche = NicheMarket(
             name=data.get('name'),
             description=data.get('description'),
-            key_characteristics=data.get('key_characteristics')
+            key_characteristics=data.get('key_characteristics'),
+            owner_id=current_user.id  # Associer le niche au propriétaire actuel
         )
         db.session.add(niche)
         db.session.commit()
+        
+        # Enregistrer l'activité utilisateur
+        from models import UserActivity
+        activity = UserActivity(
+            user_id=current_user.id,
+            activity_type="create_niche",
+            description=f"Création du créneau de marché: {niche.name}"
+        )
+        db.session.add(activity)
         return jsonify({'id': niche.id, 'status': 'success'})
     except Exception as e:
         db.session.rollback()
