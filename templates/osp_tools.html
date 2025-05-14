@@ -544,7 +544,7 @@
             valueMapResultsDiv.innerHTML = `
                 <div class="mt-4">
                     <h4>{{ _("Résultats de la Carte de Valeur") }}</h4>
-                    <div class="card">
+                    <div class="card osp-result-card">
                         <div class="card-body">
                             {{ value_map_html|safe }}
                         </div>
@@ -562,7 +562,7 @@
             analysisResultsDiv.innerHTML = `
                 <div class="mt-4">
                     <h4>{{ _("Résultats de l'Analyse") }}</h4>
-                    <div class="card">
+                    <div class="card osp-result-card">
                         <div class="card-body">
                             <pre class="bg-light p-3">{{ analysis_json|safe }}</pre>
                         </div>
@@ -580,7 +580,7 @@
             seoResultsDiv.innerHTML = `
                 <div class="mt-4">
                     <h4>{{ _("Résultats de l'Optimisation SEO") }}</h4>
-                    <div class="card">
+                    <div class="card osp-result-card">
                         <div class="card-body">
                             <pre class="bg-light p-3">{{ seo_json|safe }}</pre>
                         </div>
