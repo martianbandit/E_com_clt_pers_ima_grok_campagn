@@ -697,21 +697,27 @@
                 fetch(`/api/niches/${nicheId}`, {
                     method: 'DELETE',
                 })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    showAlert("{{ _('Error') }}: " + data.error, 'danger');
-                } else {
-                    showAlert("{{ _('Niche deleted successfully') }}", 'success');
-                    bootstrap.Modal.getInstance(document.getElementById('deleteNicheModal')).hide();
-                    // Reload page to show deletion
-                    window.location.reload();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert("{{ _('Error deleting niche') }}", 'danger');
-            });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            showAlert("{{ _('Error') }}: " + data.error, 'danger');
+                        } else {
+                            showAlert("{{ _('Niche deleted successfully') }}", 'success');
+                            
+                            const deleteNicheModalEl = document.getElementById('deleteNicheModal');
+                            if (deleteNicheModalEl) {
+                                const modalInstance = bootstrap.Modal.getInstance(deleteNicheModalEl);
+                                if (modalInstance) modalInstance.hide();
+                            }
+                            
+                            // Reload page to show deletion
+                            window.location.reload();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showAlert("{{ _('Error deleting niche') }}", 'danger');
+                    });
         });
     });
 </script>

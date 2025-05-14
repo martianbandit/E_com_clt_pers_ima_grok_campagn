@@ -1,0 +1,273 @@
+/* Ninja Theme CSS - Elements visuels pour le thème "Marketing Ninja" */
+
+:root {
+    /* Palette de couleurs ninja */
+    --carbon-black: #2C2C2C;
+    --vibrant-orange: #FF6B00;
+    --soft-gray: #F4F4F4;
+    --pure-white: #FFFFFF;
+    --shadow-gray: rgba(0, 0, 0, 0.1);
+    --ninja-accent: #513AE8; /* Accent pour les éléments ponctuels */
+}
+
+/* Élément ninja pour les headers */
+.ninja-divider {
+    position: relative;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--vibrant-orange), transparent);
+    margin: 1.5rem 0;
+    border: none;
+}
+
+.ninja-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px var(--shadow-gray);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ninja-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.ninja-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--vibrant-orange);
+}
+
+/* Badge ninja pour éléments importants */
+.ninja-badge {
+    display: inline-block;
+    background-color: var(--vibrant-orange);
+    color: var(--pure-white);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ninja-badge::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 8px solid var(--vibrant-orange);
+    transform: translateY(-50%);
+}
+
+/* Animation pour l'icône ninja */
+.ninja-icon-animated {
+    display: inline-block;
+    color: var(--vibrant-orange);
+    transition: transform 0.5s ease;
+}
+
+.navbar-brand:hover .ninja-icon-animated {
+    transform: rotate(360deg);
+}
+
+/* Styliser les sections principales */
+.ninja-section {
+    position: relative;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    background-color: var(--pure-white);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--shadow-gray);
+}
+
+.ninja-section::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--vibrant-orange), transparent);
+    border-radius: 0 0 8px 8px;
+}
+
+.ninja-section-title {
+    position: relative;
+    display: inline-block;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: var(--carbon-black);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.ninja-section-title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    height: 3px;
+    background-color: var(--vibrant-orange);
+}
+
+/* Boutons avec style ninja */
+.btn-ninja {
+    position: relative;
+    background-color: var(--vibrant-orange);
+    color: var(--pure-white);
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1.25rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    overflow: hidden;
+    z-index: 1;
+    transition: color 0.3s ease;
+}
+
+.btn-ninja::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: var(--carbon-black);
+    z-index: -1;
+    transition: left 0.3s ease;
+}
+
+.btn-ninja:hover {
+    color: var(--pure-white);
+}
+
+.btn-ninja:hover::before {
+    left: 0;
+}
+
+/* Loader type spinner ninja */
+.ninja-spinner {
+    position: relative;
+    width: 40px;
+    height: 40px;
+}
+
+.ninja-spinner::before,
+.ninja-spinner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: var(--vibrant-orange);
+    animation: ninja-spin 1s linear infinite;
+}
+
+.ninja-spinner::after {
+    border-top-color: transparent;
+    border-right-color: var(--vibrant-orange);
+    animation-duration: 1.5s;
+}
+
+@keyframes ninja-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Formulaires avec style ninja */
+.ninja-input {
+    border: 2px solid var(--soft-gray);
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    font-family: 'Open Sans', sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ninja-input:focus {
+    border-color: var(--vibrant-orange);
+    box-shadow: 0 0 0 0.25rem rgba(255, 107, 0, 0.25);
+    outline: none;
+}
+
+.ninja-input-label {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--carbon-black);
+    margin-bottom: 0.5rem;
+}
+
+/* Toast notifications avec style ninja */
+.ninja-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem;
+    border-radius: 4px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background-color: var(--pure-white);
+    z-index: 9999;
+    min-width: 280px;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.ninja-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.ninja-toast-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--soft-gray);
+    margin-bottom: 0.5rem;
+}
+
+.ninja-toast-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--carbon-black);
+}
+
+.ninja-toast-body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9rem;
+}
+
+.ninja-toast-success {
+    border-left: 4px solid #28a745;
+}
+
+.ninja-toast-error {
+    border-left: 4px solid #dc3545;
+}
+
+.ninja-toast-warning {
+    border-left: 4px solid #ffc107;
+}
+
+.ninja-toast-info {
+    border-left: 4px solid #17a2b8;
+}

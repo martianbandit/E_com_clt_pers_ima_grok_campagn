@@ -17,13 +17,14 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ninja-theme.css') }}">
     {% block head %}{% endblock %}
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <i class="fas fa-user-ninja ninja-icon me-2"></i>
+                <i class="fas fa-user-ninja ninja-icon-animated me-2"></i>
                 <span style="font-family: 'Poppins', sans-serif; font-weight: 700;">{{ _('Marketing Ninja') }}</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -135,12 +136,17 @@
             {% if messages %}
                 {% for category, message in messages %}
                     <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
+        
+        <div class="mb-4">
+            <div class="ninja-divider"></div>
+        </div>
         
         {% block content %}{% endblock %}
     </div>
@@ -150,7 +156,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <div class="d-flex align-items-center mb-3">
-                        <i class="fas fa-user-ninja ninja-icon me-2 fs-3"></i>
+                        <i class="fas fa-user-ninja ninja-icon-animated me-2 fs-3"></i>
                         <h5 class="text-light mb-0" style="font-family: 'Poppins', sans-serif; font-weight: 700;">Marketing Ninja</h5>
                     </div>
                     <p class="text-muted" style="font-family: 'Open Sans', sans-serif;">{{ _('Solutions marketing hyper-personnalisées pour les boutiques et niches spécialisées.') }}</p>
@@ -162,6 +168,11 @@
                     <p class="text-muted" style="font-family: 'Open Sans', sans-serif;">&copy; 2025 Marketing Ninja. {{ _('All rights reserved.') }}</p>
                 </div>
             </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="ninja-divider"></div>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -170,6 +181,7 @@
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
     <script src="{{ url_for('static', filename='js/loading.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ninja-interactions.js') }}"></script>
     <script>
         // Theme toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
