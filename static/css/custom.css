@@ -1,7 +1,70 @@
-/* Custom styles for Boutique AI Marketing */
+/* Custom styles for Boutique AI Marketing - Nouvelle charte graphique */
 
+:root {
+    /* Nouvelle palette de couleurs */
+    --carbon-black: #2C2C2C;
+    --vibrant-orange: #FF6B00;
+    --soft-gray: #F4F4F4;
+    --pure-white: #FFFFFF;
+    
+    /* Remplacer les variables Bootstrap par défaut */
+    --bs-primary: var(--vibrant-orange) !important;
+    --bs-primary-rgb: 255, 107, 0 !important;
+    --bs-dark: var(--carbon-black) !important;
+    --bs-dark-rgb: 44, 44, 44 !important;
+    --bs-light: var(--soft-gray) !important;
+    --bs-light-rgb: 244, 244, 244 !important;
+    --bs-success: #28a745 !important;
+    --bs-info: #0dcaf0 !important;
+    --bs-warning: #ffc107 !important;
+    --bs-danger: #dc3545 !important;
+}
+
+/* Style général */
+body {
+    color: var(--carbon-black);
+    background-color: var(--soft-gray);
+}
+
+.navbar-dark {
+    background-color: var(--carbon-black) !important;
+}
+
+.btn-primary {
+    background-color: var(--vibrant-orange);
+    border-color: var(--vibrant-orange);
+}
+
+.btn-primary:hover {
+    background-color: #E56000;
+    border-color: #E56000;
+}
+
+.btn-outline-primary {
+    color: var(--vibrant-orange);
+    border-color: var(--vibrant-orange);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--vibrant-orange);
+    border-color: var(--vibrant-orange);
+    color: var(--pure-white);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+}
+
+/* Classes spécifiques */
 .card-boutique {
-    border-left: 4px solid var(--bs-primary);
+    border-left: 4px solid var(--vibrant-orange);
     transition: transform 0.2s;
 }
 
@@ -10,7 +73,7 @@
 }
 
 .card-niche {
-    border-left: 4px solid var(--bs-success);
+    border-left: 4px solid var(--vibrant-orange);
     transition: transform 0.2s;
 }
 
@@ -19,22 +82,25 @@
 }
 
 .persona-box {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--pure-white);
     border-radius: 8px;
     padding: 15px;
     height: 200px;
     overflow-y: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .marketing-content {
     white-space: pre-line;
     font-size: 0.9rem;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .customer-profile {
     border-radius: 8px;
     overflow: hidden;
     transition: transform 0.3s ease;
+    background-color: var(--pure-white);
 }
 
 .customer-profile:hover {
@@ -43,15 +109,17 @@
 }
 
 .profile-header {
-    background-color: var(--bs-primary);
-    color: white;
+    background-color: var(--vibrant-orange);
+    color: var(--pure-white);
     padding: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
 }
 
 .interest-tag {
     display: inline-block;
-    background-color: var(--bs-light);
-    color: var(--bs-dark);
+    background-color: var(--soft-gray);
+    color: var(--carbon-black);
     border-radius: 20px;
     padding: 3px 10px;
     margin: 3px;
@@ -63,8 +131,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--bs-secondary);
-    background-color: rgba(0, 0, 0, 0.03);
+    color: #777;
+    background-color: var(--soft-gray);
     border-radius: 5px;
 }
 
@@ -72,55 +140,79 @@
     max-height: 300px;
     object-fit: cover;
     border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Styles pour les outils OSP */
 .osp-result-card {
-    color: var(--bs-dark);
-    background-color: var(--bs-light);
+    color: var(--carbon-black);
+    background-color: var(--pure-white);
 }
 
 .osp-result-card h3, 
 .osp-result-card h4, 
 .osp-result-card h5, 
 .osp-result-card h6 {
-    color: var(--bs-dark);
+    color: var(--carbon-black);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
 }
 
 .osp-result-card .card-body {
-    color: var(--bs-dark);
-    background-color: var(--bs-light);
+    color: var(--carbon-black);
+    background-color: var(--pure-white);
 }
 
 .bg-light {
-    color: var(--bs-dark) !important;
+    color: var(--carbon-black) !important;
+    background-color: var(--soft-gray) !important;
 }
 
 pre.bg-light {
-    color: var(--bs-dark) !important;
-    background-color: var(--bs-light) !important;
+    color: var(--carbon-black) !important;
+    background-color: var(--soft-gray) !important;
 }
 
 .value-map-section {
     margin-bottom: 1.5rem;
     padding: 1rem;
-    background-color: var(--bs-light);
+    background-color: var(--pure-white);
     border-radius: 0.375rem;
-    color: var(--bs-dark);
+    color: var(--carbon-black);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .value-map-section h2,
 .value-map-section h3,
 .value-map-section h4 {
-    color: var(--bs-dark);
+    color: var(--carbon-black);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
 }
 
 .value-map-item {
     margin-bottom: 0.75rem;
     padding: 0.5rem;
-    border-left: 3px solid var(--bs-primary);
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #333;
+    border-left: 3px solid var(--vibrant-orange);
+    background-color: var(--pure-white);
+    color: var(--carbon-black);
+}
+
+/* Badges personnalisés */
+.badge.bg-primary {
+    background-color: var(--vibrant-orange) !important;
+}
+
+/* Éléments ninja */
+.ninja-icon {
+    color: var(--vibrant-orange);
+}
+
+.ninja-slogan {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--vibrant-orange);
 }
 
 /* Responsive adjustments */

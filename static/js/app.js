@@ -18,10 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return new bootstrap.Popover(popoverTriggerEl)
     });
     
-    // Gestion sécurisée du bouton de sauvegarde de niche (s'il existe)
-    addSafeEventListener('saveNewNicheBtn', 'click', function() {
-        // Logique de sauvegarde de niche si nécessaire
-    });
+    // Ne rien faire pour saveNewNicheBtn car il est géré ailleurs
+    // Ce bouton a été supprimé, mais nous gardons le commentaire pour référence
 
     // Handle boutique form submission
     const boutiqueForm = document.getElementById('boutique-form');
