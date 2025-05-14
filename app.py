@@ -602,22 +602,36 @@ def save_campaign_language_settings():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    # Récupérer les données pour le tableau de bord
-    boutiques = Boutique.query.all()
-    niches = NicheMarket.query.all()
+    # Récupérer les données pour le tableau de bord filtrées par utilisateur connecté
+    user_id = current_user.id
     
-    # Récupérer les métriques pour les analyses
-    persona_metrics = Metric.query.filter_by(name='persona_generation').order_by(Metric.created_at.desc()).limit(10).all()
-    profile_metrics = Metric.query.filter_by(name='profile_generation').order_by(Metric.created_at.desc()).limit(10).all()
+    # Filtrer les boutiques et niches par propriétaire
+    boutiques = Boutique.query.filter_by(owner_id=user_id).all()
+    niches = NicheMarket.query.filter_by(owner_id=user_id).all()
     
-    # Compter le nombre total d'éléments
-    total_customers = Customer.query.count()
-    total_campaigns = Campaign.query.count()
+    # Récupérer les métriques pour les analyses (filtrer par user_id si disponible)
+    persona_metrics = Metric.query.filter_by(name='persona_generation').filter(
+        (Metric.user_id == user_id) | (Metric.user_id == None)
+    ).order_by(Metric.created_at.desc()).limit(10).all()
+    
+    profile_metrics = Metric.query.filter_by(name='profile_generation').filter(
+        (Metric.user_id == user_id) | (Metric.user_id == None)
+    ).order_by(Metric.created_at.desc()).limit(10).all()
+    
+    # Compter le nombre total d'éléments de l'utilisateur
+    # Trouver les IDs des boutiques pour filtrer les clients et campagnes
+    boutique_ids = [b.id for b in boutiques]
+    
+    # Filtrer les clients et campagnes par boutiques de l'utilisateur
+    total_customers = Customer.query.filter(Customer.boutique_id.in_(boutique_ids) if boutique_ids else False).count()
+    total_campaigns = Campaign.query.filter(Campaign.boutique_id.in_(boutique_ids) if boutique_ids else False).count()
     total_boutiques = len(boutiques)
     total_niches = len(niches)
     
-    # Récupérer les dernières campagnes créées
-    recent_campaigns = Campaign.query.order_by(Campaign.created_at.desc()).limit(5).all()
+    # Récupérer les dernières campagnes créées (uniquement celles de l'utilisateur)
+    recent_campaigns = Campaign.query.filter(
+        Campaign.boutique_id.in_(boutique_ids) if boutique_ids else False
+    ).order_by(Campaign.created_at.desc()).limit(5).all()
     
     return render_template('dashboard.html', 
                           boutiques=boutiques, 
@@ -1009,16 +1023,27 @@ def campaigns():
                           saved_customers=saved_customers)
 
 @app.route('/api/boutiques', methods=['POST'])
+@login_required
 def create_boutique():
     data = request.json
     try:
+        # Créer la boutique avec le propriétaire actuel
         boutique = Boutique(
             name=data.get('name'),
             description=data.get('description'),
-            target_demographic=data.get('target_demographic')
+            target_demographic=data.get('target_demographic'),
+            owner_id=current_user.id  # Associer la boutique à l'utilisateur connecté
         )
         db.session.add(boutique)
         db.session.commit()
+        
+        # Enregistrer l'activité utilisateur
+        log_user_activity(
+            user_id=current_user.id,
+            activity_type="create_boutique",
+            description=f"Création de la boutique: {boutique.name}"
+        )
+        
         return jsonify({'id': boutique.id, 'status': 'success'})
     except Exception as e:
         db.session.rollback()
