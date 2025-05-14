@@ -2263,6 +2263,9 @@ from osp_tools import generate_product_value_map, analyze_content_with_osp_guide
 @app.route('/osp-tools')
 def osp_tools():
     """Page principale des outils OSP"""
+    # Import nécessaire des modèles
+    from models import Boutique, Customer, Campaign, Product, NicheMarket, CustomerPersona, OSPAnalysis
+    
     # Récupération des données pour les menus déroulants
     boutiques = Boutique.query.all()
     customers = Customer.query.all()
@@ -2287,6 +2290,9 @@ def osp_tools():
 @app.route('/osp-tools/value-map-generator/<string:source_type>/<int:source_id>')
 def value_map_generator(source_type=None, source_id=None):
     """Générateur de carte de valeur produit"""
+    # Import nécessaire des modèles
+    from models import Boutique, Customer, Campaign, Product, CustomerPersona
+    
     # Initialisation des données
     product_name = ""
     product_description = ""
@@ -2350,6 +2356,9 @@ def value_map_generator(source_type=None, source_id=None):
 @app.route('/osp-tools/content-analyzer/<string:source_type>/<int:source_id>')
 def content_analyzer(source_type=None, source_id=None):
     """Analyseur de contenu selon les directives OSP"""
+    # Import nécessaire des modèles
+    from models import Boutique, Customer, Campaign, Product, CustomerPersona
+    
     # Initialisation des données
     content = ""
     content_type = "product_description"
@@ -2406,6 +2415,9 @@ def content_analyzer(source_type=None, source_id=None):
 @app.route('/osp-tools/seo-optimizer/<string:source_type>/<int:source_id>')
 def seo_optimizer(source_type=None, source_id=None):
     """Optimiseur SEO selon les directives OSP"""
+    # Import nécessaire des modèles
+    from models import Boutique, Campaign, Product
+    
     # Initialisation des données
     title = ""
     description = ""
@@ -2473,6 +2485,8 @@ def seo_optimizer(source_type=None, source_id=None):
 @app.route('/osp-tools/generate-value-map', methods=['POST'])
 def generate_value_map():
     """Générer une carte de valeur produit"""
+    # Import nécessaire des modèles
+    from models import Boutique, Customer, Campaign, Product, CustomerPersona, OSPAnalysis
     try:
         # Récupérer les données du formulaire
         product_name = request.form.get('product_name')
