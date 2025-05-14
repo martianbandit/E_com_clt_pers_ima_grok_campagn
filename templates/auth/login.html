@@ -1,0 +1,70 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Connexion') }} - MarkEasy{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header theme-dependent">
+                <h4 class="mb-0"><i class="fas fa-sign-in-alt me-2"></i>{{ _('Connexion') }}</h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <img src="{{ url_for('static', filename='img/markeasy-ninja.png') }}" alt="MarkEasy Ninja" class="img-fluid mb-3" style="max-width: 120px;">
+                    <h5>{{ _('Bienvenue sur MarkEasy') }}</h5>
+                    <p class="text-muted">{{ _('Le marketing, c\'est facile... quand on a un ninja dans sa poche.') }}</p>
+                </div>
+                
+                <div class="d-grid gap-3 mb-3">
+                    <a href="{{ url_for('google_auth.login') }}" class="btn btn-light btn-lg border d-flex align-items-center justify-content-center">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" class="me-2" style="width: 20px;">
+                        {{ _('Continuer avec Google') }}
+                    </a>
+                    
+                    <a href="{{ url_for('replit_auth.login') }}" class="btn btn-dark btn-lg d-flex align-items-center justify-content-center">
+                        <img src="https://replit.com/public/images/logo_small.png" alt="Replit" class="me-2" style="width: 20px;">
+                        {{ _('Continuer avec Replit') }}
+                    </a>
+                    
+                    <a href="javascript:void(0);" class="btn btn-primary btn-lg d-flex align-items-center justify-content-center" onclick="alert('Fonctionnalité à venir')">
+                        <i class="fab fa-github me-2"></i>
+                        {{ _('Continuer avec GitHub') }}
+                    </a>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p class="text-muted small">
+                        {{ _('En vous connectant, vous acceptez nos') }} 
+                        <a href="javascript:void(0);">{{ _('conditions d\'utilisation') }}</a> {{ _('et notre') }} 
+                        <a href="javascript:void(0);">{{ _('politique de confidentialité') }}</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('index') }}" class="text-decoration-none">
+                <i class="fas fa-arrow-left me-1"></i> {{ _('Retour à l\'accueil') }}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animations pour les boutons de connexion
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.classList.add('pulse-effect');
+            });
+            button.addEventListener('mouseleave', function() {
+                this.classList.remove('pulse-effect');
+            });
+        });
+    });
+</script>
+{% endblock %}

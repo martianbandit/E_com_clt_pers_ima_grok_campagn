@@ -36,22 +36,68 @@ def inject_template_globals():
         max=max
     )
     
-# Routes d'authentification simple (admin/admin)
+# Configuration du LoginManager
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.login_message = 'Veuillez vous connecter pour accéder à cette page.'
+login_manager.login_message_category = 'warning'
+
+@login_manager.user_loader
+def load_user(user_id):
+    from models import User
+    return User.query.get(int(user_id))
+
+# Importation et enregistrement du blueprint d'authentification Google
+from google_auth import google_auth
+app.register_blueprint(google_auth)
+
+# Routes d'authentification
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Redirection vers l'authentification Replit"""
-    # Rediriger vers l'authentification Replit (OAuth)
-    return redirect(url_for('replit_auth.login'))
+    """Page de choix des méthodes d'authentification"""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    
+    return render_template('auth/login.html')
 
 @app.route('/logout')
+@login_required
 def logout():
     """Déconnexion et redirection vers la page d'accueil"""
-    # Déconnecter l'utilisateur avec flask_login
-    from flask_login import logout_user
+    # Enregistrer l'activité de déconnexion
+    try:
+        if current_user and current_user.is_authenticated:
+            from models import UserActivity
+            user_id = current_user.id
+            user_agent = request.headers.get('User-Agent', '')
+            ip_address = request.remote_addr or '0.0.0.0'
+            
+            # Si UserActivity a une méthode log_activity, l'utiliser
+            if hasattr(UserActivity, 'log_activity'):
+                UserActivity.log_activity(
+                    user_id=user_id,
+                    activity_type='logout',
+                    description=f'Déconnexion depuis {ip_address}',
+                    ip_address=ip_address,
+                    user_agent=user_agent
+                )
+            else:
+                # Sinon, créer manuellement une entrée d'activité
+                activity = UserActivity()
+                activity.user_id = user_id
+                activity.activity_type = 'logout'
+                activity.description = f'Déconnexion depuis {ip_address}'
+                db.session.add(activity)
+                
+            db.session.commit()
+    except Exception as e:
+        print(f"Erreur lors de l'enregistrement de l'activité de déconnexion : {e}")
+    
+    # Déconnecter l'utilisateur
     logout_user()
     
     # Message flash de confirmation
-    from flask import flash
     flash('Vous avez été déconnecté avec succès.', 'info')
     
     # Rediriger vers la page d'accueil
