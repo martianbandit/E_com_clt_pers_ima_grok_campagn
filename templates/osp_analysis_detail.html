@@ -185,13 +185,15 @@
                         {% else %}
                             <div class="osp-formatted-content">
                                 {% if analysis.analysis_type.value == 'content_analysis' and analysis.content %}
+                                    {% set results = analysis.content.get('results', analysis.content) %}
+                                    
                                     <div class="card mb-4">
                                         <div class="card-header bg-primary text-white">
                                             <h3 class="mb-0">{{ _("Scores d'analyse") }}</h3>
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                {% for score_name, score_value in analysis.content.get('scores', {}).items() %}
+                                                {% for score_name, score_value in results.get('scores', {}).items() %}
                                                 <div class="col-md-6 mb-3">
                                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                                         <span class="fw-bold">{{ score_name|replace('_', ' ')|title }}</span>
@@ -213,7 +215,7 @@
                                                     <h3 class="mb-0">{{ _("Points forts") }}</h3>
                                                 </div>
                                                 <ul class="list-group list-group-flush">
-                                                    {% for strength in analysis.content.get('strengths', []) %}
+                                                    {% for strength in results.get('strengths', []) %}
                                                     <li class="list-group-item">
                                                         <i class="bi bi-check-circle-fill text-success me-2"></i> {{ strength }}
                                                     </li>
@@ -228,7 +230,7 @@
                                                     <h3 class="mb-0">{{ _("Points à améliorer") }}</h3>
                                                 </div>
                                                 <ul class="list-group list-group-flush">
-                                                    {% for weakness in analysis.content.get('weaknesses', []) %}
+                                                    {% for weakness in results.get('weaknesses', []) %}
                                                     <li class="list-group-item">
                                                         <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i> {{ weakness }}
                                                     </li>
@@ -243,7 +245,7 @@
                                             <h3 class="mb-0">{{ _("Recommandations") }}</h3>
                                         </div>
                                         <ul class="list-group list-group-flush">
-                                            {% for recommendation in analysis.content.get('recommendations', []) %}
+                                            {% for recommendation in results.get('recommendations', []) %}
                                             <li class="list-group-item">
                                                 <i class="bi bi-lightbulb-fill text-warning me-2"></i> {{ recommendation }}
                                             </li>
@@ -251,55 +253,82 @@
                                         </ul>
                                     </div>
                                     
-                                    {% if analysis.content.get('improved_examples') %}
+                                    {% if results.get('improved_examples') %}
                                     <div class="card mb-4">
                                         <div class="card-header bg-success text-white">
                                             <h3 class="mb-0">{{ _("Exemples améliorés") }}</h3>
                                         </div>
                                         <div class="card-body">
-                                            {% for example in analysis.content.get('improved_examples', []) %}
+                                            {% for example in results.get('improved_examples', []) %}
                                             <div class="example-item mb-3 p-3 bg-light rounded">
-                                                {{ example }}
+                                                {{ example|replace('\n', '<br>')|safe }}
                                             </div>
                                             {% endfor %}
                                         </div>
                                     </div>
                                     {% endif %}
+                                    
+                                    {% if analysis.content.get('input') %}
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-secondary text-white">
+                                            <h3 class="mb-0">{{ _("Contenu analysé") }}</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <strong>{{ _("Type de contenu") }}:</strong> 
+                                                <span class="badge bg-info">{{ analysis.content.get('input', {}).get('content_type', '') }}</span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>{{ _("Industrie") }}:</strong> 
+                                                {{ analysis.content.get('input', {}).get('industry', '') }}
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>{{ _("Audience cible") }}:</strong> 
+                                                {{ analysis.content.get('input', {}).get('target_audience', '') }}
+                                            </div>
+                                            <div class="bg-light p-3 rounded">
+                                                {{ analysis.content.get('input', {}).get('content', '')|nl2br|safe }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                 
                                 {% elif analysis.analysis_type.value == 'seo_optimization' and analysis.content %}
+                                    {% set results = analysis.content.get('results', analysis.content) %}
+                                    
                                     <div class="card mb-4">
                                         <div class="card-header bg-primary text-white">
                                             <h3 class="mb-0">{{ _("Optimisation SEO") }}</h3>
                                         </div>
                                         <div class="card-body">
-                                            {% if analysis.content.get('keyword_analysis') %}
+                                            {% if results.get('keyword_analysis') %}
                                             <div class="mb-4">
                                                 <h4>{{ _("Analyse des mots-clés") }}</h4>
                                                 <div class="bg-light p-3 rounded">
-                                                    {{ analysis.content.get('keyword_analysis')|nl2br|safe }}
+                                                    {{ results.get('keyword_analysis')|nl2br|safe }}
                                                 </div>
                                             </div>
                                             {% endif %}
                                             
-                                            {% if analysis.content.get('meta_suggestions') %}
+                                            {% if results.get('meta_suggestions') %}
                                             <div class="mb-4">
                                                 <h4>{{ _("Suggestions pour les balises meta") }}</h4>
                                                 <div class="bg-light p-3 rounded">
                                                     <div class="mb-3">
-                                                        <strong>{{ _("Titre") }}:</strong> {{ analysis.content.get('meta_suggestions', {}).get('title', '') }}
+                                                        <strong>{{ _("Titre") }}:</strong> {{ results.get('meta_suggestions', {}).get('title', '') }}
                                                     </div>
                                                     <div>
-                                                        <strong>{{ _("Description") }}:</strong> {{ analysis.content.get('meta_suggestions', {}).get('description', '') }}
+                                                        <strong>{{ _("Description") }}:</strong> {{ results.get('meta_suggestions', {}).get('description', '') }}
                                                     </div>
                                                 </div>
                                             </div>
                                             {% endif %}
                                             
-                                            {% if analysis.content.get('content_suggestions') %}
+                                            {% if results.get('content_suggestions') %}
                                             <div class="mb-4">
                                                 <h4>{{ _("Suggestions pour le contenu") }}</h4>
                                                 <ul class="list-group">
-                                                    {% for suggestion in analysis.content.get('content_suggestions', []) %}
+                                                    {% for suggestion in results.get('content_suggestions', []) %}
                                                     <li class="list-group-item">
                                                         <i class="bi bi-check2-circle text-success me-2"></i> {{ suggestion }}
                                                     </li>
@@ -308,11 +337,11 @@
                                             </div>
                                             {% endif %}
                                             
-                                            {% if analysis.content.get('technical_recommendations') %}
+                                            {% if results.get('technical_recommendations') %}
                                             <div class="mb-4">
                                                 <h4>{{ _("Recommandations techniques") }}</h4>
                                                 <ul class="list-group">
-                                                    {% for recommendation in analysis.content.get('technical_recommendations', []) %}
+                                                    {% for recommendation in results.get('technical_recommendations', []) %}
                                                     <li class="list-group-item">
                                                         <i class="bi bi-gear-fill text-secondary me-2"></i> {{ recommendation }}
                                                     </li>
@@ -322,8 +351,40 @@
                                             {% endif %}
                                         </div>
                                     </div>
+                                    
+                                    {% if analysis.content.get('input') %}
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-secondary text-white">
+                                            <h3 class="mb-0">{{ _("Contenu analysé") }}</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <strong>{{ _("Titre") }}:</strong> 
+                                                {{ analysis.content.get('input', {}).get('title', '') }}
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>{{ _("Mot-clé") }}:</strong> 
+                                                <span class="badge bg-primary">{{ analysis.content.get('input', {}).get('keyword', '') }}</span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>{{ _("Description meta") }}:</strong> 
+                                                {{ analysis.content.get('input', {}).get('meta_description', '') }}
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>{{ _("Type de contenu") }}:</strong> 
+                                                {{ analysis.content.get('input', {}).get('content_type', '') }}
+                                            </div>
+                                            {% if analysis.content.get('input', {}).get('content') %}
+                                            <div class="bg-light p-3 rounded">
+                                                {{ analysis.content.get('input', {}).get('content', '')|nl2br|safe }}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                 
                                 {% elif analysis.analysis_type.value == 'value_map' and analysis.content %}
+                                    {% set results = analysis.content.get('results', analysis.content) %}
                                     <div class="osp-value-map">
                                         <div class="row mb-4">
                                             <div class="col-md-6">
@@ -333,13 +394,13 @@
                                                     </div>
                                                     <div class="card-body">
                                                         <div class="mb-3">
-                                                            <strong>{{ _("Nom du produit") }}:</strong> {{ analysis.content.get('product_name', '') }}
+                                                            <strong>{{ _("Nom du produit") }}:</strong> {{ results.get('product_name', '') }}
                                                         </div>
                                                         <div class="mb-3">
-                                                            <strong>{{ _("Description") }}:</strong> {{ analysis.content.get('product_description', '') }}
+                                                            <strong>{{ _("Description") }}:</strong> {{ results.get('product_description', '') }}
                                                         </div>
                                                         <div>
-                                                            <strong>{{ _("Marché cible") }}:</strong> {{ analysis.content.get('target_market', '') }}
+                                                            <strong>{{ _("Marché cible") }}:</strong> {{ results.get('target_market', '') }}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -351,7 +412,7 @@
                                                         <h3 class="mb-0">{{ _("Caractéristiques principales") }}</h3>
                                                     </div>
                                                     <ul class="list-group list-group-flush">
-                                                        {% for feature in analysis.content.get('key_features', []) %}
+                                                        {% for feature in results.get('key_features', []) %}
                                                         <li class="list-group-item">{{ feature }}</li>
                                                         {% endfor %}
                                                     </ul>
@@ -366,7 +427,7 @@
                                                         <h3 class="mb-0">{{ _("Titres accrocheurs") }}</h3>
                                                     </div>
                                                     <ul class="list-group list-group-flush">
-                                                        {% for headline in analysis.content.get('headlines', []) %}
+                                                        {% for headline in results.get('headlines', []) %}
                                                         <li class="list-group-item">
                                                             {{ headline }}
                                                             <button class="btn btn-sm btn-outline-secondary float-end copy-btn" 
@@ -385,7 +446,7 @@
                                                         <h3 class="mb-0">{{ _("Positionnement") }}</h3>
                                                     </div>
                                                     <ul class="list-group list-group-flush">
-                                                        {% for statement in analysis.content.get('positioning_statements', []) %}
+                                                        {% for statement in results.get('positioning_statements', []) %}
                                                         <li class="list-group-item">
                                                             {{ statement }}
                                                             <button class="btn btn-sm btn-outline-secondary float-end copy-btn" 
@@ -404,7 +465,7 @@
                                                         <h3 class="mb-0">{{ _("Propositions de valeur") }}</h3>
                                                     </div>
                                                     <ul class="list-group list-group-flush">
-                                                        {% for value_prop in analysis.content.get('value_propositions', []) %}
+                                                        {% for value_prop in results.get('value_propositions', []) %}
                                                         <li class="list-group-item">
                                                             {{ value_prop }}
                                                             <button class="btn btn-sm btn-outline-secondary float-end copy-btn" 
@@ -418,6 +479,32 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    {% if analysis.content.get('input') %}
+                                    <div class="card mb-4">
+                                        <div class="card-header bg-secondary text-white">
+                                            <h3 class="mb-0">{{ _("Produit analysé") }}</h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <strong>{{ _("Nom du produit") }}:</strong> 
+                                                {{ analysis.content.get('input', {}).get('product_name', '') }}
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>{{ _("Description") }}:</strong> 
+                                                {{ analysis.content.get('input', {}).get('product_description', '')|nl2br|safe }}
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>{{ _("Marché cible") }}:</strong> 
+                                                {{ analysis.content.get('input', {}).get('target_market', '') }}
+                                            </div>
+                                            <div class="mb-3">
+                                                <strong>{{ _("Prix") }}:</strong> 
+                                                {{ analysis.content.get('input', {}).get('price', '') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                 
                                 {% else %}
                                     <div class="alert alert-info">
