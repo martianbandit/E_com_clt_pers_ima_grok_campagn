@@ -23,8 +23,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# La configuration de LoginManager est gérée dans replit_auth.py
-# En initialisant replit_auth depuis main.py
+# La configuration de LoginManager est gérée ici
 
 # Rendre current_user et d'autres variables disponibles dans tous les templates
 @app.context_processor
@@ -449,6 +448,7 @@ def change_language(lang):
     return redirect(request.referrer or url_for('index'))
 
 @app.route('/')
+@login_required
 def index():
     return render_template('index.html')
 
@@ -1020,12 +1020,14 @@ def delete_niche(niche_id):
         return jsonify({'error': str(e), 'status': 'error'}), 400
 
 @app.route('/customer/<int:customer_id>')
+@login_required
 def view_customer(customer_id):
     """Afficher les détails d'un client spécifique"""
     customer = Customer.query.get_or_404(customer_id)
     return render_template('customer_detail.html', customer=customer)
 
 @app.route('/customer/<int:customer_id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_customer(customer_id):
     """Modifier les informations d'un client"""
     customer = Customer.query.get_or_404(customer_id)

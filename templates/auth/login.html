@@ -19,17 +19,12 @@
                 <div class="d-grid gap-3 mb-3">
                     <a href="{{ url_for('google_auth.login') }}" class="btn btn-light btn-lg border d-flex align-items-center justify-content-center">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" class="me-2" style="width: 20px;">
-                        {{ _('Continuer avec Google') }}
+                        {{ _('Se connecter avec Google') }}
                     </a>
                     
-                    <a href="{{ url_for('replit_auth.login') }}" class="btn btn-dark btn-lg d-flex align-items-center justify-content-center">
-                        <img src="https://replit.com/public/images/logo_small.png" alt="Replit" class="me-2" style="width: 20px;">
-                        {{ _('Continuer avec Replit') }}
-                    </a>
-                    
-                    <a href="javascript:void(0);" class="btn btn-primary btn-lg d-flex align-items-center justify-content-center" onclick="alert('Fonctionnalité à venir')">
+                    <a href="javascript:void(0);" class="btn btn-primary btn-lg d-flex align-items-center justify-content-center disabled" onclick="alert('Fonctionnalité à venir')">
                         <i class="fab fa-github me-2"></i>
-                        {{ _('Continuer avec GitHub') }}
+                        {{ _('Bientôt: connexion avec GitHub') }}
                     </a>
                 </div>
                 
