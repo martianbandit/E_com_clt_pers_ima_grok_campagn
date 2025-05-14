@@ -483,6 +483,18 @@
                             {{ _("Optimiser pour une entreprise locale") }}
                         </label>
                     </div>
+                    
+                    <!-- Option de sauvegarde -->
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="save_result" name="save_result" {% if should_save %}checked{% endif %}>
+                        <label class="form-check-label" for="save_result">{{ _("Sauvegarder cette analyse") }}</label>
+                    </div>
+                    
+                    <div class="mb-3 save-options" {% if not should_save %}style="display: none;"{% endif %}>
+                        <label for="analysis_title" class="form-label">{{ _("Titre de l'analyse") }}</label>
+                        <input type="text" class="form-control" id="analysis_title" name="analysis_title" value="{{ analysis_title or 'Optimisation SEO - ' + (title or '') }}">
+                    </div>
+                    
                     <div class="d-grid">
                         <button type="submit" class="btn btn-info">{{ _("Générer l'Optimisation SEO") }}</button>
                     </div>
