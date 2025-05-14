@@ -526,10 +526,9 @@ class OSPAnalysis(db.Model):
     analysis_type = db.Column(db.Enum(OSPAnalysisType), nullable=False)
     title = db.Column(db.String(100), nullable=False)
     
-    # Input data and results
-    input_data = db.Column(JSONB, nullable=False)  # Stored as JSON with the input parameters
-    output_data = db.Column(JSONB, nullable=False)  # Stored as JSON with the analysis results
-    html_result = db.Column(db.Text, nullable=True)  # Optional HTML rendering of results
+    # Input data and results - utilisant la colonne 'content' existante dans la base
+    content = db.Column(JSONB, nullable=True)  # Stored as JSON with the analysis results
+    html_result = db.Column(db.Text, nullable=True, name="html_result")  # Optional HTML rendering of results
     
     # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
