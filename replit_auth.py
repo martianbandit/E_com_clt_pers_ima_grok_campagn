@@ -153,13 +153,23 @@ def make_replit_blueprint():
 
 
 def save_user(user_claims):
+    from app import db
     from models import User
+    
+    # Création ou mise à jour de l'utilisateur
     user = User()
     user.id = user_claims['sub']
     user.email = user_claims.get('email')
     user.first_name = user_claims.get('first_name')
     user.last_name = user_claims.get('last_name')
     user.profile_image_url = user_claims.get('profile_image_url')
+    
+    # Si l'utilisateur a un nom d'utilisateur dans les claims, l'utiliser
+    username = user_claims.get('username')
+    if username:
+        user.username = username
+        
+    # Fusion avec les données existantes
     merged_user = db.session.merge(user)
     db.session.commit()
     return merged_user
