@@ -29,8 +29,12 @@ def init_auth(app, sqlalchemy_db):
     # Stockage de l'instance de db
     db = sqlalchemy_db
     
+    # Import des modèles nécessaires
+    from models import User, OAuth
+    
     # Configuration de Flask-Login
     login_manager = LoginManager(app)
+    # On définit la vue de login avec une chaîne de caractères
     login_manager.login_view = "replit_auth.login"
     login_manager.login_message = "Veuillez vous connecter pour accéder à cette page."
     login_manager.login_message_category = "info"
@@ -40,8 +44,8 @@ def init_auth(app, sqlalchemy_db):
     def load_user(user_id):
         return User.query.get(user_id)
         
-    # Enregistrer le blueprint
-    app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")
+    # Le blueprint est enregistré dans main.py
+    # app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")
     
     return login_manager
 
@@ -49,6 +53,7 @@ def init_auth(app, sqlalchemy_db):
 class UserSessionStorage(BaseStorage):
 
     def get(self, blueprint):
+        from models import OAuth
         try:
             token = db.session.query(OAuth).filter_by(
                 user_id=current_user.get_id(),
@@ -60,6 +65,7 @@ class UserSessionStorage(BaseStorage):
         return token
 
     def set(self, blueprint, token):
+        from models import OAuth
         db.session.query(OAuth).filter_by(
             user_id=current_user.get_id(),
             browser_session_key=g.browser_session_key,
@@ -74,6 +80,7 @@ class UserSessionStorage(BaseStorage):
         db.session.commit()
 
     def delete(self, blueprint):
+        from models import OAuth
         db.session.query(OAuth).filter_by(
             user_id=current_user.get_id(),
             browser_session_key=g.browser_session_key,
@@ -146,6 +153,7 @@ def make_replit_blueprint():
 
 
 def save_user(user_claims):
+    from models import User
     user = User()
     user.id = user_claims['sub']
     user.email = user_claims.get('email')

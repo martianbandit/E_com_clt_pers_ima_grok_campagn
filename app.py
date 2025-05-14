@@ -23,17 +23,8 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# Configuration de Flask-Login
-login_manager = LoginManager(app)
-login_manager.login_view = 'replit_auth.login'  # Redirection vers l'authentification Replit
-login_manager.login_message = "Veuillez vous connecter pour accéder à cette page."
-login_manager.login_message_category = "info"
-
-# User loader pour Flask-Login
-@login_manager.user_loader
-def load_user(user_id):
-    from models import User
-    return User.query.get(user_id)
+# La configuration de LoginManager est gérée dans replit_auth.py
+# En initialisant replit_auth depuis main.py
 
 # Rendre current_user et d'autres variables disponibles dans tous les templates
 @app.context_processor
@@ -48,67 +39,31 @@ def inject_template_globals():
 # Routes d'authentification simple (admin/admin)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Page de connexion simplifiée"""
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        
-        # Vérifier les identifiants (admin/admin)
-        if username == 'admin' and password == 'admin':
-            # Récupérer l'utilisateur admin ou le créer
-            from models import User, UserActivity
-            admin_user = User.query.filter_by(id='admin').first()
-            
-            if not admin_user:
-                # Créer l'utilisateur admin s'il n'existe pas
-                admin_user = User(
-                    id='admin',
-                    email='admin@markeasy.com',
-                    first_name='Admin',
-                    last_name='MarkEasy',
-                    username='admin',
-                    role='admin',
-                    language_preference='fr',
-                    theme_preference='dark'
-                )
-                db.session.add(admin_user)
-                db.session.commit()
-            
-            # Mettre à jour les statistiques de connexion
-            admin_user.update_login_stats()
-            
-            # Enregistrer l'activité de connexion
-            user_agent = request.headers.get('User-Agent')
-            ip_address = request.remote_addr
-            activity = UserActivity.log_activity(
-                user_id=admin_user.id,
-                activity_type='login',
-                description=f'Connexion depuis {ip_address}',
-                ip_address=ip_address,
-                user_agent=user_agent
-            )
-            
-            # Connecter l'utilisateur
-            login_user(admin_user)
-            db.session.commit()
-            
-            flash('Connexion réussie !', 'success')
-            
-            # Rediriger vers la page demandée ou l'accueil
-            next_page = request.args.get('next')
-            return redirect(next_page or url_for('index'))
-        else:
-            flash('Identifiants incorrects. Veuillez réessayer.', 'danger')
-    
-    return render_template('login.html')
+    """Redirection vers l'authentification Replit"""
+    # Rediriger vers l'authentification Replit (OAuth)
+    return redirect(url_for('replit_auth.login'))
 
 @app.route('/logout')
-@login_required
-def logout():
-    """Déconnexion"""
-    logout_user()
-    flash('Vous avez été déconnecté.', 'info')
-    return redirect(url_for('index'))
+def replit_logout():
+    """Déconnexion et redirection vers Replit Auth logout"""
+    # Enregistrer l'activité de déconnexion si l'utilisateur est connecté
+    if current_user.is_authenticated:
+        from models import UserActivity
+        user_agent = request.headers.get('User-Agent')
+        ip_address = request.remote_addr
+        UserActivity.log_activity(
+            user_id=current_user.id,
+            activity_type='logout',
+            description=f'Déconnexion depuis {ip_address}',
+            ip_address=ip_address,
+            user_agent=user_agent
+        )
+        db.session.commit()
+    
+    # Rediriger vers la déconnexion Replit Auth
+    return redirect(url_for('replit_auth.logout'))
+
+# Cette route a été remplacée par la route logout ci-dessus qui redirige vers Replit Auth
     
 @app.route('/user-info')
 def user_info():
