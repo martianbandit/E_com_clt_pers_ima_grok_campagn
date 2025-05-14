@@ -708,6 +708,7 @@ def metrics():
 
 @app.route('/profiles', methods=['GET', 'POST'])
 @app.route('/profiles/<int:page>', methods=['GET'])
+@login_required
 def profiles(page=1):
     if request.method == 'POST':
         niche_id = int(request.form.get('niche_id', 0))
@@ -830,6 +831,7 @@ def generate_persona(profile_index):
         return jsonify({'error': str(e)}), 500
 
 @app.route('/campaigns', methods=['GET', 'POST'])
+@login_required
 def campaigns():
     if request.method == 'POST':
         profile_source = request.form.get('profile_source', 'session')
@@ -1663,6 +1665,7 @@ def metrics_view():
 
 # Routes pour la gestion des produits
 @app.route('/products', methods=['GET'])
+@login_required
 def products():
     """Page de gestion des produits et génération de contenu"""
     # Récupérer les produits existants
