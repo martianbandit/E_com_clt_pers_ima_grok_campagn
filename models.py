@@ -3,11 +3,45 @@ import json
 from app import db
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 import enum
+from sqlalchemy import UniqueConstraint
+from flask_login import UserMixin
 
 class OSPAnalysisType(enum.Enum):
     CONTENT_ANALYSIS = "content_analysis"
     VALUE_MAP = "value_map"
     SEO_OPTIMIZATION = "seo_optimization"
+
+# Modèles pour l'authentification Replit
+class User(UserMixin, db.Model):
+    """Modèle pour les utilisateurs authentifiés via Replit"""
+    __tablename__ = 'users'
+    id = db.Column(db.String, primary_key=True)
+    email = db.Column(db.String, unique=True, nullable=True)
+    first_name = db.Column(db.String, nullable=True)
+    last_name = db.Column(db.String, nullable=True)
+    profile_image_url = db.Column(db.String, nullable=True)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime,
+                           default=datetime.utcnow,
+                           onupdate=datetime.utcnow)
+
+class OAuth(db.Model):
+    """Modèle pour les tokens OAuth des utilisateurs"""
+    __tablename__ = 'oauth'
+    id = db.Column(db.Integer, primary_key=True)
+    provider = db.Column(db.String(50), nullable=False)
+    token = db.Column(JSONB, nullable=False)
+    user_id = db.Column(db.String, db.ForeignKey(User.id), nullable=False)
+    browser_session_key = db.Column(db.String, nullable=False)
+    user = db.relationship(User)
+
+    __table_args__ = (UniqueConstraint(
+        'user_id',
+        'browser_session_key',
+        'provider',
+        name='uq_user_browser_session_key_provider',
+    ),)
 
 class Boutique(db.Model):
     id = db.Column(db.Integer, primary_key=True)

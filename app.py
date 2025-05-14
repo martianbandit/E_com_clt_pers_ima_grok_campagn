@@ -2,12 +2,13 @@ import os
 import json
 import logging
 import datetime
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, g
 from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_babel import gettext as _
+from flask_login import login_required, current_user, login_user, logout_user, LoginManager
 from i18n import babel, get_locale, get_supported_languages, get_language_name, get_boutique_languages, is_multilingual_campaign, get_campaign_target_languages
 
 # Configure logging

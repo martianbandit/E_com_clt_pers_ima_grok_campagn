@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}Erreur d'authentification - MarkEasy{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Erreur d'authentification
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Une erreur s'est produite lors de la tentative d'authentification.</p>
+                    <p>Cela peut être dû à l'une des raisons suivantes :</p>
+                    <ul>
+                        <li>Les autorisations nécessaires n'ont pas été accordées</li>
+                        <li>La session a expiré</li>
+                        <li>Un problème technique est survenu lors de l'authentification</li>
+                    </ul>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Veuillez réessayer de vous connecter. Si le problème persiste, contactez l'administrateur.
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="/" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-home me-1"></i>
+                            Retour à l'accueil
+                        </a>
+                        <a href="/auth/replit_auth/login" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-1"></i>
+                            Essayer de se reconnecter
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
