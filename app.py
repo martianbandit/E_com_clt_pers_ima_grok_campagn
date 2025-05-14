@@ -528,6 +528,7 @@ def save_campaign_language_settings():
     return redirect(url_for('edit_campaign', campaign_id=campaign.id))
 
 @app.route('/dashboard')
+@login_required
 def dashboard():
     # Récupérer les données pour le tableau de bord
     boutiques = Boutique.query.all()
@@ -2592,6 +2593,7 @@ with app.app_context():
 from osp_tools import generate_product_value_map, analyze_content_with_osp_guidelines, apply_seo_guidelines, render_value_map_html
 
 @app.route('/osp-tools')
+@login_required
 def osp_tools():
     """Page principale des outils OSP"""
     # Import nécessaire des modèles
@@ -2619,6 +2621,7 @@ def osp_tools():
 
 @app.route('/osp-tools/value-map-generator')
 @app.route('/osp-tools/value-map-generator/<string:source_type>/<int:source_id>')
+@login_required
 def value_map_generator(source_type=None, source_id=None):
     """Générateur de carte de valeur produit"""
     # Import nécessaire des modèles
@@ -2685,6 +2688,7 @@ def value_map_generator(source_type=None, source_id=None):
 
 @app.route('/osp-tools/content-analyzer')
 @app.route('/osp-tools/content-analyzer/<string:source_type>/<int:source_id>')
+@login_required
 def content_analyzer(source_type=None, source_id=None):
     """Analyseur de contenu selon les directives OSP"""
     # Import nécessaire des modèles
