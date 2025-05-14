@@ -115,12 +115,16 @@ class Boutique(db.Model):
     multilingual_enabled = db.Column(db.Boolean, default=False, nullable=False)
     supported_languages = db.Column(JSONB, default=lambda: ['en', 'fr'], nullable=False)
     
+    # Colonne d'appartenance (multi-tenant)
+    owner_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=True)
+    
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relations
-    customers = db.relationship('Customer', backref='boutique', lazy=True)
-    personas = db.relationship('CustomerPersona', backref='boutique', lazy=True)
+    owner = db.relationship('User', backref=db.backref('owned_boutiques', lazy=True, cascade='all, delete-orphan'))
+    customers = db.relationship('Customer', backref='boutique', lazy=True, cascade='all, delete-orphan')
+    personas = db.relationship('CustomerPersona', backref='boutique', lazy=True, cascade='all, delete-orphan')
     
     def __repr__(self):
         return f'<Boutique {self.name}>'
@@ -145,12 +149,17 @@ class NicheMarket(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     key_characteristics = db.Column(db.Text, nullable=True)
+    
+    # Colonne d'appartenance (multi-tenant)
+    owner_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=True)
+    
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relations
-    customers = db.relationship('Customer', backref='niche_market', lazy=True)
-    personas = db.relationship('CustomerPersona', backref='niche_market', lazy=True)
+    owner = db.relationship('User', backref=db.backref('owned_niches', lazy=True, cascade='all, delete-orphan'))
+    customers = db.relationship('Customer', backref='niche_market', lazy=True, cascade='all, delete-orphan')
+    personas = db.relationship('CustomerPersona', backref='niche_market', lazy=True, cascade='all, delete-orphan')
     
     def __repr__(self):
         return f'<NicheMarket {self.name}>'
@@ -187,6 +196,9 @@ class CustomerPersona(db.Model):
     primary_goal = db.Column(db.String(255), nullable=True)  # Objectif principal du persona
     pain_points = db.Column(db.Text, nullable=True)  # Points de douleur/frustrations
     buying_triggers = db.Column(db.Text, nullable=True)  # Déclencheurs d'achat
+    
+    # Colonne d'appartenance (multi-tenant)
+    owner_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=True)
     
     # Caractéristiques démographiques
     age_range = db.Column(db.String(50), nullable=True)  # Tranche d'âge (ex: "25-34")
