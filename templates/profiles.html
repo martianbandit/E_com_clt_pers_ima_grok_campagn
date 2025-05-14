@@ -552,13 +552,21 @@
                 const nicheDescription = this.getAttribute('data-niche-description');
                 const nicheCharacteristics = this.getAttribute('data-niche-characteristics');
                 
-                document.getElementById('editNicheId').value = nicheId;
-                document.getElementById('editNicheName').value = nicheName || '';
-                document.getElementById('editNicheDescription').value = nicheDescription || '';
-                document.getElementById('editNicheCharacteristics').value = nicheCharacteristics || '';
+                const editNicheIdEl = document.getElementById('editNicheId');
+                const editNicheNameEl = document.getElementById('editNicheName');
+                const editNicheDescriptionEl = document.getElementById('editNicheDescription');
+                const editNicheCharacteristicsEl = document.getElementById('editNicheCharacteristics');
                 
-                const editModal = new bootstrap.Modal(document.getElementById('editNicheModal'));
-                editModal.show();
+                if (editNicheIdEl) editNicheIdEl.value = nicheId;
+                if (editNicheNameEl) editNicheNameEl.value = nicheName || '';
+                if (editNicheDescriptionEl) editNicheDescriptionEl.value = nicheDescription || '';
+                if (editNicheCharacteristicsEl) editNicheCharacteristicsEl.value = nicheCharacteristics || '';
+                
+                const editNicheModalEl = document.getElementById('editNicheModal');
+                if (editNicheModalEl) {
+                    const editModal = new bootstrap.Modal(editNicheModalEl);
+                    editModal.show();
+                }
             });
         });
         
@@ -568,36 +576,48 @@
                 const nicheId = this.getAttribute('data-niche-id');
                 const nicheName = this.getAttribute('data-niche-name');
                 
-                document.getElementById('deleteNicheName').textContent = nicheName;
-                document.getElementById('confirmDeleteNicheBtn').setAttribute('data-niche-id', nicheId);
+                const deleteNicheNameEl = document.getElementById('deleteNicheName');
+                const confirmDeleteNicheBtnEl = document.getElementById('confirmDeleteNicheBtn');
                 
-                const deleteModal = new bootstrap.Modal(document.getElementById('deleteNicheModal'));
-                deleteModal.show();
+                if (deleteNicheNameEl) deleteNicheNameEl.textContent = nicheName;
+                if (confirmDeleteNicheBtnEl) confirmDeleteNicheBtnEl.setAttribute('data-niche-id', nicheId);
+                
+                const deleteNicheModalEl = document.getElementById('deleteNicheModal');
+                if (deleteNicheModalEl) {
+                    const deleteModal = new bootstrap.Modal(deleteNicheModalEl);
+                    deleteModal.show();
+                }
             });
         });
         
         // Create new niche
-        document.getElementById('saveNewNicheBtn').addEventListener('click', function() {
-            const name = document.getElementById('newNicheName').value;
-            const description = document.getElementById('newNicheDescription').value;
-            const characteristics = document.getElementById('newNicheCharacteristics').value;
-            
-            if (!name) {
-                showAlert("{{ _('Niche name is required') }}", 'danger');
-                return;
-            }
-            
-            fetch('/api/niches', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: name,
-                    description: description,
-                    key_characteristics: characteristics
-                }),
-            })
+        const saveNewNicheBtnEl = document.getElementById('saveNewNicheBtn');
+        if (saveNewNicheBtnEl) {
+            saveNewNicheBtnEl.addEventListener('click', function() {
+                const newNicheNameEl = document.getElementById('newNicheName');
+                const newNicheDescriptionEl = document.getElementById('newNicheDescription');
+                const newNicheCharacteristicsEl = document.getElementById('newNicheCharacteristics');
+                
+                if (!newNicheNameEl || !newNicheNameEl.value) {
+                    showAlert("{{ _('Niche name is required') }}", 'danger');
+                    return;
+                }
+                
+                const name = newNicheNameEl.value;
+                const description = newNicheDescriptionEl ? newNicheDescriptionEl.value : '';
+                const characteristics = newNicheCharacteristicsEl ? newNicheCharacteristicsEl.value : '';
+                
+                fetch('/api/niches', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        description: description,
+                        key_characteristics: characteristics
+                    }),
+                })
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
