@@ -1,103 +1,62 @@
-{% extends 'layout.html' %}
-{% block title %}{{ _('Modifier l\'analyse OSP') }} - {{ analysis.title }}{% endblock %}
+{% extends "layout.html" %}
+
+{% block title %}{{ _("Modifier l'analyse") }} - {{ analysis.title }}{% endblock %}
+
+{% block styles %}
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1>{{ _('Modifier l\'analyse') }}</h1>
-            <p class="text-muted">{{ _('ID') }}: {{ analysis.id }} | {{ _('Type') }}: 
-                {% if analysis.analysis_type.value == 'value_map' %}
-                    {{ _('Carte de valeur') }}
-                {% elif analysis.analysis_type.value == 'content_analysis' %}
-                    {{ _('Analyse de contenu') }}
-                {% elif analysis.analysis_type.value == 'seo_optimization' %}
-                    {{ _('Optimisation SEO') }}
-                {% else %}
-                    {{ analysis.analysis_type.value }}
-                {% endif %}
-            </p>
-        </div>
-    </div>
-
+<div class="container mt-4">
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ _('Modifier les informations') }}</h5>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">{{ _("Accueil") }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('osp_tools') }}">{{ _("Outils OSP") }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('view_osp_analysis', analysis_id=analysis.id) }}">{{ analysis.title }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ _("Modifier") }}</li>
+                </ol>
+            </nav>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h1 class="h3 mb-0">{{ _("Modifier l'analyse") }}</h1>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ url_for('edit_osp_analysis', analysis_id=analysis.id) }}">
-                        <div class="mb-3">
-                            <label for="title" class="form-label">{{ _('Titre') }}</label>
-                            <input type="text" class="form-control" id="title" name="title" value="{{ analysis.title }}" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="product_id" class="form-label">{{ _('Produit associé') }}</label>
-                            <select class="form-select" id="product_id" name="product_id">
-                                <option value="">{{ _('Aucun') }}</option>
-                                {% for product in products %}
-                                <option value="{{ product.id }}" {% if product.id == analysis.product_id %}selected{% endif %}>
-                                    {{ product.name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="campaign_id" class="form-label">{{ _('Campagne associée') }}</label>
-                            <select class="form-select" id="campaign_id" name="campaign_id">
-                                <option value="">{{ _('Aucune') }}</option>
-                                {% for campaign in campaigns %}
-                                <option value="{{ campaign.id }}" {% if campaign.id == analysis.campaign_id %}selected{% endif %}>
-                                    {{ campaign.name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="persona_id" class="form-label">{{ _('Persona associé') }}</label>
-                            <select class="form-select" id="persona_id" name="persona_id">
-                                <option value="">{{ _('Aucun') }}</option>
-                                {% for persona in personas %}
-                                <option value="{{ persona.id }}" {% if persona.id == analysis.persona_id %}selected{% endif %}>
-                                    {{ persona.title }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="customer_id" class="form-label">{{ _('Client associé') }}</label>
-                            <select class="form-select" id="customer_id" name="customer_id">
-                                <option value="">{{ _('Aucun') }}</option>
-                                {% for customer in customers %}
-                                <option value="{{ customer.id }}" {% if customer.id == analysis.customer_id %}selected{% endif %}>
-                                    {{ customer.name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="boutique_id" class="form-label">{{ _('Boutique associée') }}</label>
-                            <select class="form-select" id="boutique_id" name="boutique_id">
-                                <option value="">{{ _('Aucune') }}</option>
-                                {% for boutique in boutiques %}
-                                <option value="{{ boutique.id }}" {% if boutique.id == analysis.boutique_id %}selected{% endif %}>
-                                    {{ boutique.name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-primary">{{ _('Enregistrer les modifications') }}</button>
-                            <a href="{{ url_for('view_osp_analysis', analysis_id=analysis.id) }}" class="btn btn-secondary ms-2">{{ _('Annuler') }}</a>
-                        </div>
-                    </form>
+                    <div class="form-container">
+                        <form method="post" action="{{ url_for('edit_osp_analysis', analysis_id=analysis.id) }}">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">{{ _("Titre") }}</label>
+                                <input type="text" class="form-control" id="title" name="title" value="{{ analysis.title }}" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">{{ _("Type d'analyse") }}</label>
+                                <input type="text" class="form-control" value="{{ analysis.analysis_type.value }}" disabled>
+                                <div class="form-text">{{ _("Le type d'analyse ne peut pas être modifié.") }}</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">{{ _("Date de création") }}</label>
+                                <input type="text" class="form-control" value="{{ analysis.created_at.strftime('%d/%m/%Y %H:%M') }}" disabled>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                <a href="{{ url_for('view_osp_analysis', analysis_id=analysis.id) }}" class="btn btn-secondary">
+                                    {{ _("Annuler") }}
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    {{ _("Enregistrer les modifications") }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
