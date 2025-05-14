@@ -2,6 +2,12 @@ from datetime import datetime
 import json
 from app import db
 from sqlalchemy.dialects.postgresql import JSON, JSONB
+import enum
+
+class OSPAnalysisType(enum.Enum):
+    CONTENT_ANALYSIS = "content_analysis"
+    VALUE_MAP = "value_map"
+    SEO_OPTIMIZATION = "seo_optimization"
 
 class Boutique(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -513,6 +519,34 @@ class SimilarProduct(db.Model):
     def __repr__(self):
         return f'<SimilarProduct {self.name}>'
 
+
+class OSPAnalysis(db.Model):
+    """Model for storing OSP marketing analysis and tools output"""
+    id = db.Column(db.Integer, primary_key=True)
+    analysis_type = db.Column(db.Enum(OSPAnalysisType), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(JSONB, nullable=False)  # Stored as JSON with the analysis results
+    
+    # Relations avec les autres entités
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=True)
+    campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=True)
+    persona_id = db.Column(db.Integer, db.ForeignKey('customer_persona.id'), nullable=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
+    boutique_id = db.Column(db.Integer, db.ForeignKey('boutique.id'), nullable=True)
+    
+    # Relations
+    product = db.relationship('Product', backref=db.backref('osp_analyses', lazy=True))
+    campaign = db.relationship('Campaign', backref=db.backref('osp_analyses', lazy=True))
+    persona = db.relationship('CustomerPersona', backref=db.backref('osp_analyses', lazy=True))
+    customer = db.relationship('Customer', backref=db.backref('osp_analyses', lazy=True))
+    boutique = db.relationship('Boutique', backref=db.backref('osp_analyses', lazy=True))
+    
+    # Métadonnées
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<OSPAnalysis {self.id}: {self.analysis_type.value} - {self.title}>'
 
 class Metric(db.Model):
     """Model for storing application metrics and analytics data"""

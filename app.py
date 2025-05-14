@@ -2263,12 +2263,88 @@ from osp_tools import generate_product_value_map, analyze_content_with_osp_guide
 @app.route('/osp-tools')
 def osp_tools():
     """Page principale des outils OSP"""
-    return render_template('osp_tools.html')
+    # Récupération des données pour les menus déroulants
+    boutiques = Boutique.query.all()
+    customers = Customer.query.all()
+    personas = CustomerPersona.query.all()
+    campaigns = Campaign.query.all()
+    products = Product.query.all()
+    niche_markets = NicheMarket.query.all()
+    
+    # Analyses OSP récentes
+    recent_analyses = OSPAnalysis.query.order_by(OSPAnalysis.created_at.desc()).limit(5).all()
+    
+    return render_template('osp_tools.html', 
+                          boutiques=boutiques,
+                          customers=customers,
+                          personas=personas,
+                          campaigns=campaigns,
+                          products=products,
+                          niche_markets=niche_markets,
+                          recent_analyses=recent_analyses)
 
 @app.route('/osp-tools/value-map-generator')
-def value_map_generator():
+@app.route('/osp-tools/value-map-generator/<string:source_type>/<int:source_id>')
+def value_map_generator(source_type=None, source_id=None):
     """Générateur de carte de valeur produit"""
-    return render_template('osp_tools.html')
+    # Initialisation des données
+    product_name = ""
+    product_description = ""
+    target_audience = ""
+    industry = ""
+    niche_market = ""
+    key_features = ""
+    competitors = ""
+    
+    # Pré-remplir le formulaire si des données source sont fournies
+    if source_type and source_id:
+        if source_type == 'product' and source_id:
+            product = Product.query.get_or_404(source_id)
+            product_name = product.name
+            product_description = product.base_description or ""
+            if product.target_audience:
+                customer = product.target_audience
+                target_audience = f"{customer.name}, {customer.age} ans, {customer.location}"
+            if product.boutique:
+                niche_market = product.boutique.name
+        
+        elif source_type == 'campaign' and source_id:
+            campaign = Campaign.query.get_or_404(source_id)
+            product_name = campaign.title
+            product_description = campaign.content
+            target_audience = campaign.target_audience or ""
+            if campaign.customer:
+                customer = campaign.customer
+                target_audience = f"{customer.name}, {customer.age} ans, {customer.location}"
+        
+        elif source_type == 'persona' and source_id:
+            persona = CustomerPersona.query.get_or_404(source_id)
+            product_name = f"Produit pour {persona.title}"
+            target_audience = persona.description
+            if persona.niche_market:
+                niche_market = persona.niche_market.name
+    
+    # Récupérer les sources de données pour les menus déroulants
+    boutiques = Boutique.query.all()
+    products = Product.query.all()
+    customers = Customer.query.all()
+    personas = CustomerPersona.query.all()
+    campaigns = Campaign.query.all()
+    
+    return render_template('osp_tools.html', 
+                         form_active='value_map',
+                         product_name=product_name,
+                         product_description=product_description,
+                         target_audience=target_audience,
+                         industry=industry,
+                         niche_market=niche_market,
+                         key_features=key_features,
+                         competitors=competitors,
+                         boutiques=boutiques,
+                         products=products,
+                         customers=customers,
+                         personas=personas,
+                         campaigns=campaigns)
 
 @app.route('/osp-tools/content-analyzer')
 def content_analyzer():
