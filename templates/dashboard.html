@@ -1,9 +1,9 @@
 {% extends 'layout.html' %}
 
-{% block title %}{{ _('Boutique AI Marketing - Dashboard') }}{% endblock %}
+{% block title %}{{ _('MarkEasy - Tableau de bord') }}{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">{{ _('Dashboard') }}</h1>
+<h1 class="mb-4">{{ _('Tableau de bord') }}</h1>
 
 <div class="row mb-4">
     <div class="col-md-6">
@@ -81,13 +81,45 @@
     </div>
 </div>
 
+<div class="row mb-4">
+    <!-- Carte de résumé des performances -->
+    <div class="col-12">
+        <div class="card border-warning shadow-sm">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-line me-2"></i>
+                    {{ _('Performance des campagnes') }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <p class="lead">
+                            {{ _('Analysez les performances de vos campagnes marketing par type de boutique.') }}
+                        </p>
+                        <p>
+                            {{ _('Découvrez quelles boutiques génèrent le plus d\'engagement et de conversions, les types de campagnes les plus efficaces, et bien plus encore.') }}
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-center text-md-end">
+                        <a href="/boutique_dashboard" class="btn btn-warning btn-lg">
+                            <i class="fas fa-chart-pie me-1"></i>
+                            {{ _('Voir les performances par boutique') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header bg-info text-white">
                 <h5 class="mb-0">
                     <i class="fas fa-lightbulb me-2"></i>
-                    {{ _('Next Steps') }}
+                    {{ _('Prochaines étapes') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -100,11 +132,11 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h5>{{ _('Generate Customer Profiles') }}</h5>
-                                <p class="mb-0">{{ _('Create detailed customer profiles for your boutique niche.') }}</p>
+                                <h5>{{ _('Générer des profils clients') }}</h5>
+                                <p class="mb-0">{{ _('Créez des profils clients détaillés pour la niche de votre boutique.') }}</p>
                                 <a href="/profiles" class="btn btn-sm btn-outline-primary mt-2">
                                     <i class="fas fa-arrow-right me-1"></i>
-                                    {{ _('Customer Profiles') }}
+                                    {{ _('Profils clients') }}
                                 </a>
                             </div>
                         </div>
@@ -117,11 +149,11 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h5>{{ _('Create Marketing Campaigns') }}</h5>
-                                <p class="mb-0">{{ _('Develop personalized marketing campaigns for your customers.') }}</p>
+                                <h5>{{ _('Créer des campagnes marketing') }}</h5>
+                                <p class="mb-0">{{ _('Développez des campagnes marketing personnalisées pour vos clients.') }}</p>
                                 <a href="/campaigns" class="btn btn-sm btn-outline-success mt-2">
                                     <i class="fas fa-arrow-right me-1"></i>
-                                    {{ _('Campaigns') }}
+                                    {{ _('Campagnes') }}
                                 </a>
                             </div>
                         </div>
@@ -134,11 +166,11 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h5>{{ _('Generate Marketing Images') }}</h5>
-                                <p class="mb-0">{{ _('Create custom images that reflect your boutique\'s style.') }}</p>
+                                <h5>{{ _('Générer des images marketing') }}</h5>
+                                <p class="mb-0">{{ _('Créez des images personnalisées qui reflètent le style de votre boutique.') }}</p>
                                 <a href="/image_generation" class="btn btn-sm btn-outline-info mt-2">
                                     <i class="fas fa-arrow-right me-1"></i>
-                                    {{ _('Generate Images') }}
+                                    {{ _('Générer des images') }}
                                 </a>
                             </div>
                         </div>

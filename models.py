@@ -441,9 +441,15 @@ class Campaign(db.Model):
             func.sum(Campaign.conversion_count).label('total_conversions')
         ).first()
         
-        total_views = results.total_views or 0
-        total_clicks = results.total_clicks or 0
-        total_conversions = results.total_conversions or 0
+        # Protection contre les valeurs nulles
+        if results and hasattr(results, 'total_views'):
+            total_views = results.total_views or 0
+            total_clicks = results.total_clicks or 0
+            total_conversions = results.total_conversions or 0
+        else:
+            total_views = 0
+            total_clicks = 0
+            total_conversions = 0
         
         # Campagnes par type
         campaign_types = db.session.query(

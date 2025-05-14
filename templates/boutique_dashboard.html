@@ -1,0 +1,522 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('MarkEasy - Tableau de bord des boutiques') }}{% endblock %}
+
+{% block head %}
+<!-- Chart.js pour les graphiques -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<!-- chartjs-plugin-datalabels pour améliorer les labels -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<style>
+    .stats-card {
+        transition: transform 0.3s;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .metric-title {
+        font-size: 0.9rem;
+        color: var(--bs-gray-600);
+    }
+    
+    .progress-thin {
+        height: 6px;
+    }
+    
+    .trend-up {
+        color: var(--bs-success);
+    }
+    
+    .trend-down {
+        color: var(--bs-danger);
+    }
+    
+    .boutique-card {
+        border-left: 5px solid var(--bs-primary);
+        transition: all 0.3s;
+    }
+    
+    .boutique-card:hover {
+        background-color: var(--bs-gray-100);
+    }
+    
+    .top-performer-badge {
+        position: absolute;
+        top: -10px;
+        right: 20px;
+        z-index: 1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-chart-pie me-2"></i> {{ _('Tableau de bord des performances par boutique') }}</h1>
+    <div>
+        <a href="/dashboard" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> {{ _('Retour au tableau de bord') }}
+        </a>
+    </div>
+</div>
+
+<!-- Statistiques globales en haut -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="metric-title text-white-50">{{ _('Boutiques') }}</div>
+                        <div class="metric-value">{{ boutique_stats.total_boutiques }}</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-store fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="metric-title text-white-50">{{ _('Campagnes') }}</div>
+                        <div class="metric-value">{{ global_stats.total_campaigns }}</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-bullhorn fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="metric-title text-white-50">{{ _('Engagement moyen') }}</div>
+                        <div class="metric-value">{{ "%.1f"|format(global_stats.avg_engagement_rate) }}%</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-thumbs-up fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="metric-title text-white-50">{{ _('Conversion moyenne') }}</div>
+                        <div class="metric-value">{{ "%.1f"|format(global_stats.avg_conversion_rate) }}%</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-chart-line fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Meilleure boutique performante (si disponible) -->
+{% if boutique_stats.top_performing %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-warning shadow-sm">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-trophy me-2"></i>
+                    {{ _('Boutique la plus performante') }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h3>{{ boutique_stats.top_performing.name }}</h3>
+                        <p class="lead mb-0">
+                            {{ _('Taux de conversion:') }} <span class="badge bg-warning text-dark">{{ "%.1f"|format(boutique_stats.top_performing.conversion_rate) }}%</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <a href="/boutiques/{{ boutique_stats.top_performing.id }}" class="btn btn-warning">
+                            <i class="fas fa-search me-1"></i> {{ _('Voir le détail') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Distribution des campagnes par type (graphique) -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">{{ _('Distribution des campagnes par type') }}</h5>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px">
+                    <canvas id="campaignTypesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">{{ _('Performance par boutique') }}</h5>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px">
+                    <canvas id="boutiquePerformanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Liste des boutiques avec leurs performances -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">{{ _('Détails des performances par boutique') }}</h5>
+    </div>
+    <div class="card-body">
+        {% if boutique_stats.boutiques %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Boutique') }}</th>
+                            <th>{{ _('Campagnes') }}</th>
+                            <th>{{ _('Actives') }}</th>
+                            <th>{{ _('Vues') }}</th>
+                            <th>{{ _('Clics') }}</th>
+                            <th>{{ _('Conversions') }}</th>
+                            <th>{{ _('Taux d\'engagement') }}</th>
+                            <th>{{ _('Taux de conversion') }}</th>
+                            <th>{{ _('Type principal') }}</th>
+                            <th>{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for boutique in boutique_stats.boutiques %}
+                            <tr>
+                                <td>
+                                    {% if boutique_stats.top_performing and boutique.id == boutique_stats.top_performing.id %}
+                                        <span class="badge bg-warning text-dark me-1">
+                                            <i class="fas fa-trophy"></i>
+                                        </span>
+                                    {% endif %}
+                                    <strong>{{ boutique.name }}</strong>
+                                </td>
+                                <td>{{ boutique.total_campaigns }}</td>
+                                <td>{{ boutique.active_campaigns }}</td>
+                                <td>{{ boutique.total_views }}</td>
+                                <td>{{ boutique.total_clicks }}</td>
+                                <td>{{ boutique.total_conversions }}</td>
+                                <td>{{ "%.1f"|format(boutique.engagement_rate) }}%</td>
+                                <td>{{ "%.1f"|format(boutique.conversion_rate) }}%</td>
+                                <td>
+                                    {% if boutique.top_campaign_type %}
+                                        <span class="badge bg-info">{{ boutique.top_campaign_type.type }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ _('N/A') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="/boutique/{{ boutique.id }}/campaigns" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-search"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                {{ _('Aucune boutique n\'a encore de campagnes.') }}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Cartes détaillées des boutiques -->
+<div class="row" id="boutiquesDetail">
+    {% for boutique in boutique_stats.boutiques %}
+        {% if boutique.total_campaigns > 0 %}
+            <div class="col-md-6 col-xl-4 mb-4">
+                <div class="card position-relative shadow-sm boutique-card">
+                    {% if boutique_stats.top_performing and boutique.id == boutique_stats.top_performing.id %}
+                        <span class="badge bg-warning text-dark top-performer-badge">
+                            <i class="fas fa-trophy me-1"></i> {{ _('Top performer') }}
+                        </span>
+                    {% endif %}
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ boutique.name }}</h5>
+                        <small class="text-muted">{{ boutique.target_demographic or _('Aucune cible définie') }}</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-eye text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted">{{ _('Vues') }}</div>
+                                        <div class="fw-bold">{{ boutique.total_views }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-success d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-mouse-pointer text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted">{{ _('Clics') }}</div>
+                                        <div class="fw-bold">{{ boutique.total_clicks }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-warning d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-shopping-cart text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted">{{ _('Conversions') }}</div>
+                                        <div class="fw-bold">{{ boutique.total_conversions }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-info d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-bullhorn text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted">{{ _('Campagnes') }}</div>
+                                        <div class="fw-bold">{{ boutique.total_campaigns }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Types de campagnes -->
+                        {% if boutique.campaigns_by_type %}
+                            <h6 class="mb-2">{{ _('Types de campagnes') }}</h6>
+                            <div class="mb-3">
+                                {% for type, count in boutique.campaigns_by_type.items() %}
+                                    <span class="badge bg-secondary me-2 mb-1">{{ type }}: {{ count }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Taux de performance -->
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>{{ _('Taux d\'engagement') }}</span>
+                                <span class="fw-bold">{{ "%.1f"|format(boutique.engagement_rate) }}%</span>
+                            </div>
+                            <div class="progress progress-thin">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{ min(100, boutique.engagement_rate*1.5) }}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>{{ _('Taux de conversion') }}</span>
+                                <span class="fw-bold">{{ "%.1f"|format(boutique.conversion_rate) }}%</span>
+                            </div>
+                            <div class="progress progress-thin">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ min(100, boutique.conversion_rate*2) }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/boutique/{{ boutique.id }}/campaigns" class="btn btn-sm btn-primary">
+                            <i class="fas fa-chart-bar me-1"></i> {{ _('Détails') }}
+                        </a>
+                        <a href="/boutique/{{ boutique.id }}/edit" class="btn btn-sm btn-secondary">
+                            <i class="fas fa-edit me-1"></i> {{ _('Modifier') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configuration des couleurs pour les graphiques
+    const colors = [
+        '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', 
+        '#ec4899', '#6366f1', '#14b8a6', '#f97316', '#d946ef'
+    ];
+    
+    // Configuration des graphiques
+    Chart.register(ChartDataLabels);
+    Chart.defaults.font.family = "'Open Sans', sans-serif";
+    Chart.defaults.color = '#6c757d';
+    
+    // Données pour le graphique des types de campagnes
+    {% if global_stats.campaigns_by_type %}
+        const campaignTypesData = {
+            labels: [{% for type, count in global_stats.campaigns_by_type.items() %}'{{ type }}',{% endfor %}],
+            datasets: [{
+                data: [{% for type, count in global_stats.campaigns_by_type.items() %}{{ count }},{% endfor %}],
+                backgroundColor: colors.slice(0, {{ global_stats.campaigns_by_type|length }}),
+                borderWidth: 0,
+                hoverOffset: 15
+            }]
+        };
+        
+        // Graphique des types de campagnes
+        const campaignTypesChart = new Chart(
+            document.getElementById('campaignTypesChart'),
+            {
+                type: 'doughnut',
+                data: campaignTypesData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            align: 'center',
+                            labels: {
+                                boxWidth: 15,
+                                padding: 15
+                            }
+                        },
+                        datalabels: {
+                            color: '#fff',
+                            font: {
+                                weight: 'bold'
+                            },
+                            formatter: (value, ctx) => {
+                                const total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
+                                const percentage = (value * 100 / total).toFixed(1) + '%';
+                                return value > 0 ? percentage : '';
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const label = context.label || '';
+                                    const value = context.raw;
+                                    const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                                    const percentage = (value * 100 / total).toFixed(1) + '%';
+                                    return `${label}: ${value} (${percentage})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        );
+    {% endif %}
+    
+    // Données pour le graphique de performance par boutique
+    {% if boutique_stats.boutiques %}
+        const boutiquesWithCampaigns = {{ boutique_stats.boutiques|selectattr('total_campaigns', 'gt', 0)|list|tojson }};
+        
+        if (boutiquesWithCampaigns.length > 0) {
+            const boutiqueLabels = boutiquesWithCampaigns.map(b => b.name);
+            const engagementRates = boutiquesWithCampaigns.map(b => b.engagement_rate);
+            const conversionRates = boutiquesWithCampaigns.map(b => b.conversion_rate);
+            
+            const boutiquePerformanceData = {
+                labels: boutiqueLabels,
+                datasets: [
+                    {
+                        label: "Taux d'engagement (%)",
+                        data: engagementRates,
+                        backgroundColor: '#3b82f6',
+                        borderColor: '#3b82f6',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: "Taux de conversion (%)",
+                        data: conversionRates,
+                        backgroundColor: '#10b981',
+                        borderColor: '#10b981',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        yAxisID: 'y'
+                    }
+                ]
+            };
+            
+            // Graphique de performance par boutique
+            const boutiquePerformanceChart = new Chart(
+                document.getElementById('boutiquePerformanceChart'),
+                {
+                    type: 'bar',
+                    data: boutiquePerformanceData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '{{ _("Pourcentage (%)") }}'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            },
+                            datalabels: {
+                                align: 'center',
+                                anchor: 'center',
+                                color: '#fff',
+                                font: {
+                                    weight: 'bold',
+                                    size: 10
+                                },
+                                formatter: (value) => {
+                                    return value > 0 ? value.toFixed(1) + '%' : '';
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+        }
+    {% endif %}
+});
+</script>
+{% endblock %}
