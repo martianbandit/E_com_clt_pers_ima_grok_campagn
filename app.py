@@ -60,7 +60,7 @@ def login():
         # Vérifier les identifiants (admin/admin)
         if username == 'admin' and password == 'admin':
             # Récupérer l'utilisateur admin ou le créer
-            from models import User
+            from models import User, UserActivity
             admin_user = User.query.filter_by(id='admin').first()
             
             if not admin_user:
@@ -69,13 +69,33 @@ def login():
                     id='admin',
                     email='admin@markeasy.com',
                     first_name='Admin',
-                    last_name='MarkEasy'
+                    last_name='MarkEasy',
+                    username='admin',
+                    role='admin',
+                    language_preference='fr',
+                    theme_preference='dark'
                 )
                 db.session.add(admin_user)
                 db.session.commit()
             
+            # Mettre à jour les statistiques de connexion
+            admin_user.update_login_stats()
+            
+            # Enregistrer l'activité de connexion
+            user_agent = request.headers.get('User-Agent')
+            ip_address = request.remote_addr
+            activity = UserActivity.log_activity(
+                user_id=admin_user.id,
+                activity_type='login',
+                description=f'Connexion depuis {ip_address}',
+                ip_address=ip_address,
+                user_agent=user_agent
+            )
+            
             # Connecter l'utilisateur
             login_user(admin_user)
+            db.session.commit()
+            
             flash('Connexion réussie !', 'success')
             
             # Rediriger vers la page demandée ou l'accueil
@@ -99,25 +119,210 @@ def logout():
 @login_required
 def user_profile():
     """Page de profil utilisateur avec statistiques"""
-    from models import Campaign, Customer, Product
+    from models import Campaign, Customer, Product, UserActivity
     
     # Récupération des statistiques d'utilisation
     campaigns_count = Campaign.query.count()
     customers_count = Customer.query.count()
     products_count = Product.query.count()
     
+    # Récupérer les activités récentes de l'utilisateur
+    activities = UserActivity.get_recent_activities(current_user.id, limit=10)
+    
     return render_template('user/profile.html',
                           campaigns_count=campaigns_count,
                           customers_count=customers_count,
-                          products_count=products_count)
+                          products_count=products_count,
+                          activities=activities)
 
 @app.route('/user/settings')
 @login_required
 def user_settings():
     """Page de paramètres utilisateur"""
-    # Redirects to profile for now
-    flash("La page de paramètres sera bientôt disponible.", "info")
+    return render_template('user/settings.html', title='Paramètres')
+
+@app.route('/user/update-profile', methods=['POST'])
+@login_required
+def update_profile():
+    """Mettre à jour le profil utilisateur"""
+    from models import UserActivity
+    
+    if request.method == 'POST':
+        # Récupérer les données du formulaire
+        current_user.first_name = request.form.get('first_name')
+        current_user.last_name = request.form.get('last_name')
+        current_user.email = request.form.get('email')
+        current_user.phone = request.form.get('phone')
+        current_user.job_title = request.form.get('job_title')
+        current_user.company = request.form.get('company')
+        current_user.address = request.form.get('address')
+        current_user.bio = request.form.get('bio')
+        current_user.language_preference = request.form.get('language_preference', 'fr')
+        current_user.theme_preference = request.form.get('theme_preference', 'dark')
+        
+        # Enregistrer l'activité
+        activity = UserActivity.log_activity(
+            user_id=current_user.id,
+            activity_type='profile_update',
+            description='Mise à jour du profil',
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent')
+        )
+        
+        # Sauvegarder les modifications
+        db.session.commit()
+        
+        flash('Profil mis à jour avec succès !', 'success')
+        return redirect(url_for('user_profile'))
+    
     return redirect(url_for('user_profile'))
+
+@app.route('/user/update-account-settings', methods=['POST'])
+@login_required
+def update_account_settings():
+    """Mettre à jour les paramètres du compte"""
+    from models import UserActivity
+    
+    if request.method == 'POST':
+        current_user.username = request.form.get('username')
+        current_user.email = request.form.get('email')
+        current_user.language_preference = request.form.get('language_preference', 'fr')
+        
+        # Enregistrer l'activité
+        activity = UserActivity.log_activity(
+            user_id=current_user.id,
+            activity_type='account_update',
+            description='Mise à jour des paramètres du compte',
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent')
+        )
+        
+        db.session.commit()
+        
+        flash('Paramètres du compte mis à jour avec succès !', 'success')
+        return redirect(url_for('user_settings'))
+    
+    return redirect(url_for('user_settings'))
+
+@app.route('/user/update-password', methods=['POST'])
+@login_required
+def update_password():
+    """Mettre à jour le mot de passe"""
+    from models import UserActivity
+    from werkzeug.security import generate_password_hash
+    
+    if request.method == 'POST':
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        
+        # Pour la démo, on accepte admin comme mot de passe actuel
+        if current_password == 'admin' and new_password == confirm_password:
+            # Hasher le nouveau mot de passe
+            current_user.password_hash = generate_password_hash(new_password)
+            
+            # Enregistrer l'activité
+            activity = UserActivity.log_activity(
+                user_id=current_user.id,
+                activity_type='password_update',
+                description='Mise à jour du mot de passe',
+                ip_address=request.remote_addr,
+                user_agent=request.headers.get('User-Agent')
+            )
+            
+            db.session.commit()
+            
+            flash('Mot de passe mis à jour avec succès !', 'success')
+        else:
+            flash('Erreur lors de la mise à jour du mot de passe. Vérifiez vos informations.', 'danger')
+        
+        return redirect(url_for('user_settings'))
+    
+    return redirect(url_for('user_settings'))
+
+@app.route('/user/update-notification-preferences', methods=['POST'])
+@login_required
+def update_notification_preferences():
+    """Mettre à jour les préférences de notification"""
+    from models import UserActivity
+    
+    if request.method == 'POST':
+        # Mettre à jour les préférences de notification
+        current_user.notification_preferences = {
+            'email': 'email_notifications' in request.form,
+            'webapp': 'webapp_notifications' in request.form,
+            'marketing': 'marketing_notifications' in request.form
+        }
+        
+        # Enregistrer l'activité
+        activity = UserActivity.log_activity(
+            user_id=current_user.id,
+            activity_type='notification_update',
+            description='Mise à jour des préférences de notification',
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent')
+        )
+        
+        db.session.commit()
+        
+        flash('Préférences de notification mises à jour !', 'success')
+        return redirect(url_for('user_settings'))
+    
+    return redirect(url_for('user_settings'))
+
+@app.route('/user/update-appearance-settings', methods=['POST'])
+@login_required
+def update_appearance_settings():
+    """Mettre à jour les paramètres d'apparence"""
+    from models import UserActivity
+    
+    if request.method == 'POST':
+        current_user.theme_preference = request.form.get('theme_preference', 'dark')
+        
+        # Enregistrer l'activité
+        activity = UserActivity.log_activity(
+            user_id=current_user.id,
+            activity_type='appearance_update',
+            description='Mise à jour des paramètres d\'apparence',
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent')
+        )
+        
+        db.session.commit()
+        
+        flash('Paramètres d\'apparence mis à jour !', 'success')
+        return redirect(url_for('user_settings'))
+    
+    return redirect(url_for('user_settings'))
+
+@app.route('/user/add-api-key', methods=['POST'])
+@login_required
+def add_api_key():
+    """Ajouter une clé API"""
+    from models import UserActivity
+    
+    if request.method == 'POST':
+        service_name = request.form.get('service_name')
+        api_key = request.form.get('api_key')
+        
+        # Ici, on pourrait stocker la clé API dans la base de données
+        # Pour l'instant, on simule juste l'ajout
+        
+        # Enregistrer l'activité
+        activity = UserActivity.log_activity(
+            user_id=current_user.id,
+            activity_type='api_key_add',
+            description=f'Ajout d\'une clé API pour {service_name}',
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent')
+        )
+        
+        db.session.commit()
+        
+        flash('Clé API ajoutée avec succès !', 'success')
+        return redirect(url_for('user_settings'))
+    
+    return redirect(url_for('user_settings'))
 
 # Configure the PostgreSQL database
 database_url = os.environ.get("DATABASE_URL")
