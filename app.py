@@ -608,6 +608,11 @@ def change_language(lang):
 def index():
     return render_template('index.html')
 
+@app.route('/faq')
+def faq():
+    """Page de Foire Aux Questions (FAQ)"""
+    return render_template('faq.html')
+
 @app.route('/boutique_language_settings/<int:boutique_id>', methods=['GET'])
 @login_required
 def boutique_language_settings(boutique_id):
