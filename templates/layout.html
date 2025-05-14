@@ -26,8 +26,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <i class="fas fa-user-ninja ninja-icon-animated me-2"></i>
-                <span style="font-family: 'Poppins', sans-serif; font-weight: 700;">{{ _('Marketing Ninja') }}</span>
+                <img src="{{ url_for('static', filename='img/markeasy-logo.png') }}" alt="MarkEasy" class="markeasy-logo me-2">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -75,9 +74,9 @@
                     </li>
                 </ul>
                 <div class="d-flex align-items-center">
-                    <!-- Ninja slogan -->
+                    <!-- MarkEasy slogan -->
                     <div class="d-none d-lg-block me-3">
-                        <span class="ninja-slogan small">{{ _("Le marketing, c'est facile… quand on a un ninja dans sa poche.") }}</span>
+                        <span class="ninja-slogan small">{{ _("Le marketing, c'est facile avec MarkEasy!") }}</span>
                     </div>
                     <!-- Theme Toggle Button -->
                     <button id="themeToggle" class="btn btn-outline-primary btn-sm me-2" type="button">
@@ -158,16 +157,15 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <div class="d-flex align-items-center mb-3">
-                        <i class="fas fa-user-ninja ninja-icon-animated me-2 fs-3"></i>
-                        <h5 class="text-light mb-0" style="font-family: 'Poppins', sans-serif; font-weight: 700;">Marketing Ninja</h5>
+                        <img src="{{ url_for('static', filename='img/markeasy-logo.png') }}" alt="MarkEasy" class="markeasy-logo-large me-2">
                     </div>
-                    <p class="text-muted" style="font-family: 'Open Sans', sans-serif;">{{ _('Solutions marketing hyper-personnalisées pour les boutiques et niches spécialisées.') }}</p>
+                    <p class="text-muted" style="font-family: 'Open Sans', sans-serif;">{{ _('Solutions marketing IA hyper-personnalisées pour boutiques et niches spécialisées.') }}</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <div class="mb-3">
-                        <span class="ninja-slogan">{{ _("Le marketing, c'est facile… quand on a un ninja dans sa poche.") }}</span>
+                        <span class="ninja-slogan">{{ _("Le marketing, c'est facile avec MarkEasy!") }}</span>
                     </div>
-                    <p class="text-muted" style="font-family: 'Open Sans', sans-serif;">&copy; 2025 Marketing Ninja. {{ _('All rights reserved.') }}</p>
+                    <p class="text-muted" style="font-family: 'Open Sans', sans-serif;">&copy; 2025 MarkEasy.ai {{ _('All rights reserved.') }}</p>
                 </div>
             </div>
             <div class="row mt-3">
