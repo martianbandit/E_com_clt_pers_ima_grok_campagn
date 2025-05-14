@@ -2590,13 +2590,24 @@ def generate_value_map():
 def analyze_content():
     """Analyser du contenu selon les directives OSP"""
     # Import nécessaire des modèles
-    from models import Boutique, Customer, Campaign, Product, CustomerPersona, OSPAnalysis
+    from models import Boutique, Customer, Campaign, Product, CustomerPersona, OSPAnalysis, OSPAnalysisType
     try:
         # Récupérer les données du formulaire
         content = request.form.get('content')
         content_type = request.form.get('content_type')
         target_audience = request.form.get('target_audience')
         industry = request.form.get('industry')
+        
+        # Récupérer les IDs des entités associées (s'ils sont fournis)
+        product_id = request.form.get('product_id', type=int)
+        campaign_id = request.form.get('campaign_id', type=int)
+        persona_id = request.form.get('persona_id', type=int)
+        customer_id = request.form.get('customer_id', type=int)
+        boutique_id = request.form.get('boutique_id', type=int)
+        
+        # Option de sauvegarde
+        should_save = request.form.get('save_result') == 'on'
+        title = request.form.get('title', f"Analyse de contenu - {content_type}")
         
         # S'assurer que les valeurs ne sont pas None
         content = content or ""
@@ -2612,10 +2623,38 @@ def analyze_content():
             industry=industry
         )
         
+        # Sauvegarder l'analyse si demandé
+        if should_save:
+            # Créer un nouvel objet OSPAnalysis
+            analysis = OSPAnalysis(
+                analysis_type=OSPAnalysisType.CONTENT_ANALYSIS,
+                title=title,
+                content={
+                    'input': {
+                        'content': content,
+                        'content_type': content_type,
+                        'target_audience': target_audience,
+                        'industry': industry
+                    },
+                    'results': content_analysis
+                },
+                html_result=json.dumps(content_analysis, indent=2, ensure_ascii=False),
+                product_id=product_id,
+                campaign_id=campaign_id,
+                persona_id=persona_id,
+                customer_id=customer_id,
+                boutique_id=boutique_id
+            )
+            
+            db.session.add(analysis)
+            db.session.commit()
+            
+            flash(_("Analyse de contenu générée et sauvegardée avec succès."), 'success')
+        
         # Log de la métrique
         log_metric(
             metric_name="osp_content_analysis",
-            data={"content_type": content_type, "length": len(content)},
+            data={"content_type": content_type, "length": len(content), "saved": should_save},
             category="marketing",
             status=True,
             response_time=None
@@ -2623,7 +2662,15 @@ def analyze_content():
         
         return render_template(
             'osp_tools.html',
-            content_analysis=content_analysis
+            form_active='content_analyzer',
+            content_analysis=content_analysis,
+            content_analysis_json=json.dumps(content_analysis, indent=2, ensure_ascii=False),
+            content=content,
+            content_type=content_type,
+            target_audience=target_audience,
+            industry=industry,
+            should_save=should_save,
+            title=title
         )
     except Exception as e:
         flash(_("Erreur lors de l'analyse du contenu: {}").format(str(e)), 'danger')
@@ -2640,7 +2687,7 @@ def analyze_content():
 def optimize_seo():
     """Optimiser du contenu pour le SEO selon les directives OSP"""
     # Import nécessaire des modèles
-    from models import Boutique, Campaign, Product, OSPAnalysis
+    from models import Boutique, Campaign, Product, OSPAnalysis, OSPAnalysisType
     try:
         # Récupérer les données du formulaire
         title = request.form.get('title')
@@ -2648,6 +2695,17 @@ def optimize_seo():
         page_type = request.form.get('page_type')
         locale = request.form.get('locale')
         is_local_business = True if request.form.get('is_local_business') else False
+        
+        # Récupérer les IDs des entités associées (s'ils sont fournis)
+        product_id = request.form.get('product_id', type=int)
+        campaign_id = request.form.get('campaign_id', type=int)
+        persona_id = request.form.get('persona_id', type=int)
+        customer_id = request.form.get('customer_id', type=int)
+        boutique_id = request.form.get('boutique_id', type=int)
+        
+        # Option de sauvegarde
+        should_save = request.form.get('save_result') == 'on'
+        analysis_title = request.form.get('analysis_title', f"Optimisation SEO - {title}")
         
         # S'assurer que les valeurs ne sont pas None
         title = title or ""
@@ -2668,10 +2726,39 @@ def optimize_seo():
             is_local_business=is_local_business
         )
         
+        # Sauvegarder l'analyse si demandé
+        if should_save:
+            # Créer un nouvel objet OSPAnalysis
+            analysis = OSPAnalysis(
+                analysis_type=OSPAnalysisType.SEO_OPTIMIZATION,
+                title=analysis_title,
+                content={
+                    'input': {
+                        'title': title,
+                        'description': description,
+                        'page_type': page_type,
+                        'locale': locale,
+                        'is_local_business': is_local_business
+                    },
+                    'results': seo_optimized
+                },
+                html_result=json.dumps(seo_optimized, indent=2, ensure_ascii=False),
+                product_id=product_id,
+                campaign_id=campaign_id,
+                persona_id=persona_id,
+                customer_id=customer_id,
+                boutique_id=boutique_id
+            )
+            
+            db.session.add(analysis)
+            db.session.commit()
+            
+            flash(_("Optimisation SEO générée et sauvegardée avec succès."), 'success')
+        
         # Log de la métrique
         log_metric(
             metric_name="osp_seo_optimization",
-            data={"page_type": page_type, "locale": locale},
+            data={"page_type": page_type, "locale": locale, "saved": should_save},
             category="marketing",
             status=True,
             response_time=None
@@ -2679,7 +2766,16 @@ def optimize_seo():
         
         return render_template(
             'osp_tools.html',
-            seo_optimized=seo_optimized
+            form_active='seo_optimizer',
+            seo_optimized=seo_optimized,
+            seo_optimized_json=json.dumps(seo_optimized, indent=2, ensure_ascii=False),
+            title=title,
+            description=description,
+            page_type=page_type,
+            locale=locale,
+            is_local_business=is_local_business,
+            should_save=should_save,
+            analysis_title=analysis_title
         )
     except Exception as e:
         flash(_("Erreur lors de l'optimisation SEO: {}").format(str(e)), 'danger')
