@@ -41,6 +41,14 @@
     --dropdown-bg: #343a40;
     --dropdown-color: var(--markeasy-light-gray);
     --dropdown-link-hover-bg: #2b3035;
+    --table-bg: transparent;
+    --table-color: var(--markeasy-light-gray);
+    --modal-bg: #343a40;
+    --modal-color: var(--markeasy-light-gray);
+    --list-group-bg: #343a40;
+    --list-group-color: var(--markeasy-light-gray);
+    --list-group-hover-bg: #2b3035;
+    --text-muted: #adb5bd;
 }
 
 /* THÈME CLAIR (optimisé pour meilleure lisibilité) */
@@ -61,6 +69,14 @@
     --dropdown-bg: var(--markeasy-white);
     --dropdown-color: #000000;
     --dropdown-link-hover-bg: #f0f0f0;
+    --table-bg: var(--markeasy-white);
+    --table-color: #000000;
+    --modal-bg: var(--markeasy-white);
+    --modal-color: #000000;
+    --list-group-bg: var(--markeasy-white);
+    --list-group-color: #000000;
+    --list-group-hover-bg: #f8f9fa;
+    --text-muted: #495057;
 }
 
 /* Application des variables aux éléments spécifiques */
@@ -90,6 +106,12 @@ body {
 .card {
     background-color: var(--card-bg);
     border-color: var(--border-color);
+    color: var(--body-color);
+}
+
+.card-header, .card-footer {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--body-color);
 }
 
 /* Boutons */
@@ -100,15 +122,64 @@ body {
 
 .btn-primary:hover,
 .btn-primary:focus {
-    background-color: darken(var(--btn-primary-bg), 10%);
-    border-color: darken(var(--btn-primary-border), 12%);
+    filter: brightness(90%);
+}
+
+.btn-outline-secondary {
+    color: var(--body-color);
+    border-color: var(--border-color);
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--body-color);
 }
 
 /* Formulaires */
-.form-control {
+.form-control, .form-select {
     background-color: var(--input-bg);
     color: var(--input-color);
     border-color: var(--input-border);
+}
+
+label {
+    color: var(--body-color);
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Tableaux */
+.table {
+    color: var(--table-color);
+    background-color: var(--table-bg);
+}
+
+.table th {
+    border-color: var(--border-color);
+}
+
+/* Modals */
+.modal-content {
+    background-color: var(--modal-bg);
+    color: var(--modal-color);
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--border-color);
+}
+
+/* List Groups */
+.list-group-item {
+    background-color: var(--list-group-bg);
+    color: var(--list-group-color);
+    border-color: var(--border-color);
+}
+
+.list-group-item:hover {
+    background-color: var(--list-group-hover-bg);
 }
 
 /* Dropdowns */
@@ -125,6 +196,7 @@ body {
 .dropdown-item:hover,
 .dropdown-item:focus {
     background-color: var(--dropdown-link-hover-bg);
+    color: var(--dropdown-color);
 }
 
 /* Ajustements pour la visibilité du texte en mode clair */
