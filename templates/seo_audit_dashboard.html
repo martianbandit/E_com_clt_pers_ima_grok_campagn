@@ -1,0 +1,263 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Audit SEO Automatisé') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-search"></i> {{ _('Audit SEO Automatisé') }}</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead">{{ _("Analysez et optimisez vos contenus pour le référencement SEO avec nos outils intégrés à Google Trends, Serper API et DataForSEO.") }}</p>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> {{ _("L'audit SEO vous permet d'analyser vos boutiques, campagnes et produits pour optimiser leur référencement sur les moteurs de recherche.") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0"><i class="fas fa-chart-line"></i> {{ _('Lancer un nouvel audit SEO') }}</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('run_new_seo_audit') }}" method="post">
+                        <div class="mb-3">
+                            <label for="audit_type" class="form-label">{{ _('Type d\'audit') }}</label>
+                            <select class="form-select" id="audit_type" onchange="showAuditOptions()">
+                                <option value="">{{ _('Sélectionner un type d\'audit') }}</option>
+                                <option value="boutique">{{ _('Boutique') }}</option>
+                                <option value="campaign">{{ _('Campagne') }}</option>
+                                <option value="product">{{ _('Produit') }}</option>
+                            </select>
+                        </div>
+                        
+                        <div id="boutique_options" class="mb-3" style="display: none;">
+                            <label for="boutique_id" class="form-label">{{ _('Sélectionner une boutique') }}</label>
+                            <select class="form-select" id="boutique_id" name="boutique_id">
+                                <option value="">{{ _('Choisir une boutique') }}</option>
+                                {% for boutique in boutiques %}
+                                <option value="{{ boutique.id }}">{{ boutique.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div id="campaign_options" class="mb-3" style="display: none;">
+                            <label for="campaign_id" class="form-label">{{ _('Sélectionner une campagne') }}</label>
+                            <select class="form-select" id="campaign_id" name="campaign_id">
+                                <option value="">{{ _('Choisir une campagne') }}</option>
+                                {% for campaign in campaigns %}
+                                <option value="{{ campaign.id }}">{{ campaign.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div id="product_options" class="mb-3" style="display: none;">
+                            <label for="product_id" class="form-label">{{ _('Sélectionner un produit') }}</label>
+                            <select class="form-select" id="product_id" name="product_id">
+                                <option value="">{{ _('Choisir un produit') }}</option>
+                                {% for product in products %}
+                                <option value="{{ product.id }}">{{ product.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="locale" class="form-label">{{ _('Langue et région') }}</label>
+                            <select class="form-select" id="locale" name="locale">
+                                <option value="fr_FR">Français (France)</option>
+                                <option value="en_US">Anglais (États-Unis)</option>
+                                <option value="en_GB">Anglais (Royaume-Uni)</option>
+                                <option value="es_ES">Espagnol (Espagne)</option>
+                                <option value="de_DE">Allemand (Allemagne)</option>
+                                <option value="it_IT">Italien (Italie)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success" id="run_audit_btn" disabled>
+                                <i class="fas fa-search"></i> {{ _('Lancer l\'audit') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0"><i class="fas fa-tools"></i> {{ _('Outils SEO disponibles') }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="{{ url_for('seo_audit_dashboard') }}" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5><i class="fas fa-search"></i> {{ _('Audit SEO complet') }}</h5>
+                                    <p class="mb-0 text-muted">{{ _('Analyse complète des critères SEO avec score et recommandations') }}</p>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">{{ _('Actif') }}</span>
+                            </div>
+                        </a>
+                        <a href="{{ url_for('seo_keywords') }}" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5><i class="fas fa-key"></i> {{ _('Analyse de mots-clés') }}</h5>
+                                    <p class="mb-0 text-muted">{{ _('Recherche et analyse de mots-clés avec Google Trends') }}</p>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">{{ _('Actif') }}</span>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action disabled">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5><i class="fas fa-globe"></i> {{ _('Analyse de la concurrence') }}</h5>
+                                    <p class="mb-0 text-muted">{{ _('Analyse des sites concurrents avec Serper API') }}</p>
+                                </div>
+                                <span class="badge bg-secondary rounded-pill">{{ _('Bientôt') }}</span>
+                            </div>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action disabled">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5><i class="fas fa-chart-bar"></i> {{ _('Suivi de performance') }}</h5>
+                                    <p class="mb-0 text-muted">{{ _('Suivi des positions et des performances SEO') }}</p>
+                                </div>
+                                <span class="badge bg-secondary rounded-pill">{{ _('Bientôt') }}</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="mb-0"><i class="fas fa-history"></i> {{ _('Audits SEO récents') }}</h3>
+                </div>
+                <div class="card-body">
+                    {% if latest_audits %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ _('Date') }}</th>
+                                    <th>{{ _('Type') }}</th>
+                                    <th>{{ _('Nom') }}</th>
+                                    <th>{{ _('Score') }}</th>
+                                    <th>{{ _('Langue') }}</th>
+                                    <th>{{ _('Actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for audit in latest_audits %}
+                                <tr>
+                                    <td>{{ audit.audit_date.strftime('%d/%m/%Y %H:%M') }}</td>
+                                    <td>
+                                        {% if audit.boutique_id %}
+                                        <span class="badge bg-primary">{{ _('Boutique') }}</span>
+                                        {% elif audit.campaign_id %}
+                                        <span class="badge bg-success">{{ _('Campagne') }}</span>
+                                        {% elif audit.product_id %}
+                                        <span class="badge bg-info">{{ _('Produit') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if audit.boutique_id and audit.boutique %}
+                                        {{ audit.boutique.name }}
+                                        {% elif audit.campaign_id and audit.campaign %}
+                                        {{ audit.campaign.title }}
+                                        {% elif audit.product_id and audit.product %}
+                                        {{ audit.product.name }}
+                                        {% else %}
+                                        {{ _('Non disponible') }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="progress">
+                                            {% if audit.score < 50 %}
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ audit.score }}%">{{ audit.score }}/100</div>
+                                            {% elif audit.score < 70 %}
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ audit.score }}%">{{ audit.score }}/100</div>
+                                            {% else %}
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ audit.score }}%">{{ audit.score }}/100</div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>{{ audit.locale }}</td>
+                                    <td>
+                                        <a href="{{ url_for('view_seo_audit', audit_id=audit.id) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i> {{ _('Voir') }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> {{ _("Aucun audit SEO n'a encore été effectué. Lancez votre premier audit !") }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function showAuditOptions() {
+        // Cacher toutes les options
+        document.getElementById('boutique_options').style.display = 'none';
+        document.getElementById('campaign_options').style.display = 'none';
+        document.getElementById('product_options').style.display = 'none';
+        
+        // Désactiver le bouton d'audit
+        document.getElementById('run_audit_btn').disabled = true;
+        
+        // Afficher les options correspondantes au type d'audit
+        var auditType = document.getElementById('audit_type').value;
+        
+        if (auditType === 'boutique') {
+            document.getElementById('boutique_options').style.display = 'block';
+            document.getElementById('boutique_id').addEventListener('change', checkFormValidity);
+        } else if (auditType === 'campaign') {
+            document.getElementById('campaign_options').style.display = 'block';
+            document.getElementById('campaign_id').addEventListener('change', checkFormValidity);
+        } else if (auditType === 'product') {
+            document.getElementById('product_options').style.display = 'block';
+            document.getElementById('product_id').addEventListener('change', checkFormValidity);
+        }
+    }
+    
+    function checkFormValidity() {
+        var auditType = document.getElementById('audit_type').value;
+        var isValid = false;
+        
+        if (auditType === 'boutique') {
+            isValid = document.getElementById('boutique_id').value !== '';
+        } else if (auditType === 'campaign') {
+            isValid = document.getElementById('campaign_id').value !== '';
+        } else if (auditType === 'product') {
+            isValid = document.getElementById('product_id').value !== '';
+        }
+        
+        document.getElementById('run_audit_btn').disabled = !isValid;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,406 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Détail de l\'audit SEO') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('seo_audit_dashboard') }}">{{ _('Audit SEO') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ _('Détail de l\'audit') }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">
+                            <i class="fas fa-search"></i> 
+                            {% if audited_object_type == 'boutique' %}
+                            {{ _('Audit SEO : Boutique') }} "{{ audited_object.name }}"
+                            {% elif audited_object_type == 'campaign' %}
+                            {{ _('Audit SEO : Campagne') }} "{{ audited_object.title }}"
+                            {% elif audited_object_type == 'product' %}
+                            {{ _('Audit SEO : Produit') }} "{{ audited_object.name }}"
+                            {% else %}
+                            {{ _('Détail de l\'audit SEO') }}
+                            {% endif %}
+                        </h2>
+                        <span class="badge bg-light text-dark fs-6">
+                            {{ audit.audit_date.strftime('%d/%m/%Y %H:%M') }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-light">
+                                    <h3 class="mb-0">{{ _('Score global') }}</h3>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="display-1 mb-3">
+                                        {% if audit.score < 50 %}
+                                        <span class="text-danger">{{ audit.score }}/100</span>
+                                        {% elif audit.score < 70 %}
+                                        <span class="text-warning">{{ audit.score }}/100</span>
+                                        {% else %}
+                                        <span class="text-success">{{ audit.score }}/100</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="progress" style="height: 30px;">
+                                        {% if audit.score < 50 %}
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ audit.score }}%">{{ audit.score }}%</div>
+                                        {% elif audit.score < 70 %}
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: {{ audit.score }}%">{{ audit.score }}%</div>
+                                        {% else %}
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ audit.score }}%">{{ audit.score }}%</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <p class="mt-3">
+                                        {% if audit.score < 50 %}
+                                        <span class="text-danger">{{ _('Optimisation SEO insuffisante. Des améliorations significatives sont nécessaires.') }}</span>
+                                        {% elif audit.score < 70 %}
+                                        <span class="text-warning">{{ _('Optimisation SEO moyenne. Plusieurs points peuvent être améliorés.') }}</span>
+                                        {% else %}
+                                        <span class="text-success">{{ _('Bonne optimisation SEO. Continuez à surveiller et à améliorer.') }}</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h3 class="mb-0">{{ _('Mots-clés analysés') }}</h3>
+                                </div>
+                                <div class="card-body">
+                                    {% if audit.results and audit.results.keywords_analysis and audit.results.keywords_analysis.relevant_keywords %}
+                                    <div class="mb-3">
+                                        <h4>{{ _('Mots-clés pertinents') }} <span class="badge bg-success">{{ audit.results.keywords_analysis.relevant_keywords|length }}</span></h4>
+                                        <div class="d-flex flex-wrap">
+                                            {% for keyword in audit.results.keywords_analysis.relevant_keywords %}
+                                            <span class="badge bg-light text-dark m-1 p-2">{{ keyword }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    {% if audit.results and audit.results.keywords_analysis and audit.results.keywords_analysis.irrelevant_keywords %}
+                                    <div>
+                                        <h4>{{ _('Mots-clés non pertinents') }} <span class="badge bg-warning">{{ audit.results.keywords_analysis.irrelevant_keywords|length }}</span></h4>
+                                        <div class="d-flex flex-wrap">
+                                            {% for keyword in audit.results.keywords_analysis.irrelevant_keywords %}
+                                            <span class="badge bg-light text-dark m-1 p-2">{{ keyword }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    {% if not audit.results or not audit.results.keywords_analysis or not audit.results.keywords_analysis.relevant_keywords %}
+                                    <div class="alert alert-info">
+                                        {{ _('Aucun mot-clé analysé ou disponible.') }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-danger text-white">
+                                    <h3 class="mb-0">{{ _('Recommandations prioritaires') }}</h3>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group">
+                                        {% if audit.results and audit.results.title_analysis and audit.results.title_analysis.recommendations %}
+                                            {% for rec in audit.results.title_analysis.recommendations %}
+                                            <li class="list-group-item list-group-item-danger">
+                                                <i class="fas fa-exclamation-circle"></i> {{ rec }}
+                                            </li>
+                                            {% endfor %}
+                                        {% endif %}
+                                        
+                                        {% if audit.results and audit.results.description_analysis and audit.results.description_analysis.recommendations %}
+                                            {% for rec in audit.results.description_analysis.recommendations %}
+                                            <li class="list-group-item list-group-item-danger">
+                                                <i class="fas fa-exclamation-circle"></i> {{ rec }}
+                                            </li>
+                                            {% endfor %}
+                                        {% endif %}
+                                        
+                                        {% if audit.results and audit.results.content_quality and audit.results.content_quality.recommendations %}
+                                            {% for rec in audit.results.content_quality.recommendations %}
+                                            <li class="list-group-item list-group-item-warning">
+                                                <i class="fas fa-exclamation-triangle"></i> {{ rec }}
+                                            </li>
+                                            {% endfor %}
+                                        {% endif %}
+                                        
+                                        {% if audit.results and audit.results.technical_seo and audit.results.technical_seo.recommendations %}
+                                            {% for rec in audit.results.technical_seo.recommendations %}
+                                            <li class="list-group-item list-group-item-warning">
+                                                <i class="fas fa-exclamation-triangle"></i> {{ rec }}
+                                            </li>
+                                            {% endfor %}
+                                        {% endif %}
+                                        
+                                        {% if not audit.results or
+                                               (not audit.results.title_analysis or not audit.results.title_analysis.recommendations) and
+                                               (not audit.results.description_analysis or not audit.results.description_analysis.recommendations) and
+                                               (not audit.results.content_quality or not audit.results.content_quality.recommendations) and
+                                               (not audit.results.technical_seo or not audit.results.technical_seo.recommendations) %}
+                                        <li class="list-group-item">
+                                            {{ _('Aucune recommandation prioritaire disponible.') }}
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- Onglets pour les différentes analyses -->
+                            <ul class="nav nav-tabs" id="auditTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="title-tab" data-bs-toggle="tab" data-bs-target="#title-content" type="button" role="tab" aria-controls="title-content" aria-selected="true">
+                                        <i class="fas fa-heading"></i> {{ _('Titre') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="description-tab" data-bs-toggle="tab" data-bs-target="#description-content" type="button" role="tab" aria-controls="description-content" aria-selected="false">
+                                        <i class="fas fa-align-left"></i> {{ _('Description') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="keywords-tab" data-bs-toggle="tab" data-bs-target="#keywords-content" type="button" role="tab" aria-controls="keywords-content" aria-selected="false">
+                                        <i class="fas fa-key"></i> {{ _('Mots-clés') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="trends-tab" data-bs-toggle="tab" data-bs-target="#trends-content" type="button" role="tab" aria-controls="trends-content" aria-selected="false">
+                                        <i class="fas fa-chart-line"></i> {{ _('Tendances') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="serp-tab" data-bs-toggle="tab" data-bs-target="#serp-content" type="button" role="tab" aria-controls="serp-content" aria-selected="false">
+                                        <i class="fas fa-search"></i> {{ _('SERP') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="content-tab" data-bs-toggle="tab" data-bs-target="#content-quality" type="button" role="tab" aria-controls="content-quality" aria-selected="false">
+                                        <i class="fas fa-file-alt"></i> {{ _('Contenu') }}
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="technical-tab" data-bs-toggle="tab" data-bs-target="#technical-content" type="button" role="tab" aria-controls="technical-content" aria-selected="false">
+                                        <i class="fas fa-cogs"></i> {{ _('Technique') }}
+                                    </button>
+                                </li>
+                            </ul>
+                            
+                            <div class="tab-content p-3 border border-top-0 rounded-bottom" id="auditTabContent">
+                                <!-- Onglet Analyse du titre -->
+                                <div class="tab-pane fade show active" id="title-content" role="tabpanel" aria-labelledby="title-tab">
+                                    {% if audit.results and audit.results.title_analysis %}
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h4 class="mb-0">{{ _('Analyse du titre') }}</h4>
+                                                <span class="badge {% if audit.results.title_analysis.score >= 70 %}bg-success{% elif audit.results.title_analysis.score >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                                                    {{ audit.results.title_analysis.score }}/100
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="lead">{{ audit.results.title_analysis.title }}</p>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <ul class="list-group mb-3">
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            {{ _('Longueur') }}
+                                                            <span class="badge bg-primary rounded-pill">{{ audit.results.title_analysis.length }} {{ _('caractères') }}</span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            {{ _('Longueur optimale') }}
+                                                            <span class="badge {% if audit.results.title_analysis.is_optimal_length %}bg-success{% else %}bg-danger{% endif %} rounded-pill">
+                                                                {% if audit.results.title_analysis.is_optimal_length %}
+                                                                {{ _('Oui') }}
+                                                                {% else %}
+                                                                {{ _('Non') }}
+                                                                {% endif %}
+                                                            </span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            {{ _('Contient des mots-clés') }}
+                                                            <span class="badge {% if audit.results.title_analysis.has_keywords %}bg-success{% else %}bg-danger{% endif %} rounded-pill">
+                                                                {% if audit.results.title_analysis.has_keywords %}
+                                                                {{ _('Oui') }}
+                                                                {% else %}
+                                                                {{ _('Non') }}
+                                                                {% endif %}
+                                                            </span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="card h-100">
+                                                        <div class="card-header bg-light">
+                                                            <h5 class="mb-0">{{ _('Recommandations') }}</h5>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            {% if audit.results.title_analysis.recommendations %}
+                                                            <ul class="list-group">
+                                                                {% for rec in audit.results.title_analysis.recommendations %}
+                                                                <li class="list-group-item">
+                                                                    <i class="fas fa-check-circle text-success me-2"></i> {{ rec }}
+                                                                </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                            {% else %}
+                                                            <p class="text-success">
+                                                                <i class="fas fa-thumbs-up"></i> {{ _('Votre titre est bien optimisé!') }}
+                                                            </p>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <div class="alert alert-info">
+                                        {{ _('Aucune analyse de titre disponible.') }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Onglet Analyse de la description -->
+                                <div class="tab-pane fade" id="description-content" role="tabpanel" aria-labelledby="description-tab">
+                                    {% if audit.results and audit.results.description_analysis %}
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h4 class="mb-0">{{ _('Analyse de la description') }}</h4>
+                                                <span class="badge {% if audit.results.description_analysis.score >= 70 %}bg-success{% elif audit.results.description_analysis.score >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                                                    {{ audit.results.description_analysis.score }}/100
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="alert alert-light">
+                                                {{ audit.results.description_analysis.description }}
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <ul class="list-group mb-3">
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            {{ _('Longueur') }}
+                                                            <span class="badge bg-primary rounded-pill">{{ audit.results.description_analysis.length }} {{ _('caractères') }}</span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            {{ _('Longueur optimale') }}
+                                                            <span class="badge {% if audit.results.description_analysis.is_optimal_length %}bg-success{% else %}bg-danger{% endif %} rounded-pill">
+                                                                {% if audit.results.description_analysis.is_optimal_length %}
+                                                                {{ _('Oui') }}
+                                                                {% else %}
+                                                                {{ _('Non') }}
+                                                                {% endif %}
+                                                            </span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            {{ _('Contient des mots-clés') }}
+                                                            <span class="badge {% if audit.results.description_analysis.has_keywords %}bg-success{% else %}bg-danger{% endif %} rounded-pill">
+                                                                {% if audit.results.description_analysis.has_keywords %}
+                                                                {{ _('Oui') }}
+                                                                {% else %}
+                                                                {{ _('Non') }}
+                                                                {% endif %}
+                                                            </span>
+                                                        </li>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            {{ _('Densité de mots-clés') }}
+                                                            <span class="badge {% if audit.results.description_analysis.keyword_density <= 5 and audit.results.description_analysis.keyword_density > 0 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">
+                                                                {{ "%.1f"|format(audit.results.description_analysis.keyword_density) }}%
+                                                            </span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="card h-100">
+                                                        <div class="card-header bg-light">
+                                                            <h5 class="mb-0">{{ _('Recommandations') }}</h5>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            {% if audit.results.description_analysis.recommendations %}
+                                                            <ul class="list-group">
+                                                                {% for rec in audit.results.description_analysis.recommendations %}
+                                                                <li class="list-group-item">
+                                                                    <i class="fas fa-check-circle text-success me-2"></i> {{ rec }}
+                                                                </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                            {% else %}
+                                                            <p class="text-success">
+                                                                <i class="fas fa-thumbs-up"></i> {{ _('Votre description est bien optimisée!') }}
+                                                            </p>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <div class="alert alert-info">
+                                        {{ _('Aucune analyse de description disponible.') }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Les autres onglets suivraient le même format... -->
+                                
+                                <!-- Onglet Analyse des mots-clés -->
+                                <div class="tab-pane fade" id="keywords-content" role="tabpanel" aria-labelledby="keywords-tab">
+                                    {% if audit.results and audit.results.keywords_analysis %}
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h4 class="mb-0">{{ _('Analyse des mots-clés') }}</h4>
+                                                <span class="badge {% if audit.results.keywords_analysis.score >= 70 %}bg-success{% elif audit.results.keywords_analysis.score >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                                                    {{ audit.results.keywords_analysis.score }}/100
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <!-- Contenu de l'analyse des mots-clés -->
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <div class="alert alert-info">
+                                        {{ _('Aucune analyse de mots-clés disponible.') }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Nous pouvons ajouter les autres onglets selon le même modèle -->
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

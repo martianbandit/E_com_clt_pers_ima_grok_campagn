@@ -1,0 +1,236 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Analyse de mots-clés SEO') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('seo_audit_dashboard') }}">{{ _('Audit SEO') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ _('Analyse de mots-clés') }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-key"></i> {{ _('Analyse de mots-clés SEO') }}</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead">{{ _("Analysez vos mots-clés avec Google Trends et découvrez les tendances et opportunités pour votre niche.") }}</p>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <form action="{{ url_for('seo_keywords') }}" method="get" class="row g-3 align-items-end">
+                                <div class="col-md-4">
+                                    <label for="locale" class="form-label">{{ _('Langue et région') }}</label>
+                                    <select class="form-select" id="locale" name="locale">
+                                        <option value="fr_FR" {% if locale == 'fr_FR' %}selected{% endif %}>Français (France)</option>
+                                        <option value="en_US" {% if locale == 'en_US' %}selected{% endif %}>Anglais (États-Unis)</option>
+                                        <option value="en_GB" {% if locale == 'en_GB' %}selected{% endif %}>Anglais (Royaume-Uni)</option>
+                                        <option value="es_ES" {% if locale == 'es_ES' %}selected{% endif %}>Espagnol (Espagne)</option>
+                                        <option value="de_DE" {% if locale == 'de_DE' %}selected{% endif %}>Allemand (Allemagne)</option>
+                                        <option value="it_IT" {% if locale == 'it_IT' %}selected{% endif %}>Italien (Italie)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="status" class="form-label">{{ _('Statut') }}</label>
+                                    <select class="form-select" id="status" name="status">
+                                        <option value="" {% if not status %}selected{% endif %}>{{ _('Tous') }}</option>
+                                        <option value="trending" {% if status == 'trending' %}selected{% endif %}>{{ _('En tendance') }}</option>
+                                        <option value="opportunity" {% if status == 'opportunity' %}selected{% endif %}>{{ _('Opportunités') }}</option>
+                                        <option value="declining" {% if status == 'declining' %}selected{% endif %}>{{ _('En déclin') }}</option>
+                                        <option value="neutral" {% if status == 'neutral' %}selected{% endif %}>{{ _('Neutres') }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="niche_id" class="form-label">{{ _('Niche de marché') }}</label>
+                                    <select class="form-select" id="niche_id" name="niche_id">
+                                        <option value="">{{ _('Toutes les niches') }}</option>
+                                        {% for niche in niches %}
+                                        <option value="{{ niche.id }}" {% if selected_niche and selected_niche.id == niche.id %}selected{% endif %}>{{ niche.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search"></i> {{ _('Filtrer') }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">{{ _('Statistiques') }}</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="text-center mb-3">
+                                                <h3 class="text-success">{{ trending_count|default(0) }}</h3>
+                                                <p class="mb-0">{{ _('En tendance') }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-center mb-3">
+                                                <h3 class="text-info">{{ opportunity_count|default(0) }}</h3>
+                                                <p class="mb-0">{{ _('Opportunités') }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="mb-0"><i class="fas fa-list"></i> {{ _('Mots-clés analysés') }}</h3>
+                </div>
+                <div class="card-body">
+                    {% if keywords %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ _('Mot-clé') }}</th>
+                                    <th>{{ _('Statut') }}</th>
+                                    <th>{{ _('Compétition') }}</th>
+                                    <th>{{ _('Tendance') }}</th>
+                                    <th>{{ _('Dernière mise à jour') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for keyword in keywords %}
+                                <tr>
+                                    <td>{{ keyword.keyword }}</td>
+                                    <td>
+                                        {% if keyword.status == 'trending' %}
+                                        <span class="badge bg-success">{{ _('En tendance') }}</span>
+                                        {% elif keyword.status == 'opportunity' %}
+                                        <span class="badge bg-info">{{ _('Opportunité') }}</span>
+                                        {% elif keyword.status == 'declining' %}
+                                        <span class="badge bg-danger">{{ _('En déclin') }}</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ _('Neutre') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="progress">
+                                            {% if keyword.competition_score < 30 %}
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ keyword.competition_score }}%">{{ keyword.competition_score|round|int }}%</div>
+                                            {% elif keyword.competition_score < 70 %}
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ keyword.competition_score }}%">{{ keyword.competition_score|round|int }}%</div>
+                                            {% else %}
+                                            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ keyword.competition_score }}%">{{ keyword.competition_score|round|int }}%</div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if keyword.trend_change > 10 %}
+                                        <span class="text-success"><i class="fas fa-arrow-up"></i> {{ keyword.trend_change|round(1) }}%</span>
+                                        {% elif keyword.trend_change < -10 %}
+                                        <span class="text-danger"><i class="fas fa-arrow-down"></i> {{ keyword.trend_change|round(1) }}%</span>
+                                        {% else %}
+                                        <span class="text-secondary"><i class="fas fa-minus"></i> {{ keyword.trend_change|round(1) }}%</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ keyword.last_updated.strftime('%d/%m/%Y') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> {{ _("Aucun mot-clé n'a encore été analysé ou ne correspond aux critères de filtrage.") }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            {% if recommended_keywords %}
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0"><i class="fas fa-star"></i> {{ _('Mots-clés recommandés') }}</h3>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">{{ _('Recommandations pour la niche:') }} <strong>{{ selected_niche.name }}</strong></p>
+                    
+                    <div class="list-group">
+                        {% for keyword in recommended_keywords %}
+                        <div class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ keyword.keyword }}</h5>
+                                <small>
+                                    {% if keyword.status == 'trending' %}
+                                    <span class="badge bg-success">{{ _('En tendance') }}</span>
+                                    {% elif keyword.status == 'opportunity' %}
+                                    <span class="badge bg-info">{{ _('Opportunité') }}</span>
+                                    {% elif keyword.status == 'declining' %}
+                                    <span class="badge bg-danger">{{ _('En déclin') }}</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ _('Neutre') }}</span>
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <div class="d-flex w-100 justify-content-between">
+                                <small class="text-muted">{{ _('Compétition:') }} {{ keyword.competition_score|round|int }}%</small>
+                                <small class="{% if keyword.trend_change > 0 %}text-success{% elif keyword.trend_change < 0 %}text-danger{% else %}text-muted{% endif %}">
+                                    {{ _('Tendance:') }} 
+                                    {% if keyword.trend_change > 0 %}
+                                    <i class="fas fa-arrow-up"></i>
+                                    {% elif keyword.trend_change < 0 %}
+                                    <i class="fas fa-arrow-down"></i>
+                                    {% else %}
+                                    <i class="fas fa-minus"></i>
+                                    {% endif %}
+                                    {{ keyword.trend_change|round(1) }}%
+                                </small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0"><i class="fas fa-lightbulb"></i> {{ _('Conseils d\'optimisation') }}</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <i class="fas fa-check-circle text-success me-2"></i> {{ _('Utilisez des mots-clés à faible compétition pour augmenter vos chances de classement.') }}
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-check-circle text-success me-2"></i> {{ _('Concentrez-vous sur les mots-clés en tendance pour attirer plus de trafic.') }}
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-check-circle text-success me-2"></i> {{ _('Utilisez des mots-clés à longue traîne (3-5 mots) pour cibler des intentions spécifiques.') }}
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-check-circle text-success me-2"></i> {{ _('Analysez régulièrement vos mots-clés pour suivre les changements de tendances.') }}
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-check-circle text-success me-2"></i> {{ _('Intégrez vos mots-clés de manière naturelle dans votre contenu, avec une densité de 1-3%.') }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -24,4 +24,5 @@ dependencies = [
     "flask-wtf>=1.2.2",
     "requests>=2.32.3",
     "wtforms>=3.2.1",
+    "pytrends>=4.9.0",
 ]

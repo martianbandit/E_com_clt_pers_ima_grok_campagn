@@ -2559,6 +2559,144 @@ def regenerate_product_content(product_id):
 
 # Routes supprimées pour la gestion des personas (fonctionnalité déplacée dans la page profil client)
 
+@app.route('/seo_audit')
+@login_required
+def seo_audit_dashboard():
+    """Tableau de bord d'audit SEO"""
+    from models import SEOAudit, Boutique, Campaign, Product
+    
+    # Récupérer les derniers audits
+    latest_audits = SEOAudit.query.order_by(SEOAudit.audit_date.desc()).limit(10).all()
+    
+    # Récupérer les boutiques, campagnes et produits pour le formulaire
+    boutiques = Boutique.query.all()
+    campaigns = Campaign.query.all()
+    products = Product.query.all()
+    
+    return render_template(
+        'seo_audit_dashboard.html',
+        latest_audits=latest_audits,
+        boutiques=boutiques,
+        campaigns=campaigns,
+        products=products
+    )
+
+@app.route('/run_seo_audit', methods=['POST'])
+@login_required
+def run_new_seo_audit():
+    """Exécute un nouvel audit SEO"""
+    import asyncio
+    from seo_audit import run_seo_audit
+    
+    # Récupérer les paramètres
+    boutique_id = request.form.get('boutique_id', type=int)
+    campaign_id = request.form.get('campaign_id', type=int)
+    product_id = request.form.get('product_id', type=int)
+    locale = request.form.get('locale', 'fr_FR')
+    
+    # Vérifier qu'au moins un objet est spécifié
+    if not (boutique_id or campaign_id or product_id):
+        flash("Veuillez sélectionner une boutique, une campagne ou un produit à auditer.", "danger")
+        return redirect(url_for('seo_audit_dashboard'))
+    
+    try:
+        # Exécuter l'audit de manière asynchrone
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        audit_results = loop.run_until_complete(run_seo_audit(
+            boutique_id=boutique_id,
+            campaign_id=campaign_id,
+            product_id=product_id,
+            locale=locale
+        ))
+        loop.close()
+        
+        if audit_results.get("success", False):
+            flash(f"Audit SEO terminé avec un score de {audit_results.get('global_score', 0)}/100.", "success")
+        else:
+            flash(f"L'audit SEO a échoué: {audit_results.get('error', 'Erreur inconnue')}", "danger")
+        
+        # Rediriger vers la page de détails si un ID d'audit est disponible
+        if "audit_id" in audit_results:
+            return redirect(url_for('view_seo_audit', audit_id=audit_results["audit_id"]))
+        
+    except Exception as e:
+        flash(f"Erreur lors de l'exécution de l'audit SEO: {str(e)}", "danger")
+    
+    return redirect(url_for('seo_audit_dashboard'))
+
+@app.route('/seo_audit/<int:audit_id>')
+@login_required
+def view_seo_audit(audit_id):
+    """Affiche les détails d'un audit SEO"""
+    from models import SEOAudit
+    
+    audit = SEOAudit.query.get_or_404(audit_id)
+    
+    # Récupérer l'objet audité
+    audited_object = None
+    audited_object_type = None
+    
+    if audit.boutique_id:
+        audited_object = audit.boutique
+        audited_object_type = "boutique"
+    elif audit.campaign_id:
+        audited_object = audit.campaign
+        audited_object_type = "campaign"
+    elif audit.product_id:
+        audited_object = audit.product
+        audited_object_type = "product"
+    
+    return render_template(
+        'seo_audit_detail.html',
+        audit=audit,
+        audited_object=audited_object,
+        audited_object_type=audited_object_type
+    )
+
+@app.route('/seo_keywords')
+@login_required
+def seo_keywords():
+    """Page de gestion des mots-clés SEO"""
+    from models import SEOKeyword, NicheMarket
+    
+    # Paramètres de filtre
+    locale = request.args.get('locale', 'fr_FR')
+    status = request.args.get('status')
+    niche_id = request.args.get('niche_id', type=int)
+    
+    # Construire la requête
+    query = SEOKeyword.query.filter_by(locale=locale)
+    
+    if status:
+        query = query.filter_by(status=status)
+    
+    # Trier et récupérer les mots-clés
+    keywords = query.order_by(SEOKeyword.last_updated.desc()).limit(100).all()
+    
+    # Récupérer les niches pour le filtrage
+    niches = NicheMarket.query.all()
+    
+    # Si une niche est sélectionnée, récupérer les mots-clés recommandés
+    recommended_keywords = []
+    selected_niche = None
+    
+    if niche_id:
+        from seo_audit import get_recommended_keywords
+        selected_niche = NicheMarket.query.get(niche_id)
+        if selected_niche:
+            recommended_keywords = get_recommended_keywords(niche_id, locale)
+    
+    return render_template(
+        'seo_keywords.html',
+        keywords=keywords,
+        niches=niches,
+        selected_niche=selected_niche,
+        recommended_keywords=recommended_keywords,
+        locale=locale,
+        status=status
+    )
+
 @app.route('/metrics_dashboard')
 def metrics_dashboard():
     """Page d'analyse des métriques de performance"""
