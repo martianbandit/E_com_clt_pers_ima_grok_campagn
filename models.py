@@ -13,7 +13,7 @@ class OSPAnalysisType(enum.Enum):
 
 # Modèles pour l'authentification Replit
 class User(UserMixin, db.Model):
-    """Modèle pour les utilisateurs authentifiés via différentes méthodes (Replit/Google/Email)"""
+    """Modèle pour les utilisateurs authentifiés via différentes méthodes (Replit/Google/GitHub/Email)"""
     __tablename__ = 'users'
     id = db.Column(db.String, primary_key=True)
     # ID numérique pour compatibilité avec les authentifications existantes
@@ -22,6 +22,10 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String, nullable=True)
     last_name = db.Column(db.String, nullable=True)
     profile_image_url = db.Column(db.String, nullable=True)
+    
+    # Identifiants des fournisseurs d'authentification
+    github_id = db.Column(db.String(50), unique=True, nullable=True)  # ID GitHub pour l'authentification GitHub
+    google_id = db.Column(db.String(50), unique=True, nullable=True)  # ID Google pour l'authentification Google
     
     # Nouveaux champs pour le profil utilisateur
     username = db.Column(db.String(50), unique=True, nullable=True)

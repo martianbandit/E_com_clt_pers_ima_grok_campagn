@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import datetime
+import uuid
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, g
 from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
@@ -10,6 +11,8 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_babel import gettext as _
 from flask_login import login_required, current_user, login_user, logout_user, LoginManager
 from i18n import babel, get_locale, get_supported_languages, get_language_name, get_boutique_languages, is_multilingual_campaign, get_campaign_target_languages
+from flask_dance.consumer import oauth_authorized, oauth_error
+from flask_dance.contrib.github import make_github_blueprint, github
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -22,6 +25,10 @@ db = SQLAlchemy(model_class=Base)
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+# Configuration OAuth GitHub
+app.config["GITHUB_OAUTH_CLIENT_ID"] = os.environ.get("GITHUB_CLIENT_ID")
+app.config["GITHUB_OAUTH_CLIENT_SECRET"] = os.environ.get("GITHUB_CLIENT_SECRET")
 
 # Rendre current_user et d'autres variables disponibles dans tous les templates
 @app.context_processor
@@ -58,6 +65,85 @@ app.register_blueprint(google_auth)
 # Importation et initialisation de l'authentification Replit
 from replit_auth import init_auth
 init_auth(app, db)
+
+# Initialisation de l'authentification GitHub
+github_bp = make_github_blueprint(scope=["user:email"])
+app.register_blueprint(github_bp, url_prefix="/github")
+
+# Gestionnaire d'authentification réussie GitHub
+@oauth_authorized.connect_via(github_bp)
+def github_logged_in(blueprint, token):
+    from models import User, UserActivity
+    if not token:
+        flash("Échec de l'authentification GitHub.", "danger")
+        return False
+
+    # Récupération des informations utilisateur GitHub
+    resp = blueprint.session.get("/user")
+    if not resp.ok:
+        flash("Échec de la récupération des informations utilisateur GitHub.", "danger")
+        return False
+
+    # Extraction des données utilisateur
+    github_info = resp.json()
+    github_id = str(github_info["id"])
+    github_username = github_info.get("login")
+    github_email = github_info.get("email")
+    
+    # Si l'email n'est pas disponible, récupérer les emails de l'utilisateur
+    if not github_email:
+        emails_resp = blueprint.session.get("/user/emails")
+        if emails_resp.ok:
+            emails = emails_resp.json()
+            # Recherche de l'email principal et vérifié
+            for email_data in emails:
+                if email_data.get("primary") and email_data.get("verified"):
+                    github_email = email_data.get("email")
+                    break
+    
+    # Recherche de l'utilisateur par github_id
+    user = User.query.filter_by(github_id=github_id).first()
+    
+    # Si l'utilisateur n'existe pas, le créer
+    if not user:
+        # Génération d'un ID unique
+        user = User()
+        user.id = str(uuid.uuid4())
+        user.github_id = github_id
+        user.created_at = datetime.datetime.utcnow()
+    
+    # Mise à jour des informations utilisateur
+    user.username = github_username
+    user.email = github_email
+    user.profile_image_url = github_info.get("avatar_url")
+    
+    # Nom complet
+    name = github_info.get("name", "").split(" ", 1)
+    if len(name) > 0:
+        user.first_name = name[0]
+    if len(name) > 1:
+        user.last_name = name[1]
+    
+    # Sauvegarde des modifications
+    db.session.add(user)
+    
+    # Enregistrement de l'activité de connexion
+    activity = UserActivity(
+        user_id=user.id,
+        activity_type="login",
+        description="Connexion GitHub",
+        ip_address=request.remote_addr,
+        user_agent=request.headers.get("User-Agent", "")
+    )
+    db.session.add(activity)
+    db.session.commit()
+    
+    # Connexion de l'utilisateur
+    login_user(user)
+    
+    # Redirection vers la page d'accueil
+    flash(f"Bienvenue, {user.username or 'utilisateur GitHub'} !", "success")
+    return False  # Ne pas rediriger, laisser Flask-Dance le faire
 
 # Routes d'authentification
 @app.route('/login', methods=['GET', 'POST'])
