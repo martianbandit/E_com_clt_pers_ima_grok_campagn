@@ -1681,6 +1681,12 @@ def generate_customer_avatar(customer_id):
             'details': error_msg
         }), 500
 
+@app.route('/copy_ai_tool')
+@login_required
+def copy_ai_tool():
+    """Page d'intégration de l'outil Copy.ai pour la génération de contenu"""
+    return render_template('copy_ai_tool.html')
+
 @app.route('/image_generation', methods=['GET', 'POST'])
 def image_generation():
     """Page de génération d'images marketing optimisées avec recherche de produits similaires"""

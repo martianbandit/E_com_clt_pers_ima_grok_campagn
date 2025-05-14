@@ -44,6 +44,11 @@
                         <i class="fas fa-tools me-1"></i> {{ _('Outils OSP') }}
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/copy_ai_tool' %}active{% endif %}" href="{{ url_for('copy_ai_tool') }}">
+                        <i class="fas fa-robot me-1"></i> {{ _('Copy.ai') }}
+                    </a>
+                </li>
             </ul>
             <div class="d-flex align-items-center">
                 <!-- MarkEasy slogan -->
