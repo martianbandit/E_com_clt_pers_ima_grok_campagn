@@ -23,6 +23,33 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
+# Importation du blueprint de Replit Auth
+from replit_auth import make_replit_blueprint, require_login
+
+# Rendre current_user et d'autres variables disponibles dans tous les templates
+@app.context_processor
+def inject_template_globals():
+    from flask_login import current_user
+    return dict(
+        current_user=current_user,
+        # Ajouter d'autres variables globales si nécessaire
+    )
+
+# Routes pour l'authentification et le profil utilisateur
+@app.route('/user/profile')
+@login_required
+def user_profile():
+    """Page de profil utilisateur"""
+    return render_template('user/profile.html')
+
+@app.route('/user/settings')
+@login_required
+def user_settings():
+    """Page de paramètres utilisateur"""
+    # Redirects to profile for now
+    flash("La page de paramètres sera bientôt disponible.", "info")
+    return redirect(url_for('user_profile'))
+
 # Configure the PostgreSQL database
 database_url = os.environ.get("DATABASE_URL")
 if database_url is None:

@@ -1,0 +1,214 @@
+/* 
+   Fichier de personnalisation des thèmes
+   Optimisations pour le thème clair et sombre 
+*/
+
+/* Variables de couleurs pour le thème MarkEasy */
+:root {
+    /* Couleurs de base MarkEasy */
+    --markeasy-dark: #2C2C2C;       /* Noir carbone */
+    --markeasy-orange: #FF6B00;     /* Orange vibrant */
+    --markeasy-light-gray: #F4F4F4; /* Gris doux */
+    --markeasy-white: #FFFFFF;      /* Blanc pur */
+    
+    /* Couleurs sémantiques */
+    --markeasy-primary: var(--markeasy-orange);
+    --markeasy-secondary: var(--markeasy-dark);
+    --markeasy-accent: #448AFF;     /* Bleu accent */
+    
+    /* Couleurs d'état */
+    --markeasy-success: #28a745;
+    --markeasy-warning: #ffc107;
+    --markeasy-danger: #dc3545;
+    --markeasy-info: #17a2b8;
+}
+
+/* THÈME SOMBRE (par défaut) */
+[data-bs-theme="dark"] {
+    --body-bg: var(--markeasy-dark);
+    --body-color: var(--markeasy-light-gray);
+    --card-bg: #343a40;
+    --navbar-bg: #212529;
+    --btn-primary-bg: var(--markeasy-orange);
+    --btn-primary-border: var(--markeasy-orange);
+    --link-color: #6ea8fe;
+    --input-bg: #2b3035;
+    --input-color: var(--markeasy-white);
+    --input-border: #495057;
+    --border-color: #495057;
+    --nav-link-color: rgba(255, 255, 255, 0.85);
+    --nav-link-hover-color: rgba(255, 255, 255, 1);
+    --dropdown-bg: #343a40;
+    --dropdown-color: var(--markeasy-light-gray);
+    --dropdown-link-hover-bg: #2b3035;
+}
+
+/* THÈME CLAIR (optimisé pour meilleure lisibilité) */
+[data-bs-theme="light"] {
+    --body-bg: var(--markeasy-white);
+    --body-color: #212529;  /* Texte plus foncé pour meilleur contraste */
+    --card-bg: var(--markeasy-white);
+    --navbar-bg: var(--markeasy-orange);
+    --btn-primary-bg: var(--markeasy-orange);
+    --btn-primary-border: var(--markeasy-orange);
+    --link-color: #0d6efd;
+    --input-bg: var(--markeasy-white);
+    --input-color: #212529;
+    --input-border: #ced4da;
+    --border-color: #dee2e6;
+    --nav-link-color: rgba(0, 0, 0, 0.7);
+    --nav-link-hover-color: rgba(0, 0, 0, 0.9);
+    --dropdown-bg: var(--markeasy-white);
+    --dropdown-color: #212529;
+    --dropdown-link-hover-bg: #f8f9fa;
+}
+
+/* Application des variables aux éléments spécifiques */
+
+/* Corps de page */
+body {
+    background-color: var(--body-bg);
+    color: var(--body-color);
+}
+
+/* Navbar */
+.navbar-dark {
+    background-color: var(--navbar-bg);
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--nav-link-color);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--nav-link-hover-color);
+}
+
+/* Cards */
+.card {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+/* Boutons */
+.btn-primary {
+    background-color: var(--btn-primary-bg);
+    border-color: var(--btn-primary-border);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: darken(var(--btn-primary-bg), 10%);
+    border-color: darken(var(--btn-primary-border), 12%);
+}
+
+/* Formulaires */
+.form-control {
+    background-color: var(--input-bg);
+    color: var(--input-color);
+    border-color: var(--input-border);
+}
+
+/* Dropdowns */
+.dropdown-menu {
+    background-color: var(--dropdown-bg);
+    color: var(--dropdown-color);
+    border-color: var(--border-color);
+}
+
+.dropdown-item {
+    color: var(--dropdown-color);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--dropdown-link-hover-bg);
+}
+
+/* Ajustements pour la visibilité du texte en mode clair */
+[data-bs-theme="light"] .text-muted {
+    color: #5a6268 !important; /* Plus foncé que la valeur par défaut pour meilleure lisibilité */
+}
+
+[data-bs-theme="light"] .table {
+    color: #212529; /* Texte plus foncé dans les tableaux */
+}
+
+[data-bs-theme="light"] .card-header {
+    background-color: rgba(0, 0, 0, 0.05); /* Légèrement plus foncé pour distinction */
+}
+
+/* Optimisation pour les alertes */
+[data-bs-theme="light"] .alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+[data-bs-theme="light"] .alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+[data-bs-theme="light"] .alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+[data-bs-theme="light"] .alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+/* Optimisation des contrastes pour badges et labels */
+[data-bs-theme="light"] .badge-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+[data-bs-theme="light"] .badge-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+/* Amélioration de la lisibilité des liens dans les cards */
+[data-bs-theme="light"] .card a:not(.btn) {
+    color: #0056b3;
+}
+
+[data-bs-theme="light"] .card a:not(.btn):hover {
+    color: #003d80;
+    text-decoration: underline;
+}
+
+/* Style spécifique pour les étiquettes de formulaire */
+[data-bs-theme="light"] label {
+    color: #495057;
+    font-weight: 500;
+}
+
+/* Optimisation pour la navbar en mode clair */
+[data-bs-theme="light"] .navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.85);  /* Meilleur contraste sur fond orange */
+}
+
+[data-bs-theme="light"] .navbar-dark .navbar-nav .nav-link:hover,
+[data-bs-theme="light"] .navbar-dark .navbar-nav .nav-link.active {
+    color: white;
+}
+
+/* Ajustement pour les textes sur le fond orange */
+[data-bs-theme="light"] .bg-primary,
+[data-bs-theme="light"] .btn-primary {
+    color: white !important;  /* Garantir texte blanc sur orange */
+}
+
+/* Amélioration de la lisibilité des textes secondaires */
+[data-bs-theme="light"] .small {
+    color: #6c757d;
+}

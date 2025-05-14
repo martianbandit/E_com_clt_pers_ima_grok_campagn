@@ -4,7 +4,7 @@ import uuid
 from functools import wraps
 from urllib.parse import urlencode
 
-from flask import g, session, redirect, request, render_template, url_for
+from flask import g, session, redirect, request, render_template, url_for, current_app
 from flask_dance.consumer import (
     OAuth2ConsumerBlueprint,
     oauth_authorized,
@@ -16,15 +16,34 @@ from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 from sqlalchemy.exc import NoResultFound
 from werkzeug.local import LocalProxy
 
-from app import app, db
-from models import OAuth, User
-
-login_manager = LoginManager(app)
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(user_id)
+def init_auth(app, sqlalchemy_db):
+    """
+    Initialise l'authentification avec l'application Flask
+    
+    Args:
+        app: Application Flask
+        sqlalchemy_db: Instance SQLAlchemy
+    """
+    global login_manager, db
+    
+    # Stockage de l'instance de db
+    db = sqlalchemy_db
+    
+    # Configuration de Flask-Login
+    login_manager = LoginManager(app)
+    login_manager.login_view = "replit_auth.login"
+    login_manager.login_message = "Veuillez vous connecter pour accéder à cette page."
+    login_manager.login_message_category = "info"
+    
+    # User loader
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(user_id)
+        
+    # Enregistrer le blueprint
+    app.register_blueprint(make_replit_blueprint(), url_prefix="/auth")
+    
+    return login_manager
 
 
 class UserSessionStorage(BaseStorage):
@@ -166,16 +185,21 @@ def require_login(f):
             session["next_url"] = get_next_navigation_url(request)
             return redirect(url_for('replit_auth.login'))
 
+        # Vérifier si le token a expiré
         expires_in = replit.token.get('expires_in', 0)
         if expires_in < 0:
+            # URL du service de token de Replit pour rafraîchir le token
+            issuer_url = os.environ.get('ISSUER_URL', "https://replit.com/oidc")
             refresh_token_url = issuer_url + "/token"
+            
             try:
                 token = replit.refresh_token(token_url=refresh_token_url,
                                              client_id=os.environ['REPL_ID'])
             except InvalidGrantError:
-                # If the refresh token is invalid, the users needs to re-login.
+                # Si le refresh token est invalide, l'utilisateur doit se reconnecter
                 session["next_url"] = get_next_navigation_url(request)
                 return redirect(url_for('replit_auth.login'))
+            
             replit.token_updater(token)
 
         return f(*args, **kwargs)
