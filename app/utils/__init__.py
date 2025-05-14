@@ -1,2 +1,0 @@
-
-# Initialisation du module utils

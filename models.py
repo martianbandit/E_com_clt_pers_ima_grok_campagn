@@ -1,7 +1,7 @@
 from datetime import datetime
 import json
 from app import db
-from sqlalchemy.dialects.postgresql import JSON, JSON
+from sqlalchemy.dialects.postgresql import JSON, JSONB
 
 class Boutique(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -12,7 +12,7 @@ class Boutique(db.Model):
     # Colonnes linguistiques
     language = db.Column(db.String(10), default='en', nullable=False)
     multilingual_enabled = db.Column(db.Boolean, default=False, nullable=False)
-    supported_languages = db.Column(JSON, default=lambda: ['en', 'fr'], nullable=False)
+    supported_languages = db.Column(JSONB, default=lambda: ['en', 'fr'], nullable=False)
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -95,25 +95,25 @@ class CustomerPersona(db.Model):
     education_level = db.Column(db.String(50), nullable=True)  # Niveau d'éducation
     
     # Caractéristiques psychographiques
-    values = db.Column(JSON, nullable=True)  # Valeurs importantes
-    interests = db.Column(JSON, nullable=True)  # Centres d'intérêt
+    values = db.Column(JSONB, nullable=True)  # Valeurs importantes
+    interests = db.Column(JSONB, nullable=True)  # Centres d'intérêt
     lifestyle = db.Column(db.Text, nullable=True)  # Style de vie
-    personality_traits = db.Column(JSON, nullable=True)  # Traits de personnalité
+    personality_traits = db.Column(JSONB, nullable=True)  # Traits de personnalité
     
     # Comportements de consommation
     buying_habits = db.Column(db.Text, nullable=True)  # Habitudes d'achat
-    brand_affinities = db.Column(JSON, nullable=True)  # Affinités de marque
+    brand_affinities = db.Column(JSONB, nullable=True)  # Affinités de marque
     price_sensitivity = db.Column(db.String(50), nullable=True)  # Sensibilité aux prix
-    decision_factors = db.Column(JSON, nullable=True)  # Facteurs de décision d'achat
+    decision_factors = db.Column(JSONB, nullable=True)  # Facteurs de décision d'achat
     
     # Communication et médias
-    preferred_channels = db.Column(JSON, nullable=True)  # Canaux de communication préférés
+    preferred_channels = db.Column(JSONB, nullable=True)  # Canaux de communication préférés
     content_preferences = db.Column(db.Text, nullable=True)  # Préférences de contenu
-    social_media_behavior = db.Column(JSON, nullable=True)  # Comportement sur les réseaux sociaux
+    social_media_behavior = db.Column(JSONB, nullable=True)  # Comportement sur les réseaux sociaux
     
     # Attributs spécifiques à la niche
-    niche_specific_attributes = db.Column(JSON, nullable=True)  # Attributs spécifiques à la niche
-    custom_fields = db.Column(JSON, nullable=True)  # Champs personnalisés pour flexibilité
+    niche_specific_attributes = db.Column(JSONB, nullable=True)  # Attributs spécifiques à la niche
+    custom_fields = db.Column(JSONB, nullable=True)  # Champs personnalisés pour flexibilité
     
     # Avatar et représentation visuelle
     avatar_url = db.Column(db.Text, nullable=True)  # URL de l'avatar
@@ -186,14 +186,14 @@ class Customer(db.Model):
     income_level = db.Column(db.String(50), nullable=True)  # budget, middle, affluent, luxury
     education = db.Column(db.String(50), nullable=True)  # high school, bachelor, master, etc.
     occupation = db.Column(db.String(100), nullable=True)  # job title or profession
-    social_media = db.Column(JSON, nullable=True)  # Store usage frequency for different platforms
+    social_media = db.Column(JSONB, nullable=True)  # Store usage frequency for different platforms
     shopping_frequency = db.Column(db.String(50), nullable=True)  # rarely, occasionally, frequently, very frequently
     persona = db.Column(db.Text, nullable=True)
     avatar_url = db.Column(db.Text, nullable=True)  # URL de l'image d'avatar générée pour ce client
     avatar_prompt = db.Column(db.Text, nullable=True)  # Prompt utilisé pour générer l'avatar
-    purchased_products = db.Column(JSON, nullable=True)  # Produits déjà achetés par le client
-    niche_attributes = db.Column(JSON, nullable=True)  # Attributs supplémentaires liés à la niche
-    profile_data = db.Column(JSON, nullable=True)  # Store full profile as JSON with better Postgres support
+    purchased_products = db.Column(JSONB, nullable=True)  # Produits déjà achetés par le client
+    niche_attributes = db.Column(JSONB, nullable=True)  # Attributs supplémentaires liés à la niche
+    profile_data = db.Column(JSONB, nullable=True)  # Store full profile as JSON with better Postgres support
     usage_count = db.Column(db.Integer, default=0)  # Compteur d'utilisation du profil client
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -332,13 +332,13 @@ class Campaign(db.Model):
     # Colonnes linguistiques
     language = db.Column(db.String(10), default='en', nullable=False)  # Langue principale de la campagne
     multilingual_campaign = db.Column(db.Boolean, default=False, nullable=False)  # Si campagne multilingue
-    target_languages = db.Column(JSON, default=lambda: ['en'], nullable=False)  # Langues cibles
+    target_languages = db.Column(JSONB, default=lambda: ['en'], nullable=False)  # Langues cibles
     
     # Contenu et données
-    profile_data = db.Column(JSON, nullable=True)  # The customer profile this campaign is for
+    profile_data = db.Column(JSONB, nullable=True)  # The customer profile this campaign is for
     prompt_used = db.Column(db.Text, nullable=True)  # Prompt utilisé pour générer le contenu
     ai_model_used = db.Column(db.String(50), nullable=True)  # Modèle IA utilisé (grok-2, gpt-4o, etc.)
-    generation_params = db.Column(JSON, nullable=True)  # Paramètres utilisés pour la génération
+    generation_params = db.Column(JSONB, nullable=True)  # Paramètres utilisés pour la génération
     
     # Métriques et suivi
     view_count = db.Column(db.Integer, default=0)  # Nombre de vues
@@ -350,13 +350,13 @@ class Campaign(db.Model):
     image_alt_text = db.Column(db.String(125), nullable=True)  # Alt text optimisé pour SEO
     image_title = db.Column(db.String(60), nullable=True)  # Titre optimisé pour SEO
     image_description = db.Column(db.Text, nullable=True)  # Description optimisée pour SEO
-    image_keywords = db.Column(JSON, nullable=True)  # Mots-clés pour le référencement
+    image_keywords = db.Column(JSONB, nullable=True)  # Mots-clés pour le référencement
     image_prompt = db.Column(db.Text, nullable=True)  # Prompt utilisé pour générer l'image
     
     # Planification et publication
     scheduled_at = db.Column(db.DateTime, nullable=True)  # Date planifiée de publication
     published_at = db.Column(db.DateTime, nullable=True)  # Date effective de publication
-    platforms = db.Column(JSON, nullable=True)  # Plateformes de publication (Facebook, Instagram, Email, etc.)
+    platforms = db.Column(JSONB, nullable=True)  # Plateformes de publication (Facebook, Instagram, Email, etc.)
     
     # Dates de création/modification
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -520,7 +520,7 @@ class Metric(db.Model):
     name = db.Column(db.String(100), nullable=False)
     category = db.Column(db.String(50), nullable=True)  # Catégorie de la métrique (ai, user, system, etc.)
     status = db.Column(db.Boolean, default=True)        # État (True=succès, False=erreur)
-    data = db.Column(JSON, nullable=True)              # Données complètes
+    data = db.Column(JSONB, nullable=True)              # Données complètes
     execution_time = db.Column(db.Float, nullable=True) # Temps d'exécution en secondes
     response_time = db.Column(db.Float, nullable=True)  # Temps de réponse en millisecondes (pour les appels API)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -595,11 +595,11 @@ class Product(db.Model):
     meta_title = db.Column(db.String(60), nullable=True)
     meta_description = db.Column(db.String(160), nullable=True)
     alt_text = db.Column(db.String(125), nullable=True)
-    keywords = db.Column(JSON, nullable=True)  # Liste de mots-clés
+    keywords = db.Column(JSONB, nullable=True)  # Liste de mots-clés
     
     # Variantes du produit
-    variants = db.Column(JSON, nullable=True)  # Stockage des variantes (couleurs, tailles, etc.)
-    comparative_analysis = db.Column(JSON, nullable=True)  # Analyse comparative
+    variants = db.Column(JSONB, nullable=True)  # Stockage des variantes (couleurs, tailles, etc.)
+    comparative_analysis = db.Column(JSONB, nullable=True)  # Analyse comparative
     
     # Données complémentaires
     target_audience_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
@@ -641,17 +641,17 @@ class ImportedProduct(db.Model):
     source_id = db.Column(db.String(100), nullable=True)  # ID du produit sur la plateforme source
     
     # Données brutes extraites
-    raw_data = db.Column(JSON, nullable=True)  # Données brutes extraites
+    raw_data = db.Column(JSONB, nullable=True)  # Données brutes extraites
     
     # Données de prix
     original_price = db.Column(db.Float, nullable=True)  # Prix original sur la source
     original_currency = db.Column(db.String(3), nullable=True)  # Devise d'origine (EUR, USD, etc.)
     optimized_price = db.Column(db.Float, nullable=True)  # Prix optimisé calculé
-    pricing_strategy = db.Column(JSON, nullable=True)  # Stratégie de prix complète (marges, etc.)
+    pricing_strategy = db.Column(JSONB, nullable=True)  # Stratégie de prix complète (marges, etc.)
     
     # Données de transformation
-    templates = db.Column(JSON, nullable=True)  # Templates HTML générés (description, specs, FAQ)
-    optimization_settings = db.Column(JSON, nullable=True)  # Paramètres utilisés pour l'optimisation
+    templates = db.Column(JSONB, nullable=True)  # Templates HTML générés (description, specs, FAQ)
+    optimization_settings = db.Column(JSONB, nullable=True)  # Paramètres utilisés pour l'optimisation
     
     # Métadonnées
     import_status = db.Column(db.String(20), default="pending")  # pending, processing, complete, failed

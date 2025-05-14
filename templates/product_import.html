@@ -8,36 +8,6 @@
     
     <div class="row">
         <div class="col-lg-6">
-            <!-- Carte pour l'analyse AI (Product Manager) -->
-            <div class="card shadow-sm mb-4 border-success">
-                <div class="card-header bg-success bg-gradient text-white">
-                    <h5 class="card-title mb-0">
-                        <i class="bi bi-robot"></i> {{ _('Product Manager AI - Analyse approfondie') }}
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">
-                        {{ _('Utilisez notre IA "Product Manager" pour analyser en profondeur un produit AliExpress et obtenir une analyse marketing complète, des recommandations stratégiques et des templates optimisés.') }}
-                    </p>
-                    
-                    <form action="{{ url_for('analyze_aliexpress_product') }}" method="post">
-                        <div class="mb-3">
-                            <label for="ai_aliexpress_url" class="form-label">{{ _('URL AliExpress') }}</label>
-                            <input type="url" class="form-control" id="ai_aliexpress_url" name="aliexpress_url" 
-                                   placeholder="https://aliexpress.com/item/..." required>
-                            <div class="form-text">{{ _('Notre IA va analyser ce produit et générer une fiche complète') }}</div>
-                        </div>
-                        
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success">
-                                <i class="bi bi-search"></i> {{ _('Analyser le produit avec l\'IA') }}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Carte pour l'import standard -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-primary bg-gradient text-white">
                     <h5 class="card-title mb-0">{{ _('Import an AliExpress product') }}</h5>
