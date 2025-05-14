@@ -46,7 +46,7 @@
                 </li>
                 {% if current_user and current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/user/profile' %}active{% endif %}" href="{{ url_for('user_profile') }}">
+                    <a class="nav-link {% if '/user/profile' in request.path %}active{% endif %}" href="/user/profile">
                         <i class="fas fa-user-ninja me-1"></i> {{ _('Mon Profil') }}
                     </a>
                 </li>
@@ -83,10 +83,10 @@
                             </div>
                         </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ url_for('user_profile') }}"><i class="fas fa-user-cog me-2"></i>{{ _('Profil') }}</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('user_settings') }}"><i class="fas fa-cog me-2"></i>{{ _('Paramètres') }}</a></li>
+                        <li><a class="dropdown-item" href="/user/profile"><i class="fas fa-user-cog me-2"></i>{{ _('Profil') }}</a></li>
+                        <li><a class="dropdown-item" href="/user/settings"><i class="fas fa-cog me-2"></i>{{ _('Paramètres') }}</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-2"></i>{{ _('Déconnexion') }}</a></li>
+                        <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>{{ _('Déconnexion') }}</a></li>
                     </ul>
                 </div>
                 {% else %}
