@@ -2787,3 +2787,56 @@ def optimize_seo():
             response_time=None
         )
         return redirect(url_for('osp_tools'))
+        
+@app.route('/osp-analysis/<int:analysis_id>')
+def view_osp_analysis(analysis_id):
+    """Afficher le détail d'une analyse OSP"""
+    from models import OSPAnalysis
+    
+    analysis = OSPAnalysis.query.get_or_404(analysis_id)
+    
+    # Détermination du titre en fonction du type d'analyse
+    type_titles = {
+        'value_map': "Carte de Valeur",
+        'content_analysis': "Analyse de Contenu",
+        'seo_optimization': "Optimisation SEO"
+    }
+    
+    analysis_type_title = type_titles.get(analysis.analysis_type.value, "Analyse OSP")
+    
+    return render_template('osp_analysis_detail.html',
+                          analysis=analysis,
+                          analysis_type_title=analysis_type_title)
+
+@app.route('/osp-analysis/<int:analysis_id>/edit', methods=['GET', 'POST'])
+def edit_osp_analysis(analysis_id):
+    """Éditer une analyse OSP existante"""
+    from models import OSPAnalysis
+    
+    analysis = OSPAnalysis.query.get_or_404(analysis_id)
+    
+    if request.method == 'POST':
+        # Mise à jour des données de l'analyse
+        analysis.title = request.form.get('title', analysis.title)
+        
+        # Si d'autres champs doivent être modifiables, les ajouter ici
+        
+        db.session.commit()
+        flash(_("L'analyse a été mise à jour avec succès!"), "success")
+        return redirect(url_for('view_osp_analysis', analysis_id=analysis.id))
+    
+    return render_template('osp_analysis_edit.html', analysis=analysis)
+
+@app.route('/osp-analysis/<int:analysis_id>/delete', methods=['POST'])
+def delete_osp_analysis(analysis_id):
+    """Supprimer une analyse OSP"""
+    from models import OSPAnalysis
+    
+    analysis = OSPAnalysis.query.get_or_404(analysis_id)
+    
+    # Suppression de l'analyse
+    db.session.delete(analysis)
+    db.session.commit()
+    
+    flash(_("L'analyse a été supprimée avec succès."), "success")
+    return redirect(url_for('osp_tools'))

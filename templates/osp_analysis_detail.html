@@ -1,385 +1,160 @@
-{% extends 'layout.html' %}
-{% block title %}{{ _('Détail de l\'analyse OSP') }} - {{ title }}{% endblock %}
+{% extends "layout.html" %}
+
+{% block title %}{{ analysis_type_title }} - {{ analysis.title }}{% endblock %}
+
+{% block styles %}
+<style>
+    .osp-content {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .osp-meta {
+        font-size: 0.85rem;
+        color: var(--bs-gray-600);
+    }
+    
+    .osp-value-map .card {
+        transition: transform 0.2s ease;
+    }
+    
+    .osp-value-map .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .action-buttons {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .entity-link {
+        margin-right: 0.5rem;
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        background-color: var(--bs-gray-300);
+        border-radius: 0.25rem;
+        color: var(--bs-dark);
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+    
+    .entity-link:hover {
+        background-color: var(--bs-primary);
+        color: var(--bs-white);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h1>{{ title }}</h1>
-            <p class="text-muted">
-                {{ _('Créé le') }} {{ created_at.strftime('%d/%m/%Y %H:%M') }} 
-                {% if updated_at and updated_at != created_at %}
-                | {{ _('Mis à jour le') }} {{ updated_at.strftime('%d/%m/%Y %H:%M') }}
-                {% endif %}
-            </p>
-        </div>
-        <div class="col-md-4 text-end">
-            <a href="{{ url_for('edit_osp_analysis', analysis_id=analysis.id) }}" class="btn btn-primary me-2">
-                <i class="bi bi-pencil"></i> {{ _('Modifier') }}
-            </a>
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                <i class="bi bi-trash"></i> {{ _('Supprimer') }}
-            </button>
-        </div>
-    </div>
-
-    <div class="row mb-4">
+<div class="container mt-4">
+    <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ _('Informations') }}</h5>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">{{ _("Accueil") }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('osp_tools') }}">{{ _("Outils OSP") }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ analysis.title }}</li>
+                </ol>
+            </nav>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h1 class="h3 mb-0">{{ analysis.title }}</h1>
+                    <span class="badge bg-secondary">{{ analysis_type_title }}</span>
                 </div>
                 <div class="card-body">
-                    <dl class="row">
-                        <dt class="col-sm-3">{{ _('Type d\'analyse') }}</dt>
-                        <dd class="col-sm-9">
-                            {% if analysis_type == 'value_map' %}
-                                {{ _('Carte de valeur') }}
-                            {% elif analysis_type == 'content_analysis' %}
-                                {{ _('Analyse de contenu') }}
-                            {% elif analysis_type == 'seo_optimization' %}
-                                {{ _('Optimisation SEO') }}
-                            {% else %}
-                                {{ analysis.analysis_type.value }}
-                            {% endif %}
-                        </dd>
-
+                    <div class="osp-meta mb-3">
+                        <div><strong>{{ _("Créé le") }}:</strong> {{ analysis.created_at.strftime('%d/%m/%Y à %H:%M') }}</div>
+                        <div><strong>{{ _("Dernière modification") }}:</strong> {{ analysis.updated_at.strftime('%d/%m/%Y à %H:%M') }}</div>
+                        
                         {% if analysis.product %}
-                        <dt class="col-sm-3">{{ _('Produit associé') }}</dt>
-                        <dd class="col-sm-9">
-                            <a href="{{ url_for('view_product', product_id=analysis.product_id) }}">
-                                {{ analysis.product.name }}
+                        <div class="mt-2">
+                            <strong>{{ _("Produit associé") }}:</strong> 
+                            <a href="{{ url_for('view_product', product_id=analysis.product.id) }}" class="entity-link">
+                                {{ analysis.product.title }}
                             </a>
-                        </dd>
+                        </div>
                         {% endif %}
-
+                        
                         {% if analysis.campaign %}
-                        <dt class="col-sm-3">{{ _('Campagne associée') }}</dt>
-                        <dd class="col-sm-9">
-                            <a href="{{ url_for('view_campaign', campaign_id=analysis.campaign_id) }}">
-                                {{ analysis.campaign.name }}
+                        <div class="mt-2">
+                            <strong>{{ _("Campagne associée") }}:</strong> 
+                            <a href="{{ url_for('view_campaign', campaign_id=analysis.campaign.id) }}" class="entity-link">
+                                {{ analysis.campaign.title }}
                             </a>
-                        </dd>
+                        </div>
                         {% endif %}
-
+                        
+                        {% if analysis.boutique %}
+                        <div class="mt-2">
+                            <strong>{{ _("Boutique associée") }}:</strong> 
+                            <a href="#" class="entity-link">{{ analysis.boutique.name }}</a>
+                        </div>
+                        {% endif %}
+                        
                         {% if analysis.customer %}
-                        <dt class="col-sm-3">{{ _('Client associé') }}</dt>
-                        <dd class="col-sm-9">
-                            <a href="{{ url_for('view_customer', customer_id=analysis.customer_id) }}">
+                        <div class="mt-2">
+                            <strong>{{ _("Client associé") }}:</strong> 
+                            <a href="{{ url_for('view_customer', customer_id=analysis.customer.id) }}" class="entity-link">
                                 {{ analysis.customer.name }}
                             </a>
-                        </dd>
+                        </div>
                         {% endif %}
-
+                        
                         {% if analysis.persona %}
-                        <dt class="col-sm-3">{{ _('Persona associé') }}</dt>
-                        <dd class="col-sm-9">{{ analysis.persona.title }}</dd>
+                        <div class="mt-2">
+                            <strong>{{ _("Persona associé") }}:</strong> 
+                            <span class="entity-link">{{ analysis.persona.title }}</span>
+                        </div>
                         {% endif %}
-
-                        {% if analysis.boutique %}
-                        <dt class="col-sm-3">{{ _('Boutique associée') }}</dt>
-                        <dd class="col-sm-9">{{ analysis.boutique.name }}</dd>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <a href="{{ url_for('edit_osp_analysis', analysis_id=analysis.id) }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-pencil-square"></i> {{ _("Modifier") }}
+                        </a>
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="bi bi-trash"></i> {{ _("Supprimer") }}
+                        </button>
+                        <a href="{{ url_for('osp_tools') }}" class="btn btn-sm btn-secondary">
+                            <i class="bi bi-arrow-left"></i> {{ _("Retour") }}
+                        </a>
+                    </div>
+                    
+                    <div class="osp-content">
+                        {% if analysis.html_result %}
+                            {{ analysis.html_result|safe }}
+                        {% else %}
+                            <div class="alert alert-info">
+                                {{ _("Cette analyse n'a pas de rendu HTML disponible.") }}
+                            </div>
+                            
+                            <pre class="bg-light p-3 rounded">{{ analysis.content|tojson(indent=2) }}</pre>
                         {% endif %}
-                    </dl>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    {% if analysis_type == 'value_map' %}
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">{{ _('Carte de valeur') }}</h5>
-                    </div>
-                    <div class="card-body">
-                        {{ value_map_html|safe }}
-                    </div>
-                </div>
+<!-- Modal de confirmation de suppression -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">{{ _("Confirmer la suppression") }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">{{ _('Données brutes') }}</h5>
-                    </div>
-                    <div class="card-body">
-                        <pre class="bg-light p-3 rounded"><code>{{ value_map_json }}</code></pre>
-                    </div>
-                </div>
+            <div class="modal-body">
+                {{ _("Êtes-vous sûr de vouloir supprimer cette analyse? Cette action est irréversible.") }}
             </div>
-        </div>
-    {% endif %}
-
-    {% if analysis_type == 'content_analysis' %}
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">{{ _('Données d\'entrée') }}</h5>
-                    </div>
-                    <div class="card-body">
-                        <dl class="row">
-                            <dt class="col-sm-3">{{ _('Type de contenu') }}</dt>
-                            <dd class="col-sm-9">{{ input_data.content_type }}</dd>
-
-                            <dt class="col-sm-3">{{ _('Audience cible') }}</dt>
-                            <dd class="col-sm-9">{{ input_data.target_audience }}</dd>
-
-                            <dt class="col-sm-3">{{ _('Industrie') }}</dt>
-                            <dd class="col-sm-9">{{ input_data.industry }}</dd>
-                        </dl>
-
-                        <div class="mt-3">
-                            <h6>{{ _('Contenu analysé') }}</h6>
-                            <div class="p-3 bg-light rounded">
-                                {{ input_data.content|nl2br }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">{{ _('Résultats de l\'analyse') }}</h5>
-                    </div>
-                    <div class="card-body">
-                        {% if content_analysis.scores %}
-                        <h6>{{ _('Scores') }}</h6>
-                        <div class="table-responsive mb-4">
-                            <table class="table table-bordered">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>{{ _('Critère') }}</th>
-                                        <th>{{ _('Score') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for criterion, score in content_analysis.scores.items() %}
-                                    <tr>
-                                        <td>{{ criterion }}</td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar {% if score >= 4 %}bg-success{% elif score >= 3 %}bg-info{% elif score >= 2 %}bg-warning{% else %}bg-danger{% endif %}" 
-                                                    role="progressbar" style="width: {{ score*20 }}%" 
-                                                    aria-valuenow="{{ score }}" aria-valuemin="0" aria-valuemax="5">
-                                                    {{ score }}/5
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        {% endif %}
-
-                        {% if content_analysis.strengths %}
-                        <h6>{{ _('Points forts') }}</h6>
-                        <ul class="list-group mb-4">
-                            {% for strength in content_analysis.strengths %}
-                            <li class="list-group-item list-group-item-success">{{ strength }}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-
-                        {% if content_analysis.weaknesses %}
-                        <h6>{{ _('Points à améliorer') }}</h6>
-                        <ul class="list-group mb-4">
-                            {% for weakness in content_analysis.weaknesses %}
-                            <li class="list-group-item list-group-item-warning">{{ weakness }}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-
-                        {% if content_analysis.recommendations %}
-                        <h6>{{ _('Recommandations') }}</h6>
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <ol>
-                                    {% for recommendation in content_analysis.recommendations %}
-                                    <li class="mb-2">{{ recommendation }}</li>
-                                    {% endfor %}
-                                </ol>
-                            </div>
-                        </div>
-                        {% endif %}
-
-                        {% if content_analysis.improved_examples %}
-                        <h6>{{ _('Exemples d\'amélioration') }}</h6>
-                        <div class="accordion mb-4" id="examplesAccordion">
-                            {% for i, example in enumerate(content_analysis.improved_examples) %}
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
-                                            data-bs-target="#collapse{{ i }}" aria-expanded="false" aria-controls="collapse{{ i }}">
-                                        {{ _('Exemple') }} {{ i+1 }}
-                                    </button>
-                                </h2>
-                                <div id="collapse{{ i }}" class="accordion-collapse collapse" data-bs-parent="#examplesAccordion">
-                                    <div class="accordion-body">
-                                        <p><strong>{{ _('Original') }}:</strong> {{ example.original }}</p>
-                                        <p><strong>{{ _('Amélioré') }}:</strong> {{ example.improved }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">{{ _('Données brutes') }}</h5>
-                    </div>
-                    <div class="card-body">
-                        <pre class="bg-light p-3 rounded"><code>{{ content_analysis_json }}</code></pre>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-
-    {% if analysis_type == 'seo_optimization' %}
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">{{ _('Données d\'entrée') }}</h5>
-                    </div>
-                    <div class="card-body">
-                        <dl class="row">
-                            <dt class="col-sm-3">{{ _('Titre') }}</dt>
-                            <dd class="col-sm-9">{{ input_data.title }}</dd>
-
-                            <dt class="col-sm-3">{{ _('Description') }}</dt>
-                            <dd class="col-sm-9">{{ input_data.description }}</dd>
-
-                            <dt class="col-sm-3">{{ _('Type de page') }}</dt>
-                            <dd class="col-sm-9">{{ input_data.page_type }}</dd>
-
-                            <dt class="col-sm-3">{{ _('Langue/Région') }}</dt>
-                            <dd class="col-sm-9">{{ input_data.locale }}</dd>
-
-                            {% if input_data.is_local_business %}
-                            <dt class="col-sm-3">{{ _('Business local') }}</dt>
-                            <dd class="col-sm-9">{{ _('Oui') }}</dd>
-                            {% endif %}
-
-                            {% if input_data.keywords %}
-                            <dt class="col-sm-3">{{ _('Mots-clés') }}</dt>
-                            <dd class="col-sm-9">
-                                {% for keyword in input_data.keywords %}
-                                <span class="badge bg-info me-1">{{ keyword }}</span>
-                                {% endfor %}
-                            </dd>
-                            {% endif %}
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">{{ _('Résultats de l\'optimisation SEO') }}</h5>
-                    </div>
-                    <div class="card-body">
-                        {% if seo_results.optimized_title %}
-                        <div class="mb-4">
-                            <h6>{{ _('Titre optimisé') }}</h6>
-                            <div class="p-3 bg-light rounded">
-                                {{ seo_results.optimized_title }}
-                            </div>
-                            {% if seo_results.title_assessment %}
-                            <div class="mt-2">
-                                <small class="text-muted">{{ seo_results.title_assessment }}</small>
-                            </div>
-                            {% endif %}
-                        </div>
-                        {% endif %}
-
-                        {% if seo_results.optimized_description %}
-                        <div class="mb-4">
-                            <h6>{{ _('Description optimisée') }}</h6>
-                            <div class="p-3 bg-light rounded">
-                                {{ seo_results.optimized_description }}
-                            </div>
-                            {% if seo_results.description_assessment %}
-                            <div class="mt-2">
-                                <small class="text-muted">{{ seo_results.description_assessment }}</small>
-                            </div>
-                            {% endif %}
-                        </div>
-                        {% endif %}
-
-                        {% if seo_results.recommendations %}
-                        <div class="mb-4">
-                            <h6>{{ _('Recommandations') }}</h6>
-                            <ul class="list-group">
-                                {% for recommendation in seo_results.recommendations %}
-                                <li class="list-group-item">{{ recommendation }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        {% endif %}
-
-                        {% if seo_results.schema_org %}
-                        <div class="mb-4">
-                            <h6>{{ _('Données structurées (Schema.org)') }}</h6>
-                            <pre class="bg-light p-3 rounded"><code>{{ seo_results.schema_org|tojson(indent=2) }}</code></pre>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">{{ _('Données brutes') }}</h5>
-                    </div>
-                    <div class="card-body">
-                        <pre class="bg-light p-3 rounded"><code>{{ seo_results_json }}</code></pre>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-
-    <!-- Modal de suppression -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{ _('Supprimer l\'analyse') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    {{ _('Êtes-vous sûr de vouloir supprimer cette analyse ? Cette action est irréversible.') }}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Annuler') }}</button>
-                    <form action="{{ url_for('delete_osp_analysis', analysis_id=analysis.id) }}" method="POST">
-                        <button type="submit" class="btn btn-danger">{{ _('Supprimer') }}</button>
-                    </form>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _("Annuler") }}</button>
+                <form action="{{ url_for('delete_osp_analysis', analysis_id=analysis.id) }}" method="post">
+                    <button type="submit" class="btn btn-danger">{{ _("Supprimer") }}</button>
+                </form>
             </div>
         </div>
     </div>
