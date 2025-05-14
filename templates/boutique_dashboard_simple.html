@@ -2,6 +2,63 @@
 
 {% block title %}MarkEasy - Tableau de bord des boutiques{% endblock %}
 
+{% block head %}
+<!-- Chart.js pour les graphiques -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<style>
+    .stats-card {
+        transition: transform 0.3s;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .metric-title {
+        font-size: 0.9rem;
+        color: var(--bs-gray-600);
+    }
+    
+    .progress-thin {
+        height: 6px;
+    }
+    
+    .trend-up {
+        color: var(--bs-success);
+    }
+    
+    .trend-down {
+        color: var(--bs-danger);
+    }
+    
+    .boutique-card {
+        border-left: 5px solid var(--bs-primary);
+        transition: all 0.3s;
+    }
+    
+    .boutique-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .top-performer-badge {
+        position: absolute;
+        top: -10px;
+        right: 20px;
+        z-index: 1;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1><i class="fas fa-chart-pie me-2"></i> Tableau de bord des performances par boutique</h1>
@@ -12,19 +69,100 @@
     </div>
 </div>
 
-<div class="alert alert-info">
-    <h4 class="alert-heading"><i class="fas fa-info-circle me-2"></i> Tableau de bord en cours de développement</h4>
-    <p>Le tableau de bord des performances par boutique est en cours de développement.</p>
-    <p>Voici les principales fonctionnalités qui seront disponibles:</p>
-    <ul>
-        <li>Statistiques globales des campagnes par boutique</li>
-        <li>Taux d'engagement et de conversion par type de boutique</li>
-        <li>Graphiques de performance</li>
-        <li>Détails des campagnes par boutique</li>
-    </ul>
-    <hr>
-    <p class="mb-0">Revenez bientôt pour accéder à ces fonctionnalités!</p>
+<!-- Statistiques globales en haut -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="metric-title text-white-50">Boutiques</div>
+                        <div class="metric-value">{{ boutique_stats.total_boutiques }}</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-store fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="metric-title text-white-50">Campagnes</div>
+                        <div class="metric-value">{{ global_stats.total_campaigns }}</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-bullhorn fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="metric-title text-white-50">Engagement moyen</div>
+                        <div class="metric-value">{{ "%.1f"|format(global_stats.avg_engagement_rate) }}%</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-thumbs-up fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white stats-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="metric-title text-white-50">Conversion moyenne</div>
+                        <div class="metric-value">{{ "%.1f"|format(global_stats.avg_conversion_rate) }}%</div>
+                    </div>
+                    <div>
+                        <i class="fas fa-chart-line fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Meilleure boutique performante (si disponible) -->
+{% if boutique_stats.top_performing %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-warning shadow-sm">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-trophy me-2"></i>
+                    Boutique la plus performante
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h3>{{ boutique_stats.top_performing.name }}</h3>
+                        <p class="lead mb-0">
+                            Taux de conversion: <span class="badge bg-warning text-dark">{{ "%.1f"|format(boutique_stats.top_performing.conversion_rate) }}%</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <a href="/boutiques/{{ boutique_stats.top_performing.id }}" class="btn btn-warning">
+                            <i class="fas fa-search me-1"></i> Voir le détail
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 <div class="row mb-4">
     <div class="col-md-6">
