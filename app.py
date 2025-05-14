@@ -23,24 +23,93 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# Importation du blueprint de Replit Auth
-from replit_auth import make_replit_blueprint, require_login
+# Simple authentification (sans Replit Auth)
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from werkzeug.security import check_password_hash, generate_password_hash
+
+# Config LoginManager
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+login_manager.login_message = "Veuillez vous connecter pour accéder à cette page."
+login_manager.login_message_category = "info"
+
+# User loader pour Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    from models import User
+    return User.query.get(user_id)
 
 # Rendre current_user et d'autres variables disponibles dans tous les templates
 @app.context_processor
 def inject_template_globals():
-    from flask_login import current_user
     return dict(
         current_user=current_user,
-        # Ajouter d'autres variables globales si nécessaire
+        # Fonctions utilitaires pour les templates
+        min=min,
+        max=max
     )
+    
+# Routes d'authentification simple (admin/admin)
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Page de connexion simplifiée"""
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        # Vérifier les identifiants (admin/admin)
+        if username == 'admin' and password == 'admin':
+            # Récupérer l'utilisateur admin ou le créer
+            from models import User
+            admin_user = User.query.filter_by(id='admin').first()
+            
+            if not admin_user:
+                # Créer l'utilisateur admin s'il n'existe pas
+                admin_user = User(
+                    id='admin',
+                    email='admin@markeasy.com',
+                    first_name='Admin',
+                    last_name='MarkEasy'
+                )
+                db.session.add(admin_user)
+                db.session.commit()
+            
+            # Connecter l'utilisateur
+            login_user(admin_user)
+            flash('Connexion réussie !', 'success')
+            
+            # Rediriger vers la page demandée ou l'accueil
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('index'))
+        else:
+            flash('Identifiants incorrects. Veuillez réessayer.', 'danger')
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Déconnexion"""
+    logout_user()
+    flash('Vous avez été déconnecté.', 'info')
+    return redirect(url_for('index'))
 
 # Routes pour l'authentification et le profil utilisateur
 @app.route('/user/profile')
 @login_required
 def user_profile():
-    """Page de profil utilisateur"""
-    return render_template('user/profile.html')
+    """Page de profil utilisateur avec statistiques"""
+    from models import Campaign, Customer, Product
+    
+    # Récupération des statistiques d'utilisation
+    campaigns_count = Campaign.query.count()
+    customers_count = Customer.query.count()
+    products_count = Product.query.count()
+    
+    return render_template('user/profile.html',
+                          campaigns_count=campaigns_count,
+                          customers_count=customers_count,
+                          products_count=products_count)
 
 @app.route('/user/settings')
 @login_required

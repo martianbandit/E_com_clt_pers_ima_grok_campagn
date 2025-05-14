@@ -55,11 +55,39 @@
                 {{ theme_switcher_button() }}
                 
                 <!-- Authentication Button -->
-                <!-- Bouton de connexion standard (pas encore d'authentification) -->
-                <button class="btn btn-primary btn-sm me-2">
+                {% if current_user and current_user.is_authenticated %}
+                <div class="dropdown me-2">
+                    <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-ninja me-1"></i>
+                        <span class="d-none d-md-inline">{{ current_user.first_name or 'Admin' }}</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li class="dropdown-item-text">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                    <i class="fas fa-user-ninja"></i>
+                                </div>
+                                <div>
+                                    <strong>{{ current_user.first_name }} {{ current_user.last_name }}</strong>
+                                    {% if current_user.email %}
+                                        <div class="small text-muted">{{ current_user.email }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('user_profile') }}"><i class="fas fa-user-cog me-2"></i>{{ _('Profil') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('user_settings') }}"><i class="fas fa-cog me-2"></i>{{ _('Paramètres') }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-2"></i>{{ _('Déconnexion') }}</a></li>
+                    </ul>
+                </div>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm me-2">
                     <i class="fas fa-sign-in-alt me-1"></i>
                     <span class="d-none d-md-inline">{{ _('Connexion') }}</span>
-                </button>
+                </a>
+                {% endif %}
                 
                 <!-- Language Selector Dropdown -->
                 <div class="dropdown me-2">

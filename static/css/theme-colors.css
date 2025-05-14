@@ -46,21 +46,21 @@
 /* THÈME CLAIR (optimisé pour meilleure lisibilité) */
 [data-bs-theme="light"] {
     --body-bg: var(--markeasy-white);
-    --body-color: #212529;  /* Texte plus foncé pour meilleur contraste */
+    --body-color: #000000;  /* Texte noir pour contraste maximal */
     --card-bg: var(--markeasy-white);
     --navbar-bg: var(--markeasy-orange);
     --btn-primary-bg: var(--markeasy-orange);
     --btn-primary-border: var(--markeasy-orange);
-    --link-color: #0d6efd;
+    --link-color: #0d47a1; /* Bleu plus foncé pour les liens */
     --input-bg: var(--markeasy-white);
-    --input-color: #212529;
-    --input-border: #ced4da;
-    --border-color: #dee2e6;
-    --nav-link-color: rgba(0, 0, 0, 0.7);
-    --nav-link-hover-color: rgba(0, 0, 0, 0.9);
+    --input-color: #000000;
+    --input-border: #adb5bd; /* Bordure plus foncée */
+    --border-color: #ced4da;
+    --nav-link-color: rgba(0, 0, 0, 0.8); /* Plus foncé */
+    --nav-link-hover-color: #000000;
     --dropdown-bg: var(--markeasy-white);
-    --dropdown-color: #212529;
-    --dropdown-link-hover-bg: #f8f9fa;
+    --dropdown-color: #000000;
+    --dropdown-link-hover-bg: #f0f0f0;
 }
 
 /* Application des variables aux éléments spécifiques */
@@ -129,11 +129,45 @@ body {
 
 /* Ajustements pour la visibilité du texte en mode clair */
 [data-bs-theme="light"] .text-muted {
-    color: #5a6268 !important; /* Plus foncé que la valeur par défaut pour meilleure lisibilité */
+    color: #444444 !important; /* Beaucoup plus foncé pour contraste maximal */
 }
 
 [data-bs-theme="light"] .table {
-    color: #212529; /* Texte plus foncé dans les tableaux */
+    color: #000000; /* Texte noir dans les tableaux */
+}
+
+/* Renforcement du contraste des textes en mode clair */
+[data-bs-theme="light"] h1, 
+[data-bs-theme="light"] h2, 
+[data-bs-theme="light"] h3, 
+[data-bs-theme="light"] h4, 
+[data-bs-theme="light"] h5, 
+[data-bs-theme="light"] h6 {
+    color: #000000;
+}
+
+[data-bs-theme="light"] .card-text,
+[data-bs-theme="light"] .list-group-item {
+    color: #000000;
+}
+
+[data-bs-theme="light"] .dropdown-item {
+    color: #000000;
+}
+
+[data-bs-theme="light"] .text-light {
+    color: #000000 !important;
+}
+
+/* Amélioration des contrastes pour les tableaux */
+[data-bs-theme="light"] .table thead th {
+    color: #000000;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+[data-bs-theme="light"] .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 [data-bs-theme="light"] .card-header {
