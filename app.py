@@ -43,6 +43,20 @@ def login():
     # Rediriger vers l'authentification Replit (OAuth)
     return redirect(url_for('replit_auth.login'))
 
+@app.route('/logout')
+def logout():
+    """Déconnexion et redirection vers la page d'accueil"""
+    # Déconnecter l'utilisateur avec flask_login
+    from flask_login import logout_user
+    logout_user()
+    
+    # Message flash de confirmation
+    from flask import flash
+    flash('Vous avez été déconnecté avec succès.', 'info')
+    
+    # Rediriger vers la page d'accueil
+    return redirect(url_for('index'))
+
 # Cette route a été remplacée par la route logout ci-dessus qui redirige vers Replit Auth
     
 @app.route('/user-info')
