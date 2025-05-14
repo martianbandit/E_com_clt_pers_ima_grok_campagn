@@ -44,6 +44,13 @@
                         <i class="fas fa-tools me-1"></i> {{ _('Outils OSP') }}
                     </a>
                 </li>
+                {% if current_user and current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/user/profile' %}active{% endif %}" href="{{ url_for('user_profile') }}">
+                        <i class="fas fa-user-ninja me-1"></i> {{ _('Mon Profil') }}
+                    </a>
+                </li>
+                {% endif %}
             </ul>
             <div class="d-flex align-items-center">
                 <!-- MarkEasy slogan -->

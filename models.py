@@ -45,6 +45,12 @@ class User(UserMixin, db.Model):
     updated_at = db.Column(db.DateTime,
                            default=datetime.utcnow,
                            onupdate=datetime.utcnow)
+                           
+    def update_login_stats(self):
+        """Met à jour les statistiques de connexion de l'utilisateur"""
+        self.last_login_at = datetime.utcnow()
+        self.login_count = (self.login_count or 0) + 1
+        return self
     
     def get_user_data(self):
         """Retourne les données utilisateur pour l'affichage du profil"""
