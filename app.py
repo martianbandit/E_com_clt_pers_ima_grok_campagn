@@ -2558,6 +2558,12 @@ def analyze_content():
         target_audience = request.form.get('target_audience')
         industry = request.form.get('industry')
         
+        # S'assurer que les valeurs ne sont pas None
+        content = content or ""
+        content_type = content_type or "product_description"
+        target_audience = target_audience or ""
+        industry = industry or ""
+        
         # Analyser le contenu
         content_analysis = analyze_content_with_osp_guidelines(
             content=content,
@@ -2602,6 +2608,12 @@ def optimize_seo():
         page_type = request.form.get('page_type')
         locale = request.form.get('locale')
         is_local_business = True if request.form.get('is_local_business') else False
+        
+        # S'assurer que les valeurs ne sont pas None
+        title = title or ""
+        description = description or ""
+        page_type = page_type or "product"
+        locale = locale or "fr_FR"
         
         # Optimiser le contenu
         content = {
