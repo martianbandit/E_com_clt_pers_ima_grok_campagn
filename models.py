@@ -791,7 +791,7 @@ class Metric(db.Model):
     response_time = db.Column(db.Float, nullable=True)  # Temps de réponse en millisecondes (pour les appels API)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     # Foreign keys optionnels
-    user_id = db.Column(db.Integer, nullable=True)      # ID utilisateur associé (si pertinent)
+    user_id = db.Column(db.String, nullable=True)       # ID utilisateur associé (si pertinent) - Accepte UUID ou Integer sous forme de chaîne
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id', ondelete='SET NULL'), nullable=True)
 
     # Relation avec Customer (optionnelle)
