@@ -22,6 +22,9 @@ logging.basicConfig(level=logging.DEBUG,
 
 logger = logging.getLogger("NinjaMark")
 
+# Module de gestion des erreurs
+from error_handlers import register_error_handlers
+
 class Base(DeclarativeBase):
     pass
 

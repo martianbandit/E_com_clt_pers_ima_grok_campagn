@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}Requête incorrecte - NinjaMark{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto text-center">
+            <div class="error-container">
+                <img src="{{ url_for('static', filename='img/markeasy-ninja.png') }}" alt="NinjaMark Ninja" class="mb-4" style="width: 120px;">
+                <h1 class="display-4 mb-4">Requête incorrecte</h1>
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <p class="lead">Le serveur n'a pas pu traiter votre demande en raison d'une erreur dans les paramètres fournis.</p>
+                        <p>Référence: <code>400 Bad Request</code></p>
+                    </div>
+                </div>
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-home me-2"></i> Retour à l'accueil
+                    </a>
+                    <button onclick="window.history.back()" class="btn btn-outline-secondary btn-lg px-4">
+                        <i class="fas fa-arrow-left me-2"></i> Page précédente
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

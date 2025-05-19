@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}Erreur serveur - NinjaMark{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto text-center">
+            <div class="error-container">
+                <img src="{{ url_for('static', filename='img/markeasy-ninja.png') }}" alt="NinjaMark Ninja" class="mb-4" style="width: 120px;">
+                <h1 class="display-4 mb-4">Erreur serveur</h1>
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <p class="lead">Une erreur est survenue sur nos serveurs.</p>
+                        <p>Notre équipe technique a été informée du problème et travaille à le résoudre dans les plus brefs délais.</p>
+                        <p>Référence: <code>500 Internal Server Error</code></p>
+                    </div>
+                </div>
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-home me-2"></i> Retour à l'accueil
+                    </a>
+                    <button onclick="window.location.reload()" class="btn btn-outline-secondary btn-lg px-4">
+                        <i class="fas fa-sync-alt me-2"></i> Réessayer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
