@@ -508,6 +508,9 @@ app.config['BABEL_DEFAULT_LOCALE'] = 'en'
 app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
 babel.init_app(app, locale_selector=get_locale)
 
+# Enregistrement des gestionnaires d'erreurs personnalisés
+register_error_handlers(app)
+
 # Import routes after app initialization
 from models import Boutique, NicheMarket, Customer, Campaign, SimilarProduct, Metric, Product, ImportedProduct
 import asyncio
