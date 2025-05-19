@@ -1,6 +1,6 @@
 {
-  "name": "MarkEasy",
-  "short_name": "MarkEasy",
+  "name": "NinjaMark",
+  "short_name": "NinjaMark",
   "description": "Le marketing, c'est facile… quand on a un ninja dans sa poche.",
   "display": "standalone",
   "start_url": "/",
@@ -16,6 +16,30 @@
       "src": "/static/img/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "/static/img/markeasy-ninja.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/img/ms-icon-70x70.png",
+      "sizes": "70x70",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/img/ms-icon-150x150.png",
+      "sizes": "150x150",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/img/ms-icon-310x310.png",
+      "sizes": "310x310",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
