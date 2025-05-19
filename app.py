@@ -3,6 +3,7 @@ import json
 import logging
 import datetime
 import uuid
+import sys
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, g
 from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
@@ -15,7 +16,11 @@ from flask_dance.consumer import oauth_authorized, oauth_error
 from flask_dance.contrib.github import make_github_blueprint, github
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG, 
+                   format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                   handlers=[logging.StreamHandler(sys.stdout)])
+
+logger = logging.getLogger("NinjaMark")
 
 class Base(DeclarativeBase):
     pass
