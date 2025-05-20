@@ -103,7 +103,7 @@ def get_domain_url():
 @stripe_bp.route('/')
 def index():
     """Landing page with pricing plans"""
-    return render_template('stripe/landing.html', plans=PLANS, products=PRODUCTS)
+    return render_template('stripe/landing_fixed.html', plans=PLANS, products=PRODUCTS)
 
 @stripe_bp.route('/pricing')
 def pricing():

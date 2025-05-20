@@ -167,8 +167,10 @@
                         <input class="form-check-input" type="checkbox" id="billingToggle">
                         <label class="form-check-label" for="billingToggle"></label>
                     </div>
-                    <span class="ms-3 fw-bold">Annuel</span>
-                    <span class="badge bg-success ms-2">-15%</span>
+                    <div class="d-flex align-items-center">
+                        <span class="ms-3 fw-bold">Annuel</span>
+                        <span class="badge bg-success ms-2">-15%</span>
+                    </div>
                 </div>
             </div>
             
@@ -353,30 +355,29 @@
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
+<!-- JavaScript for Toggle -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const billingToggle = document.getElementById('billingToggle');
         const monthlyPrices = document.querySelectorAll('.monthly-price');
         const annualPrices = document.querySelectorAll('.annual-price');
-        const monthlyButtons = document.querySelectorAll('.monthly-btn');
-        const annualButtons = document.querySelectorAll('.annual-btn');
+        const monthlyBtns = document.querySelectorAll('.monthly-btn');
+        const annualBtns = document.querySelectorAll('.annual-btn');
         
         billingToggle.addEventListener('change', function() {
             if (this.checked) {
-                // Annual billing
-                monthlyPrices.forEach(item => item.classList.add('d-none'));
-                annualPrices.forEach(item => item.classList.remove('d-none'));
-                monthlyButtons.forEach(item => item.classList.add('d-none'));
-                annualButtons.forEach(item => item.classList.remove('d-none'));
+                // Show annual pricing
+                monthlyPrices.forEach(el => el.classList.add('d-none'));
+                annualPrices.forEach(el => el.classList.remove('d-none'));
+                monthlyBtns.forEach(el => el.classList.add('d-none'));
+                annualBtns.forEach(el => el.classList.remove('d-none'));
             } else {
-                // Monthly billing
-                monthlyPrices.forEach(item => item.classList.remove('d-none'));
-                annualPrices.forEach(item => item.classList.add('d-none'));
-                monthlyButtons.forEach(item => item.classList.remove('d-none'));
-                annualButtons.forEach(item => item.classList.add('d-none'));
+                // Show monthly pricing
+                monthlyPrices.forEach(el => el.classList.remove('d-none'));
+                annualPrices.forEach(el => el.classList.add('d-none'));
+                monthlyBtns.forEach(el => el.classList.remove('d-none'));
+                annualBtns.forEach(el => el.classList.add('d-none'));
             }
         });
     });
