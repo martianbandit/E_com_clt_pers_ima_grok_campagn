@@ -1986,7 +1986,17 @@ def edit_product(product_id):
             # Mettre à jour les champs du produit
             product.name = request.form.get('name', product.name)
             product.category = request.form.get('category')
-            product.price = float(request.form.get('price', 0))
+            # Safely convert price to float with validation
+            price_str = request.form.get('price', '0')
+            # Check for NaN values in any capitalization
+            if price_str.lower() == 'nan':
+                flash('Prix invalide : valeur NaN non autorisée', 'danger')
+                return redirect(url_for('edit_product', product_id=product_id))
+            try:
+                product.price = float(price_str)
+            except ValueError:
+                flash('Prix invalide : veuillez entrer un nombre valide', 'danger')
+                return redirect(url_for('edit_product', product_id=product_id))
             product.base_description = request.form.get('base_description')
             product.image_url = request.form.get('image_url')
             
