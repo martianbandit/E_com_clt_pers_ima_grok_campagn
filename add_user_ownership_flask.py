@@ -53,14 +53,17 @@ def add_owner_columns(app, db):
         for table in tables_to_update:
             # Vérifier si la colonne existe déjà
             result = conn.execute(
-                text(f"SELECT column_name FROM information_schema.columns WHERE table_name = '{table}' AND column_name = 'owner_id'")
+                text("SELECT column_name FROM information_schema.columns WHERE table_name = :table AND column_name = 'owner_id'"),
+                {"table": table}
             )
             if result.rowcount > 0:
                 logging.info(f"La colonne owner_id existe déjà dans la table {table}")
                 continue
             
             # Ajouter la colonne owner_id
-            conn.execute(text(f"ALTER TABLE {table} ADD COLUMN owner_id VARCHAR REFERENCES users(id)"))
+            conn.execute(
+                text("ALTER TABLE :table ADD COLUMN owner_id VARCHAR REFERENCES users(id)").bindparams(table=table)
+            )
             conn.commit()
             logging.info(f"✓ Colonne owner_id ajoutée à la table {table}")
         
@@ -99,7 +102,7 @@ def clean_existing_data(app, db):
         conn.execute(text("SET session_replication_role = replica;"))
         
         for table in tables_to_clean:
-            conn.execute(text(f"DELETE FROM {table}"))
+            conn.execute(text("DELETE FROM :table").bindparams(table=table))
             logging.info(f"✓ Données de la table {table} supprimées")
         
         # Réactiver les contraintes
@@ -130,37 +133,54 @@ def add_foreign_key_constraints(app, db):
             # Vérifier si la contrainte existe déjà
             constraint_name = f"fk_{table}_{column}_cascade"
             result = conn.execute(
-                text(f"SELECT constraint_name FROM information_schema.table_constraints WHERE table_name = '{table}' AND constraint_name = '{constraint_name}'")
+                text("SELECT constraint_name FROM information_schema.table_constraints WHERE table_name = :table AND constraint_name = :constraint_name"),
+                {"table": table, "constraint_name": constraint_name}
             )
             
             if result.rowcount > 0:
                 # Supprimer la contrainte existante pour la recréer avec CASCADE
-                conn.execute(text(f"ALTER TABLE {table} DROP CONSTRAINT IF EXISTS {constraint_name}"))
+                conn.execute(
+                    text("ALTER TABLE :table DROP CONSTRAINT IF EXISTS :constraint_name").bindparams(
+                        table=table, constraint_name=constraint_name
+                    )
+                )
             
             # Vérifier la contrainte existante (sans nom spécifique)
             result = conn.execute(
-                text(f"""
+                text("""
                     SELECT tc.constraint_name
                     FROM information_schema.table_constraints tc
                     JOIN information_schema.constraint_column_usage ccu ON tc.constraint_name = ccu.constraint_name
-                    WHERE tc.table_name = '{table}' AND ccu.column_name = '{column}'
+                    WHERE tc.table_name = :table AND ccu.column_name = :column
                     AND tc.constraint_type = 'FOREIGN KEY'
-                """)
+                """).bindparams(table=table, column=column)
             )
             
             if result.rowcount > 0:
                 constraint_names = [row[0] for row in result]
                 for name in constraint_names:
-                    conn.execute(text(f"ALTER TABLE {table} DROP CONSTRAINT IF EXISTS {name}"))
+                    conn.execute(
+                        text("ALTER TABLE :table DROP CONSTRAINT IF EXISTS :constraint_name").bindparams(
+                            table=table, constraint_name=name
+                        )
+                    )
             
             # Ajouter la nouvelle contrainte avec CASCADE si demandé
             cascade_option = "CASCADE" if cascade_delete else "NO ACTION"
-            conn.execute(text(f"""
-                ALTER TABLE {table} 
-                ADD CONSTRAINT {constraint_name} 
-                FOREIGN KEY ({column}) REFERENCES {target_table}(id) 
-                ON DELETE {cascade_option}
-            """))
+            conn.execute(
+                text("""
+                    ALTER TABLE :table 
+                    ADD CONSTRAINT :constraint_name 
+                    FOREIGN KEY (:column) REFERENCES :target_table(id) 
+                    ON DELETE :cascade_option
+                """).bindparams(
+                    table=table,
+                    constraint_name=constraint_name,
+                    column=column,
+                    target_table=target_table,
+                    cascade_option=cascade_option
+                )
+            )
             
             logging.info(f"✓ Contrainte cascade ajoutée pour {table}.{column} -> {target_table}.id")
             conn.commit()
