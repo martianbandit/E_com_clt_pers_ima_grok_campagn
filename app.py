@@ -620,8 +620,15 @@ def change_language(lang):
     # Store the language in the session
     session['language'] = lang
     
-    # Redirect back to the page they were on
-    return redirect(request.referrer or url_for('index'))
+    # Redirect back to the page they were on, but check if referrer is safe
+    if request.referrer:
+        from urllib.parse import urlparse
+        parsed_url = urlparse(request.referrer)
+        # Only redirect to URLs on the same site (no netloc/domain or matching our own domain)
+        if not parsed_url.netloc or parsed_url.netloc == request.host:
+            return redirect(request.referrer)
+    # Default to index if referrer is missing or external
+    return redirect(url_for('index'))
 
 @app.route('/')
 @login_required
