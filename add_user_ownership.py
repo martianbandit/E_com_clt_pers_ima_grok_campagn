@@ -141,7 +141,8 @@ def add_foreign_key_constraints():
             # Vérifier si la contrainte existe déjà
             constraint_name = f"fk_{table}_{column}_cascade"
             result = conn.execute(
-                text(f"SELECT constraint_name FROM information_schema.table_constraints WHERE table_name = '{table}' AND constraint_name = '{constraint_name}'")
+                text("SELECT constraint_name FROM information_schema.table_constraints WHERE table_name = :table AND constraint_name = :constraint_name"),
+                {"table": table, "constraint_name": constraint_name}
             )
             
             if result.rowcount > 0:
@@ -150,13 +151,14 @@ def add_foreign_key_constraints():
             
             # Vérifier la contrainte existante (sans nom spécifique)
             result = conn.execute(
-                text(f"""
+                text("""
                     SELECT tc.constraint_name
                     FROM information_schema.table_constraints tc
                     JOIN information_schema.constraint_column_usage ccu ON tc.constraint_name = ccu.constraint_name
-                    WHERE tc.table_name = '{table}' AND ccu.column_name = '{column}'
+                    WHERE tc.table_name = :table AND ccu.column_name = :column
                     AND tc.constraint_type = 'FOREIGN KEY'
-                """)
+                """),
+                {"table": table, "column": column}
             )
             
             if result.rowcount > 0:
