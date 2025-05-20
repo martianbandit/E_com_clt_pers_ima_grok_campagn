@@ -74,17 +74,16 @@ def run_migration():
                         # C'est plus sécurisé que de construire des chaînes SQL manuellement
                         if col_name == "persona_id":
                             # Traitement spécial pour la colonne avec référence de clé étrangère
-                            fk_stmt = f"ALTER TABLE campaign ADD COLUMN {col_name} INTEGER"
-                            conn.execute(text(fk_stmt))
-                            fk_constraint = f"ALTER TABLE campaign ADD CONSTRAINT fk_campaign_persona FOREIGN KEY ({col_name}) REFERENCES customer_persona(id)"
-                            conn.execute(text(fk_constraint))
+                            fk_stmt = text("ALTER TABLE campaign ADD COLUMN :column_name INTEGER")
+                            conn.execute(fk_stmt, {"column_name": col_name})
+                            fk_constraint = text("ALTER TABLE campaign ADD CONSTRAINT fk_campaign_persona FOREIGN KEY (:column_name) REFERENCES customer_persona(id)")
+                            conn.execute(fk_constraint, {"column_name": col_name})
                         else:
                             # Utiliser le format text avec paramètres liés pour les autres colonnes
                             # Nous sommes obligés d'utiliser text() pour les commandes ALTER TABLE
-                            # Mais les valeurs sont hardcodées donc pas de risque d'injection
                             # Pour une approche plus évolutive, utiliser SQLAlchemy Alembic
-                            column_sql = text(f"ALTER TABLE campaign ADD COLUMN {col_name} {col_def['type']}")
-                            conn.execute(column_sql)
+                            column_sql = text("ALTER TABLE campaign ADD COLUMN :column_name :column_type")
+                            conn.execute(column_sql, {"column_name": col_name, "column_type": str(col_def['type'])})
                         
                         logging.info(f"Colonne '{col_name}' ajoutée avec succès.")
                     except Exception as e:
