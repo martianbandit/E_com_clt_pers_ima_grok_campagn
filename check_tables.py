@@ -43,7 +43,7 @@ def check_tables():
             ]
             
             for column in required_columns:
-                result = conn.execute(text(f"SELECT EXISTS (SELECT FROM information_schema.columns WHERE table_name='customer' AND column_name='{column}')"))
+                result = conn.execute(text("SELECT EXISTS (SELECT FROM information_schema.columns WHERE table_name='customer' AND column_name=:column)"), {"column": column})
                 exists = result.scalar()
                 
                 if not exists:
@@ -55,7 +55,7 @@ def check_tables():
             # Vérifier les type des colonnes JSONB
             jsonb_columns = ['profile_data', 'purchased_products', 'niche_attributes', 'social_media']
             for column in jsonb_columns:
-                result = conn.execute(text(f"SELECT data_type FROM information_schema.columns WHERE table_name='customer' AND column_name='{column}'"))
+                result = conn.execute(text("SELECT data_type FROM information_schema.columns WHERE table_name='customer' AND column_name=:column"), {"column": column})
                 data_type = result.scalar()
                 
                 if data_type != 'jsonb':
@@ -76,7 +76,7 @@ def check_tables():
             ]
             
             for column in campaign_required_columns:
-                result = conn.execute(text(f"SELECT EXISTS (SELECT FROM information_schema.columns WHERE table_name='campaign' AND column_name='{column}')"))
+                result = conn.execute(text("SELECT EXISTS (SELECT FROM information_schema.columns WHERE table_name='campaign' AND column_name=:column)"), {"column": column})
                 exists = result.scalar()
                 
                 if not exists:
