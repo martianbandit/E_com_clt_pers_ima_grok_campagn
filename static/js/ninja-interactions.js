@@ -71,19 +71,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 typeTitle = type.charAt(0).toUpperCase() + type.slice(1);
         }
         
-        // Créer le contenu du toast
-        toast.innerHTML = `
-            <div class="ninja-toast-header">
-                <span class="ninja-toast-title">
-                    <i class="fas fa-${icon} me-2"></i>
-                    ${typeTitle}
-                </span>
-                <button type="button" class="btn-close" aria-label="{{ _('Fermer') }}" onclick="this.parentElement.parentElement.remove()"></button>
-            </div>
-            <div class="ninja-toast-body">
-                ${message}
-            </div>
-        `;
+        // Créer les éléments du toast en toute sécurité
+        const toastHeader = document.createElement('div');
+        toastHeader.className = 'ninja-toast-header';
+        
+        const titleSpan = document.createElement('span');
+        titleSpan.className = 'ninja-toast-title';
+        
+        const icon_i = document.createElement('i');
+        icon_i.className = `fas fa-${icon} me-2`;
+        titleSpan.appendChild(icon_i);
+        
+        titleSpan.appendChild(document.createTextNode(typeTitle));
+        toastHeader.appendChild(titleSpan);
+        
+        const closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.className = 'btn-close';
+        closeButton.setAttribute('aria-label', '{{ _("Fermer") }}');
+        closeButton.onclick = function() { this.parentElement.parentElement.remove(); };
+        toastHeader.appendChild(closeButton);
+        
+        const toastBody = document.createElement('div');
+        toastBody.className = 'ninja-toast-body';
+        toastBody.textContent = message;
+        
+        toast.appendChild(toastHeader);
+        toast.appendChild(toastBody);
         
         // Ajouter le toast au DOM
         document.body.appendChild(toast);
