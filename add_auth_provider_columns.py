@@ -42,11 +42,14 @@ def run_migration():
     print(f"Connexion à la base de données: {DATABASE_URL}")
     try:
         with engine.begin() as connection:
-            # Ajout des colonnes
+            # Ajout des colonnes en utilisant les méthodes DDL de SQLAlchemy
             for column_name, column_type in columns_to_add:
                 print(f"Ajout de la colonne {column_name} à la table users...")
-                query = f"ALTER TABLE users ADD COLUMN {column_name} VARCHAR(50) UNIQUE"
-                connection.execute(text(query))
+                # Utilisation des opérations de DDL sécurisées au lieu de SQL brut
+                users_table = Table('users', metadata, autoload_with=engine)
+                column = Column(column_name, String(50), unique=True)
+                column_addition = users_table.append_column(column)
+                connection.execute(column_addition)
             
             print("Migration terminée avec succès.")
     except Exception as e:
