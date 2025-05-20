@@ -151,19 +151,31 @@ document.addEventListener('DOMContentLoaded', function() {
         const alertPlaceholder = document.getElementById('alert-placeholder');
         if (!alertPlaceholder) return;
         
+        // Create elements safely without using innerHTML
         const wrapper = document.createElement('div');
-        wrapper.innerHTML = `
-            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        `;
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.setAttribute('role', 'alert');
         
+        // Create text node for the message (prevents script execution)
+        const messageNode = document.createTextNode(message);
+        alertDiv.appendChild(messageNode);
+        
+        // Create close button
+        const closeButton = document.createElement('button');
+        closeButton.className = 'btn-close';
+        closeButton.setAttribute('type', 'button');
+        closeButton.setAttribute('data-bs-dismiss', 'alert');
+        closeButton.setAttribute('aria-label', 'Close');
+        
+        // Assemble the elements
+        alertDiv.appendChild(closeButton);
+        wrapper.appendChild(alertDiv);
         alertPlaceholder.append(wrapper);
         
         // Auto-dismiss after 5 seconds
         setTimeout(() => {
-            const alert = bootstrap.Alert.getOrCreateInstance(wrapper.querySelector('.alert'));
+            const alert = bootstrap.Alert.getOrCreateInstance(alertDiv);
             alert.close();
         }, 5000);
     }
