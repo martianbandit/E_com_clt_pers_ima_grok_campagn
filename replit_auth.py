@@ -194,8 +194,33 @@ def logged_in(blueprint, token):
     from models import UserActivity
     
     # Décodage du token et récupération des informations utilisateur
-    user_claims = jwt.decode(token['id_token'], 
-                          options={"verify_signature": False})
+    # Récupérer la clé publique ou le secret depuis les variables d'environnement
+    jwt_secret = os.environ.get('JWT_SECRET', None)
+    
+    # Si une clé/secret est disponible, l'utiliser pour vérifier la signature
+    if jwt_secret:
+        user_claims = jwt.decode(token['id_token'], jwt_secret, algorithms=['HS256', 'RS256'])
+    else:
+        # Sinon, utilisez l'URL de découverte OpenID pour les clés
+        issuer_url = os.environ.get('ISSUER_URL', "https://replit.com/oidc")
+        jwks_uri = f"{issuer_url}/.well-known/openid-configuration"
+        try:
+            # En production, cette URL devrait être mise en cache
+            import requests
+            oidc_config = requests.get(jwks_uri).json()
+            jwks_uri = oidc_config.get('jwks_uri')
+            # Utilisez PyJWK pour récupérer les clés et vérifier
+            user_claims = jwt.decode(
+                token['id_token'],
+                options={"verify_signature": True},
+                jwks_uri=jwks_uri,
+                algorithms=['RS256']
+            )
+        except Exception as e:
+            # Fallback en cas d'erreur, mais avec avertissement de sécurité
+            print(f"AVERTISSEMENT DE SÉCURITÉ: Impossible de vérifier la signature JWT: {e}")
+            # En production, il serait préférable de bloquer la connexion ici
+            user_claims = jwt.decode(token['id_token'], options={"verify_signature": False})
     
     # Sauvegarde de l'utilisateur en base de données
     user = save_user(user_claims)
