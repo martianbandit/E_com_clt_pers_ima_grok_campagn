@@ -1,0 +1,174 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Détails de l\'abonnement') }} - MarkEasy{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0">{{ _('Détails de votre abonnement') }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    {% if subscription %}
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5 class="fw-bold">{{ _('Plan actuel') }}</h5>
+                                <p class="fs-4 text-primary">{{ subscription.plan.name }}</p>
+                                <p class="text-muted">{{ subscription.plan.description }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="fw-bold">{{ _('Statut') }}</h5>
+                                {% if subscription.status == 'active' %}
+                                    <span class="badge bg-success fs-6 mb-2">{{ _('Actif') }}</span>
+                                {% elif subscription.status == 'trial' %}
+                                    <span class="badge bg-info fs-6 mb-2">{{ _('Essai') }}</span>
+                                {% elif subscription.status == 'pending' %}
+                                    <span class="badge bg-warning fs-6 mb-2">{{ _('En attente') }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary fs-6 mb-2">{{ _('Inactif') }}</span>
+                                {% endif %}
+                                
+                                <p>
+                                    {% if subscription.cancel_at_period_end %}
+                                        <span class="text-warning">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            {{ _('Votre abonnement prendra fin le ') }} {{ subscription.end_date.strftime('%d/%m/%Y') }}
+                                        </span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5 class="fw-bold">{{ _('Période de facturation') }}</h5>
+                                <p>
+                                    {% if subscription.billing_period == 'monthly' %}
+                                        {{ _('Mensuelle') }}
+                                    {% else %}
+                                        {{ _('Annuelle') }}
+                                    {% endif %}
+                                </p>
+                                <p class="mb-0">
+                                    <strong>{{ _('Prix:') }}</strong> 
+                                    {% if subscription.billing_period == 'monthly' %}
+                                        {{ subscription.plan.price_monthly }}€ / {{ _('mois') }}
+                                    {% else %}
+                                        {{ subscription.plan.price_annually }}€ / {{ _('an') }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="fw-bold">{{ _('Dates') }}</h5>
+                                <p class="mb-1">
+                                    <strong>{{ _('Début:') }}</strong> 
+                                    {{ subscription.start_date.strftime('%d/%m/%Y') if subscription.start_date else 'N/A' }}
+                                </p>
+                                <p class="mb-0">
+                                    <strong>{{ _('Prochaine facturation:') }}</strong> 
+                                    {{ subscription.end_date.strftime('%d/%m/%Y') if subscription.end_date else 'N/A' }}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="border-top pt-4">
+                            <h5 class="fw-bold mb-3">{{ _('Fonctionnalités incluses') }}</h5>
+                            <ul class="list-unstyled">
+                                {% for feature in subscription.plan.features %}
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i> {{ feature }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        
+                        {% if subscription.status == 'active' and not subscription.cancel_at_period_end %}
+                        <div class="border-top pt-4 mt-4">
+                            <h5 class="fw-bold mb-3">{{ _('Gestion de l\'abonnement') }}</h5>
+                            <form action="{{ url_for('payment.cancel_subscription') }}" method="POST" class="d-inline-block">
+                                <button type="submit" class="btn btn-outline-danger" 
+                                        onclick="return confirm('{{ _('Êtes-vous sûr de vouloir annuler votre abonnement? Vous pourrez continuer à utiliser le service jusqu\'à la fin de la période en cours.') }}')">
+                                    <i class="fas fa-times-circle me-2"></i>{{ _('Annuler l\'abonnement') }}
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                        
+                    {% else %}
+                        <div class="text-center py-4">
+                            <div class="mb-3">
+                                <i class="fas fa-exclamation-circle text-warning fa-3x"></i>
+                            </div>
+                            <h5 class="mb-3">{{ _('Vous n\'avez pas d\'abonnement actif') }}</h5>
+                            <p class="text-muted mb-4">{{ _('Choisissez un plan qui correspond à vos besoins pour commencer à profiter de toutes les fonctionnalités.') }}</p>
+                            <a href="{{ url_for('payment.pricing') }}" class="btn btn-primary">
+                                <i class="fas fa-tag me-2"></i>{{ _('Voir les plans disponibles') }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-header py-3">
+                    <h4 class="mb-0">{{ _('Historique des paiements') }}</h4>
+                </div>
+                <div class="card-body p-0">
+                    {% if payments and payments|length > 0 %}
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>{{ _('Date') }}</th>
+                                        <th>{{ _('Montant') }}</th>
+                                        <th>{{ _('Statut') }}</th>
+                                        <th>{{ _('Méthode') }}</th>
+                                        <th>{{ _('Actions') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for payment in payments %}
+                                    <tr>
+                                        <td>{{ payment.created_at.strftime('%d/%m/%Y') }}</td>
+                                        <td>{{ payment.amount }}{{ payment.currency }}</td>
+                                        <td>
+                                            {% if payment.status == 'succeeded' %}
+                                                <span class="badge bg-success">{{ _('Réussi') }}</span>
+                                            {% elif payment.status == 'pending' %}
+                                                <span class="badge bg-warning">{{ _('En attente') }}</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">{{ _('Échoué') }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if payment.payment_method == 'credit_card' %}
+                                                <i class="fas fa-credit-card me-1"></i> {{ _('Carte') }}
+                                            {% else %}
+                                                {{ payment.payment_method }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if payment.receipt_url %}
+                                                <a href="{{ payment.receipt_url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-file-invoice me-1"></i> {{ _('Reçu') }}
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-muted mb-0">{{ _('Aucun historique de paiement disponible.') }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -4,6 +4,7 @@ import logging
 import datetime
 import uuid
 import sys
+import stripe
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, g
 from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
@@ -48,6 +49,9 @@ def inject_template_globals():
         max=max
     )
 
+# Initialize Stripe
+stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
+
 # Configuration du LoginManager
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -73,6 +77,10 @@ app.register_blueprint(google_auth)
 # Importation et initialisation de l'authentification Replit
 from replit_auth import init_auth
 init_auth(app, db)
+
+# Import and register payment blueprint
+from payment_controller import payment_bp
+app.register_blueprint(payment_bp)
 
 # Initialisation de l'authentification GitHub
 github_bp = make_github_blueprint(scope=["user:email"])
