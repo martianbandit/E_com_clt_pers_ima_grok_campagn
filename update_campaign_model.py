@@ -104,10 +104,15 @@ def run_migration():
                         if result.rowcount == 0:
                             # Convertir le type SQLAlchemy en type SQL
                             sql_type = str(column_type.compile(dialect=engine.dialect))
-                            # Construire et exécuter la commande ALTER TABLE en utilisant text() avec paramètres
+                            # Construire et exécuter la commande ALTER TABLE en utilisant text() avec paramètres sécurisés
                             from sqlalchemy import text
-                            alter_sql = text(f"ALTER TABLE campaign ADD COLUMN {column_name} {sql_type} {nullable}{default_clause};")
-                            conn.execute(alter_sql)
+                            alter_sql = text("ALTER TABLE campaign ADD COLUMN :column_name :sql_type :nullable:default_clause;")
+                            conn.execute(alter_sql, {
+                                "column_name": column_name,
+                                "sql_type": sql_type,
+                                "nullable": nullable,
+                                "default_clause": default_clause
+                            })
                             logging.info(f"Colonne '{column_name}' ajoutée avec succès.")
                         else:
                             logging.info(f"Colonne '{column_name}' existe déjà, ignorée.")
@@ -121,7 +126,7 @@ def run_migration():
                     with engine.connect() as conn:
                         result = conn.execute(text("SELECT constraint_name FROM information_schema.table_constraints WHERE table_name = 'campaign' AND constraint_name = 'fk_campaign_persona'"))
                         if result.rowcount == 0:
-                            fk_sql = text("ALTER TABLE campaign ADD CONSTRAINT fk_campaign_persona FOREIGN KEY (persona_id) REFERENCES customer_persona (id);")
+                            fk_sql = text("ALTER TABLE campaign ADD CONSTRAINT fk_campaign_persona FOREIGN KEY (persona_id) REFERENCES customer_persona (id)")
                             conn.execute(fk_sql)
                             logging.info("Foreign key pour persona_id ajoutée avec succès.")
                         else:
@@ -133,8 +138,8 @@ def run_migration():
             if 'status' in [col['name'] for col in columns_to_add]:
                 try:
                     with engine.connect() as conn:
-                        update_sql = text("UPDATE campaign SET status = 'draft' WHERE status IS NULL;")
-                        conn.execute(update_sql)
+                        update_sql = text("UPDATE campaign SET status = :status WHERE status IS NULL")
+                        conn.execute(update_sql, {"status": "draft"})
                         logging.info("Statuts par défaut mis à jour pour les campagnes existantes.")
                 except Exception as e:
                     logging.error(f"Erreur lors de la mise à jour des statuts: {e}")
