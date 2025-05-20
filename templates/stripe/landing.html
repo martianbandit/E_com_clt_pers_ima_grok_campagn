@@ -167,7 +167,7 @@
                         <input class="form-check-input" type="checkbox" id="billingToggle">
                         <label class="form-check-label" for="billingToggle"></label>
                     </div>
-                    <span class="ms-3 fw-bold">Annuel <span class="badge bg-success ms-2">Économisez 15%</span></span>
+                    <span class="ms-3 fw-bold">Annuel <span class="badge bg-success ms-2">-15%</span></span>
                 </div>
             </div>
             
@@ -212,11 +212,11 @@
                                     </a>
                                     <a href="{{ url_for('stripe.checkout', plan_id=plan.id, billing_period='annually') }}" 
                                     class="btn btn-primary annual-btn w-100 d-none">
-                                        {{ _('Choisir ce plan') }}
+                                        Choisir ce plan
                                     </a>
                                 {% else %}
                                     <a href="{{ url_for('login') }}" class="btn btn-outline-primary w-100">
-                                        {{ _('Connectez-vous pour vous abonner') }}
+                                        Connectez-vous pour vous abonner
                                     </a>
                                 {% endif %}
                             </div>
