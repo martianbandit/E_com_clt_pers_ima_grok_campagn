@@ -13,29 +13,29 @@ with app.app_context():
         }
         
         for col_name, col_type in columns_to_add.items():
-            # Vérifier si la colonne existe
-            check_query = text(f"""
+            # Vérifier si la colonne existe - Utiliser des paramètres liés pour éviter l'injection SQL
+            check_query = text("""
             SELECT column_name FROM information_schema.columns 
-            WHERE table_name='users' AND column_name='{col_name}'
+            WHERE table_name='users' AND column_name=:col_name
             """)
-            result = db.session.execute(check_query).fetchone()
+            result = db.session.execute(check_query, {"col_name": col_name}).fetchone()
             
             if not result:
                 print(f"La colonne {col_name} n'existe pas. Création en cours...")
                 
-                # Ajouter la colonne
+                # Ajouter la colonne - Utiliser des paramètres liés pour éviter l'injection SQL
                 if col_name == 'login_count':
-                    alter_query = text(f"""
-                    ALTER TABLE users ADD COLUMN {col_name} {col_type} DEFAULT 0
-                    """)
+                    alter_query = text("""
+                    ALTER TABLE users ADD COLUMN :col_name :col_type DEFAULT 0
+                    """).bindparams(col_name=col_name, col_type=col_type)
                 elif col_name in ['created_at', 'updated_at']:
-                    alter_query = text(f"""
-                    ALTER TABLE users ADD COLUMN {col_name} {col_type} DEFAULT CURRENT_TIMESTAMP
-                    """)
+                    alter_query = text("""
+                    ALTER TABLE users ADD COLUMN :col_name :col_type DEFAULT CURRENT_TIMESTAMP
+                    """).bindparams(col_name=col_name, col_type=col_type)
                 else:
-                    alter_query = text(f"""
-                    ALTER TABLE users ADD COLUMN {col_name} {col_type}
-                    """)
+                    alter_query = text("""
+                    ALTER TABLE users ADD COLUMN :col_name :col_type
+                    """).bindparams(col_name=col_name, col_type=col_type)
                     
                 db.session.execute(alter_query)
                 db.session.commit()
