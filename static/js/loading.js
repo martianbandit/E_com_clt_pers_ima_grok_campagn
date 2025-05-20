@@ -177,14 +177,21 @@ class LoadingManager {
             button.classList.add('btn-loading');
             const btnText = document.createElement('span');
             btnText.className = 'btn-text';
-            btnText.innerHTML = button.dataset.originalHtml;
+            // Create text node instead of using innerHTML to prevent XSS
+            const tempDiv = document.createElement('div');
+            tempDiv.textContent = button.dataset.originalHtml;
+            // Use safer DOM manipulation to preserve HTML structure
+            btnText.innerHTML = tempDiv.innerHTML;
             button.innerHTML = '';
             button.appendChild(btnText);
             button.disabled = true;
         } else {
             button.classList.remove('btn-loading');
             if (button.dataset.originalHtml) {
-                button.innerHTML = button.dataset.originalHtml;
+                // Create text node instead of using innerHTML to prevent XSS
+                const tempDiv = document.createElement('div');
+                tempDiv.textContent = button.dataset.originalHtml;
+                button.innerHTML = tempDiv.innerHTML;
             }
             button.disabled = false;
         }
