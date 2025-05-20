@@ -99,7 +99,7 @@ def run_migration():
                 try:
                     with engine.connect() as conn:
                         # Vérifier si la colonne existe déjà
-                        result = conn.execute(f"SELECT column_name FROM information_schema.columns WHERE table_name = 'campaign' AND column_name = '{column_name}'")
+                        result = conn.execute("SELECT column_name FROM information_schema.columns WHERE table_name = 'campaign' AND column_name = :column_name", {"column_name": column_name})
                         if result.rowcount == 0:
                             # Convertir le type SQLAlchemy en type SQL
                             sql_type = str(column_type.compile(dialect=engine.dialect))
