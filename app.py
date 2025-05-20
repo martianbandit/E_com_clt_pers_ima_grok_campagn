@@ -78,9 +78,7 @@ app.register_blueprint(google_auth)
 from replit_auth import init_auth
 init_auth(app, db)
 
-# Import and register payment blueprint
-from payment_controller import payment_bp
-app.register_blueprint(payment_bp)
+# We'll initialize payment system after the database is fully set up
 
 # Initialisation de l'authentification GitHub
 github_bp = make_github_blueprint(scope=["user:email"])

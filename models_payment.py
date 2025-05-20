@@ -1,3 +1,6 @@
+"""
+Models for payment processing with Stripe integration
+"""
 from datetime import datetime
 from app import db
 from flask_login import current_user
@@ -76,3 +79,21 @@ class Payment(db.Model):
 
     def __repr__(self):
         return f'<Payment {self.id} - {self.amount}{self.currency} - {self.status}>'
+
+
+class Product(db.Model):
+    """Model for one-time purchase products"""
+    id = db.Column(db.Integer, primary_key=True)
+    product_code = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    price = db.Column(db.Float, nullable=False)
+    currency = db.Column(db.String(3), default="EUR", nullable=False)
+    stripe_price_id = db.Column(db.String(100), nullable=True)
+    stripe_product_id = db.Column(db.String(100), nullable=True)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Product {self.name} - {self.price}{self.currency}>'
