@@ -1,0 +1,226 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('Plans et Tarifs') }} - MarkEasy{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">{{ _('Choisissez votre plan') }}</h1>
+        <p class="lead text-muted">{{ _('Sélectionnez l\'offre qui correspond le mieux à vos besoins') }}</p>
+        
+        <!-- Toggle between monthly and annual billing -->
+        <div class="d-flex justify-content-center align-items-center mt-4 mb-5">
+            <span class="me-3 fw-bold">{{ _('Mensuel') }}</span>
+            <div class="form-check form-switch form-check-inline">
+                <input class="form-check-input" type="checkbox" id="billingToggle">
+                <label class="form-check-label" for="billingToggle"></label>
+            </div>
+            <span class="ms-3 fw-bold">{{ _('Annuel') }} <span class="badge bg-success ms-2">{{ _('Économisez 15%') }}</span></span>
+        </div>
+    </div>
+
+    <!-- Pricing cards -->
+    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center g-4">
+        {% for plan in plans %}
+        <div class="col">
+            <div class="card h-100 shadow-lg rounded-4 {% if plan.name == 'Pro' %}border-primary{% endif %}">
+                {% if plan.name == 'Pro' %}
+                <div class="card-header bg-primary text-white py-2">
+                    <span class="badge bg-warning">{{ _('Populaire') }}</span>
+                </div>
+                {% else %}
+                <div class="card-header py-2">
+                    &nbsp;
+                </div>
+                {% endif %}
+                
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold fs-4">{{ plan.name }}</h5>
+                    <p class="text-muted">{{ plan.description }}</p>
+                    
+                    <div class="pricing my-4">
+                        <h2 class="card-price monthly-price fw-bold">{{ plan.price_monthly }}€<small class="text-muted fw-light">/{{ _('mois') }}</small></h2>
+                        <h2 class="card-price annual-price fw-bold d-none">{{ plan.price_annually / 12 | round(2) }}€<small class="text-muted fw-light">/{{ _('mois') }}</small></h2>
+                        <p class="annual-price d-none text-muted small">{{ _('Facturé annuellement: ') }}{{ plan.price_annually }}€</p>
+                    </div>
+                    
+                    <ul class="list-unstyled mt-3 mb-4 text-start">
+                        {% for feature in plan.features %}
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i> {{ feature }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="mt-auto">
+                        {% if current_user.is_authenticated %}
+                            {% if active_subscription and active_subscription.plan_id == plan.id %}
+                                <button class="btn btn-outline-success w-100" disabled>
+                                    <i class="fas fa-check me-2"></i>{{ _('Plan actuel') }}
+                                </button>
+                            {% else %}
+                                <a href="{{ url_for('payment.checkout', plan_id=plan.id, billing_period='monthly') }}" 
+                                   class="btn btn-primary monthly-btn w-100">
+                                    {{ _('Choisir ce plan') }}
+                                </a>
+                                <a href="{{ url_for('payment.checkout', plan_id=plan.id, billing_period='annually') }}" 
+                                   class="btn btn-primary annual-btn w-100 d-none">
+                                    {{ _('Choisir ce plan') }}
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="btn btn-outline-primary w-100">
+                                {{ _('Connectez-vous pour vous abonner') }}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- In-app purchases section -->
+    <div class="mt-5 pt-4">
+        <h2 class="text-center mb-4">{{ _('Produits additionnels') }}</h2>
+        <p class="text-center text-muted mb-5">{{ _('Améliorez votre expérience avec nos modules complémentaires') }}</p>
+        
+        <div class="accordion" id="inAppProductsAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingInApp">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#collapseInApp" aria-expanded="true" aria-controls="collapseInApp">
+                        {{ _('Modules complémentaires disponibles') }}
+                    </button>
+                </h2>
+                <div id="collapseInApp" class="accordion-collapse collapse show" 
+                     aria-labelledby="headingInApp" data-bs-parent="#inAppProductsAccordion">
+                    <div class="accordion-body">
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                            {% for product in inapp_products %}
+                            <div class="col">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h5 class="card-title mb-0">{{ product.name }}</h5>
+                                            <span class="badge bg-primary rounded-pill">{{ product.price }}€</span>
+                                        </div>
+                                        <p class="card-text text-muted">{{ product.description }}</p>
+                                        
+                                        {% if current_user.is_authenticated %}
+                                        <a href="{{ url_for('payment.one_time_purchase', product_id=product.id) }}" 
+                                           class="btn btn-sm btn-outline-primary mt-2">
+                                            {{ _('Acheter maintenant') }}
+                                        </a>
+                                        {% else %}
+                                        <a href="{{ url_for('login') }}" class="btn btn-sm btn-outline-secondary mt-2">
+                                            {{ _('Connectez-vous pour acheter') }}
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="mt-5 pt-4">
+        <h2 class="text-center mb-4">{{ _('Questions fréquentes') }}</h2>
+        
+        <div class="accordion mt-4" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        {{ _('Comment fonctionne la facturation ?') }}
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" 
+                     aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        {{ _('Vous pouvez choisir entre une facturation mensuelle ou annuelle. Avec la facturation annuelle, vous bénéficiez d\'une réduction de 15%. Votre abonnement se renouvelle automatiquement à la fin de chaque période.') }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        {{ _('Puis-je changer de plan ?') }}
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" 
+                     aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        {{ _('Oui, vous pouvez changer de plan à tout moment. Si vous passez à un plan supérieur, la différence sera calculée au prorata. Si vous passez à un plan inférieur, le changement prendra effet à la fin de votre période de facturation actuelle.') }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        {{ _('Comment puis-je annuler mon abonnement ?') }}
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" 
+                     aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        {{ _('Vous pouvez annuler votre abonnement à tout moment depuis votre compte. Une fois annulé, votre abonnement restera actif jusqu\'à la fin de la période de facturation en cours.') }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFour">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        {{ _('Les modules complémentaires sont-ils des achats uniques ?') }}
+                    </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" 
+                     aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        {{ _('Oui, les modules complémentaires sont des achats uniques qui ajoutent des fonctionnalités spécifiques à votre compte. Ils ne sont pas soumis à un abonnement récurrent.') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const billingToggle = document.getElementById('billingToggle');
+        const monthlyPrices = document.querySelectorAll('.monthly-price');
+        const annualPrices = document.querySelectorAll('.annual-price');
+        const monthlyButtons = document.querySelectorAll('.monthly-btn');
+        const annualButtons = document.querySelectorAll('.annual-btn');
+        
+        billingToggle.addEventListener('change', function() {
+            if (this.checked) {
+                // Annual billing
+                monthlyPrices.forEach(item => item.classList.add('d-none'));
+                annualPrices.forEach(item => item.classList.remove('d-none'));
+                monthlyButtons.forEach(item => item.classList.add('d-none'));
+                annualButtons.forEach(item => item.classList.remove('d-none'));
+            } else {
+                // Monthly billing
+                monthlyPrices.forEach(item => item.classList.remove('d-none'));
+                annualPrices.forEach(item => item.classList.add('d-none'));
+                monthlyButtons.forEach(item => item.classList.remove('d-none'));
+                annualButtons.forEach(item => item.classList.add('d-none'));
+            }
+        });
+    });
+</script>
+{% endblock %}
