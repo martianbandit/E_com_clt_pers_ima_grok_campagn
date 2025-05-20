@@ -78,11 +78,23 @@ app.register_blueprint(google_auth)
 from replit_auth import init_auth
 init_auth(app, db)
 
-# We'll initialize payment system after the database is fully set up
+# Import and register Stripe payment blueprint
+from stripe_payment import stripe_bp
+app.register_blueprint(stripe_bp)
 
 # Initialisation de l'authentification GitHub
 github_bp = make_github_blueprint(scope=["user:email"])
 app.register_blueprint(github_bp, url_prefix="/github")
+
+# Route d'accueil
+@app.route('/')
+def index():
+    """Page d'accueil avec les plans tarifaires"""
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+    
+    # Redirect to the landing page with pricing plans
+    return redirect(url_for('stripe.index'))
 
 # Gestionnaire d'authentification réussie GitHub
 @oauth_authorized.connect_via(github_bp)

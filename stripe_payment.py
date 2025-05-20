@@ -248,6 +248,7 @@ def cancel():
 @stripe_bp.route('/webhook', methods=['POST'])
 def webhook():
     """Handle Stripe webhook events"""
+    import json
     payload = request.get_data(as_text=True)
     sig_header = request.headers.get('Stripe-Signature')
     

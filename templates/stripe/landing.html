@@ -1,0 +1,383 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ _('MarkEasy - Solution IA pour le marketing') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <!-- Hero Section -->
+    <div class="py-5 bg-primary text-white text-center" style="padding: 80px 0;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7 text-lg-start">
+                    <h1 class="display-4 fw-bold mb-4">{{ _('Boostez vos ventes grâce à l\'IA marketing') }}</h1>
+                    <p class="lead mb-4">{{ _('MarkEasy utilise l\'intelligence artificielle pour créer des campagnes marketing personnalisées qui génèrent des résultats concrets pour votre boutique.') }}</p>
+                    <a href="#pricing" class="btn btn-light btn-lg px-4 me-2">{{ _('Voir les tarifs') }}</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-4">{{ _('Essayer gratuitement') }}</a>
+                </div>
+                <div class="col-lg-5 d-none d-lg-block">
+                    <div class="bg-white p-3 rounded shadow">
+                        <img src="https://via.placeholder.com/600x400?text=MarkEasy+Dashboard" alt="MarkEasy Dashboard" class="img-fluid rounded">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">{{ _('Fonctionnalités principales') }}</h2>
+                <p class="lead text-muted">{{ _('Des outils puissants pour optimiser votre marketing') }}</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-inline-flex mb-3">
+                                <i class="fas fa-robot fa-2x text-primary"></i>
+                            </div>
+                            <h3 class="h4 mb-3">{{ _('IA Marketing Avancée') }}</h3>
+                            <p class="text-muted">{{ _('Générez du contenu marketing personnalisé et optimisé qui résonne avec votre audience cible.') }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-success bg-opacity-10 p-3 d-inline-flex mb-3">
+                                <i class="fas fa-users fa-2x text-success"></i>
+                            </div>
+                            <h3 class="h4 mb-3">{{ _('Personas Clients') }}</h3>
+                            <p class="text-muted">{{ _('Développez des profils clients détaillés pour mieux cibler vos campagnes marketing.') }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="rounded-circle bg-info bg-opacity-10 p-3 d-inline-flex mb-3">
+                                <i class="fas fa-chart-line fa-2x text-info"></i>
+                            </div>
+                            <h3 class="h4 mb-3">{{ _('Analyse de Performance') }}</h3>
+                            <p class="text-muted">{{ _('Suivez et analysez les performances de vos campagnes pour maximiser votre ROI.') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">{{ _('Ce que disent nos clients') }}</h2>
+                <p class="lead text-muted">{{ _('Découvrez comment MarkEasy transforme les entreprises') }}</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="fst-italic mb-4">"{{ _('MarkEasy a révolutionné notre approche marketing. Nos conversions ont augmenté de 35% en seulement deux mois !') }}"</p>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                    <span class="fw-bold">SM</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Sophie Martin</h6>
+                                    <small class="text-muted">{{ _('E-commerce Manager, ModeChic') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="fst-italic mb-4">"{{ _('La qualité des contenus générés par l\'IA est impressionnante. On dirait qu\'ils ont été écrits par un expert de notre industrie.') }}"</p>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                    <span class="fw-bold">TD</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Thomas Dubois</h6>
+                                    <small class="text-muted">{{ _('Fondateur, TechStore') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star-half-alt text-warning"></i>
+                            </div>
+                            <p class="fst-italic mb-4">"{{ _('L\'analyse des personas clients nous a permis de mieux comprendre notre audience et d\'adapter notre message en conséquence.') }}"</p>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                    <span class="fw-bold">JL</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Julie Lemaire</h6>
+                                    <small class="text-muted">{{ _('Marketing Director, BeautyShop') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div id="pricing" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">{{ _('Nos tarifs') }}</h2>
+                <p class="lead text-muted">{{ _('Choisissez le plan qui correspond à vos besoins') }}</p>
+                
+                <!-- Toggle between monthly and annual billing -->
+                <div class="d-flex justify-content-center align-items-center mt-4">
+                    <span class="me-3 fw-bold">{{ _('Mensuel') }}</span>
+                    <div class="form-check form-switch form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="billingToggle">
+                        <label class="form-check-label" for="billingToggle"></label>
+                    </div>
+                    <span class="ms-3 fw-bold">{{ _('Annuel') }} <span class="badge bg-success ms-2">{{ _('Économisez 15%') }}</span></span>
+                </div>
+            </div>
+            
+            <!-- Pricing cards -->
+            <div class="row row-cols-1 row-cols-md-3 mb-3 text-center g-4">
+                {% for plan in plans %}
+                <div class="col">
+                    <div class="card h-100 shadow-lg rounded-4 {% if plan.id == 'pro' %}border-primary{% endif %}">
+                        {% if plan.id == 'pro' %}
+                        <div class="card-header bg-primary text-white py-2">
+                            <span class="badge bg-warning">{{ _('Populaire') }}</span>
+                        </div>
+                        {% else %}
+                        <div class="card-header py-2">
+                            &nbsp;
+                        </div>
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold fs-4">{{ plan.name }}</h5>
+                            <p class="text-muted">{{ plan.description }}</p>
+                            
+                            <div class="pricing my-4">
+                                <h2 class="card-price monthly-price fw-bold">{{ plan.price_monthly }}€<small class="text-muted fw-light">/{{ _('mois') }}</small></h2>
+                                <h2 class="card-price annual-price fw-bold d-none">{{ plan.price_annually / 12 | round(2) }}€<small class="text-muted fw-light">/{{ _('mois') }}</small></h2>
+                                <p class="annual-price d-none text-muted small">{{ _('Facturé annuellement: ') }}{{ plan.price_annually }}€</p>
+                            </div>
+                            
+                            <ul class="list-unstyled mt-3 mb-4 text-start">
+                                {% for feature in plan.features %}
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i> {{ feature }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            
+                            <div class="mt-auto">
+                                {% if current_user.is_authenticated %}
+                                    <a href="{{ url_for('stripe.checkout', plan_id=plan.id, billing_period='monthly') }}" 
+                                    class="btn btn-primary monthly-btn w-100">
+                                        {{ _('Choisir ce plan') }}
+                                    </a>
+                                    <a href="{{ url_for('stripe.checkout', plan_id=plan.id, billing_period='annually') }}" 
+                                    class="btn btn-primary annual-btn w-100 d-none">
+                                        {{ _('Choisir ce plan') }}
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary w-100">
+                                        {{ _('Connectez-vous pour vous abonner') }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- In-app Product Section -->
+    <div class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">{{ _('Produits additionnels') }}</h2>
+                <p class="lead text-muted">{{ _('Améliorez votre expérience avec nos modules complémentaires') }}</p>
+            </div>
+            
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                {% for product in products %}
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title fw-bold mb-0">{{ product.name }}</h5>
+                                <span class="badge bg-primary rounded-pill fs-6">{{ product.price }}€</span>
+                            </div>
+                            <p class="card-text text-muted">{{ product.description }}</p>
+                            
+                            {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('stripe.one_time_purchase', product_id=product.id) }}" 
+                                class="btn btn-outline-primary mt-2">
+                                {{ _('Acheter maintenant') }}
+                            </a>
+                            {% else %}
+                            <a href="{{ url_for('login') }}" class="btn btn-outline-secondary mt-2">
+                                {{ _('Connectez-vous pour acheter') }}
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">{{ _('Questions fréquentes') }}</h2>
+            </div>
+            
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            {{ _('Comment fonctionne la facturation ?') }}
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" 
+                         aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            {{ _('Vous pouvez choisir entre une facturation mensuelle ou annuelle. Avec la facturation annuelle, vous bénéficiez d\'une réduction de 15%. Votre abonnement se renouvelle automatiquement à la fin de chaque période.') }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            {{ _('Puis-je changer de plan ?') }}
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" 
+                         aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            {{ _('Oui, vous pouvez changer de plan à tout moment. Si vous passez à un plan supérieur, la différence sera calculée au prorata. Si vous passez à un plan inférieur, le changement prendra effet à la fin de votre période de facturation actuelle.') }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            {{ _('Comment puis-je annuler mon abonnement ?') }}
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" 
+                         aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            {{ _('Vous pouvez annuler votre abonnement à tout moment depuis votre compte. Une fois annulé, votre abonnement restera actif jusqu\'à la fin de la période de facturation en cours.') }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            {{ _('Les modules complémentaires sont-ils des achats uniques ?') }}
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" 
+                         aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            {{ _('Oui, les modules complémentaires sont des achats uniques qui ajoutent des fonctionnalités spécifiques à votre compte. Ils ne sont pas soumis à un abonnement récurrent.') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="py-5 bg-primary text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h2 class="fw-bold mb-4">{{ _('Prêt à transformer votre marketing ?') }}</h2>
+                    <p class="lead mb-4">{{ _('Rejoignez des milliers d\'entreprises qui utilisent MarkEasy pour développer leur activité.') }}</p>
+                    <div>
+                        <a href="{{ url_for('login') }}" class="btn btn-light btn-lg px-4 me-2">{{ _('Commencer maintenant') }}</a>
+                        <a href="#" class="btn btn-outline-light btn-lg px-4">{{ _('Demander une démo') }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const billingToggle = document.getElementById('billingToggle');
+        const monthlyPrices = document.querySelectorAll('.monthly-price');
+        const annualPrices = document.querySelectorAll('.annual-price');
+        const monthlyButtons = document.querySelectorAll('.monthly-btn');
+        const annualButtons = document.querySelectorAll('.annual-btn');
+        
+        billingToggle.addEventListener('change', function() {
+            if (this.checked) {
+                // Annual billing
+                monthlyPrices.forEach(item => item.classList.add('d-none'));
+                annualPrices.forEach(item => item.classList.remove('d-none'));
+                monthlyButtons.forEach(item => item.classList.add('d-none'));
+                annualButtons.forEach(item => item.classList.remove('d-none'));
+            } else {
+                // Monthly billing
+                monthlyPrices.forEach(item => item.classList.remove('d-none'));
+                annualPrices.forEach(item => item.classList.add('d-none'));
+                monthlyButtons.forEach(item => item.classList.remove('d-none'));
+                annualButtons.forEach(item => item.classList.add('d-none'));
+            }
+        });
+    });
+</script>
+{% endblock %}
