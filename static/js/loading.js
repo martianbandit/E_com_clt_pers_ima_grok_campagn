@@ -128,7 +128,17 @@ class LoadingManager {
     updateLoadingMessage() {
         const messages = loadingConfig.messages[this.currentLoadingType] || ['Chargement en cours...'];
         const index = this.currentMessageIndex % messages.length;
-        this.messageElement.innerHTML = messages[index] + '<span class="loading-dots"></span>';
+        
+        // Clear the content first
+        this.messageElement.textContent = '';
+        
+        // Add the message text safely
+        this.messageElement.appendChild(document.createTextNode(messages[index]));
+        
+        // Add the loading dots span element
+        const dotsSpan = document.createElement('span');
+        dotsSpan.className = 'loading-dots';
+        this.messageElement.appendChild(dotsSpan);
     }
 
     /**
