@@ -62,14 +62,19 @@ def add_owner_columns():
         for table in tables_to_update:
             # Vérifier si la colonne existe déjà
             result = conn.execute(
-                text(f"SELECT column_name FROM information_schema.columns WHERE table_name = '{table}' AND column_name = 'owner_id'")
+                text("SELECT column_name FROM information_schema.columns WHERE table_name = :table AND column_name = 'owner_id'"),
+                {"table": table}
             )
             if result.rowcount > 0:
                 logging.info(f"La colonne owner_id existe déjà dans la table {table}")
                 continue
             
             # Ajouter la colonne owner_id
-            conn.execute(text(f"ALTER TABLE {table} ADD COLUMN owner_id VARCHAR REFERENCES users(id)"))
+            conn.execute(
+                text("ALTER TABLE :table ADD COLUMN owner_id VARCHAR REFERENCES users(id)").bindparams(
+                    table=table
+                )
+            )
             logging.info(f"✓ Colonne owner_id ajoutée à la table {table}")
         
         # Vérifier si la contrainte d'unicité existe pour les noms de boutique par utilisateur
@@ -107,7 +112,7 @@ def clean_existing_data():
         conn.execute(text("SET session_replication_role = replica;"))
         
         for table in tables_to_clean:
-            conn.execute(text(f"DELETE FROM {table}"))
+            conn.execute(text("DELETE FROM :table").bindparams(table=table))
             logging.info(f"✓ Données de la table {table} supprimées")
         
         # Réactiver les contraintes
@@ -157,16 +162,28 @@ def add_foreign_key_constraints():
             if result.rowcount > 0:
                 constraint_names = [row[0] for row in result]
                 for name in constraint_names:
-                    conn.execute(text(f"ALTER TABLE {table} DROP CONSTRAINT IF EXISTS {name}"))
+                    conn.execute(
+                        text("ALTER TABLE :table DROP CONSTRAINT IF EXISTS :name").bindparams(
+                            table=table, name=name
+                        )
+                    )
             
             # Ajouter la nouvelle contrainte avec CASCADE si demandé
             cascade_option = "CASCADE" if cascade_delete else "NO ACTION"
-            conn.execute(text(f"""
-                ALTER TABLE {table} 
-                ADD CONSTRAINT {constraint_name} 
-                FOREIGN KEY ({column}) REFERENCES {target_table}(id) 
-                ON DELETE {cascade_option}
-            """))
+            conn.execute(
+                text("""
+                    ALTER TABLE :table 
+                    ADD CONSTRAINT :constraint_name 
+                    FOREIGN KEY (:column) REFERENCES :target_table(id) 
+                    ON DELETE :cascade_option
+                """).bindparams(
+                    table=table, 
+                    constraint_name=constraint_name, 
+                    column=column, 
+                    target_table=target_table, 
+                    cascade_option=cascade_option
+                )
+            )
             
             logging.info(f"✓ Contrainte cascade ajoutée pour {table}.{column} -> {target_table}.id")
         
