@@ -184,9 +184,11 @@ def login():
                 try:
                     return redirect(url_for(next_page))
                 except:
-                    # If next_page isn't a valid endpoint name, try as a relative path
-                    # Only allow relative paths starting with '/' and without '//'
-                    if next_page.startswith('/') and '//' not in next_page:
+                    # For safety, only redirect to relative paths within our app
+                    from urllib.parse import urlparse
+                    parsed_url = urlparse(next_page)
+                    # Ensure there's no netloc (domain) component and path starts with /
+                    if not parsed_url.netloc and parsed_url.path.startswith('/'):
                         return redirect(next_page)
             return redirect(url_for('index'))
         else:
