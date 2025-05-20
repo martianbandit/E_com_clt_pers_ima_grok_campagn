@@ -192,8 +192,8 @@
                             
                             <div class="pricing my-4">
                                 <h2 class="card-price monthly-price fw-bold">{{ plan.price_monthly }}€<small class="text-muted fw-light">/{{ _('mois') }}</small></h2>
-                                <h2 class="card-price annual-price fw-bold d-none">{{ plan.price_annually / 12 | round(2) }}€<small class="text-muted fw-light">/{{ _('mois') }}</small></h2>
-                                <p class="annual-price d-none text-muted small">{{ _('Facturé annuellement: ') }}{{ plan.price_annually }}€</p>
+                                <h2 class="card-price annual-price fw-bold d-none">{{ (plan.price_annually / 12) | round(2) }}€<small class="text-muted fw-light">/{{ _('mois') }}</small></h2>
+                                <p class="annual-price d-none text-muted small">{{ _('Facturé annuellement:') }} {{ plan.price_annually }}€</p>
                             </div>
                             
                             <ul class="list-unstyled mt-3 mb-4 text-start">

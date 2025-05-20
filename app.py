@@ -648,10 +648,11 @@ def change_language(lang):
     # Default to index if referrer is missing or external
     return redirect(url_for('index'))
 
-@app.route('/')
-@login_required
-def index():
-    return render_template('index.html')
+# This route was removed because it conflicted with another '/' route defined later
+# @app.route('/')
+# @login_required
+# def index():
+#     return render_template('index.html')
 
 @app.route('/faq')
 def faq():
