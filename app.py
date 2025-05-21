@@ -87,14 +87,29 @@ github_bp = make_github_blueprint(scope=["user:email"])
 app.register_blueprint(github_bp, url_prefix="/github")
 
 # Route d'accueil
+@app.route('/home')
+def home():
+    """Page d'accueil pour les utilisateurs connectés"""
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+    else:
+        return redirect(url_for('landing'))
+
 @app.route('/')
 def index():
-    """Page d'accueil avec les plans tarifaires"""
+    """Page d'accueil principale (landing page)"""
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
     
-    # Redirect to the landing page with pricing plans
-    return redirect(url_for('stripe.index'))
+    # Rediriger vers la landing page avec les plans tarifaires
+    return redirect(url_for('landing'))
+    
+@app.route('/landing')
+def landing():
+    """Landing page avec les plans tarifaires"""
+    # Afficher directement la landing page sans redirection
+    from stripe_payment import PLANS, PRODUCTS
+    return render_template('stripe/landing_fixed.html', plans=PLANS, products=PRODUCTS)
 
 # Gestionnaire d'authentification réussie GitHub
 @oauth_authorized.connect_via(github_bp)
