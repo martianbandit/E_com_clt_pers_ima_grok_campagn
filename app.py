@@ -603,16 +603,19 @@ def log_metric(metric_name, data, category=None, status=None, response_time=None
             else:
                 category = 'misc'
         
-        # Créer et sauvegarder la métrique
-        metric = Metric(
-            name=metric_name,
-            category=category,
-            status=status,
-            data=data,
-            response_time=response_time,
-            created_at=datetime.datetime.utcnow(),
-            customer_id=customer_id
-        )
+        # Créer et sauvegarder la métrique avec l'ID numérique de l'utilisateur
+        metric = Metric()
+        metric.name = metric_name
+        metric.category = category
+        metric.status = status
+        metric.data = data
+        metric.response_time = response_time
+        metric.created_at = datetime.datetime.utcnow()
+        metric.customer_id = customer_id
+        
+        # Utilisation de l'ID numérique pour la compatibilité
+        if current_user and current_user.is_authenticated and hasattr(current_user, 'numeric_id'):
+            metric.user_id = current_user.numeric_id
         db.session.add(metric)
         db.session.commit()
         
