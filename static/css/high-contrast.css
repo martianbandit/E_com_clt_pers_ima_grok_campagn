@@ -1,0 +1,91 @@
+/* Améliorations de contraste pour une meilleure lisibilité */
+
+/* Amélioration du contraste pour le texte des personas générés */
+.persona-content, 
+.generated-content,
+.ai-generated-text {
+    color: #000000 !important;
+    background-color: #FFFFFF !important;
+    padding: 20px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+    font-size: 1.05rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 20px !important;
+    border-left: 4px solid #FF6B00 !important;
+}
+
+/* Amélioration du contraste pour les sections et titres */
+.persona-section h3,
+.generated-section h3,
+.ai-section-title {
+    color: #FF6B00 !important;
+    font-weight: 700 !important;
+    margin-top: 20px !important;
+    margin-bottom: 15px !important;
+    font-size: 1.3rem !important;
+}
+
+/* Amélioration du contraste pour les listes */
+.persona-content ul,
+.generated-content ul,
+.ai-generated-text ul {
+    padding-left: 25px !important;
+    margin-bottom: 15px !important;
+}
+
+.persona-content li,
+.generated-content li,
+.ai-generated-text li {
+    margin-bottom: 8px !important;
+    color: #1A1A1A !important;
+}
+
+/* Amélioration du contraste pour le texte en gras */
+.persona-content strong,
+.generated-content strong,
+.ai-generated-text strong {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+/* Amélioration pour le texte en mode sombre */
+[data-bs-theme="dark"] .persona-content,
+[data-bs-theme="dark"] .generated-content,
+[data-bs-theme="dark"] .ai-generated-text {
+    background-color: #2C2C2C !important;
+    color: #FFFFFF !important;
+    border-left: 4px solid #FF6B00 !important;
+}
+
+[data-bs-theme="dark"] .persona-content strong,
+[data-bs-theme="dark"] .generated-content strong,
+[data-bs-theme="dark"] .ai-generated-text strong {
+    color: #FFFFFF !important;
+}
+
+[data-bs-theme="dark"] .persona-section h3,
+[data-bs-theme="dark"] .generated-section h3,
+[data-bs-theme="dark"] .ai-section-title {
+    color: #FF6B00 !important;
+}
+
+[data-bs-theme="dark"] .persona-content li,
+[data-bs-theme="dark"] .generated-content li,
+[data-bs-theme="dark"] .ai-generated-text li {
+    color: #E6E6E6 !important;
+}
+
+/* Amélioration des boutons de génération */
+.generation-button {
+    position: relative;
+    overflow: hidden;
+    background-color: #FF6B00;
+    border-color: #FF6B00;
+    font-weight: 600;
+}
+
+.generation-button:hover {
+    background-color: #E55E00;
+    border-color: #E55E00;
+}
