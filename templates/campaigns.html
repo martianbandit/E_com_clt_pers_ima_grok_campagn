@@ -13,7 +13,7 @@
             </div>
             <div class="card-body">
                 {% if profiles %}
-                    <form action="/campaigns" method="POST">
+                    <form action="/campaigns" method="POST" data-loading="true" data-loading-message="Génération de campagne en cours...">
                         <div class="mb-3">
                             <label for="profile_index" class="form-label">Select Customer Profile</label>
                             <select class="form-select" id="profile_index" name="profile_index" required>
@@ -46,7 +46,7 @@
                             <div class="form-text">Leave blank to skip image generation</div>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" data-loading="true">
                             <i class="fas fa-plus-circle me-2"></i>
                             Create Campaign
                         </button>
