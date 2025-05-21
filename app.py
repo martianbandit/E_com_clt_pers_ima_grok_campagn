@@ -773,13 +773,21 @@ def dashboard():
     niches = NicheMarket.query.filter_by(owner_id=user_id).all()
     
     # Récupérer les métriques pour les analyses (filtrer par user_id si disponible)
-    persona_metrics = Metric.query.filter_by(name='persona_generation').filter(
-        (Metric.user_id == user_id) | (Metric.user_id == None)
-    ).order_by(Metric.created_at.desc()).limit(10).all()
-    
-    profile_metrics = Metric.query.filter_by(name='profile_generation').filter(
-        (Metric.user_id == user_id) | (Metric.user_id == None)
-    ).order_by(Metric.created_at.desc()).limit(10).all()
+    try:
+        # Convertir l'UUID en string si nécessaire
+        user_id_str = str(user_id) if user_id else None
+        
+        persona_metrics = Metric.query.filter_by(name='persona_generation').filter(
+            Metric.user_id.is_(None)
+        ).order_by(Metric.created_at.desc()).limit(10).all()
+        
+        profile_metrics = Metric.query.filter_by(name='profile_generation').filter(
+            Metric.user_id.is_(None)
+        ).order_by(Metric.created_at.desc()).limit(10).all()
+    except Exception as e:
+        # En cas d'erreur, récupérer les métriques sans filtrer par user_id
+        persona_metrics = Metric.query.filter_by(name='persona_generation').order_by(Metric.created_at.desc()).limit(10).all()
+        profile_metrics = Metric.query.filter_by(name='profile_generation').order_by(Metric.created_at.desc()).limit(10).all()
     
     # Compter le nombre total d'éléments de l'utilisateur
     # Trouver les IDs des boutiques pour filtrer les clients et campagnes
