@@ -474,17 +474,17 @@ document.addEventListener('DOMContentLoaded', function() {
                                 ${data.niche_market ? `<span class="badge bg-info">${data.niche_market.name}</span>` : ''}
                             </div>
                             <div class="col-md-8">
-                                <h6>${data.title}</h6>
-                                <p>${data.description}</p>
+                                <h6 class="ai-section-title">${data.title}</h6>
+                                <p class="ai-generated-text">${data.description}</p>
                                 
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <strong>Primary Goal:</strong>
-                                        <p class="mb-1">${data.primary_goal || 'Not specified'}</p>
+                                        <p class="mb-1 ai-generated-text">${data.primary_goal || 'Not specified'}</p>
                                     </div>
                                     <div class="col-md-6">
                                         <strong>Pain Points:</strong>
-                                        <p class="mb-1">${data.pain_points || 'Not specified'}</p>
+                                        <p class="mb-1 ai-generated-text">${data.pain_points || 'Not specified'}</p>
                                     </div>
                                 </div>
                             </div>
@@ -494,29 +494,29 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         <div class="row">
                             <div class="col-lg-6">
-                                <h6>Demographics</h6>
+                                <h6 class="ai-section-title">Demographics</h6>
                                 <div class="table-responsive">
                                     <table class="table table-sm">
                                         <tbody>
                                             <tr>
                                                 <th style="width: 40%">Age Range:</th>
-                                                <td>${data.age_range || 'Not specified'}</td>
+                                                <td class="ai-generated-text">${data.age_range || 'Not specified'}</td>
                                             </tr>
                                             <tr>
                                                 <th>Gender:</th>
-                                                <td>${data.gender_affinity || 'Not specified'}</td>
+                                                <td class="ai-generated-text">${data.gender_affinity || 'Not specified'}</td>
                                             </tr>
                                             <tr>
                                                 <th>Location Type:</th>
-                                                <td>${data.location_type || 'Not specified'}</td>
+                                                <td class="ai-generated-text">${data.location_type || 'Not specified'}</td>
                                             </tr>
                                             <tr>
                                                 <th>Income Level:</th>
-                                                <td>${data.income_bracket || 'Not specified'}</td>
+                                                <td class="ai-generated-text">${data.income_bracket || 'Not specified'}</td>
                                             </tr>
                                             <tr>
                                                 <th>Education:</th>
-                                                <td>${data.education_level || 'Not specified'}</td>
+                                                <td class="ai-generated-text">${data.education_level || 'Not specified'}</td>
                                             </tr>
                                         </tbody>
                                     </table>
