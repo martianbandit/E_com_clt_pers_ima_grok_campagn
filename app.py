@@ -2079,34 +2079,7 @@ def image_generation():
                           saved_customers=saved_customers,
                           available_styles=available_styles)
 
-@app.route('/metrics')
-def metrics_view():
-    """Afficher les métriques de l'application"""
-    # Récupérer les dernières métriques
-    recent_metrics = Metric.query.order_by(Metric.created_at.desc()).limit(50).all()
-    
-    # Compter les métriques par type
-    profile_gen_count = Metric.query.filter_by(name='profile_generation').count()
-    persona_gen_count = Metric.query.filter_by(name='persona_generation').count()
-    
-    # Calculer les taux de succès
-    successful_profiles = Metric.query.filter_by(name='profile_generation').filter(
-        Metric.data.contains({'success': True})
-    ).count()
-    
-    successful_personas = Metric.query.filter_by(name='persona_generation').filter(
-        Metric.data.contains({'success': True})
-    ).count()
-    
-    profile_success_rate = (successful_profiles / profile_gen_count * 100) if profile_gen_count > 0 else 0
-    persona_success_rate = (successful_personas / persona_gen_count * 100) if persona_gen_count > 0 else 0
-    
-    return render_template('metrics.html', 
-                           metrics=recent_metrics,
-                           profile_gen_count=profile_gen_count,
-                           persona_gen_count=persona_gen_count,
-                           profile_success_rate=profile_success_rate,
-                           persona_success_rate=persona_success_rate)
+
 
 # Routes pour la gestion des produits
 @app.route('/products', methods=['GET'])
