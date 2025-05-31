@@ -120,17 +120,17 @@
                 <!-- Réseaux sociaux -->
                 <h6 class="text-light mb-3 mt-4 fw-bold">{{ _('Suivez-nous') }}</h6>
                 <div class="social-icons">
-                    <a href="#" class="social-icon" title="LinkedIn - Networking Ninja">
-                        🥷
+                    <a href="https://www.linkedin.com/company/markeasy-ai" target="_blank" class="social-icon linkedin" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
                     </a>
-                    <a href="#" class="social-icon" title="X (Twitter) - Marketing Insights">
-                        ⚡
+                    <a href="https://www.reddit.com/r/markeasy" target="_blank" class="social-icon reddit" title="Reddit">
+                        <i class="fab fa-reddit-alien"></i>
                     </a>
-                    <a href="#" class="social-icon" title="Facebook - Community">
-                        🎯
+                    <a href="https://www.pinterest.com/markeasyai" target="_blank" class="social-icon pinterest" title="Pinterest">
+                        <i class="fab fa-pinterest-p"></i>
                     </a>
-                    <a href="#" class="social-icon" title="YouTube - Tutorials">
-                        🚀
+                    <a href="https://www.facebook.com/markeasyai" target="_blank" class="social-icon facebook" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
                     </a>
                 </div>
             </div>
@@ -175,18 +175,36 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
         background-color: rgba(255, 255, 255, 0.1);
         color: white;
-        transition: all 0.3s;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin: 0 2px;
     }
     
     .social-icon:hover {
-        background-color: var(--bs-primary);
         color: white;
         transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .social-icon.linkedin:hover {
+        background-color: #0077b5;
+    }
+    
+    .social-icon.reddit:hover {
+        background-color: #ff4500;
+    }
+    
+    .social-icon.pinterest:hover {
+        background-color: #bd081c;
+    }
+    
+    .social-icon.facebook:hover {
+        background-color: #1877f2;
     }
     
     .bg-gradient-primary {

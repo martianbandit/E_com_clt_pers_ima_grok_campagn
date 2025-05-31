@@ -1246,6 +1246,7 @@ def campaigns():
                 profile_data=profile,
                 image_url=image_url,
                 customer_id=customer_id,
+                owner_id=current_user.id,
                 generation_params={
                     "niche_focus": selected_niche.name if selected_niche else None,
                     "generation_timestamp": datetime.datetime.now().isoformat()
@@ -3812,3 +3813,38 @@ def delete_osp_analysis(analysis_id):
     
     flash(_("L'analyse a été supprimée avec succès."), "success")
     return redirect(url_for('osp_tools'))
+
+@app.route('/campaign/<int:campaign_id>/send', methods=['POST'])
+@login_required
+def send_campaign(campaign_id):
+    """Envoie une campagne marketing"""
+    from models import Campaign, UserActivity
+    
+    try:
+        campaign = Campaign.query.filter_by(id=campaign_id, owner_id=current_user.id).first_or_404()
+        
+        # Log l'activité d'envoi
+        activity = UserActivity.log_activity(
+            user_id=current_user.id,
+            activity_type='campaign_send',
+            description=f'Envoi de la campagne: {campaign.title}',
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent')
+        )
+        
+        # Marquer la campagne comme envoyée
+        campaign.sent_at = datetime.datetime.utcnow()
+        campaign.status = 'sent'
+        db.session.commit()
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Campagne envoyée avec succès'
+        })
+        
+    except Exception as e:
+        logging.error(f"Erreur lors de l'envoi de la campagne: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500

@@ -269,4 +269,81 @@
         No campaigns created yet. Use the form to create your first campaign.
     </div>
 {% endif %}
+
+<style>
+.profile-selection-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.profile-selection-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.campaign-image {
+    transition: transform 0.3s ease;
+}
+
+.campaign-image:hover {
+    transform: scale(1.05);
+}
+</style>
+
+<script>
+function sendCampaign(campaignId) {
+    if (confirm('Êtes-vous sûr de vouloir envoyer cette campagne ?')) {
+        fetch(`/campaign/${campaignId}/send`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Campagne envoyée avec succès !');
+                location.reload();
+            } else {
+                alert('Erreur lors de l\'envoi : ' + (data.error || 'Erreur inconnue'));
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de l\'envoi de la campagne');
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const profileCards = document.querySelectorAll('.profile-selection-card');
+    
+    profileCards.forEach(card => {
+        const checkbox = card.querySelector('.profile-checkbox');
+        
+        card.addEventListener('click', function(e) {
+            if (e.target.type !== 'checkbox') {
+                checkbox.checked = !checkbox.checked;
+                updateCardSelection(card, checkbox.checked);
+            }
+        });
+        
+        checkbox.addEventListener('change', function() {
+            updateCardSelection(card, this.checked);
+        });
+    });
+    
+    function updateCardSelection(card, isSelected) {
+        if (isSelected) {
+            card.classList.add('border-primary', 'bg-light');
+            card.style.transform = 'scale(1.02)';
+        } else {
+            card.classList.remove('border-primary', 'bg-light');
+            card.style.transform = 'scale(1)';
+        }
+    }
+});
+</script>
 {% endblock %}
