@@ -260,12 +260,14 @@ PROMPT_TRANSLATIONS = {
         5. Incluez un appel à l'action clair qui motiverait ce client spécifique
         6. Gardez le contenu concis, engageant et émotionnellement résonnant
         
-        FORMAT POUR DIFFÉRENTS CANAUX:
-        - Email: Inclure objet, salutation, corps du texte et signature
-        - Médias sociaux: Créer un texte de publication optimisé pour la plateforme la plus pertinente pour ce client
-        - SMS: Créer un message bref et convaincant (160 caractères max) avec une proposition de valeur claire
-        - Publicité: Inclure un titre, texte principal et appel à l'action pour la publicité numérique
-        - Description de produit: Créer un texte de produit convaincant adapté aux intérêts de ce client
+        EXIGENCES DE FORMAT SPÉCIFIQUES:
+        Créez UNIQUEMENT le type de contenu {campaign_type} spécifié:
+        - email: Ligne d'objet + corps d'email personnalisé avec salutation et appel à l'action
+        - social: Un seul post de médias sociaux optimisé pour l'engagement
+        - sms: Message bref et convaincant (160 caractères max)
+        - ad: Titre + texte principal + appel à l'action pour la publicité numérique
+        - product_description: Texte produit convaincant adapté aux intérêts
+        - product_marketing: Campagne marketing produit complète axée sur la niche sélectionnée
         
         Le contenu doit sembler personnellement créé pour ce client spécifique, pas un marketing générique.
         """

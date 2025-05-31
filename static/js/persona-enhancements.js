@@ -64,17 +64,17 @@ function enhancePersonaModal(personaData) {
     if (!personaData) return;
     
     // Wrapper tout le contenu dans des classes améliorées
-    const sections = document.querySelectorAll('#viewPersonaBody .row');
+    const sections = document.querySelectorAll('[id="viewPersonaBody"] .row');
     sections.forEach(function(section) {
         section.classList.add('persona-section');
     });
     
-    const descriptions = document.querySelectorAll('#viewPersonaBody p:not(.mb-1)');
+    const descriptions = document.querySelectorAll('[id="viewPersonaBody"] p:not(.mb-1)');
     descriptions.forEach(function(desc) {
         desc.classList.add('persona-content');
     });
     
-    const titles = document.querySelectorAll('#viewPersonaBody h6');
+    const titles = document.querySelectorAll('[id="viewPersonaBody"] h6');
     titles.forEach(function(title) {
         title.classList.add('ai-section-title');
     });
