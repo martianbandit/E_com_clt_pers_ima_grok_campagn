@@ -1,16 +1,21 @@
 /* Mode sombre à haut contraste pour NinjaMark */
 
-/* Variables de couleurs pour le mode sombre */
+/* Variables de couleurs inspirées de martianbandit.github.io */
 :root {
-    --bg-primary: #000000;
-    --bg-secondary: #1a1a1a;
-    --bg-tertiary: #2d2d2d;
-    --text-primary: #ffffff;
-    --text-secondary: #e0e0e0;
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #21262d;
+    --text-primary: #f0f6fc;
+    --text-secondary: #8b949e;
     --accent-orange: #ff6b35;
     --accent-orange-hover: #ff8a65;
-    --border-color: #404040;
+    --accent-orange-dark: #e55a2b;
+    --border-color: #30363d;
+    --border-light: #484f58;
     --shadow-dark: 0 4px 12px rgba(0, 0, 0, 0.6);
+    --green-accent: #238636;
+    --blue-accent: #2f81f7;
+    --red-accent: #da3633;
 }
 
 /* Fond général */
