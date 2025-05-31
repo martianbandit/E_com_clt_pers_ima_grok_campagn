@@ -3,77 +3,109 @@
 {% block title %}{{ _('Métriques et Performances') }}{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mb-4">{{ _('Métriques et Performances') }}</h1>
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-1 text-white">
+                        <i class="fas fa-chart-line me-2"></i>{{ _('Métriques de Performance') }}
+                    </h1>
+                    <p class="text-muted mb-0">{{ _('Analyse détaillée des performances et utilisation') }}</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-light btn-sm" onclick="refreshMetrics()">
+                        <i class="fas fa-sync-alt me-1"></i>{{ _('Actualiser') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- Filtres -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">{{ _('Filtres') }}</h5>
-        </div>
-        <div class="card-body">
-            <form id="filterForm" method="get" action="{{ url_for('metrics_dashboard') }}">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label for="category" class="form-label">{{ _('Catégorie') }}</label>
-                        <select class="form-select" id="category" name="category">
-                            <option value="" {% if not category %}selected{% endif %}>{{ _('Toutes') }}</option>
-                            <option value="ai" {% if category == 'ai' %}selected{% endif %}>{{ _('IA') }}</option>
-                            <option value="generation" {% if category == 'generation' %}selected{% endif %}>{{ _('Génération') }}</option>
-                            <option value="user" {% if category == 'user' %}selected{% endif %}>{{ _('Utilisateur') }}</option>
-                            <option value="system" {% if category == 'system' %}selected{% endif %}>{{ _('Système') }}</option>
-                            <option value="import" {% if category == 'import' %}selected{% endif %}>{{ _('Import') }}</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="start_date" class="form-label">{{ _('Date de début') }}</label>
-                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date }}">
-                    </div>
-                    <div class="col-md-3">
-                        <label for="end_date" class="form-label">{{ _('Date de fin') }}</label>
-                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date }}">
-                    </div>
-                    <div class="col-md-3">
-                        <label for="limit" class="form-label">{{ _('Nombre de résultats') }}</label>
-                        <select class="form-select" id="limit" name="limit">
-                            <option value="10" {% if limit == 10 %}selected{% endif %}>10</option>
-                            <option value="25" {% if limit == 25 %}selected{% endif %}>25</option>
-                            <option value="50" {% if limit == 50 %}selected{% endif %}>50</option>
-                            <option value="100" {% if limit == 100 %}selected{% endif %}>100</option>
-                        </select>
-                    </div>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header bg-dark border-bottom border-secondary">
+                    <h5 class="text-light mb-0">
+                        <i class="fas fa-filter me-2"></i>{{ _('Filtres') }}
+                    </h5>
                 </div>
-                <div class="d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary me-2">{{ _('Filtrer') }}</button>
-                    <a href="{{ url_for('metrics_dashboard') }}" class="btn btn-outline-secondary">{{ _('Réinitialiser') }}</a>
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-3">
+                            <label for="category" class="form-label text-light">{{ _('Catégorie') }}</label>
+                            <select class="form-select bg-dark text-light border-secondary" id="category" name="category">
+                                <option value="">{{ _('Toutes les catégories') }}</option>
+                                <option value="generation" {{ 'selected' if category == 'generation' }}>{{ _('Génération') }}</option>
+                                <option value="analysis" {{ 'selected' if category == 'analysis' }}>{{ _('Analyse') }}</option>
+                                <option value="marketing" {{ 'selected' if category == 'marketing' }}>{{ _('Marketing') }}</option>
+                                <option value="user" {{ 'selected' if category == 'user' }}>{{ _('Utilisateur') }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="start_date" class="form-label text-light">{{ _('Date de début') }}</label>
+                            <input type="date" class="form-control bg-dark text-light border-secondary" id="start_date" name="start_date" value="{{ start_date }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="end_date" class="form-label text-light">{{ _('Date de fin') }}</label>
+                            <input type="date" class="form-control bg-dark text-light border-secondary" id="end_date" name="end_date" value="{{ end_date }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="limit" class="form-label text-light">{{ _('Limite') }}</label>
+                            <select class="form-select bg-dark text-light border-secondary" id="limit" name="limit">
+                                <option value="50" {{ 'selected' if limit == 50 }}>50</option>
+                                <option value="100" {{ 'selected' if limit == 100 }}>100</option>
+                                <option value="500" {{ 'selected' if limit == 500 }}>500</option>
+                                <option value="1000" {{ 'selected' if limit == 1000 }}>1000</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-filter me-1"></i>{{ _('Appliquer les filtres') }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
     
     <!-- Vue d'ensemble -->
     <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card h-100">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-dark border-secondary h-100">
                 <div class="card-body text-center">
-                    <h5 class="card-title">{{ _('Total des métriques') }}</h5>
-                    <h2 class="display-4">{{ total_metrics }}</h2>
+                    <div class="display-6 text-primary mb-2">{{ total_metrics or 0 }}</div>
+                    <h6 class="text-light mb-0">{{ _('Total Métriques') }}</h6>
+                    <small class="text-muted">{{ _('Enregistrées') }}</small>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card h-100">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-dark border-secondary h-100">
                 <div class="card-body text-center">
-                    <h5 class="card-title">{{ _('Taux de réussite') }}</h5>
-                    <h2 class="display-4">{{ success_rate|round }}%</h2>
+                    <div class="display-6 text-success mb-2">{{ success_count or 0 }}</div>
+                    <h6 class="text-light mb-0">{{ _('Succès') }}</h6>
+                    <small class="text-muted">{{ success_count or 0 }} / {{ total_metrics or 0 }}</small>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card h-100">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-dark border-secondary h-100">
                 <div class="card-body text-center">
-                    <h5 class="card-title">{{ _('Temps de réponse moyen') }}</h5>
-                    <h2 class="display-4">{{ avg_time|round(2) }}s</h2>
+                    <div class="display-6 text-warning mb-2">{{ error_count or 0 }}</div>
+                    <h6 class="text-light mb-0">{{ _('Erreurs') }}</h6>
+                    <small class="text-muted">{{ "%.1f"|format(success_rate or 0) }}% {{ _('de réussite') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body text-center">
+                    <div class="display-6 text-info mb-2">{{ "%.2f"|format(avg_time or 0) }}s</div>
+                    <h6 class="text-light mb-0">{{ _('Temps Moyen') }}</h6>
+                    <small class="text-muted">{{ _('Par requête') }}</small>
                 </div>
             </div>
         </div>
@@ -82,30 +114,30 @@
     <!-- Graphiques -->
     {% if total_metrics > 0 %}
     <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ _('Réussites / Erreurs') }}</h5>
+        <div class="col-md-6 mb-3">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-header bg-dark border-bottom border-secondary">
+                    <h5 class="text-light mb-0">{{ _('Distribution des Statuts') }}</h5>
                 </div>
                 <div class="card-body">
                     {% if success_count > 0 or error_count > 0 %}
                     <canvas id="successFailChart"></canvas>
                     {% else %}
-                    <div class="alert alert-info">{{ _('Aucune donnée réelle disponible pour ce graphique.') }}</div>
+                    <div class="alert alert-info">{{ _('Aucune donnée disponible') }}</div>
                     {% endif %}
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ _('Catégories') }}</h5>
+        <div class="col-md-6 mb-3">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-header bg-dark border-bottom border-secondary">
+                    <h5 class="text-light mb-0">{{ _('Répartition par Catégorie') }}</h5>
                 </div>
                 <div class="card-body">
-                    {% if category_counts|length > 0 %}
+                    {% if category_labels and category_counts %}
                     <canvas id="categoryChart"></canvas>
                     {% else %}
-                    <div class="alert alert-info">{{ _('Aucune donnée réelle disponible pour ce graphique.') }}</div>
+                    <div class="alert alert-info">{{ _('Aucune donnée disponible') }}</div>
                     {% endif %}
                 </div>
             </div>
@@ -155,17 +187,21 @@
     {% endif %}
     
     <!-- Liste des métriques récentes -->
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">{{ _('Dernières métriques') }}</h5>
+    <div class="card bg-dark border-secondary">
+        <div class="card-header bg-dark border-bottom border-secondary">
+            <h5 class="text-light mb-0">
+                <i class="fas fa-history me-2"></i>{{ _('Métriques Récentes') }}
+                {% if metrics %}({{ metrics|length }}){% endif %}
+            </h5>
         </div>
         <div class="card-body">
+            {% if metrics %}
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-dark table-striped">
                     <thead>
                         <tr>
-                            <th>{{ _('ID') }}</th>
-                            <th>{{ _('Nom') }}</th>
+                            <th>#</th>
+                            <th>{{ _('Métrique') }}</th>
                             <th>{{ _('Catégorie') }}</th>
                             <th>{{ _('Statut') }}</th>
                             <th>{{ _('Temps') }}</th>
@@ -176,34 +212,44 @@
                     <tbody>
                         {% for metric in metrics %}
                         <tr>
-                            <td>{{ metric.id }}</td>
-                            <td>{{ metric.name }}</td>
+                            <td><small class="text-muted">{{ metric.id }}</small></td>
                             <td>
-                                <span class="badge bg-{{ get_category_color(metric.category) }}">
-                                    {{ metric.category or _('Non catégorisé') }}
+                                <span class="fw-medium">{{ metric.name }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ get_category_color(metric.category or 'default') }}">
+                                    {{ metric.category or _('Non défini') }}
                                 </span>
                             </td>
                             <td>
                                 {% if metric.status %}
-                                    <span class="badge bg-success">✓</span>
+                                    <span class="badge bg-success"><i class="fas fa-check"></i> {{ _('Succès') }}</span>
                                 {% else %}
-                                    <span class="badge bg-danger">✗</span>
+                                    <span class="badge bg-danger"><i class="fas fa-times"></i> {{ _('Erreur') }}</span>
                                 {% endif %}
                             </td>
-                            <td>{% if metric.execution_time %}{{ metric.execution_time|round(2) }}s{% else %}—{% endif %}</td>
-                            <td>{{ metric.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                             <td>
-                                <button class="btn btn-sm btn-outline-info metric-details"
+                                {% if metric.execution_time %}
+                                    <small class="text-info">{{ "%.2f"|format(metric.execution_time) }}s</small>
+                                {% else %}
+                                    <small class="text-muted">—</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ metric.created_at.strftime('%d/%m %H:%M') }}</small>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-light metric-details"
                                         data-id="{{ metric.id }}"
                                         data-name="{{ metric.name }}"
                                         data-category="{{ metric.category or _('Non défini') }}"
                                         data-status="{{ 'Succès' if metric.status else 'Erreur' }}"
-                                        data-time="{% if metric.execution_time %}{{ metric.execution_time|round(2) }}{% endif %}"
+                                        data-time="{% if metric.execution_time %}{{ metric.execution_time|round(2) }}s{% endif %}"
                                         data-date="{{ metric.created_at.strftime('%Y-%m-%d %H:%M') }}"
                                         data-data="{{ metric.data|tojson if metric.data else '{}' }}"
                                         data-bs-toggle="modal"
                                         data-bs-target="#metricModal">
-                                    {{ _('Détails') }}
+                                    <i class="fas fa-eye"></i>
                                 </button>
                             </td>
                         </tr>
@@ -211,6 +257,13 @@
                     </tbody>
                 </table>
             </div>
+            {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                <h5 class="text-light">{{ _('Aucune métrique disponible') }}</h5>
+                <p class="text-muted">{{ _('Les métriques apparaîtront ici lors de l\'utilisation de l\'application') }}</p>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -255,17 +308,103 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Données pour les graphiques
-    const successFailData = {
-        labels: ['{{ _('Réussites') }}', '{{ _('Erreurs') }}'],
-        datasets: [{
-            data: [{{ success_count }}, {{ error_count }}],
-            backgroundColor: ['#28a745', '#dc3545'],
-            hoverOffset: 4
-        }]
-    };
+    // Configuration des graphiques avec thème sombre
+    Chart.defaults.color = '#ffffff';
+    Chart.defaults.borderColor = '#374151';
     
-    const categoryData = {
+    // Fonction pour actualiser la page
+    window.refreshMetrics = function() {
+        window.location.reload();
+    }
+    
+    {% if total_metrics > 0 %}
+    // Graphique Succès/Erreurs
+    const successFailCtx = document.getElementById('successFailChart');
+    if (successFailCtx) {
+        new Chart(successFailCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['{{ _('Succès') }}', '{{ _('Erreurs') }}'],
+                datasets: [{
+                    data: [{{ success_count or 0 }}, {{ error_count or 0 }}],
+                    backgroundColor: ['#10b981', '#ef4444'],
+                    borderWidth: 2,
+                    borderColor: '#374151'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#ffffff' }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Graphique par catégories
+    {% if category_labels and category_counts %}
+    const categoryCtx = document.getElementById('categoryChart');
+    if (categoryCtx) {
+        new Chart(categoryCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ category_labels|tojson }},
+                datasets: [{
+                    label: '{{ _('Nombre de métriques') }}',
+                    data: {{ category_counts|tojson }},
+                    backgroundColor: '#3b82f6',
+                    borderColor: '#2563eb',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#ffffff' },
+                        grid: { color: '#374151' }
+                    },
+                    x: {
+                        ticks: { color: '#ffffff' },
+                        grid: { color: '#374151' }
+                    }
+                },
+                plugins: {
+                    legend: { labels: { color: '#ffffff' } }
+                }
+            }
+        });
+    }
+    {% endif %}
+    {% endif %}
+    
+    // Gestion du modal de détails
+    const metricModal = document.getElementById('metricModal');
+    if (metricModal) {
+        metricModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            document.getElementById('modal-id').textContent = button.getAttribute('data-id') || '';
+            document.getElementById('modal-name').textContent = button.getAttribute('data-name') || '';
+            document.getElementById('modal-category').textContent = button.getAttribute('data-category') || '';
+            document.getElementById('modal-status').textContent = button.getAttribute('data-status') || '';
+            document.getElementById('modal-time').textContent = button.getAttribute('data-time') || '—';
+            document.getElementById('modal-date').textContent = button.getAttribute('data-date') || '';
+            
+            try {
+                const data = JSON.parse(button.getAttribute('data-data') || '{}');
+                document.getElementById('modal-data').textContent = JSON.stringify(data, null, 2);
+            } catch (e) {
+                document.getElementById('modal-data').textContent = button.getAttribute('data-data') || '{}';
+            }
+        });
+    }
+});
         labels: {{ category_labels|tojson }},
         datasets: [{
             data: {{ category_counts|tojson }},
