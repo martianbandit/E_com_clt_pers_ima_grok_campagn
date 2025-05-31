@@ -55,8 +55,7 @@ stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
 # Configuration du LoginManager
 login_manager = LoginManager()
 login_manager.init_app(app)
-# Setting the login view with a string value
-setattr(login_manager, 'login_view', 'login')
+login_manager.login_view = 'login'
 login_manager.login_message = 'Veuillez vous connecter pour accéder à cette page.'
 login_manager.login_message_category = 'warning'
 
@@ -64,9 +63,11 @@ login_manager.login_message_category = 'warning'
 def load_user(user_id):
     from models import User
     try:
+        if user_id is None:
+            return None
         # Essai de conversion en entier pour les anciens utilisateurs
         return User.query.get(int(user_id))
-    except ValueError:
+    except (ValueError, TypeError):
         # Si l'ID n'est pas un entier, il s'agit d'un UUID
         return User.query.get(user_id)
 
@@ -203,27 +204,22 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         
-        if user and user.password_hash and check_password_hash(user.password_hash, form.password.data):
-            login_user(user, remember=form.remember.data)
-            # Mise à jour des statistiques de connexion
-            user.login_count = (user.login_count or 0) + 1
-            user.last_login_at = datetime.utcnow()
-            db.session.commit()
-            
-            # Redirection vers la page demandée ou la page d'accueil
-            next_page = request.args.get('next')
-            if next_page:
-                # Use url_for to safely handle redirects to known routes
-                try:
-                    return redirect(url_for(next_page))
-                except:
-                    # For safety, only redirect to relative paths within our app
-                    from urllib.parse import urlparse
-                    parsed_url = urlparse(next_page)
-                    # Ensure there's no netloc (domain) component and path starts with /
-                    if not parsed_url.netloc and parsed_url.path.startswith('/'):
-                        return redirect(next_page)
-            return redirect(url_for('index'))
+        if user and user.password_hash and form.password.data:
+            password_valid = check_password_hash(user.password_hash, form.password.data)
+            if password_valid:
+                login_user(user, remember=form.remember.data)
+                # Mise à jour des statistiques de connexion
+                user.login_count = (user.login_count or 0) + 1
+                user.last_login_at = datetime.utcnow()
+                db.session.commit()
+                
+                # Redirection vers la page demandée ou la page d'accueil
+                next_page = request.args.get('next')
+                if next_page:
+                    return redirect(url_for('dashboard'))
+                return redirect(url_for('dashboard'))
+            else:
+                flash('Email ou mot de passe incorrect.', 'danger')
         else:
             flash('Email ou mot de passe incorrect.', 'danger')
     
