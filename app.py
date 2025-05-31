@@ -1355,7 +1355,10 @@ def campaigns():
                 profile_data=profile,
                 image_url=image_url,
                 customer_id=customer_id,
-                niche_focus=selected_niche.name if selected_niche else None
+                generation_params={
+                    "niche_focus": selected_niche.name if selected_niche else None,
+                    "generation_timestamp": datetime.utcnow().isoformat()
+                }
             )
             db.session.add(campaign)
             db.session.commit()
