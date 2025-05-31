@@ -47,9 +47,9 @@
                                     <option value="{{ customer.id }}">
                                         {{ customer.name }}
                                         {% if customer.persona and customer.avatar_url %}
-                                            ⭐ (Persona + Avatar)
+                                            <i class="fas fa-star text-warning"></i> (Persona + Avatar)
                                         {% elif customer.persona %}
-                                            ✨ (Persona)
+                                            <i class="fas fa-sparkles text-info"></i> (Persona)
                                         {% endif %}
                                         - {{ customer.email or customer.location or 'No email' }}
                                     </option>
@@ -57,8 +57,8 @@
                             </select>
                             {% if saved_customers %}
                                 <div class="form-text">
-                                    ⭐ = Profiles with persona and avatar (recommended)<br>
-                                    ✨ = Profiles with persona only
+                                    <i class="fas fa-star text-warning"></i> = Profiles with persona and avatar (recommended)<br>
+                                    <i class="fas fa-sparkles text-info"></i> = Profiles with persona only
                                 </div>
                             {% endif %}
                         </div>
