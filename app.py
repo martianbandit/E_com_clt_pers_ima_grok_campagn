@@ -375,16 +375,15 @@ def login():
             # Redirection vers la page demandée ou la page d'accueil
             next_page = request.args.get('next')
             if next_page:
-                # Use url_for to safely handle redirects to known routes
-                try:
-                    return redirect(url_for(next_page))
-                except:
-                    # For safety, only redirect to relative paths within our app
-                    from urllib.parse import urlparse
-                    parsed_url = urlparse(next_page)
-                    # Ensure there's no netloc (domain) component and path starts with /
-                    if not parsed_url.netloc and parsed_url.path.startswith('/'):
-                        return redirect(next_page)
+                # Validate redirect URL to prevent open redirect attacks
+                from urllib.parse import urlparse
+                parsed_url = urlparse(next_page)
+                # Only allow redirects to relative paths on the same host
+                if (not parsed_url.netloc and 
+                    parsed_url.path.startswith('/') and 
+                    not parsed_url.path.startswith('//') and
+                    '\\' not in parsed_url.path):
+                    return redirect(next_page)
             return redirect(url_for('index'))
         else:
             flash('Email ou mot de passe incorrect.', 'danger')
