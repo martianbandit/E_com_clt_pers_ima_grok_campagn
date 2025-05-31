@@ -1,0 +1,240 @@
+/* Dashboard améliorations avec icônes et couleurs cohérentes */
+
+/* Cartes de statistiques avec gradients */
+.gradient-card-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gradient-card-primary:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.gradient-card-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gradient-card-success:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4);
+}
+
+.gradient-card-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gradient-card-info:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.gradient-card-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gradient-card-warning:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+}
+
+/* Icônes de statistiques */
+.stat-icon {
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.gradient-card-primary:hover .stat-icon,
+.gradient-card-success:hover .stat-icon,
+.gradient-card-info:hover .stat-icon,
+.gradient-card-warning:hover .stat-icon {
+    transform: scale(1.1);
+}
+
+/* Boutons avec icônes améliorés */
+.btn-with-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-with-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Navigation avec icônes */
+.nav-link-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.nav-link-with-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+}
+
+/* Cartes d'action */
+.action-card {
+    border: none;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.action-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.action-card .card-header {
+    border-radius: 1rem 1rem 0 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+}
+
+/* Amélioration des icônes dans les listes */
+.list-group-item-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.list-group-item-with-icon:hover {
+    background: #f8f9fa;
+    transform: translateX(5px);
+    border-left: 4px solid #667eea;
+}
+
+.list-item-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 1.2rem;
+}
+
+/* Badges avec icônes */
+.badge-with-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: 600;
+}
+
+.badge-primary-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.badge-success-gradient {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+}
+
+.badge-warning-gradient {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+/* Amélioration des modals */
+.modal-content {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-radius: 1rem 1rem 0 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+}
+
+.modal-header .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Animation pour les éléments apparaissant */
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.fade-in-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive design pour les icônes */
+@media (max-width: 768px) {
+    .stat-icon {
+        margin-bottom: 0.5rem;
+    }
+    
+    .list-item-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+    
+    .nav-link-with-icon {
+        flex-direction: column;
+        gap: 0.25rem;
+        text-align: center;
+    }
+}
+
+/* Palette de couleurs cohérente */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --info-gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    --danger-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+}
+
+/* Thème sombre adapté */
+[data-bs-theme="dark"] .action-card {
+    background: rgba(52, 58, 64, 0.9);
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .list-group-item-with-icon {
+    background: rgba(52, 58, 64, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .list-group-item-with-icon:hover {
+    background: rgba(73, 80, 87, 0.9);
+}
