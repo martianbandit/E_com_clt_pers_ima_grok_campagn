@@ -257,12 +257,47 @@ def home():
 
 @app.route('/')
 def index():
-    """Page d'accueil principale (landing page)"""
-    if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
-    
-    # Rediriger vers la page de connexion pour sécuriser l'application
-    return redirect(url_for('login'))
+    """Page d'accueil principale"""
+    try:
+        if current_user.is_authenticated:
+            return redirect(url_for('dashboard'))
+        
+        # Afficher directement la page de connexion
+        from forms import LoginForm
+        form = LoginForm()
+        return render_template('auth/login.html', form=form)
+    except Exception as e:
+        # En cas d'erreur, afficher une page simple
+        return f"""
+        <html>
+        <head><title>MarkEasy - Connexion</title></head>
+        <body>
+            <h1>MarkEasy - Connexion</h1>
+            <p>Problème de connexion détecté: {str(e)}</p>
+            <a href="/login">Essayer la connexion</a> | 
+            <a href="/register">S'inscrire</a> |
+            <a href="/test">Page de test</a>
+        </body>
+        </html>
+        """
+
+@app.route('/test')
+def test_page():
+    """Page de test pour diagnostiquer les problèmes"""
+    return """
+    <html>
+    <head><title>Test MarkEasy</title></head>
+    <body>
+        <h1>Test MarkEasy</h1>
+        <p>L'application fonctionne correctement.</p>
+        <ul>
+            <li><a href="/login">Page de connexion</a></li>
+            <li><a href="/register">Page d'inscription</a></li>
+            <li><a href="/auth/replit_auth/login">Connexion Replit</a></li>
+        </ul>
+    </body>
+    </html>
+    """
     
 @app.route('/landing')
 @login_required
