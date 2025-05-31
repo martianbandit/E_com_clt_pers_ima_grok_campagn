@@ -482,9 +482,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Afficher l'animation de chargement
-            loadingManager.toggleButtonLoading(this, true);
-            loadingManager.toggleContentLoading(avatarContainer, true);
-            loadingManager.start('avatar'); // Utiliser l'animation spécifique aux avatars
+            showLoading('Génération de l\'avatar en cours...');
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Génération...';
             
             // Créer une requête fetch pour générer l'avatar
             fetch(`/generate_customer_avatar/${customerId}`, {
@@ -495,10 +495,10 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                // Arrêter toutes les animations
-                loadingManager.stop();
-                loadingManager.toggleButtonLoading(this, false);
-                loadingManager.toggleContentLoading(avatarContainer, false);
+                // Arrêter l'animation de chargement
+                hideLoading();
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-portrait me-2"></i> Générer un avatar';
                 
                 if (data.success) {
                     // Recharger la page pour afficher le nouvel avatar
@@ -519,10 +519,10 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error generating avatar:', error);
                 
-                // Arrêter toutes les animations
-                loadingManager.stop();
-                loadingManager.toggleButtonLoading(this, false);
-                loadingManager.toggleContentLoading(avatarContainer, false);
+                // Arrêter l'animation de chargement
+                hideLoading();
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-portrait me-2"></i> Générer un avatar';
                 
                 // Afficher l'erreur dans le conteneur dédié s'il existe
                 if (errorContainer && errorMessage) {
