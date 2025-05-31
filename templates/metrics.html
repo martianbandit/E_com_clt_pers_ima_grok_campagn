@@ -192,9 +192,9 @@
         <!-- Graphiques principaux sur mobile -->
         <div class="col-12 col-md-6 mb-3">
             <div class="card bg-dark border-secondary">
-                <div class="card-header bg-dark border-bottom border-secondary py-2">
+                <div class="card-header bg-dark border-bottom border-warning py-2">
                     <h6 class="text-light mb-0 small">
-                        <i class="fas fa-chart-pie me-1"></i>{{ _('Statuts') }}
+                        <i class="fas fa-chart-pie me-1" style="color: #ff6b35;"></i>{{ _('Statuts') }}
                     </h6>
                 </div>
                 <div class="card-body p-2">
@@ -211,9 +211,9 @@
         
         <div class="col-12 col-md-6 mb-3">
             <div class="card bg-dark border-secondary">
-                <div class="card-header bg-dark border-bottom border-secondary py-2">
+                <div class="card-header bg-dark border-bottom border-warning py-2">
                     <h6 class="text-light mb-0 small">
-                        <i class="fas fa-chart-bar me-1"></i>{{ _('Catégories') }}
+                        <i class="fas fa-chart-bar me-1" style="color: #ff6b35;"></i>{{ _('Catégories') }}
                     </h6>
                 </div>
                 <div class="card-body p-2">
@@ -233,9 +233,9 @@
     <div class="row mb-3">
         <div class="col-12 mb-3">
             <div class="card bg-dark border-secondary">
-                <div class="card-header bg-dark border-bottom border-secondary py-2">
+                <div class="card-header bg-dark border-bottom border-warning py-2">
                     <h6 class="text-light mb-0 small">
-                        <i class="fas fa-chart-line me-1"></i>{{ _('Activité (7j)') }}
+                        <i class="fas fa-chart-line me-1" style="color: #ff6b35;"></i>{{ _('Activité (7j)') }}
                     </h6>
                 </div>
                 <div class="card-body p-2">
@@ -256,8 +256,9 @@
         <div class="accordion-item bg-dark border-secondary">
             <h2 class="accordion-header">
                 <button class="accordion-button bg-dark text-light collapsed small" type="button" 
-                        data-bs-toggle="collapse" data-bs-target="#advancedCharts">
-                    <i class="fas fa-chart-area me-2"></i>{{ _('Métriques Avancées') }}
+                        data-bs-toggle="collapse" data-bs-target="#advancedCharts"
+                        style="border-color: #ff6b35;">
+                    <i class="fas fa-chart-area me-2" style="color: #ff6b35;"></i>{{ _('Métriques Avancées') }}
                 </button>
             </h2>
             <div id="advancedCharts" class="accordion-collapse collapse" data-bs-parent="#advancedMetrics">
@@ -267,7 +268,7 @@
                             <div class="card bg-secondary border-secondary">
                                 <div class="card-header bg-secondary py-2">
                                     <h6 class="text-light mb-0 small">
-                                        <i class="fas fa-clock me-1"></i>{{ _('Performance') }}
+                                        <i class="fas fa-clock me-1" style="color: #ff6b35;"></i>{{ _('Performance') }}
                                     </h6>
                                 </div>
                                 <div class="card-body p-2">
