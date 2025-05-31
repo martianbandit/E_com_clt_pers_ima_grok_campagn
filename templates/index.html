@@ -3,47 +3,50 @@
 {% block title %}NinjaLead - {{ _('Hyper-Personalized Marketing') }}{% endblock %}
 
 {% block content %}
-<div class="jumbotron theme-dependent p-5 rounded mb-5">
-    <h1 class="display-4">{{ _('Hyper-Personalized Marketing') }}</h1>
-    <p class="lead">{{ _('Create highly targeted marketing campaigns for boutique niches using advanced AI') }}</p>
-    <hr class="my-4">
-    <p>
-        {{ _('This application uses Grok AI and other language models to generate personalized customer profiles, detailed personas, and tailored marketing content across languages, formats, and tones in mere seconds.') }}
-    </p>
-    <div class="mt-4">
-        <a class="btn btn-primary btn-lg me-2" href="{{ url_for('profiles') }}" role="button">
-            <i class="fas fa-users me-2"></i> {{ _('Generate Profiles') }}
-        </a>
-        <a class="btn btn-success btn-lg me-2" href="{{ url_for('campaigns') }}" role="button">
-            <i class="fas fa-bullhorn me-2"></i> {{ _('Create Campaigns') }}
-        </a>
+<!-- Hero section optimisé mobile -->
+<div class="hero-section bg-gradient-dark text-white p-3 p-md-5 rounded mb-3 mb-md-5">
+    <div class="text-center">
+        <h1 class="display-6 display-md-4 fw-bold mb-3">{{ _('Marketing Hyper-Personnalisé') }}</h1>
+        <p class="lead fs-6 fs-md-5 mb-3">{{ _('Créez des campagnes marketing ultra-ciblées avec l\'IA avancée') }}</p>
+        <p class="d-none d-md-block">
+            {{ _('Cette application utilise Grok AI et d\'autres modèles de langage pour générer des profils clients personnalisés, des personas détaillés, et du contenu marketing adapté en quelques secondes.') }}
+        </p>
         
-        <!-- Bouton de connexion principal -->
-        {% if not current_user.is_authenticated %}
-        <div class="mt-3">
-            <a href="{{ url_for('login') }}" class="btn btn-info btn-lg">
-                <i class="fas fa-sign-in-alt me-1"></i> {{ _('Connexion') }}
+        <!-- Boutons principaux optimisés mobile -->
+        <div class="d-grid d-md-flex gap-2 justify-content-md-center mt-4">
+            <a class="btn btn-primary btn-lg" href="{{ url_for('profiles') }}" role="button">
+                <i class="fas fa-users me-2"></i> {{ _('Profils') }}
             </a>
+            <a class="btn btn-success btn-lg" href="{{ url_for('campaigns') }}" role="button">
+                <i class="fas fa-bullhorn me-2"></i> {{ _('Campagnes') }}
+            </a>
+            {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('login') }}" class="btn btn-info btn-lg">
+                <i class="fas fa-sign-in-alt me-2"></i> {{ _('Connexion') }}
+            </a>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            <div class="card-header theme-dependent theme-card-header-primary">
-                <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i> {{ _('Customer Profiles') }}</h5>
+<!-- Fonctionnalités principales optimisées mobile -->
+<div class="row g-3">
+    <div class="col-12 col-md-6 col-lg-4 mb-3">
+        <div class="card h-100 bg-dark border-secondary">
+            <div class="card-header bg-primary border-bottom border-secondary">
+                <h6 class="mb-0 text-white">
+                    <i class="fas fa-user-circle me-2"></i>{{ _('Profils Clients') }}
+                </h6>
             </div>
-            <div class="card-body">
-                <p>
-                    {{ _('Generate synthetic customer profiles based on different niche markets. Each profile includes demographic information, interests, purchase history, and other relevant attributes.') }}
+            <div class="card-body p-3">
+                <p class="text-light small mb-2">
+                    {{ _('Générez des profils clients basés sur différents marchés de niche avec des informations démographiques complètes.') }}
                 </p>
-                <p>
-                    {{ _('AI creates diverse and realistic profiles that can be used to test and refine your marketing strategies.') }}
+                <p class="text-light small d-none d-md-block mb-3">
+                    {{ _('L\'IA crée des profils diversifiés et réalistes pour tester vos stratégies marketing.') }}
                 </p>
-                <div class="d-grid gap-2">
-                    <a href="{{ url_for('profiles') }}" class="btn btn-outline-primary">{{ _('Explore Profiles') }}</a>
+                <div class="d-grid">
+                    <a href="{{ url_for('profiles') }}" class="btn btn-outline-primary btn-sm">{{ _('Explorer') }}</a>
                 </div>
             </div>
         </div>

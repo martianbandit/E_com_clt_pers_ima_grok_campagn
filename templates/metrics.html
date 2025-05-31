@@ -638,8 +638,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     borderWidth: 1
                 }]
             },
-            options: {
-                ...chartOptions,
+            options: Object.assign({}, chartOptions, {
                 indexAxis: 'y',
                 scales: {
                     x: {
@@ -656,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         grid: { display: false }
                     }
                 }
-            }
+            })
         });
     }
     {% endif %}
