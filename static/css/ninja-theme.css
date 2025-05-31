@@ -60,6 +60,30 @@
     .col-md-4 {
         margin-bottom: 0.5rem;
     }
+    
+    /* Améliorer l'affichage des formulaires sur mobile */
+    .form-select, .form-control {
+        font-size: 16px; /* Évite le zoom automatique sur iOS */
+    }
+    
+    /* Optimisations pour les modals sur mobile */
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    .modal-body {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    /* Améliorer l'affichage des tableaux sur mobile */
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .table th, .table td {
+        padding: 0.5rem 0.25rem;
+    }
 }
 
 /* Logo NinjaLead */
