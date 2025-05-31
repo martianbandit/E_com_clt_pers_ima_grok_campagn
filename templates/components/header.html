@@ -46,8 +46,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/copy_ai_tool' %}active{% endif %}" href="{{ url_for('copy_ai_tool') }}">
-                        <i class="fas fa-robot me-1"></i> {{ _('Copy.ai') }}
+                    <a class="nav-link {% if request.path == '/profile' %}active{% endif %}" href="{{ url_for('user_profile_config') }}">
+                        <i class="fas fa-user-cog me-1"></i> {{ _('Profil') }}
                     </a>
                 </li>
             </ul>
