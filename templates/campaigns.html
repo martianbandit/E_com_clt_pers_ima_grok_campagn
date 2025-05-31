@@ -10,7 +10,7 @@
         <div class="card bg-dark border-secondary">
             <div class="card-header bg-primary border-bottom border-secondary">
                 <h6 class="mb-0 text-white">
-                    <i class="fas fa-plus-circle me-2"></i>{{ _('Nouvelle Campagne') }}
+                    ➕ {{ _('Nouvelle Campagne') }}
                 </h6>
             </div>
             <div class="card-body p-3">
@@ -47,9 +47,9 @@
                                     <option value="{{ customer.id }}">
                                         {{ customer.name }}
                                         {% if customer.persona and customer.avatar_url %}
-                                            <i class="fas fa-star text-warning"></i> (Persona + Avatar)
+                                            ⭐ (Persona + Avatar)
                                         {% elif customer.persona %}
-                                            <i class="fas fa-sparkles text-info"></i> (Persona)
+                                            ✨ (Persona)
                                         {% endif %}
                                         - {{ customer.email or customer.location or 'No email' }}
                                     </option>
@@ -57,8 +57,8 @@
                             </select>
                             {% if saved_customers %}
                                 <div class="form-text">
-                                    <i class="fas fa-star text-warning"></i> = Profiles with persona and avatar (recommended)<br>
-                                    <i class="fas fa-sparkles text-info"></i> = Profiles with persona only
+                                    ⭐ = Profiles with persona and avatar (recommended)<br>
+                                    ✨ = Profiles with persona only
                                 </div>
                             {% endif %}
                         </div>
@@ -108,13 +108,13 @@
                         </div>
                         
                         <button type="submit" class="btn btn-primary" data-loading="true">
-                            <i class="fas fa-plus-circle me-2"></i>
+                            ➕
                             Create Campaign
                         </button>
                     </form>
                 {% else %}
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
+                        ℹ️
                         You need to generate customer profiles before creating campaigns.
                         <a href="/profiles" class="alert-link">Go to Profiles</a>
                     </div>
