@@ -89,8 +89,8 @@
                             <h5 class="fw-bold mb-3">{{ _('Gestion de l\'abonnement') }}</h5>
                             <form action="{{ url_for('payment.cancel_subscription') }}" method="POST" class="d-inline-block">
                                 <button type="submit" class="btn btn-outline-danger" 
-                                        onclick="return confirm('{{ _('Êtes-vous sûr de vouloir annuler votre abonnement? Vous pourrez continuer à utiliser le service jusqu\'à la fin de la période en cours.') }}')">
-                                    <i class="fas fa-times-circle me-2"></i>{{ _('Annuler l\'abonnement') }}
+                                        onclick="return confirm(`{{ _('Êtes-vous sûr de vouloir annuler votre abonnement? Vous pourrez continuer à utiliser le service jusqu\à la fin de la période en cours.') }}`)">
+                                    ❌ {{ _('Annuler l\'abonnement') }}
                                 </button>
                             </form>
                         </div>
