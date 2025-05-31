@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %}{{ _('Mon Profil') }} - MarkEasy{% endblock %}
+{% block title %}{{ _('Mon Profil') }} - NinjaLead{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -17,7 +17,7 @@
                     </div>
                     {% endif %}
                     <h2 class="fw-bold">{{ current_user.first_name }} {{ current_user.last_name }}</h2>
-                    <p class="text-muted">{{ current_user.job_title or _('Utilisateur MarkEasy') }}</p>
+                    <p class="text-muted">{{ current_user.job_title or _('Utilisateur NinjaLead') }}</p>
                     <p class="mb-1"><i class="fas fa-envelope me-2"></i> {{ current_user.email or _('Email non défini') }}</p>
                     {% if current_user.phone %}
                     <p class="mb-1"><i class="fas fa-phone me-2"></i> {{ current_user.phone }}</p>

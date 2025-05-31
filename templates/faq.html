@@ -1,21 +1,21 @@
 {% extends 'layout.html' %}
 
-{% block title %}{{ _('Foire Aux Questions') }} - MarkEasy{% endblock %}
+{% block title %}{{ _('Foire Aux Questions') }} - NinjaLead{% endblock %}
 
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10">
             <div class="text-center mb-5">
-                <img src="{{ url_for('static', filename='img/markeasy-ninja-new.png') }}" alt="MarkEasy Ninja" class="img-fluid mb-3" style="max-width: 150px;">
+                <img src="{{ url_for('static', filename='img/markeasy-ninja-new.png') }}" alt="NinjaLead Ninja" class="img-fluid mb-3" style="max-width: 150px;">
                 <h1 class="display-4 fw-bold text-primary">{{ _('Foire Aux Questions') }}</h1>
-                <p class="lead text-muted">{{ _('Tout ce que vous devez savoir sur MarkEasy et ses fonctionnalités') }}</p>
+                <p class="lead text-muted">{{ _('Tout ce que vous devez savoir sur NinjaLead et ses fonctionnalités') }}</p>
             </div>
             
             <!-- Image des fonctionnalités clés -->
             <div class="card shadow-sm mb-5 overflow-hidden">
                 <div class="card-body p-0">
-                    <img src="{{ url_for('static', filename='img/markeasy-fonctionnalites.png') }}" alt="Fonctionnalités clés de MarkEasy" class="img-fluid w-100">
+                    <img src="{{ url_for('static', filename='img/markeasy-fonctionnalites.png') }}" alt="Fonctionnalités clés de NinjaLead" class="img-fluid w-100">
                 </div>
             </div>
 
@@ -25,12 +25,12 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading1">
                         <button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Qu\'est-ce que MarkEasy ?') }}
+                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Qu\'est-ce que NinjaLead ?') }}
                         </button>
                     </h2>
                     <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="heading1" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            <p>{{ _('MarkEasy est une plateforme de marketing alimentée par l\'IA, conçue pour aider les boutiques en ligne et les entreprises de niche à optimiser leurs campagnes marketing, à comprendre leurs clients et à améliorer leurs performances commerciales.') }}</p>
+                            <p>{{ _('NinjaLead est une plateforme de marketing alimentée par l\'IA, conçue pour aider les boutiques en ligne et les entreprises de niche à optimiser leurs campagnes marketing, à comprendre leurs clients et à améliorer leurs performances commerciales.') }}</p>
                         </div>
                     </div>
                 </div>
@@ -39,12 +39,12 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading2">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('À qui s\'adresse MarkEasy ?') }}
+                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('À qui s\'adresse NinjaLead ?') }}
                         </button>
                     </h2>
                     <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            <p>{{ _('MarkEasy est destiné aux propriétaires de boutiques en ligne, aux spécialistes du marketing et aux entrepreneurs qui souhaitent automatiser et personnaliser leurs efforts marketing pour des niches spécifiques.') }}</p>
+                            <p>{{ _('NinjaLead est destiné aux propriétaires de boutiques en ligne, aux spécialistes du marketing et aux entrepreneurs qui souhaitent automatiser et personnaliser leurs efforts marketing pour des niches spécifiques.') }}</p>
                         </div>
                     </div>
                 </div>
@@ -53,12 +53,12 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading3">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Quels sont les principaux outils proposés par MarkEasy ?') }}
+                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Quels sont les principaux outils proposés par NinjaLead ?') }}
                         </button>
                     </h2>
                     <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            <p>{{ _('MarkEasy offre plusieurs fonctionnalités, notamment :') }}</p>
+                            <p>{{ _('NinjaLead offre plusieurs fonctionnalités, notamment :') }}</p>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item"><i class="fas fa-chart-line text-primary me-2"></i> {{ _('Tableau de bord pour une vue d\'ensemble des performances.') }}</li>
                                 <li class="list-group-item"><i class="fas fa-users text-primary me-2"></i> {{ _('Profils clients pour segmenter et comprendre votre audience.') }}</li>
@@ -75,12 +75,12 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading4">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Comment puis-je m\'inscrire sur MarkEasy ?') }}
+                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Comment puis-je m\'inscrire sur NinjaLead ?') }}
                         </button>
                     </h2>
                     <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="heading4" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            <p>{{ _('Vous pouvez vous inscrire directement sur le site web de MarkEasy en cliquant sur le bouton "S\'inscrire" et en suivant les instructions.') }}</p>
+                            <p>{{ _('Vous pouvez vous inscrire directement sur le site web de NinjaLead en cliquant sur le bouton "S\'inscrire" et en suivant les instructions.') }}</p>
                             <div class="text-center mt-3">
                                 <a href="{{ url_for('register') }}" class="btn btn-primary"><i class="fas fa-user-plus me-2"></i>{{ _('S\'inscrire maintenant') }}</a>
                             </div>
@@ -92,7 +92,7 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading5">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('MarkEasy propose-t-il une version gratuite ?') }}
+                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('NinjaLead propose-t-il une version gratuite ?') }}
                         </button>
                     </h2>
                     <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="heading5" data-bs-parent="#faqAccordion">
@@ -106,12 +106,12 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading6">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Puis-je intégrer MarkEasy avec d\'autres outils que j\'utilise déjà ?') }}
+                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Puis-je intégrer NinjaLead avec d\'autres outils que j\'utilise déjà ?') }}
                         </button>
                     </h2>
                     <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="heading6" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            <p>{{ _('Le site ne mentionne pas spécifiquement les intégrations disponibles. Pour des informations détaillées, veuillez contacter le support de MarkEasy.') }}</p>
+                            <p>{{ _('Le site ne mentionne pas spécifiquement les intégrations disponibles. Pour des informations détaillées, veuillez contacter le support de NinjaLead.') }}</p>
                         </div>
                     </div>
                 </div>
@@ -120,12 +120,12 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading7">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('MarkEasy est-il disponible en plusieurs langues ?') }}
+                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('NinjaLead est-il disponible en plusieurs langues ?') }}
                         </button>
                     </h2>
                     <div id="collapse7" class="accordion-collapse collapse" aria-labelledby="heading7" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            <p>{{ _('Oui, MarkEasy prend en charge plusieurs langues, notamment le français, l\'anglais, l\'espagnol, l\'allemand, l\'italien, le portugais, le néerlandais, le chinois, le japonais et le russe.') }}</p>
+                            <p>{{ _('Oui, NinjaLead prend en charge plusieurs langues, notamment le français, l\'anglais, l\'espagnol, l\'allemand, l\'italien, le portugais, le néerlandais, le chinois, le japonais et le russe.') }}</p>
                             <div class="row mt-3 text-center">
                                 <div class="col-auto"><span class="badge bg-light text-dark p-2 m-1">🇫🇷 Français</span></div>
                                 <div class="col-auto"><span class="badge bg-light text-dark p-2 m-1">🇬🇧 English</span></div>
@@ -142,12 +142,12 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading8">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8" aria-expanded="false" aria-controls="collapse8">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Comment puis-je contacter le support client de MarkEasy ?') }}
+                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Comment puis-je contacter le support client de NinjaLead ?') }}
                         </button>
                     </h2>
                     <div id="collapse8" class="accordion-collapse collapse" aria-labelledby="heading8" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
-                            <p>{{ _('Pour toute assistance, vous pouvez utiliser la fonction de messagerie instantanée disponible sur le site web de MarkEasy ou consulter la section "Contact" pour d\'autres options de support.') }}</p>
+                            <p>{{ _('Pour toute assistance, vous pouvez utiliser la fonction de messagerie instantanée disponible sur le site web de NinjaLead ou consulter la section "Contact" pour d\'autres options de support.') }}</p>
                             <div class="text-center mt-3">
                                 <a href="#" class="btn btn-outline-primary"><i class="fas fa-envelope me-2"></i>{{ _('Contacter le support') }}</a>
                             </div>
