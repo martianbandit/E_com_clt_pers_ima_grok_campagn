@@ -10,7 +10,7 @@
         <div class="card bg-dark border-secondary">
             <div class="card-header bg-primary border-bottom border-secondary">
                 <h6 class="mb-0 text-white">
-                    ➕ {{ _('Nouvelle Campagne') }}
+                    <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 18px; height: 18px; margin-right: 8px;">{{ _('Nouvelle Campagne') }}
                 </h6>
             </div>
             <div class="card-body p-3">
@@ -47,7 +47,7 @@
                                     <option value="{{ customer.id }}">
                                         {{ customer.name }}
                                         {% if customer.persona and customer.avatar_url %}
-                                            ⭐ (Persona + Avatar)
+                                            <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 14px; height: 14px; margin-right: 4px;">(Persona + Avatar)
                                         {% elif customer.persona %}
                                             ✨ (Persona)
                                         {% endif %}

@@ -80,22 +80,22 @@
                 <ul class="list-unstyled footer-links">
                     <li class="mb-2">
                         <a href="{{ url_for('terms_of_service') }}" class="footer-link">
-                            🤝 {{ _('Conditions d\'utilisation') }}
+                            <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Conditions d\'utilisation') }}
                         </a>
                     </li>
                     <li class="mb-2">
                         <a href="{{ url_for('privacy_policy') }}" class="footer-link">
-                            🔒 {{ _('Politique de confidentialité') }}
+                            <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Politique de confidentialité') }}
                         </a>
                     </li>
                     <li class="mb-2">
                         <a href="{{ url_for('cookies_policy') }}" class="footer-link">
-                            🍪 {{ _('Politique des cookies') }}
+                            <img src="{{ url_for('static', filename='images/ninja-meditation.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Politique des cookies') }}
                         </a>
                     </li>
                     <li class="mb-2">
                         <a href="{{ url_for('legal_notice') }}" class="footer-link">
-                            📜 {{ _('Mentions légales') }}
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Mentions légales') }}
                         </a>
                     </li>
                 </ul>
@@ -107,12 +107,12 @@
                 <ul class="list-unstyled footer-links">
                     <li class="mb-2">
                         <a href="{{ url_for('refund_policy') }}" class="footer-link">
-                            💰 {{ _('Remboursement 100%%') }}
+                            <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Remboursement 100%%') }}
                         </a>
                     </li>
                     <li class="mb-2">
                         <a href="{{ url_for('refund_policy') }}#tokens" class="footer-link">
-                            🪙 {{ _('Programme de tokens') }}
+                            <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Programme de tokens') }}
                         </a>
                     </li>
                 </ul>
@@ -145,7 +145,7 @@
             </div>
             <div class="col-md-6 text-md-end">
                 <p class="text-muted mb-0" style="font-family: 'Open Sans', sans-serif;">
-                    {{ _('Développé avec') }} ❤️ {{ _('par José Paradis Gravel') }}
+                    {{ _('Développé avec') }} <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin: 0 4px;"> {{ _('par José Paradis Gravel') }}
                 </p>
             </div>
         </div>
