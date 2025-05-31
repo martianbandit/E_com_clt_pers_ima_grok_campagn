@@ -2,7 +2,7 @@
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
     <div id="markeasyToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
-            <strong class="me-auto" id="toastTitle"><i class="fas fa-info-circle me-2"></i> MarkEasy</strong>
+            <strong class="me-auto" id="toastTitle"><i class="fas fa-info-circle me-2"></i> NinjaMark</strong>
             <small id="toastTime">à l'instant</small>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fermer"></button>
         </div>
@@ -12,38 +12,129 @@
     </div>
 </div>
 
+<style>
+.toast {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    animation: slideInFromRight 0.4s ease-out;
+}
+
+.toast.hiding {
+    animation: slideOutToRight 0.3s ease-in;
+}
+
+.toast-header {
+    background: linear-gradient(135deg, var(--orange-accent), #ff8a65);
+    color: white;
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+}
+
+.toast-body {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--dark-color);
+    border-radius: 0 0 12px 12px;
+    font-weight: 500;
+}
+
+[data-bs-theme="dark"] .toast-body {
+    background: rgba(33, 37, 41, 0.95);
+    color: var(--light-color);
+}
+
+.toast-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+@keyframes slideInFromRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutToRight {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Animation spéciale pour les changements de thème */
+.toast.theme-change {
+    animation: themeChangeToast 0.6s ease-out;
+}
+
+@keyframes themeChangeToast {
+    0% {
+        transform: translateX(100%) scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: translateX(-10px) scale(1.05);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+</style>
+
 <script>
 // Fonction pour afficher une notification toast
-window.showNinjaToast = function(message, type) {
+window.showNinjaToast = function(message, type, isThemeChange = false) {
     const toast = document.getElementById('markeasyToast');
     const toastMessage = document.getElementById('toastMessage');
     const toastTime = document.getElementById('toastTime');
     const toastTitle = document.getElementById('toastTitle');
     
+    // Nettoyer les classes d'animation précédentes
+    toast.classList.remove('theme-change');
+    
     // Mettre à jour le contenu
-    toastMessage.innerText = message;
-    toastTime.innerText = 'à l\'instant';
+    toastMessage.textContent = message;
+    toastTime.textContent = 'à l\'instant';
     
     // Mettre à jour l'icône et la couleur selon le type
     switch(type) {
         case 'success':
-            toastTitle.innerHTML = '<i class="fas fa-check-circle me-2 text-success"></i> Succès';
+            toastTitle.innerHTML = '<i class="fas fa-check-circle me-2"></i> Succès';
             break;
         case 'error':
-            toastTitle.innerHTML = '<i class="fas fa-exclamation-circle me-2 text-danger"></i> Erreur';
+            toastTitle.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i> Erreur';
             break;
         case 'warning':
-            toastTitle.innerHTML = '<i class="fas fa-exclamation-triangle me-2 text-warning"></i> Attention';
+            toastTitle.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i> Attention';
             break;
         case 'info':
         default:
-            toastTitle.innerHTML = '<i class="fas fa-info-circle me-2 text-primary"></i> Information';
+            // Pour les changements de thème, utiliser une icône spéciale
+            if (isThemeChange || message.includes('thème') || message.includes('theme')) {
+                const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+                const icon = currentTheme === 'dark' ? 'fa-moon' : 'fa-sun';
+                toastTitle.innerHTML = `<i class="fas ${icon} me-2"></i> Thème`;
+                toast.classList.add('theme-change');
+            } else {
+                toastTitle.innerHTML = '<i class="fas fa-info-circle me-2"></i> Information';
+            }
             break;
     }
     
-    // Afficher le toast
+    // Afficher le toast avec une durée plus courte pour les changements de thème
+    const delay = isThemeChange || message.includes('thème') || message.includes('theme') ? 2500 : 4000;
     const bsToast = new bootstrap.Toast(toast, {
-        delay: 4000
+        delay: delay
     });
     bsToast.show();
 };

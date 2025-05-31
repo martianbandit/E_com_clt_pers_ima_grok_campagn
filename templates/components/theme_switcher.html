@@ -80,12 +80,12 @@
                 // Enregistrer la préférence
                 localStorage.setItem('theme', newTheme);
                 
-                // Afficher une notification
+                // Afficher une notification avec animation spéciale
                 if (window.showNinjaToast) {
                     if (newTheme === 'dark') {
-                        window.showNinjaToast("{{ _('Thème sombre activé') }}", 'info');
+                        window.showNinjaToast("Thème sombre activé", 'info', true);
                     } else {
-                        window.showNinjaToast("{{ _('Thème clair activé') }}", 'info');
+                        window.showNinjaToast("Thème clair activé", 'info', true);
                     }
                 }
                 
