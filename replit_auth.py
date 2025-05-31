@@ -217,10 +217,10 @@ def logged_in(blueprint, token):
                 algorithms=['RS256']
             )
         except Exception as e:
-            # Fallback en cas d'erreur, mais avec avertissement de sécurité
-            print(f"AVERTISSEMENT DE SÉCURITÉ: Impossible de vérifier la signature JWT: {e}")
-            # En production, il serait préférable de bloquer la connexion ici
-            user_claims = jwt.decode(token['id_token'], options={"verify_signature": False})
+            # Sécurité: Bloquer la connexion si la vérification JWT échoue
+            print(f"ERREUR DE SÉCURITÉ: Impossible de vérifier la signature JWT: {e}")
+            flash("Erreur d'authentification. Veuillez réessayer.", "error")
+            return redirect(url_for('index'))
     
     # Sauvegarde de l'utilisateur en base de données
     user = save_user(user_claims)
