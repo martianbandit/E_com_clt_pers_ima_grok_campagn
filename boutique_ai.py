@@ -199,19 +199,21 @@ PROMPT_TRANSLATIONS = {
     # Prompts pour la génération de contenu marketing
     "marketing_content": {
         "en": """
-        Create personalized {campaign_type} marketing content for {name} based on their customer profile:
+        Create ONE {campaign_type} marketing content piece for {name} based on their customer profile:
         
         CUSTOMER PROFILE:
         {persona}
         
         MARKETING CONTENT SPECIFICATIONS:
-        - Campaign Type: {campaign_type}
+        - Campaign Type: {campaign_type} (ONLY this type)
         - Target: {name}
         - Niche Market: {niche}
         - Key Interests: {interests}
         - Language: {language}
         
         {boutique_context}
+        
+        IMPORTANT: Generate ONLY {campaign_type} content. Do not create multiple campaign types or formats.
         
         CONTENT GUIDELINES:
         1. Create content that speaks directly to this specific customer's needs and motivations
@@ -221,30 +223,34 @@ PROMPT_TRANSLATIONS = {
         5. Include a clear call-to-action that would motivate this specific customer
         6. Keep the content concise, engaging and emotionally resonant
         
-        FORMAT FOR DIFFERENT CHANNELS:
-        - Email: Include subject line, greeting, body text and sign-off
-        - Social Media: Create post copy optimized for the platform most relevant to this customer
-        - SMS: Create a brief, compelling message (160 characters max) with clear value proposition
-        - Ad: Include headline, main copy, and call-to-action for digital advertising
-        - Product Description: Create compelling product copy tailored to this customer's interests
+        SPECIFIC FORMAT REQUIREMENTS:
+        Create ONLY the {campaign_type} content type as specified:
+        - email: Subject line + personalized email body with greeting and call-to-action
+        - social: Single social media post optimized for engagement
+        - sms: Brief compelling message (160 characters max)
+        - ad: Headline + main copy + call-to-action for digital advertising
+        - product_description: Compelling product copy tailored to interests
+        - product_marketing: Comprehensive product marketing campaign focusing on the selected niche
         
         The content should feel personally created for this specific customer, not generic marketing.
         """,
         
         "fr": """
-        Créez un contenu marketing {campaign_type} personnalisé pour {name} basé sur son profil client:
+        Créez UN SEUL contenu marketing de type {campaign_type} personnalisé pour {name} basé sur son profil client:
         
         PROFIL CLIENT:
         {persona}
         
         SPÉCIFICATIONS DU CONTENU MARKETING:
-        - Type de campagne: {campaign_type}
+        - Type de campagne: {campaign_type} (UNIQUEMENT ce type)
         - Cible: {name}
         - Marché de niche: {niche}
         - Intérêts clés: {interests}
         - Langue: {language}
         
         {boutique_context}
+        
+        IMPORTANT: Créez SEULEMENT du contenu pour le type de campagne {campaign_type}. Ne pas générer d'autres types de contenu.
         
         DIRECTIVES DE CONTENU:
         1. Créez un contenu qui parle directement aux besoins et motivations de ce client spécifique
@@ -988,7 +994,8 @@ async def generate_boutique_marketing_content_async(
         "social": "social media post",
         "sms": "SMS message",
         "ad": "online advertisement",
-        "product_description": "product description"
+        "product_description": "product description",
+        "product_marketing": "product marketing campaign"
     }
     content_type = content_type_map.get(campaign_type, "marketing content")
     
