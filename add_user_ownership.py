@@ -147,7 +147,11 @@ def add_foreign_key_constraints():
             
             if result.rowcount > 0:
                 # Supprimer la contrainte existante pour la recréer avec CASCADE
-                conn.execute(text(f"ALTER TABLE {table} DROP CONSTRAINT IF EXISTS {constraint_name}"))
+                conn.execute(
+                    text("ALTER TABLE :table DROP CONSTRAINT IF EXISTS :constraint_name").bindparams(
+                        table=table, constraint_name=constraint_name
+                    )
+                )
             
             # Vérifier la contrainte existante (sans nom spécifique)
             result = conn.execute(
