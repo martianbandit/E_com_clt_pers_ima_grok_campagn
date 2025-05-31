@@ -1407,12 +1407,9 @@ def campaigns():
     campaigns = Campaign.query.order_by(Campaign.created_at.desc()).all()
     customer_profiles = session.get('customer_profiles', [])
     
-    # Récupérer les clients sauvegardés pour la sélection
-    # Prioriser ceux avec personas et images d'avatar
-    saved_customers_query = Customer.query.filter_by(owner_id=current_user.numeric_id) if current_user.numeric_id else Customer.query.filter_by(id=-1)
-    
-    # Trier par priorité : personas + images d'abord, puis personas seuls, puis le reste
-    saved_customers = saved_customers_query.order_by(
+    # Récupérer TOUS les clients pour le moment (debugging)
+    # TODO: Rétablir le filtrage par owner_id une fois les migrations terminées
+    saved_customers = Customer.query.order_by(
         # Prioriser ceux avec persona ET avatar
         (Customer.persona.isnot(None) & Customer.avatar_url.isnot(None)).desc(),
         # Puis ceux avec persona seulement
@@ -1421,8 +1418,9 @@ def campaigns():
         Customer.name
     ).all()
     
-    # Récupérer les niches pour la sélection
-    niches = NicheMarket.query.filter_by(owner_id=current_user.numeric_id).all() if current_user.numeric_id else []
+    # Récupérer les niches pour la sélection  
+    # TODO: Rétablir le filtrage par owner_id une fois les migrations terminées
+    niches = NicheMarket.query.all()
     
     # Vérifier s'il y a des profils disponibles (session ou base de données)
     has_profiles = len(customer_profiles) > 0 or len(saved_customers) > 0

@@ -125,18 +125,30 @@
                     const databaseCustomers = document.getElementById('database-customers');
                     
                     // Hide both initially
-                    sessionProfiles.style.display = 'none';
-                    databaseCustomers.style.display = 'none';
+                    if (sessionProfiles) sessionProfiles.style.display = 'none';
+                    if (databaseCustomers) databaseCustomers.style.display = 'none';
                     
                     // Show relevant section
-                    if (profileSource === 'session') {
+                    if (profileSource === 'session' && sessionProfiles) {
                         sessionProfiles.style.display = 'block';
-                        sessionProfiles.querySelector('select').required = true;
-                        databaseCustomers.querySelector('select').required = false;
-                    } else if (profileSource === 'database') {
+                        const select = sessionProfiles.querySelector('select');
+                        if (select) {
+                            select.required = true;
+                        }
+                        const dbSelect = databaseCustomers ? databaseCustomers.querySelector('select') : null;
+                        if (dbSelect) {
+                            dbSelect.required = false;
+                        }
+                    } else if (profileSource === 'database' && databaseCustomers) {
                         databaseCustomers.style.display = 'block';
-                        databaseCustomers.querySelector('select').required = true;
-                        sessionProfiles.querySelector('select').required = false;
+                        const select = databaseCustomers.querySelector('select');
+                        if (select) {
+                            select.required = true;
+                        }
+                        const sessionSelect = sessionProfiles ? sessionProfiles.querySelector('select') : null;
+                        if (sessionSelect) {
+                            sessionSelect.required = false;
+                        }
                     }
                 }
                 </script>
