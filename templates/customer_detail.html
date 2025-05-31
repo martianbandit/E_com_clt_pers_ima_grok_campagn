@@ -428,9 +428,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const personaContainer = document.querySelector('.persona-container');
             
             // Afficher l'animation de chargement
-            loadingManager.toggleButtonLoading(this, true);
-            loadingManager.toggleContentLoading(personaContainer, true);
-            loadingManager.start('persona'); // Utiliser l'animation spécifique aux personas
+            showLoading('Génération du persona en cours...');
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Génération...';
             
             // Créer une requête fetch pour générer le persona
             fetch(`/generate_customer_persona/${customerId}`, {
@@ -441,10 +441,10 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                // Arrêter toutes les animations
-                loadingManager.stop();
-                loadingManager.toggleButtonLoading(this, false);
-                loadingManager.toggleContentLoading(personaContainer, false);
+                // Arrêter l'animation de chargement
+                hideLoading();
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-magic me-2"></i> Générer un persona';
                 
                 if (data.success) {
                     // Recharger la page pour afficher le nouveau persona
@@ -456,10 +456,10 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error generating persona:', error);
                 
-                // Arrêter toutes les animations
-                loadingManager.stop();
-                loadingManager.toggleButtonLoading(this, false);
-                loadingManager.toggleContentLoading(personaContainer, false);
+                // Arrêter l'animation de chargement
+                hideLoading();
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-magic me-2"></i> Générer un persona';
                 
                 alert('Une erreur est survenue lors de la génération du persona.');
             });
