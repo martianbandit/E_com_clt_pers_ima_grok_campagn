@@ -2,7 +2,7 @@
 <div class="social-share-container">
     <div class="social-share-header">
         <h5 class="mb-2">
-            <i class="fas fa-share-alt me-2"></i>{{ _('Exporter et partager cette campagne') }}
+            <i class="fas fa-share-alt me-2" style="color: #ff6b35;"></i>{{ _('Exporter et partager cette campagne') }}
         </h5>
         <p class="text-muted small">{{ _('Utilisez ces boutons pour publier votre campagne sur vos réseaux sociaux favoris') }}</p>
     </div>
@@ -14,7 +14,7 @@
            class="social-button facebook-share" 
            data-toggle="tooltip" 
            title="{{ _('Partager sur Facebook') }}">
-            <i class="fab fa-facebook-f"></i>
+            <i class="fab fa-facebook-f" style="color: #cc4a28;"></i>
             <span>Facebook</span>
         </a>
         
@@ -24,7 +24,7 @@
            class="social-button twitter-share" 
            data-toggle="tooltip" 
            title="{{ _('Partager sur Twitter/X') }}">
-            <i class="fab fa-twitter"></i>
+            <i class="fab fa-twitter" style="color: #cc4a28;"></i>
             <span>Twitter</span>
         </a>
         
@@ -34,7 +34,7 @@
            class="social-button linkedin-share" 
            data-toggle="tooltip" 
            title="{{ _('Partager sur LinkedIn') }}">
-            <i class="fab fa-linkedin-in"></i>
+            <i class="fab fa-linkedin-in" style="color: #cc4a28;"></i>
             <span>LinkedIn</span>
         </a>
         
@@ -44,7 +44,7 @@
            class="social-button pinterest-share" 
            data-toggle="tooltip" 
            title="{{ _('Épingler sur Pinterest') }}">
-            <i class="fab fa-pinterest-p"></i>
+            <i class="fab fa-pinterest-p" style="color: #cc4a28;"></i>
             <span>Pinterest</span>
         </a>
         
@@ -54,32 +54,32 @@
            class="social-button reddit-share" 
            data-toggle="tooltip" 
            title="{{ _('Partager sur Reddit') }}">
-            <i class="fab fa-reddit-alien"></i>
+            <i class="fab fa-reddit-alien" style="color: #cc4a28;"></i>
             <span>Reddit</span>
         </a>
         
         <!-- Bouton de copie du lien -->
         <button class="social-button copy-link" data-url="{{ current_url }}" data-toggle="tooltip" title="{{ _('Copier le lien') }}">
-            <i class="fas fa-link"></i>
+            <i class="fas fa-link" style="color: #cc4a28;"></i>
             <span>{{ _('Copier') }}</span>
         </button>
     </div>
     
     <!-- Exportation en différents formats -->
     <div class="export-options mt-3">
-        <h6 class="text-muted small mb-2">{{ _('Exporter en') }}:</h6>
+        <h6 class="text-muted small mb-2" style="color: #ff6b35 !important;">{{ _('Exporter en') }}:</h6>
         <div class="btn-group btn-group-sm">
-            <button class="btn btn-outline-primary export-pdf">
-                <i class="far fa-file-pdf me-1"></i> PDF
+            <button class="btn btn-outline-warning export-pdf" style="border-color: #ff6b35; color: #ff6b35;">
+                <i class="far fa-file-pdf me-1" style="color: #cc4a28;"></i> PDF
             </button>
-            <button class="btn btn-outline-primary export-image">
-                <i class="far fa-file-image me-1"></i> {{ _('Image') }}
+            <button class="btn btn-outline-warning export-image" style="border-color: #ff6b35; color: #ff6b35;">
+                <i class="far fa-file-image me-1" style="color: #cc4a28;"></i> {{ _('Image') }}
             </button>
-            <button class="btn btn-outline-primary export-text">
-                <i class="far fa-file-alt me-1"></i> {{ _('Texte') }}
+            <button class="btn btn-outline-warning export-text" style="border-color: #ff6b35; color: #ff6b35;">
+                <i class="far fa-file-alt me-1" style="color: #cc4a28;"></i> {{ _('Texte') }}
             </button>
-            <button class="btn btn-outline-primary export-html">
-                <i class="fas fa-code me-1"></i> HTML
+            <button class="btn btn-outline-warning export-html" style="border-color: #ff6b35; color: #ff6b35;">
+                <i class="fas fa-code me-1" style="color: #cc4a28;"></i> HTML
             </button>
         </div>
     </div>
@@ -87,15 +87,16 @@
 
 <style>
     .social-share-container {
-        background-color: var(--bs-light);
-        border-radius: 10px;
-        padding: 1.25rem;
+        background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+        border: 1px solid #ff6b35;
+        border-radius: 12px;
+        padding: 1.5rem;
         margin: 1.5rem 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.1);
     }
     
     .social-share-header h5 {
-        color: var(--bs-primary);
+        color: #ff6b35;
         font-weight: 600;
     }
     
@@ -128,36 +129,43 @@
     
     .social-button:hover {
         transform: translateY(-3px);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        filter: brightness(1.1);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+        filter: brightness(1.15);
     }
     
     .facebook-share {
-        background-color: #3b5998;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        border: 1px solid #cc4a28;
     }
     
     .twitter-share {
-        background-color: #1da1f2;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        border: 1px solid #cc4a28;
     }
     
     .linkedin-share {
-        background-color: #0077b5;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        border: 1px solid #cc4a28;
     }
     
     .pinterest-share {
-        background-color: #bd081c;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        border: 1px solid #cc4a28;
     }
     
     .reddit-share {
-        background-color: #ff4500;
+        background: linear-gradient(135deg, #ff6b35, #ff8c42);
+        border: 1px solid #cc4a28;
     }
     
     .copy-link {
-        background-color: #6c757d;
+        background: linear-gradient(135deg, #6c757d, #868e96);
+        border: 1px solid #495057;
     }
     
     .copy-link.copied {
-        background-color: #28a745;
+        background: linear-gradient(135deg, #28a745, #34ce57);
+        border: 1px solid #1e7e34;
     }
     
     /* Effet WOW avec animation */
@@ -174,7 +182,15 @@
     /* Ajout d'une légère animation sur hover pour les boutons d'export */
     .export-options .btn:hover {
         transform: translateY(-2px);
-        transition: transform 0.3s ease;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.25);
+        background: linear-gradient(135deg, #ff6b35, #ff8c42) !important;
+        color: white !important;
+        border-color: #cc4a28 !important;
+    }
+    
+    .export-options .btn:hover i {
+        color: #cc4a28 !important;
     }
 </style>
 
