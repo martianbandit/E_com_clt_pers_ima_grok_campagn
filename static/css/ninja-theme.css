@@ -1,28 +1,28 @@
-/* MarkEasy - Theme CSS */
+/* NinjaLead - Theme CSS */
 
 :root {
-    /* Palette de couleurs MarkEasy */
-    --carbon-black: #2C2C2C;
-    --vibrant-orange: #FF8C00; /* Correspond au orange du logo MarkEasy */
-    --soft-gray: #F4F4F4;
-    --pure-white: #FFFFFF;
+    /* Palette de couleurs NinjaLead */
+    --carbon-black: #0d1117;
+    --vibrant-orange: #ff6b35; /* Orange principal NinjaLead */
+    --soft-gray: #f0f6fc;
+    --pure-white: #ffffff;
     --shadow-gray: rgba(0, 0, 0, 0.1);
-    --ninja-accent: #513AE8; /* Accent pour les éléments ponctuels */
-    --ninja-red: #FF3B30; /* Rouge pour le bandeau du ninja */
+    --ninja-accent: #2f81f7; /* Accent bleu pour les éléments ponctuels */
+    --ninja-red: #da3633; /* Rouge pour les éléments d'alerte */
 }
 
-/* Logo MarkEasy */
-.markeasy-logo {
+/* Logo NinjaLead */
+.ninjalead-logo, .markeasy-logo {
     height: 40px;
     display: block;
 }
 
-.markeasy-logo-large {
+.ninjalead-logo-large, .markeasy-logo-large {
     height: 60px;
     margin-bottom: 1rem;
 }
 
-.markeasy-title {
+.ninjalead-title, .markeasy-title {
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
     background: linear-gradient(90deg, var(--carbon-black) 50%, var(--vibrant-orange) 50%);

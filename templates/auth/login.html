@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %}{{ _('Connexion') }} | MarkEasy{% endblock %}
+{% block title %}{{ _('Connexion') }} | NinjaLead{% endblock %}
 
 {% block content %}
 <div class="auth-container">
@@ -9,10 +9,10 @@
             <div class="col-md-6 col-lg-5">
                 <div class="auth-card">
                     <div class="auth-card-header">
-                        <h3 class="mb-0">{{ _('Connexion MarkEasy') }}</h3>
+                        <h3 class="mb-0">{{ _('Connexion NinjaLead') }}</h3>
                     </div>
                     <div class="text-center mt-3">
-                        <img src="{{ url_for('static', filename='img/markeasy-ninja.png') }}" alt="MarkEasy Ninja Logo" class="auth-logo">
+                        <img src="{{ url_for('static', filename='img/markeasy-ninja.png') }}" alt="NinjaLead Ninja Logo" class="auth-logo">
                     </div>
                     <div class="auth-card-body">
                     {% for category, message in get_flashed_messages(with_categories=true) %}
