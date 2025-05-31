@@ -223,9 +223,7 @@ def load_user(user_id):
         # Si l'ID n'est pas un entier, il s'agit d'un UUID
         return User.query.get(user_id)
 
-# Importation et enregistrement du blueprint d'authentification Google
-from google_auth import google_auth
-app.register_blueprint(google_auth)
+# Authentification Google supprimée comme demandé
 
 # Importation et initialisation de l'authentification Replit
 from replit_auth import init_auth
