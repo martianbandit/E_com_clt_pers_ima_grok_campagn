@@ -2978,6 +2978,41 @@ def metrics_dashboard():
         category_labels = [cat[0] or _("Non catégorisé") for cat in category_stats]
         category_counts = [cat[1] for cat in category_stats]
         
+        # Données détaillées pour les générations par type
+        generation_stats = db.session.query(
+            Metric.name, db.func.count(Metric.id)
+        ).filter(
+            Metric.category == 'generation'
+        ).group_by(Metric.name).all()
+        
+        # Analyser les types de générations basés sur les noms des métriques
+        generation_types = {
+            'images': 0,
+            'personas': 0,
+            'campaigns': 0,
+            'profiles': 0,
+            'products': 0,
+            'content': 0,
+            'other': 0
+        }
+        
+        for metric_name, count in generation_stats:
+            metric_lower = metric_name.lower()
+            if any(keyword in metric_lower for keyword in ['image', 'avatar', 'picture', 'photo']):
+                generation_types['images'] += count
+            elif any(keyword in metric_lower for keyword in ['persona', 'character', 'portrait']):
+                generation_types['personas'] += count
+            elif any(keyword in metric_lower for keyword in ['campaign', 'marketing', 'ad', 'promotion']):
+                generation_types['campaigns'] += count
+            elif any(keyword in metric_lower for keyword in ['profile', 'customer', 'client']):
+                generation_types['profiles'] += count
+            elif any(keyword in metric_lower for keyword in ['product', 'item', 'description']):
+                generation_types['products'] += count
+            elif any(keyword in metric_lower for keyword in ['content', 'text', 'copy', 'writing']):
+                generation_types['content'] += count
+            else:
+                generation_types['other'] += count
+        
         # Données pour le graphique des temps de réponse
         time_stats = db.session.query(
             Metric.name, db.func.avg(Metric.execution_time)
@@ -3014,6 +3049,15 @@ def metrics_dashboard():
         trend_counts = []
         time_labels = []
         time_values = []
+        generation_types = {
+            'images': 0,
+            'personas': 0,
+            'campaigns': 0,
+            'profiles': 0,
+            'products': 0,
+            'content': 0,
+            'other': 0
+        }
     
     # Fonction pour déterminer la couleur de la catégorie
     def get_category_color(category):
@@ -3047,6 +3091,7 @@ def metrics_dashboard():
         time_values=time_values,
         trend_dates=trend_dates,
         trend_counts=trend_counts,
+        generation_stats=generation_types,
         category=category,
         start_date=start_date_str,
         end_date=end_date_str,
