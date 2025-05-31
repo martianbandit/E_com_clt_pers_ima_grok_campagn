@@ -1,0 +1,265 @@
+/* Styles pour les pages d'authentification - MarkEasy */
+
+/* Page d'authentification avec mode sombre par défaut */
+.auth-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+    padding: 2rem 0;
+}
+
+.auth-card {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.auth-card-header {
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-hover));
+    color: #ffffff;
+    border-radius: 14px 14px 0 0;
+    padding: 1.5rem;
+    text-align: center;
+    border: none;
+}
+
+.auth-card-body {
+    padding: 2rem;
+}
+
+/* Logo dans les pages d'auth */
+.auth-logo {
+    max-width: 180px;
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.auth-logo:hover {
+    transform: scale(1.05);
+}
+
+/* Boutons d'authentification sociale */
+.auth-social-btn {
+    border: 2px solid var(--border-color);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-weight: 500;
+}
+
+.auth-social-btn:hover {
+    background: var(--border-color);
+    border-color: var(--accent-orange);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+}
+
+.auth-social-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Boutons spéciaux */
+.auth-social-btn.google {
+    border-color: #4285f4;
+}
+
+.auth-social-btn.google:hover {
+    border-color: #4285f4;
+    background: rgba(66, 133, 244, 0.1);
+}
+
+.auth-social-btn.github {
+    border-color: var(--text-secondary);
+}
+
+.auth-social-btn.github:hover {
+    border-color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.auth-social-btn.replit {
+    border-color: #ff6b35;
+}
+
+.auth-social-btn.replit:hover {
+    border-color: #ff6b35;
+    background: rgba(255, 107, 53, 0.1);
+}
+
+/* Formulaires d'authentification */
+.auth-form-control {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+}
+
+.auth-form-control:focus {
+    background: var(--bg-secondary);
+    border-color: var(--accent-orange);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.25);
+}
+
+.auth-form-control::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+.auth-input-group-text {
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    color: var(--accent-orange);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+}
+
+.auth-input-group .auth-form-control {
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+}
+
+.auth-form-label {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Bouton principal d'authentification */
+.auth-btn-primary {
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-hover));
+    border: none;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 0.875rem 2rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.auth-btn-primary:hover {
+    background: linear-gradient(135deg, var(--accent-orange-hover), var(--accent-orange-dark));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+    color: #ffffff;
+}
+
+/* Séparateur "ou" */
+.auth-divider {
+    position: relative;
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+.auth-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.auth-divider span {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    padding: 0 1rem;
+    font-size: 0.9rem;
+}
+
+/* Footer de la carte d'auth */
+.auth-card-footer {
+    background: var(--bg-tertiary);
+    border-top: 1px solid var(--border-color);
+    border-radius: 0 0 14px 14px;
+    padding: 1rem 1.5rem;
+    text-align: center;
+}
+
+.auth-card-footer a {
+    color: var(--accent-orange);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-card-footer a:hover {
+    color: var(--accent-orange-hover);
+    text-decoration: underline;
+}
+
+/* Messages d'alerte dans l'auth */
+.auth-alert {
+    background: rgba(255, 107, 53, 0.1);
+    border: 1px solid var(--accent-orange);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.auth-alert.error {
+    background: rgba(218, 54, 51, 0.1);
+    border-color: var(--red-accent);
+}
+
+.auth-alert.success {
+    background: rgba(35, 134, 54, 0.1);
+    border-color: var(--green-accent);
+}
+
+/* Lien de retour */
+.auth-back-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.auth-back-link:hover {
+    color: var(--accent-orange);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 1rem;
+    }
+    
+    .auth-card-body {
+        padding: 1.5rem;
+    }
+    
+    .auth-logo {
+        max-width: 150px;
+    }
+}
+
+/* Animation d'entrée */
+@keyframes authFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-card {
+    animation: authFadeIn 0.6s ease-out;
+}

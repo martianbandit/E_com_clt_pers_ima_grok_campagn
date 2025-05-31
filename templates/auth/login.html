@@ -3,17 +3,18 @@
 {% block title %}{{ _('Connexion') }} | MarkEasy{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white text-center py-3">
-                    <h3 class="mb-0">{{ _('Connexion MarkEasy') }}</h3>
-                </div>
-                <div class="text-center mt-3">
-                    <img src="{{ url_for('static', filename='img/markeasy-ninja.png') }}" alt="MarkEasy Ninja Logo" class="img-fluid" style="max-width: 200px;">
-                </div>
-                <div class="card-body p-4">
+<div class="auth-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="auth-card">
+                    <div class="auth-card-header">
+                        <h3 class="mb-0">{{ _('Connexion MarkEasy') }}</h3>
+                    </div>
+                    <div class="text-center mt-3">
+                        <img src="{{ url_for('static', filename='img/markeasy-ninja.png') }}" alt="MarkEasy Ninja Logo" class="auth-logo">
+                    </div>
+                    <div class="auth-card-body">
                     {% for category, message in get_flashed_messages(with_categories=true) %}
                     <div class="alert alert-{{ category }}" role="alert">
                         {{ message }}
@@ -22,57 +23,58 @@
                     
                     <!-- Connexion avec Replit (OpenID Connect) -->
                     <div class="mb-3">
-                        <a href="{{ url_for('replit_auth.login') }}" class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center gap-2 py-2">
-                            <img src="{{ url_for('static', filename='img/replit-logo.svg') }}" alt="Replit Logo" width="24" height="24">
+                        <a href="{{ url_for('replit_auth.login') }}" class="auth-social-btn replit w-100">
+                            <img src="{{ url_for('static', filename='img/replit-logo.svg') }}" alt="Replit Logo">
                             <span>{{ _('Se connecter avec Replit') }}</span>
                         </a>
                     </div>
                     
                     <!-- Connexion avec GitHub -->
                     <div class="mb-3">
-                        <a href="{{ url_for('github.login') }}" class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center gap-2 py-2">
-                            <img src="{{ url_for('static', filename='img/github-logo.svg') }}" alt="GitHub Logo" width="24" height="24">
+                        <a href="{{ url_for('github.login') }}" class="auth-social-btn github w-100">
+                            <img src="{{ url_for('static', filename='img/github-logo.svg') }}" alt="GitHub Logo">
                             <span>{{ _('Se connecter avec GitHub') }}</span>
                         </a>
                     </div>
                     
                     <!-- Connexion avec Google -->
                     <div class="mb-3">
-                        <a href="{{ url_for('google_auth.login') }}" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2 py-2">
-                            <img src="{{ url_for('static', filename='img/google-logo.svg') }}" alt="Google Logo" width="24" height="24">
+                        <a href="{{ url_for('google_auth.login') }}" class="auth-social-btn google w-100">
+                            <img src="{{ url_for('static', filename='img/google-logo.svg') }}" alt="Google Logo">
                             <span>{{ _('Se connecter avec Google') }}</span>
                         </a>
                     </div>
                     
-                    <div class="text-center mt-3 mb-4">
-                        <span class="text-muted">{{ _('ou') }}</span>
+                    <div class="auth-divider">
+                        <span>{{ _('ou') }}</span>
                     </div>
                     
                     <!-- Formulaire de connexion classique -->
                     <form method="POST" action="{{ url_for('login') }}">
                         <div class="mb-3">
-                            <label for="username" class="form-label">{{ _('Nom d\'utilisateur ou e-mail') }}</label>
+                            <label for="username" class="auth-form-label">{{ _('Nom d\'utilisateur ou e-mail') }}</label>
                             <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                <input type="text" class="form-control" id="username" name="username" required>
+                                <span class="auth-input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="auth-form-control" id="username" name="username" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="password" class="form-label">{{ _('Mot de passe') }}</label>
+                            <label for="password" class="auth-form-label">{{ _('Mot de passe') }}</label>
                             <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" id="password" name="password" required>
+                                <span class="auth-input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="auth-form-control" id="password" name="password" required>
                             </div>
                         </div>
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
+                            <button type="submit" class="auth-btn-primary btn-lg">
                                 <i class="fas fa-sign-in-alt me-2"></i> {{ _('Se connecter') }}
                             </button>
                         </div>
                     </form>
-                </div>
-                <div class="card-footer text-center py-3">
-                    <div class="small">{{ _('Première visite ?') }} <a href="{{ url_for('register') }}">{{ _('Créez votre compte ici !') }}</a></div>
+                    </div>
+                    <div class="auth-card-footer">
+                        <div class="small">{{ _('Première visite ?') }} <a href="{{ url_for('register') }}">{{ _('Créez votre compte ici !') }}</a></div>
+                    </div>
                 </div>
             </div>
         </div>
