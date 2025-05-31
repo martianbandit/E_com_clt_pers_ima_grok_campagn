@@ -42,9 +42,23 @@
                             <select class="form-select" name="customer_id">
                                 <option value="">Choose a customer...</option>
                                 {% for customer in saved_customers %}
-                                    <option value="{{ customer.id }}">{{ customer.name }} - {{ customer.email or 'No email' }}</option>
+                                    <option value="{{ customer.id }}">
+                                        {{ customer.name }}
+                                        {% if customer.persona and customer.avatar_url %}
+                                            ⭐ (Persona + Avatar)
+                                        {% elif customer.persona %}
+                                            ✨ (Persona)
+                                        {% endif %}
+                                        - {{ customer.email or customer.location or 'No email' }}
+                                    </option>
                                 {% endfor %}
                             </select>
+                            {% if saved_customers %}
+                                <div class="form-text">
+                                    ⭐ = Profiles with persona and avatar (recommended)<br>
+                                    ✨ = Profiles with persona only
+                                </div>
+                            {% endif %}
                         </div>
                         
                         <div class="mb-3">
