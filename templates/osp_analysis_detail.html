@@ -431,7 +431,7 @@
                                                         <li class="list-group-item">
                                                             {{ headline }}
                                                             <button class="btn btn-sm btn-outline-secondary float-end copy-btn" 
-                                                                    onclick="copyToClipboard('{{ headline|replace("'", "\\'") }}')">
+                                                                    onclick="copyToClipboard(`{{ headline|replace('`', '\\`') }}`)">
                                                                 <i class="bi bi-clipboard"></i>
                                                             </button>
                                                         </li>
@@ -450,7 +450,7 @@
                                                         <li class="list-group-item">
                                                             {{ statement }}
                                                             <button class="btn btn-sm btn-outline-secondary float-end copy-btn" 
-                                                                    onclick="copyToClipboard('{{ statement|replace("'", "\\'") }}')">
+                                                                    onclick="copyToClipboard(`{{ statement|replace('`', '\\`') }}`)"
                                                                 <i class="bi bi-clipboard"></i>
                                                             </button>
                                                         </li>
