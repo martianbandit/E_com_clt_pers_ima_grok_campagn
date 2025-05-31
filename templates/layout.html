@@ -120,6 +120,9 @@
     {% from 'components/toast.html' import toast_script %}
     {{ toast_script() }}
     
+    <!-- MarkEasy Animations -->
+    <script src="{{ url_for('static', filename='js/markeasy-animations.js') }}"></script>
+    
     {% block scripts %}{% endblock %}
 </body>
 </html>
