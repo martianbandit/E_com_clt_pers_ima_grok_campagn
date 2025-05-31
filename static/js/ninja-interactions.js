@@ -56,16 +56,16 @@ document.addEventListener('DOMContentLoaded', function() {
         let typeTitle = type;
         switch(type) {
             case 'success':
-                typeTitle = '{{ _("Succès") }}';
+                typeTitle = 'Succès';
                 break;
             case 'error':
-                typeTitle = '{{ _("Erreur") }}';
+                typeTitle = 'Erreur';
                 break;
             case 'warning':
-                typeTitle = '{{ _("Avertissement") }}';
+                typeTitle = 'Avertissement';
                 break;
             case 'info':
-                typeTitle = '{{ _("Information") }}';
+                typeTitle = 'Information';
                 break;
             default:
                 typeTitle = type.charAt(0).toUpperCase() + type.slice(1);
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const closeButton = document.createElement('button');
         closeButton.type = 'button';
         closeButton.className = 'btn-close';
-        closeButton.setAttribute('aria-label', '{{ _("Fermer") }}');
+        closeButton.setAttribute('aria-label', 'Fermer');
         closeButton.onclick = function() { this.parentElement.parentElement.remove(); };
         toastHeader.appendChild(closeButton);
         

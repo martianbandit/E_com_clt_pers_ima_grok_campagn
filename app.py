@@ -365,11 +365,11 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         
-        if user and user.password_hash and form.password.data and (user.password_hash and form.password.data and check_password_hash(user.password_hash, form.password.data)):
+        if user and user.password_hash and check_password_hash(user.password_hash, form.password.data):
             login_user(user, remember=form.remember.data)
             # Mise à jour des statistiques de connexion
             user.login_count = (user.login_count or 0) + 1
-            user.last_login_at = datetime.datetime.now()
+            user.last_login_at = datetime.utcnow()
             db.session.commit()
             
             # Redirection vers la page demandée ou la page d'accueil
