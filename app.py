@@ -6,10 +6,7 @@ import uuid
 import sys
 import stripe
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, g
-from markupsafe import Markup, escape
-import html
-import re
-from werkzeug.security import check_password_hash, generate_password_hash
+from markupsafe import Markup
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -26,63 +23,8 @@ logging.basicConfig(level=logging.DEBUG,
 
 logger = logging.getLogger("NinjaMark")
 
-def secure_log(level, message, **kwargs):
-    """Log sécurisé qui masque les informations sensibles"""
-    sensitive_fields = ['password', 'token', 'key', 'secret', 'email']
-    
-    # Masquer les informations sensibles dans le message
-    for field in sensitive_fields:
-        if field in message.lower():
-            message = re.sub(f'{field}[=:]\s*[\w@.-]+', f'{field}=***', message, flags=re.IGNORECASE)
-    
-    # Masquer les informations sensibles dans kwargs
-    safe_kwargs = {}
-    for key, value in kwargs.items():
-        if any(sensitive in key.lower() for sensitive in sensitive_fields):
-            safe_kwargs[key] = '***'
-        else:
-            safe_kwargs[key] = value
-    
-    logger.log(level, message, extra=safe_kwargs)
-
-
-# Protection basique contre les attaques par déni de service
-from collections import defaultdict
-from time import time
-
-request_counts = defaultdict(list)
-
-def rate_limit_check(ip_address, max_requests=100, time_window=3600):
-    """Vérifie les limites de taux de requête par IP"""
-    current_time = time()
-    
-    # Nettoyer les anciennes requêtes
-    request_counts[ip_address] = [
-        req_time for req_time in request_counts[ip_address]
-        if current_time - req_time < time_window
-    ]
-    
-    # Vérifier si la limite est dépassée
-    if len(request_counts[ip_address]) >= max_requests:
-        return False
-    
-    # Ajouter la requête actuelle
-    request_counts[ip_address].append(current_time)
-    return True
-
 # Module de gestion des erreurs
 from error_handlers import register_error_handlers
-
-def validate_sql_params(**kwargs):
-    """Valide les paramètres SQL pour prévenir les injections"""
-    validated = {}
-    for key, value in kwargs.items():
-        if value is not None:
-            # Suppression des caractères SQL dangereux
-            if isinstance(value, str):
-                value = re.sub(r'[\'";]', '', str(value))
-            validated[key] = value
-    return validated
 
 class Base(DeclarativeBase):
     pass
@@ -90,107 +32,12 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 # create the app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-please-change-in-production")
+app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
-
-# Configuration de sécurité
-app.config['SESSION_COOKIE_SECURE'] = True
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(hours=1)
-
-# Middleware de sécurité pour les en-têtes
-@app.after_request
-def add_security_headers(response):
-    """Ajoute les en-têtes de sécurité à toutes les réponses"""
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['X-Frame-Options'] = 'DENY'
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'"
-    return response
 
 # Configuration OAuth GitHub
 app.config["GITHUB_OAUTH_CLIENT_ID"] = os.environ.get("GITHUB_CLIENT_ID")
 app.config["GITHUB_OAUTH_CLIENT_SECRET"] = os.environ.get("GITHUB_CLIENT_SECRET")
-
-# Fonctions de sécurité pour valider les entrées
-def sanitize_input(input_data, input_type="text"):
-    """Nettoie et valide les entrées utilisateur pour prévenir XSS et injections"""
-    if not input_data:
-        return ""
-    
-    # Conversion en string et nettoyage de base
-    cleaned = str(input_data).strip()
-    
-    # Suppression des caractères de contrôle dangereux
-    cleaned = re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]', '', cleaned)
-    
-    if input_type == "email":
-        # Validation email
-        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if not re.match(email_pattern, cleaned):
-            raise ValueError("Format d'email invalide")
-    
-    elif input_type == "html":
-        # Échappement HTML pour prévenir XSS
-        cleaned = escape(cleaned)
-    
-    elif input_type == "url":
-        # Validation URL basique
-        if cleaned and not cleaned.startswith(('http://', 'https://')):
-            raise ValueError("URL invalide")
-    
-    return cleaned
-
-def validate_form_data(form_data, required_fields=None):
-    """Valide les données de formulaire"""
-    if required_fields is None:
-        required_fields = []
-    
-    validated_data = {}
-    for field, value in form_data.items():
-        if field in required_fields and not value:
-            raise ValueError(f"Le champ {field} est requis")
-        
-        # Nettoyage des données selon le type de champ
-        if field.endswith('_email'):
-            validated_data[field] = sanitize_input(value, "email")
-        elif field.endswith('_url'):
-            validated_data[field] = sanitize_input(value, "url")
-        else:
-            validated_data[field] = sanitize_input(value, "html")
-    
-    return validated_data
-def secure_file_upload(file):
-    """Valide de manière sécurisée les fichiers uploadés"""
-    if not file or not file.filename:
-        return False, "Aucun fichier sélectionné"
-    
-    # Extensions autorisées
-    ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.pdf', '.txt', '.csv'}
-    file_ext = os.path.splitext(file.filename)[1].lower()
-    
-    if file_ext not in ALLOWED_EXTENSIONS:
-        return False, f"Extension non autorisée: {file_ext}"
-    
-    # Taille maximale (5MB)
-    MAX_FILE_SIZE = 5 * 1024 * 1024
-    file.seek(0, os.SEEK_END)
-    size = file.tell()
-    file.seek(0)
-    
-    if size > MAX_FILE_SIZE:
-        return False, "Fichier trop volumineux (max 5MB)"
-    
-    # Vérification du nom de fichier
-    import string
-    allowed_chars = string.ascii_letters + string.digits + '.-_'
-    if not all(c in allowed_chars for c in file.filename):
-        return False, "Nom de fichier contient des caractères non autorisés"
-    
-    return True, "Fichier valide"
-
 
 # Rendre current_user et d'autres variables disponibles dans tous les templates
 @app.context_processor
@@ -238,15 +85,6 @@ app.register_blueprint(stripe_bp)
 # Initialisation de l'authentification GitHub
 github_bp = make_github_blueprint(scope=["user:email"])
 app.register_blueprint(github_bp, url_prefix="/github")
-
-# Protection contre les attaques par déni de service
-@app.before_request
-def check_rate_limit():
-    """Vérifie les limites de taux avant chaque requête"""
-    client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-    
-    if not rate_limit_check(client_ip):
-        return jsonify({'error': 'Trop de requêtes'}), 429
 
 # Route d'accueil
 @app.route('/home')
@@ -365,7 +203,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         
-        if user and user.password_hash and form.password.data and (user.password_hash and form.password.data and check_password_hash(user.password_hash, form.password.data)):
+        if user and user.password_hash and check_password_hash(user.password_hash, form.password.data):
             login_user(user, remember=form.remember.data)
             # Mise à jour des statistiques de connexion
             user.login_count = (user.login_count or 0) + 1
@@ -414,7 +252,7 @@ def register():
         user.id = user_id
         user.username = form.username.data
         user.email = form.email.data
-        user.password_hash = generate_password_hash(form.password.data) if form.password.data else None
+        user.password_hash = generate_password_hash(form.password.data)
         user.role = 'user'
         user.active = True
         user.created_at = datetime.utcnow()
@@ -582,7 +420,7 @@ def update_password():
         # Pour la démo, on accepte admin comme mot de passe actuel
         if current_password == 'admin' and new_password == confirm_password:
             # Hasher le nouveau mot de passe
-            current_user.password_hash = generate_password_hash(new_password) if new_password else None
+            current_user.password_hash = generate_password_hash(new_password)
             
             # Enregistrer l'activité
             activity = UserActivity.log_activity(
