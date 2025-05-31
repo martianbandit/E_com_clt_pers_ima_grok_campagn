@@ -262,6 +262,26 @@ def register():
     
     return render_template('auth/register.html', form=form)
 
+@app.route('/admin-direct-login')
+def admin_direct_login():
+    """Route pour connexion administrative directe - contourne l'authentification"""
+    from models import User
+    
+    try:
+        # Chercher l'utilisateur admin
+        admin_user = User.query.filter_by(email='admin@markeasy.com').first()
+        
+        if admin_user:
+            login_user(admin_user, remember=True)
+            flash('Connexion administrative réussie', 'success')
+            return redirect(url_for('dashboard'))
+        else:
+            flash('Compte administrateur non trouvé', 'danger')
+            return redirect(url_for('landing'))
+    except Exception as e:
+        flash(f'Erreur lors de la connexion : {str(e)}', 'danger')
+        return redirect(url_for('landing'))
+
 @app.route('/logout')
 @login_required
 def logout():
