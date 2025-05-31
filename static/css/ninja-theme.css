@@ -11,6 +11,57 @@
     --ninja-red: #da3633; /* Rouge pour les éléments d'alerte */
 }
 
+/* Optimisations mobiles */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn-group .btn {
+        width: auto;
+    }
+    
+    .table-responsive {
+        border: none;
+    }
+    
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+    
+    .avatar-image {
+        max-width: 80px !important;
+        max-height: 80px !important;
+    }
+    
+    .breadcrumb {
+        font-size: 0.875rem;
+        padding: 0.5rem 0;
+    }
+    
+    .card-header h5 {
+        font-size: 1rem;
+    }
+    
+    .row.mb-3 {
+        margin-bottom: 1rem !important;
+    }
+    
+    .col-md-4 {
+        margin-bottom: 0.5rem;
+    }
+}
+
 /* Logo NinjaLead */
 .ninjalead-logo, .markeasy-logo {
     height: 40px;

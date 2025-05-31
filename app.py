@@ -1275,6 +1275,8 @@ def campaigns():
     if request.method == 'POST':
         profile_source = request.form.get('profile_source', 'session')
         campaign_type = request.form.get('campaign_type', 'email')
+        niche_focus = request.form.get('niche_focus')
+        find_products = request.form.get('find_products') == '1'
         
         # Obtenir le profil soit de la session, soit de la base de données
         profile = None
@@ -1332,6 +1334,19 @@ def campaigns():
                     "prompt": image_prompt
                 })
             
+            # Déterminer la niche pour la recherche de produits
+            selected_niche = None
+            if niche_focus:
+                selected_niche = NicheMarket.query.get(niche_focus)
+            elif profile.get('interests'):
+                # Auto-détecter la niche depuis les intérêts du client
+                interests = profile.get('interests', [])
+                if interests:
+                    niche_name = interests[0] if isinstance(interests, list) else interests
+                    selected_niche = NicheMarket.query.filter(
+                        NicheMarket.name.ilike(f'%{niche_name}%')
+                    ).first()
+            
             # Créer et sauvegarder la campagne
             campaign = Campaign(
                 title=request.form.get('title', f"Campaign for {profile.get('name', 'Customer')}"),
@@ -1339,12 +1354,36 @@ def campaigns():
                 campaign_type=campaign_type,
                 profile_data=profile,
                 image_url=image_url,
-                customer_id=customer_id
+                customer_id=customer_id,
+                niche_focus=selected_niche.name if selected_niche else None
             )
             db.session.add(campaign)
             db.session.commit()
             
-            flash('Campaign created successfully', 'success')
+            # Rechercher des produits similaires si demandé
+            if find_products and selected_niche:
+                try:
+                    from aliexpress_search import search_similar_products
+                    product_description = f"{campaign_type} for {selected_niche.name}"
+                    if selected_niche.description:
+                        product_description += f" - {selected_niche.description}"
+                    
+                    similar_products = search_similar_products(
+                        product_description,
+                        campaign.id,
+                        niche=selected_niche.name,
+                        max_results=3
+                    )
+                    
+                    if similar_products:
+                        flash(f'Campaign created with {len(similar_products)} relevant products found', 'success')
+                    else:
+                        flash('Campaign created successfully', 'success')
+                except Exception as e:
+                    logging.error(f"Error finding products for campaign: {e}")
+                    flash('Campaign created successfully (product search unavailable)', 'success')
+            else:
+                flash('Campaign created successfully', 'success')
             
             # Rediriger vers la page de détail de la campagne
             return redirect(url_for('view_campaign', campaign_id=campaign.id))
@@ -1368,10 +1407,14 @@ def campaigns():
     # Récupérer les clients sauvegardés pour la sélection
     saved_customers = Customer.query.order_by(Customer.name).all()
     
+    # Récupérer les niches pour la sélection
+    niches = NicheMarket.query.filter_by(owner_id=current_user.id).order_by(NicheMarket.name).all()
+    
     return render_template('campaigns.html', 
                           campaigns=campaigns, 
                           profiles=customer_profiles,
-                          saved_customers=saved_customers)
+                          saved_customers=saved_customers,
+                          niches=niches)
 
 @app.route('/api/boutiques', methods=['POST'])
 @login_required

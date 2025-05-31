@@ -37,7 +37,29 @@
                                 <option value="sms">SMS Message</option>
                                 <option value="ad">Online Advertisement</option>
                                 <option value="product_description">Product Description</option>
+                                <option value="product_marketing">Product Marketing Campaign</option>
                             </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="niche_focus" class="form-label">Niche Focus</label>
+                            <select class="form-select" id="niche_focus" name="niche_focus">
+                                <option value="">Auto-detect from customer profile</option>
+                                {% for niche in niches %}
+                                <option value="{{ niche.id }}">{{ niche.name }} - {{ niche.description }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">Select a specific niche to find relevant products automatically</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="find_products" name="find_products" value="1">
+                                <label class="form-check-label" for="find_products">
+                                    Find Similar Products
+                                </label>
+                            </div>
+                            <div class="form-text">Automatically search for relevant products based on the niche and customer profile</div>
                         </div>
                         
                         <div class="mb-3">
