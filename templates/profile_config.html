@@ -1,0 +1,292 @@
+{% extends "layout.html" %}
+
+{% block title %}Configuration du profil | NinjaLead{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4"><i class="fas fa-user-cog me-2"></i>Configuration du profil</h1>
+            
+            <!-- Statistiques utilisateur -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Tokens restants</h6>
+                                    <h3>{{ user.tokens_remaining }}</h3>
+                                    <small>/ {{ user.tokens_total }} tokens</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-coins fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Plan actuel</h6>
+                                    <h3>{{ user.plan_name.title() }}</h3>
+                                    {% if user.plan_days_remaining %}
+                                        <small>{{ user.plan_days_remaining }} jours restants</small>
+                                    {% else %}
+                                        <small>Illimité</small>
+                                    {% endif %}
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-crown fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Campagnes</h6>
+                                    <h3>{{ user_stats.total_campaigns }}</h3>
+                                    <small>Créées</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-bullhorn fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Clients</h6>
+                                    <h3>{{ user_stats.total_customers }}</h3>
+                                    <small>Analysés</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-users fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Configuration du profil -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card border-primary shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-user-edit me-2"></i>Informations personnelles</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="{{ url_for('update_profile') }}">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="first_name" class="form-label">Prénom</label>
+                                            <input type="text" class="form-control" id="first_name" name="first_name" 
+                                                   value="{{ user.first_name or '' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="last_name" class="form-label">Nom</label>
+                                            <input type="text" class="form-control" id="last_name" name="last_name" 
+                                                   value="{{ user.last_name or '' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="username" class="form-label">Nom d'utilisateur</label>
+                                            <input type="text" class="form-control" id="username" name="username" 
+                                                   value="{{ user.username or '' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="email" name="email" 
+                                                   value="{{ user.email or '' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="job_title" class="form-label">Poste</label>
+                                            <input type="text" class="form-control" id="job_title" name="job_title" 
+                                                   value="{{ user.job_title or '' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="company" class="form-label">Entreprise</label>
+                                            <input type="text" class="form-control" id="company" name="company" 
+                                                   value="{{ user.company or '' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="avatar_url" class="form-label">URL de l'avatar</label>
+                                    <input type="url" class="form-control" id="avatar_url" name="avatar_url" 
+                                           value="{{ user.avatar_url or '' }}" 
+                                           placeholder="https://exemple.com/mon-avatar.jpg">
+                                    <small class="form-text text-muted">URL de votre photo de profil personnalisée</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="bio" class="form-label">Biographie</label>
+                                    <textarea class="form-control" id="bio" name="bio" rows="3" 
+                                              placeholder="Parlez-nous de vous...">{{ user.bio or '' }}</textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Sauvegarder
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <!-- Avatar actuel -->
+                    <div class="card border-secondary shadow-sm mb-4">
+                        <div class="card-header bg-secondary text-white">
+                            <h6 class="mb-0"><i class="fas fa-image me-2"></i>Avatar actuel</h6>
+                        </div>
+                        <div class="card-body text-center">
+                            {% if user.avatar_url %}
+                                <img src="{{ user.avatar_url }}" alt="Avatar" class="rounded-circle mb-3" 
+                                     style="width: 120px; height: 120px; object-fit: cover;">
+                            {% elif user.profile_image_url %}
+                                <img src="{{ user.profile_image_url }}" alt="Avatar" class="rounded-circle mb-3" 
+                                     style="width: 120px; height: 120px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 120px; height: 120px;">
+                                    <i class="fas fa-user fa-3x text-white"></i>
+                                </div>
+                            {% endif %}
+                            <h6>{{ user.first_name or user.username or 'Utilisateur' }} {{ user.last_name or '' }}</h6>
+                            <small class="text-muted">{{ user.email }}</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Lien de parrainage -->
+                    <div class="card border-info shadow-sm mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0"><i class="fas fa-share-alt me-2"></i>Lien de parrainage</h6>
+                        </div>
+                        <div class="card-body">
+                            {% if referral_url %}
+                                <p><strong>Votre code :</strong> {{ user.referral_code }}</p>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" value="{{ referral_url }}" 
+                                           id="referralLink" readonly>
+                                    <button class="btn btn-outline-info" type="button" 
+                                            onclick="copyToClipboard('referralLink')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                                <small class="form-text text-muted mt-2">
+                                    Partagez ce lien pour inviter de nouveaux utilisateurs
+                                </small>
+                            {% else %}
+                                <p class="text-muted">Aucun code de parrainage généré</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Zone de danger -->
+                    <div class="card border-danger shadow-sm">
+                        <div class="card-header bg-danger text-white">
+                            <h6 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Zone de danger</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-danger">
+                                <strong>Attention :</strong> La suppression de votre compte est irréversible. 
+                                Toutes vos données seront définitivement perdues.
+                            </p>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" 
+                                    data-bs-target="#deleteAccountModal">
+                                <i class="fas fa-trash me-2"></i>Supprimer le compte
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmation de suppression -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteAccountModalLabel">Confirmer la suppression</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Êtes-vous sûr de vouloir supprimer votre compte ?</strong></p>
+                <p>Cette action supprimera définitivement :</p>
+                <ul>
+                    <li>Votre profil utilisateur</li>
+                    <li>Toutes vos campagnes ({{ user_stats.total_campaigns }})</li>
+                    <li>Tous vos clients analysés ({{ user_stats.total_customers }})</li>
+                    <li>Tous vos produits ({{ user_stats.total_products }})</li>
+                    <li>Toutes vos données et statistiques</li>
+                </ul>
+                <p class="text-danger"><strong>Cette action est irréversible !</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <form method="POST" action="{{ url_for('delete_account') }}" class="d-inline">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Supprimer définitivement
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    element.select();
+    element.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    
+    // Feedback visuel
+    const button = element.nextElementSibling;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i>';
+    button.classList.remove('btn-outline-info');
+    button.classList.add('btn-success');
+    
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.classList.remove('btn-success');
+        button.classList.add('btn-outline-info');
+    }, 2000);
+}
+</script>
+{% endblock %}

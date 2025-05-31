@@ -46,6 +46,16 @@ class User(UserMixin, db.Model):
     last_login_at = db.Column(db.DateTime, nullable=True)
     login_count = db.Column(db.Integer, default=0)
     active = db.Column(db.Boolean, default=True)  # Renamed from is_active to avoid conflict with UserMixin
+    
+    # Gestion des tokens et du plan
+    tokens_total = db.Column(db.Integer, default=1000)  # Tokens totaux alloués
+    tokens_used = db.Column(db.Integer, default=0)     # Tokens utilisés
+    plan_name = db.Column(db.String(50), default='free', nullable=False)  # free, pro, premium
+    plan_expires_at = db.Column(db.DateTime, nullable=True)  # Date d'expiration du plan
+    referral_code = db.Column(db.String(20), unique=True, nullable=True)  # Code de parrainage unique
+    
+    # Avatar
+    avatar_url = db.Column(db.String(500), nullable=True)  # URL de l'avatar personnalisé
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime,
@@ -57,6 +67,34 @@ class User(UserMixin, db.Model):
         self.last_login_at = datetime.utcnow()
         self.login_count = (self.login_count or 0) + 1
         return self
+    
+    @property
+    def tokens_remaining(self):
+        """Calcule les tokens restants"""
+        return max(0, self.tokens_total - self.tokens_used)
+    
+    @property
+    def plan_days_remaining(self):
+        """Calcule les jours restants du plan"""
+        if not self.plan_expires_at:
+            return None
+        delta = self.plan_expires_at - datetime.utcnow()
+        return max(0, delta.days) if delta.total_seconds() > 0 else 0
+    
+    def generate_referral_code(self):
+        """Génère un code de parrainage unique"""
+        if not self.referral_code:
+            import secrets
+            import string
+            self.referral_code = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
+        return self.referral_code
+    
+    def use_tokens(self, amount):
+        """Utilise des tokens et retourne True si l'opération réussit"""
+        if self.tokens_remaining >= amount:
+            self.tokens_used += amount
+            return True
+        return False
 
     def get_user_data(self):
         """Retourne les données utilisateur pour l'affichage du profil"""

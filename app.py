@@ -369,7 +369,7 @@ def login():
             login_user(user, remember=form.remember.data)
             # Mise à jour des statistiques de connexion
             user.login_count = (user.login_count or 0) + 1
-            user.last_login_at = datetime.now()
+            user.last_login_at = datetime.datetime.now()
             db.session.commit()
             
             # Redirection vers la page demandée ou la page d'accueil
@@ -417,8 +417,8 @@ def register():
         user.password_hash = generate_password_hash(form.password.data) if form.password.data else None
         user.role = 'user'
         user.active = True
-        user.created_at = datetime.now()
-        user.updated_at = datetime.now()
+        user.created_at = datetime.datetime.now()
+        user.updated_at = datetime.datetime.now()
         
         db.session.add(user)
         db.session.commit()
@@ -1357,7 +1357,7 @@ def campaigns():
                 customer_id=customer_id,
                 generation_params={
                     "niche_focus": selected_niche.name if selected_niche else None,
-                    "generation_timestamp": datetime.now().isoformat()
+                    "generation_timestamp": datetime.datetime.now().isoformat()
                 }
             )
             db.session.add(campaign)
@@ -1961,11 +1961,29 @@ def generate_customer_avatar(customer_id):
             'details': error_msg
         }), 500
 
-@app.route('/copy_ai_tool')
+@app.route('/profile')
 @login_required
-def copy_ai_tool():
-    """Page d'intégration de l'outil Copy.ai pour la génération de contenu"""
-    return render_template('copy_ai_tool.html')
+def user_profile_config():
+    """Page de configuration du profil utilisateur"""
+    # Générer le code de parrainage si nécessaire
+    if not current_user.referral_code:
+        current_user.generate_referral_code()
+        db.session.commit()
+    
+    # Calculer les statistiques de l'utilisateur
+    user_stats = {
+        'total_campaigns': Campaign.query.filter_by(owner_id=current_user.numeric_id).count() if current_user.numeric_id else 0,
+        'total_customers': Customer.query.filter_by(owner_id=current_user.numeric_id).count() if current_user.numeric_id else 0,
+        'total_products': Product.query.filter_by(owner_id=current_user.numeric_id).count() if current_user.numeric_id else 0,
+    }
+    
+    # URL complète du lien de parrainage
+    referral_url = url_for('register', ref=current_user.referral_code, _external=True) if current_user.referral_code else None
+    
+    return render_template('profile_config.html', 
+                         user=current_user, 
+                         user_stats=user_stats,
+                         referral_url=referral_url)
 
 @app.route('/image_generation', methods=['GET', 'POST'])
 def image_generation():
