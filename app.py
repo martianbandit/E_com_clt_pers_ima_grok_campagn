@@ -1408,16 +1408,20 @@ def campaigns():
     customer_profiles = session.get('customer_profiles', [])
     
     # Récupérer les clients sauvegardés pour la sélection
-    saved_customers = Customer.query.order_by(Customer.name).all()
+    saved_customers = Customer.query.filter_by(owner_id=current_user.numeric_id).order_by(Customer.name).all() if current_user.numeric_id else []
     
     # Récupérer les niches pour la sélection
-    niches = NicheMarket.query.filter_by(owner_id=current_user.id).order_by(NicheMarket.name).all()
+    niches = NicheMarket.query.filter_by(owner_id=current_user.numeric_id).all() if current_user.numeric_id else []
+    
+    # Vérifier s'il y a des profils disponibles (session ou base de données)
+    has_profiles = len(customer_profiles) > 0 or len(saved_customers) > 0
     
     return render_template('campaigns.html', 
                           campaigns=campaigns, 
                           profiles=customer_profiles,
                           saved_customers=saved_customers,
-                          niches=niches)
+                          niches=niches,
+                          has_profiles=has_profiles)
 
 @app.route('/api/boutiques', methods=['POST'])
 @login_required
@@ -1984,6 +1988,27 @@ def user_profile_config():
                          user=current_user, 
                          user_stats=user_stats,
                          referral_url=referral_url)
+
+@app.route('/delete_account', methods=['POST'])
+@login_required
+def delete_account():
+    """Route pour supprimer un compte utilisateur"""
+    try:
+        user_id = current_user.id
+        
+        # Supprimer toutes les données associées à l'utilisateur
+        # (Les contraintes CASCADE s'occupent de la suppression en cascade)
+        db.session.delete(current_user)
+        db.session.commit()
+        
+        flash('Your account has been successfully deleted.', 'success')
+        return redirect(url_for('index'))
+        
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"Error deleting account: {e}")
+        flash('An error occurred while deleting your account. Please try again.', 'danger')
+        return redirect(url_for('user_profile_config'))
 
 @app.route('/image_generation', methods=['GET', 'POST'])
 def image_generation():

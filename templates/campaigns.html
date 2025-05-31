@@ -12,14 +12,37 @@
                 <h5 class="mb-0">Create New Campaign</h5>
             </div>
             <div class="card-body">
-                {% if profiles %}
+                {% if has_profiles %}
                     <form action="/campaigns" method="POST" data-loading="true" data-loading-message="Génération de campagne en cours...">
                         <div class="mb-3">
-                            <label for="profile_index" class="form-label">Select Customer Profile</label>
-                            <select class="form-select" id="profile_index" name="profile_index" required>
+                            <label for="profile_source" class="form-label">Profile Source</label>
+                            <select class="form-select" id="profile_source" name="profile_source" required onchange="toggleProfileSelection()">
+                                <option value="">Choose source...</option>
+                                {% if profiles %}
+                                    <option value="session">Session Profiles ({{ profiles|length }})</option>
+                                {% endif %}
+                                {% if saved_customers %}
+                                    <option value="database">Saved Customers ({{ saved_customers|length }})</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3" id="session-profiles" style="display: none;">
+                            <label for="profile_index" class="form-label">Select Session Profile</label>
+                            <select class="form-select" name="profile_index">
                                 <option value="">Choose a profile...</option>
                                 {% for profile in profiles %}
                                     <option value="{{ loop.index0 }}">{{ profile.name }} ({{ profile.location }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3" id="database-customers" style="display: none;">
+                            <label for="customer_id" class="form-label">Select Saved Customer</label>
+                            <select class="form-select" name="customer_id">
+                                <option value="">Choose a customer...</option>
+                                {% for customer in saved_customers %}
+                                    <option value="{{ customer.id }}">{{ customer.name }} - {{ customer.email or 'No email' }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -80,6 +103,29 @@
                         <a href="/profiles" class="alert-link">Go to Profiles</a>
                     </div>
                 {% endif %}
+                
+                <script>
+                function toggleProfileSelection() {
+                    const profileSource = document.getElementById('profile_source').value;
+                    const sessionProfiles = document.getElementById('session-profiles');
+                    const databaseCustomers = document.getElementById('database-customers');
+                    
+                    // Hide both initially
+                    sessionProfiles.style.display = 'none';
+                    databaseCustomers.style.display = 'none';
+                    
+                    // Show relevant section
+                    if (profileSource === 'session') {
+                        sessionProfiles.style.display = 'block';
+                        sessionProfiles.querySelector('select').required = true;
+                        databaseCustomers.querySelector('select').required = false;
+                    } else if (profileSource === 'database') {
+                        databaseCustomers.style.display = 'block';
+                        databaseCustomers.querySelector('select').required = true;
+                        sessionProfiles.querySelector('select').required = false;
+                    }
+                }
+                </script>
             </div>
         </div>
     </div>
