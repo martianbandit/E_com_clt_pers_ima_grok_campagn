@@ -2995,11 +2995,25 @@ def metrics_dashboard():
             db.func.count(Metric.id)
         ).filter(Metric.created_at >= week_ago).group_by('date').order_by('date').all()
         
-        trend_dates = [stat[0].strftime('%Y-%m-%d') for stat in trend_stats]
+        trend_dates = [stat[0].strftime('%m/%d') for stat in trend_stats]
         trend_counts = [stat[1] for stat in trend_stats]
+        
+        # Données de performance temporelle (métriques avec temps d'exécution)
+        time_metrics = Metric.query.filter(
+            Metric.execution_time.isnot(None),
+            Metric.execution_time > 0
+        ).order_by(Metric.execution_time.desc()).limit(10).all()
+        
+        time_labels = [m.name[:15] + '...' if len(m.name) > 15 else m.name for m in time_metrics]
+        time_values = [float(m.execution_time) for m in time_metrics]
+        
     else:
-        # S'il n'y a pas de métriques, initialiser avec une liste vide
+        # S'il n'y a pas de métriques, initialiser avec des listes vides
         metrics = []
+        trend_dates = []
+        trend_counts = []
+        time_labels = []
+        time_values = []
     
     # Fonction pour déterminer la couleur de la catégorie
     def get_category_color(category):
@@ -3011,7 +3025,10 @@ def metrics_dashboard():
             'generation': 'info',
             'user': 'success',
             'system': 'warning',
-            'import': 'danger'
+            'import': 'danger',
+            'profile': 'primary',
+            'persona': 'info',
+            'boutique': 'success'
         }
         
         return color_map.get(category.lower(), 'secondary')
