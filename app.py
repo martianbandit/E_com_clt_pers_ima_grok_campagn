@@ -49,6 +49,12 @@ def inject_template_globals():
         max=max
     )
 
+# Configuration de l'internationalisation simple pour éviter les erreurs de template
+@app.template_global()
+def _(text):
+    """Fonction simple pour l'internationalisation"""
+    return text
+
 # Initialize Stripe
 stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
 
@@ -72,12 +78,18 @@ def load_user(user_id):
         return User.query.get(user_id)
 
 # Importation et enregistrement du blueprint d'authentification Google
-from google_auth import google_auth
-app.register_blueprint(google_auth)
+try:
+    from google_auth import google_auth
+    app.register_blueprint(google_auth)
+except Exception as e:
+    logger.warning(f"Authentification Google non disponible: {e}")
 
 # Importation et initialisation de l'authentification Replit
-from replit_auth import init_auth
-init_auth(app, db)
+try:
+    from replit_auth import init_auth
+    init_auth(app, db)
+except Exception as e:
+    logger.warning(f"Authentification Replit non disponible: {e}")
 
 # Import and register Stripe payment blueprint
 from stripe_payment import stripe_bp
