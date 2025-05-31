@@ -1,159 +1,133 @@
 {% extends 'layout.html' %}
 
-{% block title %}NinjaLead - {{ _('Hyper-Personalized Marketing') }}{% endblock %}
+{% block title %}MarkEasy - Plateforme IA de Marketing Personnalisé{% endblock %}
 
 {% block content %}
-<!-- Hero section optimisé mobile -->
-<div class="hero-section bg-gradient-dark text-white p-3 p-md-5 rounded mb-3 mb-md-5">
-    <div class="text-center">
-        <h1 class="display-6 display-md-4 fw-bold mb-3">{{ _('Marketing Hyper-Personnalisé') }}</h1>
-        <p class="lead fs-6 fs-md-5 mb-3">{{ _('Créez des campagnes marketing ultra-ciblées avec l\'IA avancée') }}</p>
-        <p class="d-none d-md-block">
-            {{ _('Cette application utilise Grok AI et d\'autres modèles de langage pour générer des profils clients personnalisés, des personas détaillés, et du contenu marketing adapté en quelques secondes.') }}
-        </p>
+<div class="hero-section bg-gradient-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">MarkEasy</h1>
+                <p class="lead mb-4">Plateforme IA avancée pour générer des stratégies marketing hyper-personnalisées pour votre business.</p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('login') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Se Connecter
+                    </a>
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>S'inscrire
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="{{ url_for('static', filename='img/markeasy-ninja.png') }}" alt="MarkEasy Ninja" class="img-fluid" style="max-width: 300px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Fonctionnalités principales -->
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="h1 mb-3">Fonctionnalités Principales</h2>
+            <p class="lead text-muted">Tout ce dont vous avez besoin pour réussir votre marketing</p>
+        </div>
         
-        <!-- Boutons principaux optimisés mobile -->
-        <div class="d-grid d-md-flex gap-2 justify-content-md-center mt-4">
-            <a class="btn btn-primary btn-lg" href="{{ url_for('profiles') }}" role="button">
-                <i class="fas fa-users me-2"></i> {{ _('Profils') }}
-            </a>
-            <a class="btn btn-success btn-lg" href="{{ url_for('campaigns') }}" role="button">
-                <i class="fas fa-bullhorn me-2"></i> {{ _('Campagnes') }}
-            </a>
-            {% if not current_user.is_authenticated %}
-            <a href="{{ url_for('login') }}" class="btn btn-info btn-lg">
-                <i class="fas fa-sign-in-alt me-2"></i> {{ _('Connexion') }}
-            </a>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-<!-- Fonctionnalités principales optimisées mobile -->
-<div class="row g-3">
-    <div class="col-12 col-md-6 col-lg-4 mb-3">
-        <div class="card h-100 bg-dark border-secondary">
-            <div class="card-header bg-primary border-bottom border-secondary">
-                <h6 class="mb-0 text-white">
-                    <i class="fas fa-user-circle me-2"></i>{{ _('Profils Clients') }}
-                </h6>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                    <h5 class="card-title">Personas IA</h5>
+                    <p class="card-text text-muted">Générez automatiquement des personas clients détaillés avec l'intelligence artificielle.</p>
+                </div>
             </div>
-            <div class="card-body p-3">
-                <p class="text-light small mb-2">
-                    {{ _('Générez des profils clients basés sur différents marchés de niche avec des informations démographiques complètes.') }}
-                </p>
-                <p class="text-light small d-none d-md-block mb-3">
-                    {{ _('L\'IA crée des profils diversifiés et réalistes pour tester vos stratégies marketing.') }}
-                </p>
-                <div class="d-grid">
-                    <a href="{{ url_for('profiles') }}" class="btn btn-outline-primary btn-sm">{{ _('Explorer') }}</a>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-bullhorn fa-2x"></i>
+                    </div>
+                    <h5 class="card-title">Campagnes Marketing</h5>
+                    <p class="card-text text-muted">Créez des campagnes marketing personnalisées et optimisées pour votre audience.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-warning text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                    <h5 class="card-title">Analytics</h5>
+                    <p class="card-text text-muted">Suivez et analysez les performances de vos campagnes en temps réel.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-12 col-md-6 col-lg-4 mb-3">
-        <div class="card h-100 bg-dark border-secondary">
-            <div class="card-header bg-warning border-bottom border-secondary">
-                <h6 class="mb-0 text-dark">
-                    <i class="fas fa-id-card me-2"></i>{{ _('Personas Détaillés') }}
-                </h6>
-            </div>
-            <div class="card-body p-3">
-                <p class="text-light small mb-2">
-                    {{ _('Transformez les profils en personas riches qui donnent vie à votre audience cible.') }}
-                </p>
-                <p class="text-light small d-none d-md-block mb-3">
-                    {{ _('Portraits détaillés capturant lifestyle, motivations et comportements d\'achat.') }}
-                </p>
-                <div class="d-grid">
-                    <a href="{{ url_for('profiles') }}" class="btn btn-outline-warning btn-sm">{{ _('Générer') }}</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-md-6 col-lg-4 mb-3">
-        <div class="card h-100 bg-dark border-secondary">
-            <div class="card-header bg-danger border-bottom border-secondary">
-                <h6 class="mb-0 text-white">
-                    <i class="fas fa-store me-2"></i>{{ _('Boutiques & Produits') }}
-                </h6>
-            </div>
-            <div class="card-body p-3">
-                <p class="text-light small mb-2">
-                    {{ _('Gérez vos boutiques et importez des produits avec des descriptions optimisées.') }}
-                </p>
-                <p class="text-light small d-none d-md-block mb-3">
-                    {{ _('Import AliExpress, optimization SEO et templates Shopify automatiques.') }}
-                </p>
-                <div class="d-grid">
-                    <a href="{{ url_for('boutiques') }}" class="btn btn-outline-danger btn-sm">{{ _('Boutiques') }}</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-md-6 col-lg-4 mb-3">
-        <div class="card h-100 bg-dark border-secondary">
-            <div class="card-header bg-secondary border-bottom border-secondary">
-                <h6 class="mb-0 text-white">
-                    <i class="fas fa-search me-2"></i>{{ _('Audit SEO') }}
-                </h6>
-            </div>
-            <div class="card-body p-3">
-                <p class="text-light small mb-2">
-                    {{ _('Analysez et optimisez vos pages avec des audits SEO complets et automatisés.') }}
-                </p>
-                <p class="text-light small d-none d-md-block mb-3">
-                    {{ _('Recommandations personnalisées pour améliorer votre référencement naturel.') }}
-                </p>
-                <div class="d-grid">
-                    <a href="{{ url_for('seo_audit_tool') }}" class="btn btn-outline-secondary btn-sm">{{ _('Auditer') }}</a>
+    <!-- Section d'authentification -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8 text-center">
+            <div class="card border-0 shadow">
+                <div class="card-body p-5">
+                    <h3 class="mb-4">Commencez Maintenant</h3>
+                    <p class="text-muted mb-4">Rejoignez des milliers d'entrepreneurs qui utilisent MarkEasy pour développer leur business</p>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-sign-in-alt me-2"></i>Se Connecter
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg w-100">
+                                <i class="fas fa-user-plus me-2"></i>Créer un Compte
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <p class="small text-muted mb-3">Ou connectez-vous avec :</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{{ url_for('replit_auth.login') }}" class="btn btn-outline-secondary">
+                            <i class="fab fa-github me-1"></i>Replit
+                        </a>
+                        <a href="{{ url_for('github.login') }}" class="btn btn-outline-dark">
+                            <i class="fab fa-github me-1"></i>GitHub
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-4">
-    <div class="col-md-6 mb-4">
-        <div class="card h-100">
-            <div class="card-header theme-dependent theme-card-header-warning">
-                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i> {{ _('Marketing Metrics') }}</h5>
-            </div>
-            <div class="card-body">
-                <p>
-                    {{ _('Track and analyze the performance of your marketing activities with built-in metrics and monitoring.') }}
-                </p>
-                <p>
-                    {{ _('Measure success rates for profile generation, persona creation, content generation, and image creation to optimize your marketing process.') }}
-                </p>
-                <div class="d-grid gap-2">
-                    <a href="{{ url_for('metrics') }}" class="btn btn-outline-warning">{{ _('View Metrics') }}</a>
-                </div>
-            </div>
-        </div>
-    </div>
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
 
-    <div class="col-md-6 mb-4">
-        <div class="card h-100">
-            <div class="card-header theme-dependent theme-card-header-secondary">
-                <h5 class="mb-0"><i class="fas fa-store me-2"></i> {{ _('Boutique Niches') }}</h5>
-            </div>
-            <div class="card-body text-center">
-                <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="Ninja Analytics" class="img-fluid mb-3" style="max-height: 100px; opacity: 0.8;">
-                <p>
-                    {{ _('Explore predefined niche markets for boutique businesses or create your own.') }}
-                </p>
-                <p>
-                    {{ _('Each niche comes with key characteristics that help generate more relevant customer profiles and more effective marketing content.') }}
-                </p>
-                <div class="d-grid gap-2">
-                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">{{ _('Explore Niches') }}</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+.feature-icon {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .feature-icon {
+    transform: scale(1.1);
+}
+
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+</style>
 {% endblock %}

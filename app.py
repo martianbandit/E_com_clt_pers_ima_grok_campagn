@@ -257,29 +257,12 @@ def home():
 
 @app.route('/')
 def index():
-    """Page d'accueil principale"""
-    try:
-        if current_user.is_authenticated:
-            return redirect(url_for('dashboard'))
-        
-        # Afficher directement la page de connexion
-        from forms import LoginForm
-        form = LoginForm()
-        return render_template('auth/login.html', form=form)
-    except Exception as e:
-        # En cas d'erreur, afficher une page simple
-        return f"""
-        <html>
-        <head><title>MarkEasy - Connexion</title></head>
-        <body>
-            <h1>MarkEasy - Connexion</h1>
-            <p>Problème de connexion détecté: {str(e)}</p>
-            <a href="/login">Essayer la connexion</a> | 
-            <a href="/register">S'inscrire</a> |
-            <a href="/test">Page de test</a>
-        </body>
-        </html>
-        """
+    """Page d'accueil - landing page publique"""
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+    
+    # Page d'accueil avec présentation de l'application
+    return render_template('index.html')
 
 @app.route('/test')
 def test_page():
