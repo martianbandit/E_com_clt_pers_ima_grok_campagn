@@ -1,0 +1,251 @@
+/* Mode sombre à haut contraste pour NinjaMark */
+
+/* Variables de couleurs pour le mode sombre */
+:root {
+    --bg-primary: #000000;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0e0;
+    --accent-orange: #ff6b35;
+    --accent-orange-hover: #ff8a65;
+    --border-color: #404040;
+    --shadow-dark: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* Fond général */
+[data-bs-theme="dark"] body {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    font-weight: 400;
+}
+
+/* Titres */
+[data-bs-theme="dark"] h1, 
+[data-bs-theme="dark"] h2, 
+[data-bs-theme="dark"] h3, 
+[data-bs-theme="dark"] h4, 
+[data-bs-theme="dark"] h5, 
+[data-bs-theme="dark"] h6 {
+    color: var(--text-primary) !important;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Navigation */
+[data-bs-theme="dark"] .navbar {
+    background: var(--bg-secondary) !important;
+    border-bottom: 2px solid var(--accent-orange);
+    box-shadow: var(--shadow-dark);
+}
+
+[data-bs-theme="dark"] .navbar-brand {
+    color: var(--text-primary) !important;
+    font-weight: 700;
+}
+
+[data-bs-theme="dark"] .navbar-nav .nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    padding: 0.75rem 1rem !important;
+}
+
+[data-bs-theme="dark"] .navbar-nav .nav-link:hover,
+[data-bs-theme="dark"] .navbar-nav .nav-link:focus {
+    color: var(--accent-orange) !important;
+    background: rgba(255, 107, 53, 0.1);
+    border-radius: 0.5rem;
+}
+
+[data-bs-theme="dark"] .navbar-nav .nav-link.active {
+    color: var(--accent-orange) !important;
+    background: rgba(255, 107, 53, 0.2);
+    border-radius: 0.5rem;
+}
+
+/* Cartes */
+[data-bs-theme="dark"] .card {
+    background: var(--bg-secondary) !important;
+    border: 2px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    box-shadow: var(--shadow-dark);
+}
+
+[data-bs-theme="dark"] .card-header {
+    background: var(--bg-tertiary) !important;
+    border-bottom: 2px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-bs-theme="dark"] .card-title {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .card-text {
+    color: var(--text-secondary) !important;
+}
+
+/* Boutons */
+[data-bs-theme="dark"] .btn-primary {
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-hover)) !important;
+    border: 2px solid var(--accent-orange) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+}
+
+[data-bs-theme="dark"] .btn-primary:hover {
+    background: var(--accent-orange-hover) !important;
+    border-color: var(--accent-orange-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(255, 107, 53, 0.4);
+}
+
+[data-bs-theme="dark"] .btn-outline-primary {
+    color: var(--accent-orange) !important;
+    border: 2px solid var(--accent-orange) !important;
+    background: transparent !important;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .btn-outline-primary:hover {
+    background: var(--accent-orange) !important;
+    border-color: var(--accent-orange) !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .btn-secondary {
+    background: var(--bg-tertiary) !important;
+    border: 2px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-bs-theme="dark"] .btn-secondary:hover {
+    background: var(--border-color) !important;
+    border-color: var(--text-secondary) !important;
+}
+
+/* Formulaires */
+[data-bs-theme="dark"] .form-control {
+    background: var(--bg-tertiary) !important;
+    border: 2px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+    background: var(--bg-secondary) !important;
+    border-color: var(--accent-orange) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.25) !important;
+}
+
+[data-bs-theme="dark"] .form-label {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+}
+
+/* Tables */
+[data-bs-theme="dark"] .table {
+    color: var(--text-primary) !important;
+}
+
+[data-bs-theme="dark"] .table-dark {
+    --bs-table-bg: var(--bg-secondary);
+    --bs-table-color: var(--text-primary);
+    --bs-table-border-color: var(--border-color);
+}
+
+[data-bs-theme="dark"] .table th {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .table td {
+    border-color: var(--border-color) !important;
+}
+
+/* Liens */
+[data-bs-theme="dark"] a {
+    color: var(--accent-orange) !important;
+    text-decoration: none;
+}
+
+[data-bs-theme="dark"] a:hover {
+    color: var(--accent-orange-hover) !important;
+    text-decoration: underline;
+}
+
+/* Alertes */
+[data-bs-theme="dark"] .alert {
+    border: 2px solid;
+    font-weight: 500;
+}
+
+[data-bs-theme="dark"] .alert-success {
+    background: rgba(40, 167, 69, 0.2) !important;
+    border-color: #28a745 !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .alert-danger {
+    background: rgba(220, 53, 69, 0.2) !important;
+    border-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .alert-warning {
+    background: rgba(255, 193, 7, 0.2) !important;
+    border-color: #ffc107 !important;
+    color: #000000 !important;
+}
+
+[data-bs-theme="dark"] .alert-info {
+    background: rgba(13, 202, 240, 0.2) !important;
+    border-color: #0dcaf0 !important;
+    color: #ffffff !important;
+}
+
+/* Bouton de changement de thème - très visible */
+.theme-toggle-btn {
+    background: var(--accent-orange) !important;
+    border: 3px solid #ffffff !important;
+    color: #ffffff !important;
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 1.2rem !important;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.5) !important;
+    position: relative !important;
+    z-index: 1000 !important;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--accent-orange-hover) !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 6px 16px rgba(255, 107, 53, 0.7) !important;
+}
+
+/* Footer */
+[data-bs-theme="dark"] .footer {
+    background: var(--bg-secondary) !important;
+    border-top: 2px solid var(--accent-orange);
+    color: var(--text-secondary) !important;
+}
+
+/* Badges */
+[data-bs-theme="dark"] .badge {
+    background: var(--accent-orange) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* Progress bars */
+[data-bs-theme="dark"] .progress {
+    background: var(--bg-tertiary) !important;
+}
+
+[data-bs-theme="dark"] .progress-bar {
+    background: linear-gradient(90deg, var(--accent-orange), var(--accent-orange-hover)) !important;
+}

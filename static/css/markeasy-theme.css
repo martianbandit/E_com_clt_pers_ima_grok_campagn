@@ -107,6 +107,57 @@ body {
     min-height: 100vh;
 }
 
+/* Mode sombre par défaut avec meilleur contraste */
+[data-bs-theme="dark"] body {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d3436 100%);
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] h1, 
+[data-bs-theme="dark"] h2, 
+[data-bs-theme="dark"] h3, 
+[data-bs-theme="dark"] h4, 
+[data-bs-theme="dark"] h5, 
+[data-bs-theme="dark"] h6 {
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .card {
+    background: rgba(52, 58, 64, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .navbar {
+    background: rgba(33, 37, 41, 0.95) !important;
+    backdrop-filter: blur(10px);
+}
+
+[data-bs-theme="dark"] .navbar-nav .nav-link {
+    color: #f8f9fa !important;
+}
+
+[data-bs-theme="dark"] .navbar-nav .nav-link:hover {
+    color: var(--orange-accent) !important;
+}
+
+[data-bs-theme="dark"] .btn-primary {
+    background: var(--gradient-orange);
+    border: none;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .btn-outline-primary {
+    color: var(--orange-accent);
+    border-color: var(--orange-accent);
+}
+
+[data-bs-theme="dark"] .btn-outline-primary:hover {
+    background-color: var(--orange-accent);
+    border-color: var(--orange-accent);
+    color: #ffffff;
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', sans-serif;
     font-weight: 700;

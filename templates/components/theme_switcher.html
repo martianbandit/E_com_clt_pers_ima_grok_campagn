@@ -54,9 +54,10 @@
             }
         }
         
-        // Appliquer le thème préféré
-        const preferredTheme = getPreferredTheme();
+        // Forcer le mode sombre au démarrage pour une meilleure visibilité
+        const preferredTheme = localStorage.getItem('theme') || 'dark';
         applyTheme(preferredTheme);
+        localStorage.setItem('theme', preferredTheme);
         
         // Écouter les changements de thème système
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
