@@ -313,7 +313,7 @@ def github_logged_in(blueprint, token):
         user = User()
         user.id = str(uuid.uuid4())
         user.github_id = github_id
-        user.created_at = datetime.datetime.utcnow()
+        user.created_at = datetime.datetime.now()
     
     # Mise à jour des informations utilisateur
     user.username = github_username
@@ -369,7 +369,7 @@ def login():
             login_user(user, remember=form.remember.data)
             # Mise à jour des statistiques de connexion
             user.login_count = (user.login_count or 0) + 1
-            user.last_login_at = datetime.utcnow()
+            user.last_login_at = datetime.now()
             db.session.commit()
             
             # Redirection vers la page demandée ou la page d'accueil
@@ -417,8 +417,8 @@ def register():
         user.password_hash = generate_password_hash(form.password.data) if form.password.data else None
         user.role = 'user'
         user.active = True
-        user.created_at = datetime.utcnow()
-        user.updated_at = datetime.utcnow()
+        user.created_at = datetime.now()
+        user.updated_at = datetime.now()
         
         db.session.add(user)
         db.session.commit()
@@ -787,7 +787,7 @@ def log_metric(metric_name, data, category=None, status=None, response_time=None
         metric.status = status
         metric.data = data
         metric.response_time = response_time
-        metric.created_at = datetime.datetime.utcnow()
+        metric.created_at = datetime.datetime.now()
         metric.customer_id = customer_id
         
         # Utilisation de l'ID numérique pour la compatibilité
@@ -1357,7 +1357,7 @@ def campaigns():
                 customer_id=customer_id,
                 generation_params={
                     "niche_focus": selected_niche.name if selected_niche else None,
-                    "generation_timestamp": datetime.utcnow().isoformat()
+                    "generation_timestamp": datetime.now().isoformat()
                 }
             )
             db.session.add(campaign)
