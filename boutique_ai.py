@@ -1001,17 +1001,41 @@ async def generate_boutique_marketing_content_async(
     }
     content_type = content_type_map.get(campaign_type, "marketing content")
     
-    # Utiliser le système de prompts traduits pour le contenu marketing
-    prompt = get_translated_prompt(
-        "marketing_content",
-        name=name,
-        persona=persona,
-        campaign_type=campaign_type,
-        niche=niche,
-        interests=interests,
-        language=language,
-        boutique_context=boutique_context
-    )
+    # Créer un prompt personnalisé avec les vraies données
+    prompt = f"""
+Create a {content_type} in {language} for the following customer:
+
+CUSTOMER PROFILE:
+- Name: {name}
+- Interests: {interests}
+- Language: {language}
+- Persona: {persona}
+
+CAMPAIGN DETAILS:
+- Type: {campaign_type}
+- Niche Market: {niche}
+
+{boutique_context}
+
+INSTRUCTIONS:
+1. Create ONLY ONE {campaign_type} piece of content
+2. Use the customer's real name ({name}) throughout the content
+3. Reference their specific interests ({interests})
+4. Tailor the message to the {niche} market
+5. Write in {language}
+6. Make it personal and engaging
+7. DO NOT use placeholders like {{name}} or {{campaign_type}} - use the actual values provided
+8. If boutique information is provided, naturally incorporate the boutique's identity and offerings
+
+FORMAT REQUIREMENTS:
+- For email: Include subject line and body
+- For social: Create an engaging social media post with hashtags
+- For sms: Keep under 160 characters
+- For ad: Include headline and description
+- For product_description: Write compelling product copy
+- For product_marketing: Create a full marketing campaign description
+
+Generate the content now using all the real information provided above."""
     
     try:
         response = await client.chat.completions.create(

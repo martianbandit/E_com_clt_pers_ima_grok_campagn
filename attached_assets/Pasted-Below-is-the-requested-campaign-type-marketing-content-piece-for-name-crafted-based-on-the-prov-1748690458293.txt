@@ -1,0 +1,60 @@
+Below is the requested {campaign_type} marketing content piece for {name}, crafted based on the provided customer profile and specifications.
+
+---
+
+**{campaign_type} Marketing Content for {name}**
+
+**Customer Profile Recap:**
+{persona}
+
+**Marketing Content Specifications:**
+- Campaign Type: {campaign_type}
+- Target: {name}
+- Niche Market: {niche}
+- Key Interests: {interests}
+- Language: {language}
+
+**{boutique_context}**
+
+---
+
+**Content Piece: {campaign_type}**
+
+*(Note: Below is the formatted content based on the specified {campaign_type}. If the campaign type is updated, the content will follow the corresponding format as outlined in the guidelines.)*
+
+**Email Example (if {campaign_type} is "email")**
+- **Subject Line:** {name}, Unlock {niche} Solutions Just for You!
+- **Body:**
+Dear {name},
+We know how much you value {interests}, and at {boutique_context}, we’re passionate about helping you overcome {specific pain point from persona}. That’s why we’ve curated a special selection tailored to your unique needs in {niche}. Imagine {specific benefit resonating with persona}—we can make that happen!
+Don’t miss out. Click below to explore and take the first step toward {desired outcome}.
+[Call-to-Action Button: Discover Your Solution Now]
+Warm regards,
+[Your Brand Name]
+
+**Social Media Post Example (if {campaign_type} is "social")**
+- **Post:**
+Hey {name}! Struggling with {pain point}? We’ve got your back with {niche} solutions that match your love for {interests}. Let’s make {benefit} a reality! Drop a ❤️ or DM us to learn more. #PersonalizedForYou #{niche}
+
+**SMS Example (if {campaign_type} is "sms")**
+- **Message:**
+{name}, solve {pain point} with {niche} tailored to {interests}! Click to explore: [short URL]. {Brand Name}
+
+**Ad Example (if {campaign_type} is "ad")**
+- **Headline:** {name}, Your {niche} Solution Awaits!
+- **Main Copy:** Tired of {pain point}? We’ve crafted the perfect {niche} experience for someone who loves {interests}. Enjoy {key benefit} today!
+- **Call-to-Action:** Click Now to Transform Your {niche} Journey!
+
+**Product Description Example (if {campaign_type} is "product_description")**
+- **Copy:**
+Introducing a {niche} product designed with {name} in mind! We know you cherish {interests}, so we’ve created this to address {pain point}. Experience {key benefit} like never before. Make it yours today and elevate your {niche} game!
+
+**Product Marketing Example (if {campaign_type} is "product_marketing")**
+- **Campaign Focus:**
+For {name}, we’re launching a {niche} product campaign that speaks to your passion for {interests}. Our product tackles {pain point} head-on, delivering {key benefit}. Through targeted messaging, we’ll highlight how this transforms your {niche} experience. Join us via email, social teasers, and exclusive offers to claim yours. Ready for a change? Connect now!
+
+---
+
+This content is designed to resonate deeply with {name}, addressing their specific needs and motivations while adhering strictly to the {campaign_type} format. If any details in the placeholders (e.g., {name}, {niche}, {interests}) are updated, the content will remain personalized and relevant to the customer profile provided.
+
+Let me know if you'd like any adjustments or if specific details are ready to be filled in!
