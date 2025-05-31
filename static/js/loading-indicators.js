@@ -60,7 +60,7 @@ function hideLoading() {
 function addLoadingState(button) {
     // Sauvegarder le contenu original
     if (!button.getAttribute('data-original-content')) {
-        button.setAttribute('data-original-content', button.innerHTML);
+        button.setAttribute('data-original-content', button.textContent);
     }
     
     // Ajouter un spinner
@@ -78,7 +78,7 @@ function addLoadingState(button) {
 function removeLoadingState(button) {
     button.classList.remove('btn-loading');
     if (button.getAttribute('data-original-content')) {
-        button.innerHTML = button.getAttribute('data-original-content');
+        button.textContent = button.getAttribute('data-original-content');
     }
     button.disabled = false;
 }
