@@ -102,7 +102,7 @@
                     {{ _('Measure success rates for profile generation, persona creation, content generation, and image creation to optimize your marketing process.') }}
                 </p>
                 <div class="d-grid gap-2">
-                    <a href="{{ url_for('metrics_view') }}" class="btn btn-outline-warning">{{ _('View Metrics') }}</a>
+                    <a href="{{ url_for('metrics') }}" class="btn btn-outline-warning">{{ _('View Metrics') }}</a>
                 </div>
             </div>
         </div>
@@ -113,7 +113,8 @@
             <div class="card-header theme-dependent theme-card-header-secondary">
                 <h5 class="mb-0"><i class="fas fa-store me-2"></i> {{ _('Boutique Niches') }}</h5>
             </div>
-            <div class="card-body">
+            <div class="card-body text-center">
+                <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="Ninja Analytics" class="img-fluid mb-3" style="max-height: 100px; opacity: 0.8;">
                 <p>
                     {{ _('Explore predefined niche markets for boutique businesses or create your own.') }}
                 </p>

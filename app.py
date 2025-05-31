@@ -1020,129 +1020,151 @@ def boutique_dashboard():
 
 @app.route('/metrics')
 def metrics():
-    """Page d'affichage et d'analyse des métriques"""
-    # Récupérer les paramètres de filtre de l'URL
-    category = request.args.get('category')
-    start_date_str = request.args.get('start_date')
-    end_date_str = request.args.get('end_date')
+    """Page d'affichage et d'analyse des métriques avancées"""
+    from datetime import datetime, timedelta
+    from sqlalchemy import func, desc
+    
+    # Récupérer les paramètres de filtre
+    category = request.args.get('category', '')
+    start_date_str = request.args.get('start_date', '')
+    end_date_str = request.args.get('end_date', '')
     limit = int(request.args.get('limit', 100))
     
-    # Convertir les dates si présentes
+    # Convertir les dates
     start_date = None
     end_date = None
     
     if start_date_str:
         try:
-            start_date = datetime.datetime.strptime(start_date_str, '%Y-%m-%d')
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
         except ValueError:
-            flash(_('Format de date de début invalide. Utilisation du format par défaut.'), 'warning')
+            flash(_('Format de date de début invalide.'), 'warning')
     
     if end_date_str:
         try:
-            end_date = datetime.datetime.strptime(end_date_str, '%Y-%m-%d')
-            # Ajouter un jour pour inclure toute la journée
-            end_date = end_date + datetime.timedelta(days=1)
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)
         except ValueError:
-            flash(_('Format de date de fin invalide. Utilisation du format par défaut.'), 'warning')
+            flash(_('Format de date de fin invalide.'), 'warning')
     
-    # Récupérer le résumé des métriques
-    metrics_summary = Metric.get_metrics_summary(
-        category=category,
-        start_date=start_date,
-        end_date=end_date,
-        limit=limit
-    )
+    # Construire la requête de base
+    query = Metric.query
+    if category:
+        query = query.filter(Metric.category == category)
+    if start_date:
+        query = query.filter(Metric.created_at >= start_date)
+    if end_date:
+        query = query.filter(Metric.created_at <= end_date)
+    
+    # Statistiques générales
+    total_metrics = query.count()
+    success_count = query.filter(Metric.status == True).count()
+    error_count = total_metrics - success_count
+    success_rate = (success_count / total_metrics * 100) if total_metrics > 0 else 0
+    
+    # Temps de réponse moyen
+    avg_time_result = db.session.query(func.avg(Metric.execution_time)).filter(
+        Metric.execution_time.isnot(None)
+    ).scalar()
+    avg_time = float(avg_time_result) if avg_time_result else 0
+    
+    # Métriques récentes
+    recent_metrics = query.order_by(desc(Metric.created_at)).limit(limit).all()
     
     # Statistiques par catégorie
-    category_stats = {}
-    if category:
-        # Si une catégorie est sélectionnée, calculer les sous-catégories (par nom)
-        metrics_by_name = db.session.query(
-            Metric.name, 
-            db.func.count(Metric.id).label('count')
-        ).filter(Metric.category == category).group_by(Metric.name).all()
-        
-        for name, count in metrics_by_name:
-            category_stats[name] = count
-    else:
-        # Sinon, calculer les statistiques par catégorie principale
-        metrics_by_category = db.session.query(
-            Metric.category, 
-            db.func.count(Metric.id).label('count')
-        ).group_by(Metric.category).all()
-        
-        for cat, count in metrics_by_category:
-            if cat:  # Éviter les catégories None
-                category_stats[cat] = count
-            else:
-                category_stats['Non catégorisé'] = count
+    category_stats = db.session.query(
+        Metric.category, 
+        func.count(Metric.id).label('count'),
+        func.avg(Metric.execution_time).label('avg_time'),
+        func.sum(func.case((Metric.status == True, 1), else_=0)).label('success_count')
+    ).group_by(Metric.category).all()
     
-    # Données pour la série temporelle
-    time_series_data = []
+    # Statistiques par type de métrique
+    metric_type_stats = db.session.query(
+        Metric.name,
+        func.count(Metric.id).label('count'),
+        func.avg(Metric.execution_time).label('avg_time'),
+        func.sum(func.case((Metric.status == True, 1), else_=0)).label('success_count')
+    ).group_by(Metric.name).order_by(desc('count')).limit(20).all()
     
-    # Déterminer l'intervalle de temps approprié (jour, semaine, mois)
-    if start_date and end_date:
-        delta = end_date - start_date
-        if delta.days > 60:  # Plus de 2 mois
-            interval = 'month'
-        elif delta.days > 14:  # Plus de 2 semaines
-            interval = 'week'
-        else:
-            interval = 'day'
-    else:
-        # Par défaut, utiliser les 30 derniers jours avec intervalle quotidien
-        interval = 'day'
-        if not start_date:
-            start_date = datetime.datetime.utcnow() - datetime.timedelta(days=30)
-        if not end_date:
-            end_date = datetime.datetime.utcnow()
+    # Tendances par jour (derniers 30 jours)
+    thirty_days_ago = datetime.now() - timedelta(days=30)
+    daily_trends = db.session.query(
+        func.date(Metric.created_at).label('date'),
+        func.count(Metric.id).label('total'),
+        func.sum(func.case((Metric.status == True, 1), else_=0)).label('success'),
+        func.sum(func.case((Metric.status == False, 1), else_=0)).label('errors')
+    ).filter(
+        Metric.created_at >= thirty_days_ago
+    ).group_by(func.date(Metric.created_at)).order_by('date').all()
     
-    # Générer la série temporelle
-    current_date = start_date
-    while current_date <= end_date:
-        if interval == 'day':
-            next_date = current_date + datetime.timedelta(days=1)
-            date_format = '%d/%m/%Y'
-        elif interval == 'week':
-            next_date = current_date + datetime.timedelta(days=7)
-            date_format = '%d/%m/%Y'
-        else:  # month
-            if current_date.month == 12:
-                next_date = datetime.datetime(current_date.year + 1, 1, 1)
-            else:
-                next_date = datetime.datetime(current_date.year, current_date.month + 1, 1)
-            date_format = '%m/%Y'
-        
-        # Compter les métriques dans l'intervalle
-        success_count = Metric.query.filter(
-            Metric.created_at >= current_date,
-            Metric.created_at < next_date,
-            Metric.status == True
-        ).count()
-        
-        error_count = Metric.query.filter(
-            Metric.created_at >= current_date,
-            Metric.created_at < next_date,
-            Metric.status == False
-        ).count()
-        
-        time_series_data.append({
-            'date': current_date.strftime(date_format),
-            'success_count': success_count,
-            'error_count': error_count,
-            'total': success_count + error_count
-        })
-        
-        current_date = next_date
+    # Métriques de performance par heure (dernières 24h)
+    twenty_four_hours_ago = datetime.now() - timedelta(hours=24)
+    hourly_performance = db.session.query(
+        func.extract('hour', Metric.created_at).label('hour'),
+        func.count(Metric.id).label('count'),
+        func.avg(Metric.execution_time).label('avg_time')
+    ).filter(
+        Metric.created_at >= twenty_four_hours_ago,
+        Metric.execution_time.isnot(None)
+    ).group_by('hour').order_by('hour').all()
     
-    return render_template('metrics.html',
-                           metrics_summary=metrics_summary,
-                           category_stats=category_stats,
-                           time_series_data=time_series_data,
-                           selected_category=category,
-                           start_date=start_date_str,
-                           end_date=end_date_str,
-                           limit=limit)
+    # Top des erreurs fréquentes
+    error_patterns = db.session.query(
+        Metric.name,
+        func.count(Metric.id).label('error_count')
+    ).filter(
+        Metric.status == False
+    ).group_by(Metric.name).order_by(desc('error_count')).limit(10).all()
+    
+    # Statistiques utilisateur (si disponible)
+    user_stats = []
+    if hasattr(Metric, 'user_id'):
+        user_stats = db.session.query(
+            func.count(Metric.id).label('total_actions'),
+            func.count(func.distinct(Metric.name)).label('unique_actions')
+        ).first()
+    
+    # Données pour les graphiques (format JSON)
+    chart_data = {
+        'categories': {
+            'labels': [stat.category or 'Non catégorisé' for stat in category_stats],
+            'counts': [stat.count for stat in category_stats],
+            'success_rates': [
+                (stat.success_count / stat.count * 100) if stat.count > 0 else 0 
+                for stat in category_stats
+            ]
+        },
+        'daily_trends': {
+            'dates': [trend.date.strftime('%Y-%m-%d') for trend in daily_trends],
+            'totals': [trend.total for trend in daily_trends],
+            'successes': [trend.success for trend in daily_trends],
+            'errors': [trend.errors for trend in daily_trends]
+        },
+        'hourly_performance': {
+            'hours': [int(perf.hour) for perf in hourly_performance],
+            'counts': [perf.count for perf in hourly_performance],
+            'avg_times': [float(perf.avg_time) if perf.avg_time else 0 for perf in hourly_performance]
+        }
+    }
+    
+    return render_template('metrics_advanced.html',
+                          total_metrics=total_metrics,
+                          success_count=success_count,
+                          error_count=error_count,
+                          success_rate=success_rate,
+                          avg_time=avg_time,
+                          recent_metrics=recent_metrics,
+                          category_stats=category_stats,
+                          metric_type_stats=metric_type_stats,
+                          daily_trends=daily_trends,
+                          hourly_performance=hourly_performance,
+                          error_patterns=error_patterns,
+                          user_stats=user_stats,
+                          chart_data=chart_data,
+                          category=category,
+                          start_date=start_date_str,
+                          end_date=end_date_str,
+                          limit=limit)
 
 @app.route('/profiles', methods=['GET', 'POST'])
 @app.route('/profiles/<int:page>', methods=['GET'])
