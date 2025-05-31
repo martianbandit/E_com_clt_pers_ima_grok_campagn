@@ -263,13 +263,13 @@ def index():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
     
-    # Rediriger vers la landing page avec les plans tarifaires
-    return redirect(url_for('landing'))
+    # Rediriger vers la page de connexion pour sécuriser l'application
+    return redirect(url_for('login'))
     
 @app.route('/landing')
+@login_required
 def landing():
-    """Landing page avec les plans tarifaires"""
-    # Afficher directement la landing page sans redirection
+    """Landing page avec les plans tarifaires - accès restreint"""
     from stripe_payment import PLANS, PRODUCTS
     return render_template('stripe/landing_fixed.html', plans=PLANS, products=PRODUCTS)
 
