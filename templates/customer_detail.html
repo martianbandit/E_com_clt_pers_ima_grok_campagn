@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Génération...';
             
             // Créer une requête fetch pour générer le persona
-            fetch(`/generate_customer_persona/${customerId}`, {
+            fetch('/generate_customer_persona/' + customerId, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -484,10 +484,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Afficher l'animation de chargement
             showLoading('Génération de l\'avatar en cours...');
             this.disabled = true;
+            const originalContent = this.innerHTML;
             this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Génération...';
             
             // Créer une requête fetch pour générer l'avatar
-            fetch(`/generate_customer_avatar/${customerId}`, {
+            fetch('/generate_customer_avatar/' + customerId, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -498,7 +499,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Arrêter l'animation de chargement
                 hideLoading();
                 this.disabled = false;
-                this.innerHTML = '<i class="fas fa-portrait me-2"></i> Générer un avatar';
+                this.innerHTML = originalContent;
                 
                 if (data.success) {
                     // Recharger la page pour afficher le nouvel avatar
@@ -522,7 +523,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Arrêter l'animation de chargement
                 hideLoading();
                 this.disabled = false;
-                this.innerHTML = '<i class="fas fa-portrait me-2"></i> Générer un avatar';
+                this.innerHTML = originalContent;
                 
                 // Afficher l'erreur dans le conteneur dédié s'il existe
                 if (errorContainer && errorMessage) {
