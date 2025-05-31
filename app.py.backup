@@ -26,63 +26,8 @@ logging.basicConfig(level=logging.DEBUG,
 
 logger = logging.getLogger("NinjaMark")
 
-def secure_log(level, message, **kwargs):
-    """Log sécurisé qui masque les informations sensibles"""
-    sensitive_fields = ['password', 'token', 'key', 'secret', 'email']
-    
-    # Masquer les informations sensibles dans le message
-    for field in sensitive_fields:
-        if field in message.lower():
-            message = re.sub(f'{field}[=:]\s*[\w@.-]+', f'{field}=***', message, flags=re.IGNORECASE)
-    
-    # Masquer les informations sensibles dans kwargs
-    safe_kwargs = {}
-    for key, value in kwargs.items():
-        if any(sensitive in key.lower() for sensitive in sensitive_fields):
-            safe_kwargs[key] = '***'
-        else:
-            safe_kwargs[key] = value
-    
-    logger.log(level, message, extra=safe_kwargs)
-
-
-# Protection basique contre les attaques par déni de service
-from collections import defaultdict
-from time import time
-
-request_counts = defaultdict(list)
-
-def rate_limit_check(ip_address, max_requests=100, time_window=3600):
-    """Vérifie les limites de taux de requête par IP"""
-    current_time = time()
-    
-    # Nettoyer les anciennes requêtes
-    request_counts[ip_address] = [
-        req_time for req_time in request_counts[ip_address]
-        if current_time - req_time < time_window
-    ]
-    
-    # Vérifier si la limite est dépassée
-    if len(request_counts[ip_address]) >= max_requests:
-        return False
-    
-    # Ajouter la requête actuelle
-    request_counts[ip_address].append(current_time)
-    return True
-
 # Module de gestion des erreurs
 from error_handlers import register_error_handlers
-
-def validate_sql_params(**kwargs):
-    """Valide les paramètres SQL pour prévenir les injections"""
-    validated = {}
-    for key, value in kwargs.items():
-        if value is not None:
-            # Suppression des caractères SQL dangereux
-            if isinstance(value, str):
-                value = re.sub(r'[\'";]', '', str(value))
-            validated[key] = value
-    return validated
 
 class Base(DeclarativeBase):
     pass
@@ -162,35 +107,6 @@ def validate_form_data(form_data, required_fields=None):
             validated_data[field] = sanitize_input(value, "html")
     
     return validated_data
-def secure_file_upload(file):
-    """Valide de manière sécurisée les fichiers uploadés"""
-    if not file or not file.filename:
-        return False, "Aucun fichier sélectionné"
-    
-    # Extensions autorisées
-    ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.pdf', '.txt', '.csv'}
-    file_ext = os.path.splitext(file.filename)[1].lower()
-    
-    if file_ext not in ALLOWED_EXTENSIONS:
-        return False, f"Extension non autorisée: {file_ext}"
-    
-    # Taille maximale (5MB)
-    MAX_FILE_SIZE = 5 * 1024 * 1024
-    file.seek(0, os.SEEK_END)
-    size = file.tell()
-    file.seek(0)
-    
-    if size > MAX_FILE_SIZE:
-        return False, "Fichier trop volumineux (max 5MB)"
-    
-    # Vérification du nom de fichier
-    import string
-    allowed_chars = string.ascii_letters + string.digits + '.-_'
-    if not all(c in allowed_chars for c in file.filename):
-        return False, "Nom de fichier contient des caractères non autorisés"
-    
-    return True, "Fichier valide"
-
 
 # Rendre current_user et d'autres variables disponibles dans tous les templates
 @app.context_processor
@@ -238,15 +154,6 @@ app.register_blueprint(stripe_bp)
 # Initialisation de l'authentification GitHub
 github_bp = make_github_blueprint(scope=["user:email"])
 app.register_blueprint(github_bp, url_prefix="/github")
-
-# Protection contre les attaques par déni de service
-@app.before_request
-def check_rate_limit():
-    """Vérifie les limites de taux avant chaque requête"""
-    client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-    
-    if not rate_limit_check(client_ip):
-        return jsonify({'error': 'Trop de requêtes'}), 429
 
 # Route d'accueil
 @app.route('/home')
@@ -365,7 +272,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         
-        if user and user.password_hash and form.password.data and (user.password_hash and form.password.data and check_password_hash(user.password_hash, form.password.data)):
+        if user and user.password_hash and form.password.data and check_password_hash(user.password_hash, form.password.data):
             login_user(user, remember=form.remember.data)
             # Mise à jour des statistiques de connexion
             user.login_count = (user.login_count or 0) + 1
@@ -414,7 +321,7 @@ def register():
         user.id = user_id
         user.username = form.username.data
         user.email = form.email.data
-        user.password_hash = generate_password_hash(form.password.data) if form.password.data else None
+        user.password_hash = generate_password_hash(form.password.data)
         user.role = 'user'
         user.active = True
         user.created_at = datetime.utcnow()
@@ -582,7 +489,7 @@ def update_password():
         # Pour la démo, on accepte admin comme mot de passe actuel
         if current_password == 'admin' and new_password == confirm_password:
             # Hasher le nouveau mot de passe
-            current_user.password_hash = generate_password_hash(new_password) if new_password else None
+            current_user.password_hash = generate_password_hash(new_password)
             
             # Enregistrer l'activité
             activity = UserActivity.log_activity(
