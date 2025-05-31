@@ -65,7 +65,7 @@ function addLoadingState(button) {
     
     // Ajouter un spinner
     button.classList.add('btn-loading');
-    const originalContent = button.innerHTML;
+    const originalContent = button.textContent; // Use textContent instead of innerHTML to prevent XSS
     button.innerHTML = `
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         <span class="btn-text">${originalContent}</span>
