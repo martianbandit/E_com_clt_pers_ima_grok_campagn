@@ -65,11 +65,22 @@ function addLoadingState(button) {
     
     // Ajouter un spinner
     button.classList.add('btn-loading');
-    const originalContent = button.textContent; // Use textContent instead of innerHTML to prevent XSS
-    button.innerHTML = `
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        <span class="btn-text">${originalContent}</span>
-    `;
+    const originalContent = button.textContent;
+    
+    // Create elements safely to prevent XSS
+    const spinner = document.createElement('span');
+    spinner.className = 'spinner-border spinner-border-sm';
+    spinner.setAttribute('role', 'status');
+    spinner.setAttribute('aria-hidden', 'true');
+    
+    const textSpan = document.createElement('span');
+    textSpan.className = 'btn-text';
+    textSpan.textContent = originalContent; // Safe text insertion
+    
+    // Clear button and add new elements
+    button.innerHTML = '';
+    button.appendChild(spinner);
+    button.appendChild(textSpan);
     
     button.disabled = true;
 }
