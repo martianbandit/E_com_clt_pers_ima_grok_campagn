@@ -4,7 +4,7 @@
         <a class="navbar-brand d-flex align-items-center" href="/">
             <img src="{{ url_for('static', filename='images/ninja-logo-transparent.png') }}" alt="NinjaLead.ai" class="ninjalead-logo me-2" style="width: 48px; height: 48px;">
             <div class="brand-info">
-                <span class="brand-text-ninja">NinjaLead</span>
+                <span class="brand-text-ninja">NinjaLeads<span class="brand-ai">.ai</span></span>
                 <div class="brand-slogan">Le marketing, c'est facile... quand on a un ninja dans sa poche</div>
             </div>
         </a>
@@ -259,5 +259,12 @@
 
 [data-bs-theme="light"] .brand-slogan {
     color: #666;
+}
+
+.brand-ai {
+    color: #FF8C00 !important;
+    -webkit-text-fill-color: #FF8C00 !important;
+    background: none !important;
+    filter: drop-shadow(0 0 6px rgba(255, 140, 0, 0.4));
 }
 </style>
