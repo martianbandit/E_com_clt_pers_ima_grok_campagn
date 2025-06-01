@@ -254,4 +254,17 @@
     </path>
   </symbol>
 
+  <!-- Feedback Ninja -->
+  <symbol id="ninja-feedback" viewBox="0 0 24 24">
+    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" 
+          fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <!-- Icône de commentaire -->
+    <circle cx="8" cy="10" r="1" fill="#ff6b35"/>
+    <circle cx="12" cy="10" r="1" fill="#ff6b35"/>
+    <circle cx="16" cy="10" r="1" fill="#ff6b35"/>
+    <!-- Effet de lueur -->
+    <path d="M4 4 Q20 4 20 4 Q20 16 20 16 L16 16 L12 20 L8 16 L4 16 Q4 4 4 4" 
+          fill="none" stroke="#ff6b35" stroke-width="1" opacity="0.5"/>
+  </symbol>
+
 </svg>
