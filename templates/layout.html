@@ -38,6 +38,9 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     
+    <!-- Sentry Browser Monitoring -->
+    <script src="https://browser.sentry-cdn.com/7.92.0/bundle.min.js" integrity="sha384-oVkRH6Qogt4pKD7l88aV5RP1oJL7q9vhczYKDLe9+DYvYJ1l7cKOFT9e7jrRW6Vl" crossorigin="anonymous"></script>
+    
     <!-- Animation de chargement -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css') }}">
     
@@ -121,6 +124,91 @@
     <!-- Include Toast Script -->
     {% from 'components/toast.html' import toast_script %}
     {{ toast_script() }}
+    
+    <!-- Sentry Frontend Monitoring Initialization -->
+    <script>
+        // Initialize Sentry with advanced configuration
+        Sentry.init({
+            dsn: "https://350994d4ed87e5e65b314481f8257c07@o4509423969107968.ingest.us.sentry.io/4509424027303936",
+            
+            // Setting this option to true will send default PII data to Sentry.
+            // For example, automatic IP address collection on events
+            sendDefaultPii: true,
+            
+            // Performance monitoring
+            tracesSampleRate: 1.0,
+            profilesSampleRate: 1.0,
+            
+            // Environment detection
+            environment: window.location.hostname.includes('localhost') ? 'development' : 'production',
+            release: "ninjaleads@1.0.0",
+            
+            integrations: [
+                Sentry.feedbackIntegration({
+                    colorScheme: "system",
+                    isEmailRequired: true,
+                    showBranding: false,
+                    formTitle: "Signaler un problème",
+                    submitButtonLabel: "Envoyer le rapport",
+                    messageLabel: "Décrivez le problème rencontré",
+                    emailLabel: "Votre adresse email",
+                    nameLabel: "Votre nom (optionnel)",
+                    successMessageText: "Merci pour votre retour !",
+                }),
+                Sentry.browserTracingIntegration({
+                    enableLongTask: true,
+                    enableInp: true,
+                }),
+                Sentry.replayIntegration({
+                    maskAllText: false,
+                    blockAllMedia: false,
+                }),
+            ],
+            
+            // Session replay sampling
+            replaysSessionSampleRate: 0.1,
+            replaysOnErrorSampleRate: 1.0,
+            
+            // Enhanced error filtering
+            beforeSend(event, hint) {
+                const error = hint.originalException;
+                if (error && error.message) {
+                    if (error.message.includes('Network request failed') ||
+                        error.message.includes('Failed to fetch') ||
+                        error.message.includes('Script error')) {
+                        return null;
+                    }
+                }
+                return event;
+            },
+            
+            initialScope: {
+                tags: {
+                    component: "frontend",
+                    platform: "web",
+                    app: "ninjaleads",
+                },
+            },
+        });
+
+        // Set user context if available
+        {% if current_user and current_user.is_authenticated %}
+        Sentry.setUser({
+            id: "{{ current_user.id }}",
+            email: "{{ current_user.email }}",
+            username: "{{ current_user.username or 'anonymous' }}",
+        });
+        {% endif %}
+
+        // Application context
+        Sentry.setContext("application", {
+            name: "NinjaLead.ai",
+            version: "1.0.0",
+            component: "frontend",
+        });
+
+        console.log("✅ Sentry frontend monitoring initialized");
+    </script>
     
     <!-- MarkEasy Animations -->
     <script src="{{ url_for('static', filename='js/markeasy-animations.js') }}"></script>

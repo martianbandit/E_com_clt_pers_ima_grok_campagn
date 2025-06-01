@@ -1,0 +1,18 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "<div align=\"center\">   <img src=\"static/img/ninjalead-ninja-new.png\" alt=\"NinjaLead Logo\" width=\"200\">   <h3>Le marketing, c'est facile... quand on a un ninja dans sa poche.</h3> </div>",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sentry/react": "^9.24.0"
+  }
+}
