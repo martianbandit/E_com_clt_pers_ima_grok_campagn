@@ -170,7 +170,8 @@ class SecurityMiddleware:
                 for pattern, attack_type in ATTACK_PATTERNS:
                     if pattern.search(data):
                         self._log_security_incident(attack_type, data)
-                        if current_app.config.get('SECURITY_BLOCK_ATTACKS', True):
+                        # Log only for now - don't block legitimate traffic
+                        if current_app.config.get('SECURITY_BLOCK_ATTACKS', False):
                             abort(403, description=f"Requête bloquée: {attack_type}")
     
     def _extract_json_values(self, json_data):
