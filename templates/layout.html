@@ -157,6 +157,15 @@
                             colorScheme: "system",
                             isNameRequired: true,
                             isEmailRequired: true,
+                            showBranding: false,
+                            formTitle: "Signaler un problème",
+                            submitButtonLabel: "Envoyer le rapport",
+                            cancelButtonLabel: "Annuler",
+                            messageLabel: "Décrivez le problème rencontré",
+                            messageRequired: true,
+                            emailLabel: "Votre adresse email",
+                            nameLabel: "Votre nom",
+                            successMessageText: "Merci pour votre retour ! Nous examinerons votre rapport.",
                         }),
                         new Sentry.Integrations.BrowserTracing({
                             enableLongTask: true,
@@ -202,34 +211,29 @@
                     component: "frontend",
                 });
 
-                // Get the instance returned by `feedbackIntegration()`
-                const feedback = Sentry.getFeedback();
-                
-                // Attach feedback to header button
-                const headerFeedbackBtn = document.querySelector("#header-feedback-btn");
-                if (headerFeedbackBtn && feedback) {
-                    feedback.attachTo(headerFeedbackBtn, {
-                        formTitle: "Signaler un problème",
-                        submitButtonLabel: "Envoyer",
-                        messageLabel: "Décrivez le problème rencontré",
-                        emailLabel: "Votre adresse email",
-                        nameLabel: "Votre nom",
-                        successMessageText: "Merci pour votre retour !",
-                    });
-                }
-                
-                // Attach feedback to footer button
-                const footerFeedbackBtn = document.querySelector("#footer-feedback-btn");
-                if (footerFeedbackBtn && feedback) {
-                    feedback.attachTo(footerFeedbackBtn, {
-                        formTitle: "Signaler un problème",
-                        submitButtonLabel: "Envoyer",
-                        messageLabel: "Décrivez le problème rencontré",
-                        emailLabel: "Votre adresse email",
-                        nameLabel: "Votre nom",
-                        successMessageText: "Merci pour votre retour !",
-                    });
-                }
+                // Wait for DOM to be ready, then attach feedback widgets
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Get the feedback integration instance
+                    const feedback = Sentry.getFeedback();
+                    
+                    if (feedback) {
+                        // Attach feedback to header button
+                        const headerFeedbackBtn = document.querySelector("#header-feedback-btn");
+                        if (headerFeedbackBtn) {
+                            feedback.attachTo(headerFeedbackBtn);
+                            console.log("✅ Feedback attached to header button");
+                        }
+                        
+                        // Attach feedback to footer button
+                        const footerFeedbackBtn = document.querySelector("#footer-feedback-btn");
+                        if (footerFeedbackBtn) {
+                            feedback.attachTo(footerFeedbackBtn);
+                            console.log("✅ Feedback attached to footer button");
+                        }
+                    } else {
+                        console.warn("Feedback integration not available");
+                    }
+                });
 
                 console.log("✅ Sentry frontend monitoring initialized");
             } catch (error) {
