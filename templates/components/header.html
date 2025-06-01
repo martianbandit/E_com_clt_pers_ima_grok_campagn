@@ -2,8 +2,8 @@
 <nav class="navbar navbar-expand-lg theme-dependent">
     <div class="container">
         <a class="navbar-brand" href="/">
-            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="NinjaLead.ai" class="ninjalead-logo me-2">
-            <span class="brand-text">NinjaLead</span>
+            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="MarkEasy.ai" class="ninjalead-logo me-2">
+            <span class="brand-text">MarkEasy</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -135,21 +135,21 @@
                 {% else %}
                 <div class="dropdown me-2">
                     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="authDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
+                        🔑
                         <span class="d-none d-md-inline">{{ _('Connexion') }}</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown">
                         <li><a class="dropdown-item" href="{{ url_for('login') }}">
-                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Se connecter') }}
+                            🔑 {{ _('Se connecter') }}
                         </a></li>
                         <li><a class="dropdown-item" href="{{ url_for('register') }}">
-                            <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('S\'inscrire') }}
+                            ✨ {{ _('S\'inscrire') }}
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><p class="dropdown-item-text small text-muted px-2">{{ _('Ou connectez-vous avec') }}</p></li>
 
                         <li><a class="dropdown-item" href="{{ url_for('replit_auth.login') }}">
-                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Replit
+                            🔧 Replit
                         </a></li>
                         <li><a class="dropdown-item" href="{{ url_for('github.login') }}">
                             <i class="fab fa-github me-2"></i>GitHub
