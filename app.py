@@ -77,7 +77,7 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 # Initialize Sentry for monitoring
 def init_sentry():
-    """Initialize Sentry monitoring if DSN is available"""
+    """Initialize Sentry monitoring with advanced profiling and tracing"""
     sentry_dsn = os.environ.get("SENTRY_DSN", "https://350994d4ed87e5e65b314481f8257c07@o4509423969107968.ingest.us.sentry.io/4509424027303936")
     
     if sentry_dsn:
@@ -88,14 +88,22 @@ def init_sentry():
                     FlaskIntegration(),
                     SqlalchemyIntegration(),
                 ],
+                # Set traces_sample_rate to 1.0 to capture 100%
+                # of transactions for tracing.
                 traces_sample_rate=1.0,
+                # Set profile_session_sample_rate to 1.0 to profile 100%
+                # of profile sessions.
+                profile_session_sample_rate=1.0,
+                # Set profile_lifecycle to "trace" to automatically
+                # run the profiler on when there is an active transaction
+                profile_lifecycle="trace",
                 send_default_pii=True,
                 attach_stacktrace=True,
                 debug=False,
                 environment=os.environ.get("ENVIRONMENT", "production"),
                 release=os.environ.get("APP_VERSION", "1.0.0"),
             )
-            logger.info("Sentry monitoring initialized with 100% trace sampling")
+            logger.info("Sentry monitoring initialized with advanced profiling and 100% trace sampling")
         except Exception as e:
             logger.error(f"Failed to initialize Sentry: {str(e)}")
     else:
