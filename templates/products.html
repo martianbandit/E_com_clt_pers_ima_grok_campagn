@@ -62,23 +62,24 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{ product.category or '-' }}</td>
-                                        <td>{{ "%.2f"|format(product.price or 0) }}€</td>
+                                        <td><span class="product-category-badge">{{ product.category or '-' }}</span></td>
+                                        <td><span class="product-price">{{ "%.2f"|format(product.price or 0) }}€</span></td>
                                         <td>{{ product.boutique.name if product.boutique else '-' }}</td>
                                         <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-outline-primary">
+                                            <div class="product-actions">
+                                                <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-outline-primary product-action-btn" title="Voir">
                                                     👁️
                                                 </a>
-                                                <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline-secondary">
-                                                    <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 14px; height: 14px;">
+                                                <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline-secondary product-action-btn" title="Modifier">
+                                                    <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" class="ninja-icon-glow" style="width: 12px; height: 12px;">
                                                 </a>
-                                                <a href="{{ url_for('shopify_export', product_id=product.id) }}" class="btn btn-outline-success">
-                                                    <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 14px; height: 14px;">
+                                                <a href="{{ url_for('shopify_export', product_id=product.id) }}" class="btn btn-outline-success product-action-btn" title="Export">
+                                                    <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" class="ninja-icon-glow" style="width: 12px; height: 12px;">
                                                 </a>
-                                                <button type="button" class="btn btn-outline-danger delete-product-btn" 
+                                                <button type="button" class="btn btn-outline-danger delete-product-btn product-action-btn" 
                                                         data-product-id="{{ product.id }}" 
-                                                        data-product-name="{{ product.name }}">
+                                                        data-product-name="{{ product.name }}"
+                                                        title="Supprimer">
                                                     🗑️
                                                 </button>
                                             </div>
