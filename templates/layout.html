@@ -131,8 +131,9 @@
     
     <!-- Sentry Frontend Monitoring Initialization -->
     <script>
-        // Wait for Sentry to be available
-        if (typeof Sentry !== 'undefined') {
+        // Wait for Sentry to be loaded and available
+        function initializeSentry() {
+            if (typeof Sentry !== 'undefined') {
             try {
                 // Initialize Sentry with advanced configuration
                 Sentry.init({
@@ -152,20 +153,7 @@
                     
                     integrations: [
                         Sentry.feedbackIntegration({
-                            // Disable the injection of the default widget
                             autoInject: false,
-                            colorScheme: "system",
-                            isNameRequired: true,
-                            isEmailRequired: true,
-                            showBranding: false,
-                            formTitle: "Signaler un problème",
-                            submitButtonLabel: "Envoyer le rapport",
-                            cancelButtonLabel: "Annuler",
-                            messageLabel: "Décrivez le problème rencontré",
-                            messageRequired: true,
-                            emailLabel: "Votre adresse email",
-                            nameLabel: "Votre nom",
-                            successMessageText: "Merci pour votre retour ! Nous examinerons votre rapport.",
                         }),
                         new Sentry.Integrations.BrowserTracing({
                             enableLongTask: true,
@@ -211,29 +199,92 @@
                     component: "frontend",
                 });
 
-                // Wait for DOM to be ready, then attach feedback widgets
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Get the feedback integration instance
-                    const feedback = Sentry.getFeedback();
-                    
-                    if (feedback) {
-                        // Attach feedback to header button
-                        const headerFeedbackBtn = document.querySelector("#header-feedback-btn");
-                        if (headerFeedbackBtn) {
-                            feedback.attachTo(headerFeedbackBtn);
-                            console.log("✅ Feedback attached to header button");
+                // Get the feedback integration instance
+                const feedback = Sentry.getFeedback();
+                
+                // Attach feedback to header button
+                const headerFeedbackBtn = document.querySelector("#header-feedback-btn");
+                if (headerFeedbackBtn && feedback) {
+                    feedback.attachTo(headerFeedbackBtn, {
+                        formTitle: "Signaler un problème - NinjaLead",
+                        submitButtonLabel: "Envoyer le rapport",
+                        cancelButtonLabel: "Annuler",
+                        messageLabel: "Décrivez le problème rencontré",
+                        emailLabel: "Votre adresse email",
+                        nameLabel: "Votre nom",
+                        successMessageText: "Merci pour votre retour ! Notre équipe ninja examine votre rapport.",
+                        isNameRequired: true,
+                        isEmailRequired: true,
+                        showBranding: false,
+                        colorScheme: "system",
+                        themeLight: {
+                            foreground: "#2d3748",
+                            background: "#ffffff",
+                            backgroundHover: "#f7fafc",
+                            foregroundMuted: "#718096",
+                            border: "#e2e8f0",
+                            success: "#38a169",
+                            error: "#e53e3e",
+                            submitBackground: "#ff6b35",
+                            submitBackgroundHover: "#e55528",
+                            submitForeground: "#ffffff",
+                        },
+                        themeDark: {
+                            foreground: "#f7fafc",
+                            background: "#1a202c",
+                            backgroundHover: "#2d3748",
+                            foregroundMuted: "#a0aec0",
+                            border: "#4a5568",
+                            success: "#68d391",
+                            error: "#fc8181",
+                            submitBackground: "#ff6b35",
+                            submitBackgroundHover: "#e55528",
+                            submitForeground: "#ffffff",
                         }
-                        
-                        // Attach feedback to footer button
-                        const footerFeedbackBtn = document.querySelector("#footer-feedback-btn");
-                        if (footerFeedbackBtn) {
-                            feedback.attachTo(footerFeedbackBtn);
-                            console.log("✅ Feedback attached to footer button");
+                    });
+                }
+                
+                // Attach feedback to footer button
+                const footerFeedbackBtn = document.querySelector("#footer-feedback-btn");
+                if (footerFeedbackBtn && feedback) {
+                    feedback.attachTo(footerFeedbackBtn, {
+                        formTitle: "Feedback - NinjaLead",
+                        submitButtonLabel: "Envoyer le feedback",
+                        cancelButtonLabel: "Annuler",
+                        messageLabel: "Partagez vos suggestions ou commentaires",
+                        emailLabel: "Votre adresse email",
+                        nameLabel: "Votre nom",
+                        successMessageText: "Merci pour votre feedback ! Notre équipe ninja l'apprécie.",
+                        isNameRequired: true,
+                        isEmailRequired: true,
+                        showBranding: false,
+                        colorScheme: "system",
+                        themeLight: {
+                            foreground: "#2d3748",
+                            background: "#ffffff",
+                            backgroundHover: "#f7fafc",
+                            foregroundMuted: "#718096",
+                            border: "#e2e8f0",
+                            success: "#38a169",
+                            error: "#e53e3e",
+                            submitBackground: "#ff6b35",
+                            submitBackgroundHover: "#e55528",
+                            submitForeground: "#ffffff",
+                        },
+                        themeDark: {
+                            foreground: "#f7fafc",
+                            background: "#1a202c",
+                            backgroundHover: "#2d3748",
+                            foregroundMuted: "#a0aec0",
+                            border: "#4a5568",
+                            success: "#68d391",
+                            error: "#fc8181",
+                            submitBackground: "#ff6b35",
+                            submitBackgroundHover: "#e55528",
+                            submitForeground: "#ffffff",
                         }
-                    } else {
-                        console.warn("Feedback integration not available");
-                    }
-                });
+                    });
+                }
 
                 console.log("✅ Sentry frontend monitoring initialized");
             } catch (error) {
@@ -241,7 +292,16 @@
             }
         } else {
             console.warn("Sentry not available");
+            // Try again after a short delay
+            setTimeout(initializeSentry, 100);
         }
+    }
+    
+    // Try to initialize immediately
+    initializeSentry();
+    
+    // Also try when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initializeSentry);
     </script>
     
     <!-- MarkEasy Animations -->
