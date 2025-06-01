@@ -151,6 +151,12 @@ def init_rate_limiting():
 
 limiter = init_rate_limiting()
 
+# Apply rate limiting configuration
+if limiter:
+    from rate_limiting_config import apply_rate_limits_to_routes, setup_advanced_rate_limiting
+    apply_rate_limits_to_routes(app, limiter)
+    setup_advanced_rate_limiting(app, limiter)
+
 # Configuration de sécurité
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_HTTPONLY'] = True
@@ -418,7 +424,6 @@ def github_logged_in(blueprint, token):
 
 # Routes d'authentification
 @app.route('/login', methods=['GET', 'POST'])
-@limiter.limit("10 per minute") if limiter else lambda f: f
 def login():
     """Page de connexion avec email/mot de passe + options OAuth"""
     if current_user.is_authenticated:

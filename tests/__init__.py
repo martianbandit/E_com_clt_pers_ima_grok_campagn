@@ -1,1 +1,1 @@
-# Tests package for NinjaLead application
+# Tests suite for NinjaLead.ai
