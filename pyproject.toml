@@ -26,4 +26,7 @@ dependencies = [
     "wtforms>=3.2.1",
     "pytrends>=4.9.0",
     "stripe>=12.1.0",
+    "sentry-sdk[flask]>=2.29.1",
+    "redis>=6.2.0",
+    "apscheduler>=3.11.0",
 ]

@@ -5,6 +5,10 @@ import datetime
 import uuid
 import sys
 import stripe
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, g
 from markupsafe import Markup, escape
 import html
@@ -88,10 +92,36 @@ class Base(DeclarativeBase):
     pass
 
 db = SQLAlchemy(model_class=Base)
+# Initialize Sentry for monitoring
+def init_sentry():
+    """Initialize Sentry monitoring if DSN is available"""
+    sentry_dsn = os.environ.get("SENTRY_DSN")
+    if sentry_dsn:
+        sentry_sdk.init(
+            dsn=sentry_dsn,
+            integrations=[
+                FlaskIntegration(auto_enabling_integrations=False),
+                SqlalchemyIntegration(),
+                RedisIntegration(),
+            ],
+            traces_sample_rate=0.1,  # 10% of transactions for performance monitoring
+            send_default_pii=False,  # Don't send personal information
+            attach_stacktrace=True,
+            debug=False,
+            environment=os.environ.get("ENVIRONMENT", "production"),
+            release=os.environ.get("APP_VERSION", "1.0.0"),
+        )
+        logger.info("Sentry monitoring initialized")
+    else:
+        logger.warning("SENTRY_DSN not found, monitoring disabled")
+
 # create the app
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-please-change-in-production")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+# Initialize monitoring
+init_sentry()
 
 # Configuration de sécurité
 app.config['SESSION_COOKIE_SECURE'] = True
@@ -3848,3 +3878,50 @@ def send_campaign(campaign_id):
             'success': False,
             'error': str(e)
         }), 500
+
+# Import and register health check routes
+try:
+    from health_checks import register_health_routes
+    register_health_routes(app)
+    logger.info("Health check routes registered successfully")
+except ImportError:
+    logger.warning("Health check module not available")
+except Exception as e:
+    logger.error(f"Failed to register health check routes: {str(e)}")
+
+# Initialize backup system
+try:
+    from backup_manager import init_backup_system, backup_manager
+    init_backup_system()
+    
+    @app.route('/admin/backups', methods=['GET'])
+    @login_required
+    def backup_status():
+        """Page d'administration des sauvegardes"""
+        if current_user.role != 'admin':
+            flash('Accès non autorisé', 'error')
+            return redirect(url_for('dashboard'))
+        
+        status = backup_manager.get_backup_status()
+        backups = backup_manager.list_backups()
+        
+        return render_template('admin/backup_status.html', 
+                             status=status, 
+                             backups=backups)
+    
+    @app.route('/admin/backups/create', methods=['POST'])
+    @login_required
+    def manual_backup():
+        """Crée une sauvegarde manuelle"""
+        if current_user.role != 'admin':
+            return jsonify({'error': 'Accès non autorisé'}), 403
+        
+        success = backup_manager.create_backup()
+        if success:
+            return jsonify({'success': True, 'message': 'Sauvegarde créée avec succès'})
+        else:
+            return jsonify({'success': False, 'message': 'Échec de la sauvegarde'}), 500
+    
+    logger.info("Backup system initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize backup system: {str(e)}")
