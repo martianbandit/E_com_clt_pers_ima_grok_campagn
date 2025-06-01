@@ -6,7 +6,9 @@
     width: 1em;
     height: 1em;
     vertical-align: middle;
+    fill: #ff6b35;
     transition: all 0.3s ease;
+    filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.5));
 }
 
 /* Classe de base pour les icônes standard */
@@ -29,11 +31,11 @@
 /* Styles spécifiques aux icônes ninja */
 .ninja-icon:hover {
     transform: scale(1.1);
-    filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.5));
+    filter: drop-shadow(0 0 10px rgba(255, 107, 53, 0.8));
 }
 
 .ninja-icon-glow {
-    filter: drop-shadow(0 0 4px rgba(255, 140, 0, 0.3));
+    filter: drop-shadow(0 0 6px rgba(255, 107, 53, 0.7));
 }
 
 .ninja-icon-animated {
