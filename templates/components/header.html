@@ -215,28 +215,19 @@
     font-family: 'Arial Black', Arial, sans-serif;
     font-weight: 900;
     font-size: 1.5rem;
-    background: linear-gradient(135deg, #FF8C00 0%, #FFA500 50%, #FF6B00 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+    color: #333;
     letter-spacing: -0.5px;
+    filter: drop-shadow(0 0 15px rgba(255, 140, 0, 0.6));
 }
 
 [data-bs-theme="dark"] .brand-text-ninja {
-    background: linear-gradient(135deg, #FF8C00 0%, #FFA500 50%, #FF6B00 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 15px rgba(255, 140, 0, 0.8));
+    color: #fff;
+    filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.8));
 }
 
 [data-bs-theme="light"] .brand-text-ninja {
-    background: linear-gradient(135deg, #E67E00 0%, #FF8C00 50%, #D2691E 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.5));
+    color: #333;
+    filter: drop-shadow(0 0 12px rgba(255, 140, 0, 0.5));
 }
 
 .brand-info {
@@ -301,12 +292,19 @@
 }
 
 .brand-ai {
-    color: #FF8C00 !important;
-    -webkit-text-fill-color: #FF8C00 !important;
-    background: none !important;
-    -webkit-background-clip: unset !important;
-    background-clip: unset !important;
-    filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.7)) !important;
+    background: linear-gradient(135deg, #FF8C00 0%, #FFA500 50%, #FF6B00 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    filter: drop-shadow(0 0 10px rgba(255, 140, 0, 0.8)) !important;
+}
+
+[data-bs-theme="dark"] .brand-ai {
+    background: linear-gradient(135deg, #FF8C00 0%, #FFA500 50%, #FF6B00 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    filter: drop-shadow(0 0 12px rgba(255, 140, 0, 1)) !important;
 }
 
 .ninjalead-logo {
