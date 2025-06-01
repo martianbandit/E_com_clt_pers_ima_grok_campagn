@@ -251,6 +251,45 @@
     color: #888;
     margin-top: -2px;
     font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 280px;
+}
+
+@media (max-width: 768px) {
+    .brand-text-ninja {
+        font-size: 1.25rem;
+    }
+    
+    .brand-slogan {
+        font-size: 0.65rem;
+        max-width: 200px;
+    }
+    
+    .ninjalead-logo {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    .navbar-brand {
+        padding: 0.25rem 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .brand-slogan {
+        display: none;
+    }
+    
+    .brand-text-ninja {
+        font-size: 1.1rem;
+    }
+    
+    .ninjalead-logo {
+        width: 36px !important;
+        height: 36px !important;
+    }
 }
 
 [data-bs-theme="dark"] .brand-slogan {
