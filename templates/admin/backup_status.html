@@ -1,0 +1,239 @@
+{% extends "layout.html" %}
+
+{% block title %}Administration - Sauvegardes{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">Gestion des Sauvegardes</h1>
+                <button id="createBackup" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Créer une sauvegarde
+                </button>
+            </div>
+
+            <!-- Status Overview -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-{% if status.enabled %}success{% else %}warning{% endif %} text-white">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Système</h5>
+                            <h2>{% if status.enabled %}Actif{% else %}Inactif{% endif %}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Total Sauvegardes</h5>
+                            <h2>{{ status.total_backups }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Espace Utilisé</h5>
+                            <h2>{{ "%.1f"|format(status.disk_usage.total_size / 1024 / 1024) }} MB</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-secondary text-white">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Rétention</h5>
+                            <h2>{{ status.max_backups }} jours</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration Details -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Configuration</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Répertoire de sauvegarde:</strong></td>
+                                    <td><code>{{ status.backup_directory }}</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Système activé:</strong></td>
+                                    <td>
+                                        {% if status.enabled %}
+                                            <span class="badge bg-success">Oui</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Non</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Rétention maximale:</strong></td>
+                                    <td>{{ status.max_backups }} sauvegardes</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                {% if status.last_backup %}
+                                <tr>
+                                    <td><strong>Dernière sauvegarde:</strong></td>
+                                    <td>{{ status.last_backup.created }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Âge:</strong></td>
+                                    <td>{{ "%.1f"|format(status.last_backup.age_hours) }} heures</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Taille:</strong></td>
+                                    <td>{{ "%.1f"|format(status.last_backup.size / 1024 / 1024) }} MB</td>
+                                </tr>
+                                {% endif %}
+                                {% if status.next_backup %}
+                                <tr>
+                                    <td><strong>Prochaine sauvegarde:</strong></td>
+                                    <td>{{ status.next_backup }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Backup List -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Historique des Sauvegardes</h5>
+                </div>
+                <div class="card-body">
+                    {% if backups %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Nom du fichier</th>
+                                    <th>Date de création</th>
+                                    <th>Taille</th>
+                                    <th>Âge</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for backup in backups %}
+                                <tr>
+                                    <td><code>{{ backup.filename }}</code></td>
+                                    <td>{{ backup.created.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                                    <td>{{ "%.1f"|format(backup.size / 1024 / 1024) }} MB</td>
+                                    <td>
+                                        {% if backup.age_days == 0 %}
+                                            Aujourd'hui
+                                        {% elif backup.age_days == 1 %}
+                                            1 jour
+                                        {% else %}
+                                            {{ backup.age_days }} jours
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-outline-primary btn-sm" 
+                                                onclick="downloadBackup('{{ backup.filename }}')"
+                                                title="Télécharger">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-archive fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Aucune sauvegarde disponible</p>
+                        <button id="firstBackup" class="btn btn-primary">
+                            Créer la première sauvegarde
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('createBackup').addEventListener('click', function() {
+    createManualBackup();
+});
+
+if (document.getElementById('firstBackup')) {
+    document.getElementById('firstBackup').addEventListener('click', function() {
+        createManualBackup();
+    });
+}
+
+function createManualBackup() {
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création en cours...';
+    btn.disabled = true;
+    
+    fetch('/admin/backups/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Sauvegarde créée avec succès', 'success');
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        } else {
+            showNotification('Erreur lors de la création de la sauvegarde: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        showNotification('Erreur réseau: ' + error.message, 'error');
+    })
+    .finally(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    });
+}
+
+function downloadBackup(filename) {
+    showNotification('Fonctionnalité de téléchargement à implémenter', 'info');
+}
+
+function showNotification(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                      type === 'error' ? 'alert-danger' : 
+                      type === 'warning' ? 'alert-warning' : 'alert-info';
+    
+    const alert = document.createElement('div');
+    alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+    alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alert);
+    
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.remove();
+        }
+    }, 5000);
+}
+</script>
+{% endblock %}
