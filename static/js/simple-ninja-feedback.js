@@ -540,6 +540,53 @@ function addFeedbackStyles() {
             flex: 1;
         }
     }
+    
+    /* Styles pour le bouton de feedback du header */
+    .ninja-header-feedback-btn {
+        background: transparent !important;
+        border: 2px solid #ff6b35 !important;
+        color: #ff6b35 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .ninja-header-feedback-btn:hover,
+    .ninja-header-feedback-btn:focus {
+        background: #ff6b35 !important;
+        border-color: #ff6b35 !important;
+        color: white !important;
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    .ninja-header-feedback-btn:active {
+        background: #e55528 !important;
+        border-color: #e55528 !important;
+        transform: translateY(0) !important;
+    }
+    
+    /* Mode sombre */
+    [data-bs-theme="dark"] .ninja-header-feedback-btn {
+        color: #ff6b35 !important;
+        border-color: #ff6b35 !important;
+    }
+    
+    [data-bs-theme="dark"] .ninja-header-feedback-btn:hover,
+    [data-bs-theme="dark"] .ninja-header-feedback-btn:focus {
+        background: #ff6b35 !important;
+        color: white !important;
+    }
+    
+    /* Mode clair */
+    [data-bs-theme="light"] .ninja-header-feedback-btn {
+        color: #ff6b35 !important;
+        border-color: #ff6b35 !important;
+    }
+    
+    [data-bs-theme="light"] .ninja-header-feedback-btn:hover,
+    [data-bs-theme="light"] .ninja-header-feedback-btn:focus {
+        background: #ff6b35 !important;
+        color: white !important;
+    }
     </style>`;
     
     document.head.insertAdjacentHTML('beforeend', styles);
