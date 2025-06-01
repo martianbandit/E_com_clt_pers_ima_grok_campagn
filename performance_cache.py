@@ -1,188 +1,234 @@
 """
-Système de cache avancé pour NinjaLead.ai
-Optimisation des performances avec mise en cache intelligente
+Module d'optimisation des performances avec cache Redis intégré
+Implémente la mise en cache pour sessions, requêtes API et données fréquemment utilisées
 """
 
-import redis
+import functools
 import json
-import hashlib
-import time
-from functools import wraps
+import pickle
 from datetime import datetime, timedelta
+from typing import Any, Optional, Dict, List
+import hashlib
 import logging
+
+from flask import current_app, request, session
+try:
+    from redis_cache_manager import RedisCacheManager as CacheManager
+except ImportError:
+    CacheManager = None
 
 logger = logging.getLogger(__name__)
 
 class PerformanceCache:
-    """Cache haute performance avec Redis et stratégies adaptatives"""
+    """Gestionnaire de cache haute performance pour l'application"""
     
-    def __init__(self):
+    def __init__(self, app=None):
+        self.cache_manager = None
+        self.app = app
+        if app is not None:
+            self.init_app(app)
+    
+    def init_app(self, app):
+        """Initialise le cache avec l'application Flask"""
+        self.app = app
         try:
-            self.redis_client = redis.Redis(
-                host='localhost', 
-                port=6379, 
-                db=0, 
-                decode_responses=True,
-                socket_connect_timeout=5,
-                socket_timeout=5
-            )
-            # Test de connexion
-            self.redis_client.ping()
-            self.cache_available = True
-            logger.info("Redis cache initialized successfully")
+            self.cache_manager = CacheManager()
+            logger.info("Performance cache initialized successfully")
         except Exception as e:
-            logger.warning(f"Redis not available, using memory cache: {e}")
-            self.cache_available = False
-            self.memory_cache = {}
-            self.memory_cache_ttl = {}
+            logger.error(f"Failed to initialize performance cache: {e}")
+            self.cache_manager = None
     
-    def _generate_cache_key(self, prefix, *args, **kwargs):
+    def _generate_cache_key(self, prefix: str, *args, **kwargs) -> str:
         """Génère une clé de cache unique basée sur les paramètres"""
-        key_data = f"{prefix}:{args}:{sorted(kwargs.items())}"
-        return f"ninja_cache:{hashlib.md5(key_data.encode()).hexdigest()}"
+        key_data = {
+            'args': args,
+            'kwargs': kwargs,
+            'timestamp': datetime.now().strftime('%Y-%m-%d-%H')  # Cache par heure
+        }
+        key_string = f"{prefix}:{json.dumps(key_data, sort_keys=True)}"
+        return hashlib.md5(key_string.encode()).hexdigest()
     
-    def get(self, key):
-        """Récupère une valeur du cache"""
-        if self.cache_available:
-            try:
-                value = self.redis_client.get(key)
-                if value:
-                    return json.loads(value)
-            except Exception as e:
-                logger.warning(f"Redis get error: {e}")
-        else:
-            # Cache mémoire avec TTL
-            if key in self.memory_cache:
-                if key in self.memory_cache_ttl:
-                    if time.time() < self.memory_cache_ttl[key]:
-                        return self.memory_cache[key]
+    def cache_api_response(self, cache_key: str, ttl: int = 3600):
+        """Décorateur pour mettre en cache les réponses API"""
+        def decorator(func):
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                if not self.cache_manager:
+                    return func(*args, **kwargs)
+                
+                try:
+                    # Génération de la clé complète
+                    full_key = self._generate_cache_key(cache_key, *args, **kwargs)
+                    
+                    # Tentative de récupération du cache
+                    cached_result = self.cache_manager.get(full_key)
+                    if cached_result:
+                        logger.debug(f"Cache hit for key: {full_key}")
+                        return cached_result
+                    
+                    # Exécution de la fonction et mise en cache
+                    result = func(*args, **kwargs)
+                    self.cache_manager.set(full_key, result, ttl)
+                    logger.debug(f"Cached result for key: {full_key}")
+                    return result
+                    
+                except Exception as e:
+                    logger.error(f"Cache error in {func.__name__}: {e}")
+                    return func(*args, **kwargs)
+            
+            return wrapper
+        return decorator
+    
+    def cache_database_query(self, cache_key: str, ttl: int = 1800):
+        """Décorateur spécialisé pour les requêtes de base de données"""
+        def decorator(func):
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                if not self.cache_manager:
+                    return func(*args, **kwargs)
+                
+                try:
+                    # Inclusion de l'utilisateur dans la clé pour l'isolation
+                    user_id = getattr(session, 'user_id', 'anonymous')
+                    full_key = self._generate_cache_key(f"db_{cache_key}_{user_id}", *args, **kwargs)
+                    
+                    cached_result = self.cache_manager.get(full_key)
+                    if cached_result:
+                        logger.debug(f"Database cache hit: {full_key}")
+                        return cached_result
+                    
+                    result = func(*args, **kwargs)
+                    # Sérialisation spéciale pour les objets SQLAlchemy
+                    if hasattr(result, '__dict__'):
+                        # Conversion en dictionnaire pour les objets modèles
+                        serializable_result = self._serialize_model(result)
+                    elif isinstance(result, list) and result and hasattr(result[0], '__dict__'):
+                        # Liste d'objets modèles
+                        serializable_result = [self._serialize_model(item) for item in result]
                     else:
-                        del self.memory_cache[key]
-                        del self.memory_cache_ttl[key]
-        return None
+                        serializable_result = result
+                    
+                    self.cache_manager.set(full_key, serializable_result, ttl)
+                    logger.debug(f"Cached database result: {full_key}")
+                    return result
+                    
+                except Exception as e:
+                    logger.error(f"Database cache error in {func.__name__}: {e}")
+                    return func(*args, **kwargs)
+            
+            return wrapper
+        return decorator
     
-    def set(self, key, value, ttl=3600):
-        """Stocke une valeur dans le cache avec TTL"""
-        if self.cache_available:
-            try:
-                self.redis_client.setex(key, ttl, json.dumps(value))
-                return True
-            except Exception as e:
-                logger.warning(f"Redis set error: {e}")
-        else:
-            # Cache mémoire
-            self.memory_cache[key] = value
-            self.memory_cache_ttl[key] = time.time() + ttl
-            # Nettoyage automatique (garder max 1000 entrées)
-            if len(self.memory_cache) > 1000:
-                self._cleanup_memory_cache()
-        return False
+    def _serialize_model(self, model) -> Dict:
+        """Sérialise un modèle SQLAlchemy en dictionnaire"""
+        if hasattr(model, '__table__'):
+            return {c.name: getattr(model, c.name) for c in model.__table__.columns}
+        return model.__dict__ if hasattr(model, '__dict__') else str(model)
     
-    def delete(self, key):
-        """Supprime une entrée du cache"""
-        if self.cache_available:
-            try:
-                self.redis_client.delete(key)
-            except Exception as e:
-                logger.warning(f"Redis delete error: {e}")
-        else:
-            self.memory_cache.pop(key, None)
-            self.memory_cache_ttl.pop(key, None)
-    
-    def _cleanup_memory_cache(self):
-        """Nettoie le cache mémoire des entrées expirées"""
-        current_time = time.time()
-        expired_keys = [
-            key for key, ttl in self.memory_cache_ttl.items() 
-            if current_time > ttl
-        ]
-        for key in expired_keys:
-            self.memory_cache.pop(key, None)
-            self.memory_cache_ttl.pop(key, None)
-
-# Instance globale du cache
-cache = PerformanceCache()
-
-def cached_ai_response(ttl=1800):
-    """Décorateur pour mettre en cache les réponses IA"""
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # Génère une clé basée sur la fonction et les paramètres
-            cache_key = cache._generate_cache_key(f"ai_{func.__name__}", *args, **kwargs)
-            
-            # Vérifie le cache
-            cached_result = cache.get(cache_key)
-            if cached_result:
-                logger.info(f"Cache hit for {func.__name__}")
-                return cached_result
-            
-            # Exécute la fonction et met en cache
-            start_time = time.time()
-            result = func(*args, **kwargs)
-            execution_time = time.time() - start_time
-            
-            # Met en cache seulement si l'exécution a réussi
-            if result:
-                cache.set(cache_key, result, ttl)
-                logger.info(f"Cached result for {func.__name__} (exec: {execution_time:.2f}s)")
-            
-            return result
-        return wrapper
-    return decorator
-
-def cached_db_query(ttl=600):
-    """Décorateur pour mettre en cache les requêtes de base de données"""
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            cache_key = cache._generate_cache_key(f"db_{func.__name__}", *args, **kwargs)
-            
-            cached_result = cache.get(cache_key)
-            if cached_result:
-                logger.info(f"DB Cache hit for {func.__name__}")
-                return cached_result
-            
-            result = func(*args, **kwargs)
-            if result:
-                cache.set(cache_key, result, ttl)
-                logger.info(f"DB result cached for {func.__name__}")
-            
-            return result
-        return wrapper
-    return decorator
-
-def invalidate_user_cache(user_id):
-    """Invalide le cache spécifique à un utilisateur"""
-    if cache.cache_available:
+    def cache_user_session(self, user_id: str, session_data: Dict, ttl: int = 7200):
+        """Met en cache les données de session utilisateur"""
+        if not self.cache_manager:
+            return False
+        
         try:
-            # Recherche et supprime toutes les clés liées à l'utilisateur
-            pattern = f"ninja_cache:*user_{user_id}*"
-            keys = cache.redis_client.keys(pattern)
-            if keys:
-                cache.redis_client.delete(*keys)
-                logger.info(f"Invalidated {len(keys)} cache entries for user {user_id}")
+            session_key = f"session:{user_id}"
+            return self.cache_manager.set(session_key, session_data, ttl)
         except Exception as e:
-            logger.warning(f"Cache invalidation error: {e}")
-
-def get_cache_stats():
-    """Retourne les statistiques du cache"""
-    if cache.cache_available:
-        try:
-            info = cache.redis_client.info()
-            return {
-                "type": "redis",
-                "memory_usage": info.get('used_memory_human', 'N/A'),
-                "connected_clients": info.get('connected_clients', 0),
-                "total_commands": info.get('total_commands_processed', 0),
-                "keyspace_hits": info.get('keyspace_hits', 0),
-                "keyspace_misses": info.get('keyspace_misses', 0),
-            }
-        except Exception:
-            pass
+            logger.error(f"Failed to cache user session: {e}")
+            return False
     
-    return {
-        "type": "memory",
-        "cached_items": len(cache.memory_cache),
-        "memory_usage": f"{len(str(cache.memory_cache))} bytes"
-    }
+    def get_user_session(self, user_id: str) -> Optional[Dict]:
+        """Récupère les données de session utilisateur depuis le cache"""
+        if not self.cache_manager:
+            return None
+        
+        try:
+            session_key = f"session:{user_id}"
+            return self.cache_manager.get(session_key)
+        except Exception as e:
+            logger.error(f"Failed to get user session: {e}")
+            return None
+    
+    def invalidate_user_cache(self, user_id: str):
+        """Invalide tout le cache associé à un utilisateur"""
+        if not self.cache_manager:
+            return
+        
+        try:
+            patterns = [
+                f"session:{user_id}",
+                f"db_*_{user_id}:*",
+                f"campaigns_{user_id}:*",
+                f"products_{user_id}:*"
+            ]
+            
+            for pattern in patterns:
+                keys = self.cache_manager.get_keys_by_pattern(pattern)
+                if keys:
+                    self.cache_manager.delete_batch(keys)
+                    logger.info(f"Invalidated {len(keys)} cache entries for user {user_id}")
+        
+        except Exception as e:
+            logger.error(f"Failed to invalidate user cache: {e}")
+    
+    def cache_ai_response(self, prompt_hash: str, response: Any, ttl: int = 86400):
+        """Met en cache les réponses IA pour éviter les appels répétés"""
+        if not self.cache_manager:
+            return False
+        
+        try:
+            ai_key = f"ai_response:{prompt_hash}"
+            return self.cache_manager.set(ai_key, response, ttl)
+        except Exception as e:
+            logger.error(f"Failed to cache AI response: {e}")
+            return False
+    
+    def get_cached_ai_response(self, prompt_hash: str) -> Optional[Any]:
+        """Récupère une réponse IA mise en cache"""
+        if not self.cache_manager:
+            return None
+        
+        try:
+            ai_key = f"ai_response:{prompt_hash}"
+            return self.cache_manager.get(ai_key)
+        except Exception as e:
+            logger.error(f"Failed to get cached AI response: {e}")
+            return None
+    
+    def get_cache_stats(self) -> Dict:
+        """Retourne les statistiques du cache"""
+        if not self.cache_manager:
+            return {"status": "disabled", "message": "Cache manager not available"}
+        
+        try:
+            return self.cache_manager.get_cache_stats()
+        except Exception as e:
+            logger.error(f"Failed to get cache stats: {e}")
+            return {"error": str(e)}
+    
+    def clear_all_cache(self):
+        """Vide complètement le cache (utilisation administrative)"""
+        if not self.cache_manager:
+            return False
+        
+        try:
+            return self.cache_manager.clear_all_cache()
+        except Exception as e:
+            logger.error(f"Failed to clear all cache: {e}")
+            return False
+
+# Instance globale
+performance_cache = PerformanceCache()
+
+# Décorateurs pratiques pour l'utilisation directe
+def cache_for(duration: int = 3600, key_prefix: str = "default"):
+    """Décorateur simple pour mettre en cache une fonction"""
+    return performance_cache.cache_api_response(key_prefix, duration)
+
+def cache_db_query(duration: int = 1800, key_prefix: str = "query"):
+    """Décorateur simple pour mettre en cache une requête de base de données"""
+    return performance_cache.cache_database_query(key_prefix, duration)
+
+def cache_ai_call(duration: int = 86400, key_prefix: str = "ai"):
+    """Décorateur simple pour mettre en cache un appel IA"""
+    return performance_cache.cache_api_response(key_prefix, duration)

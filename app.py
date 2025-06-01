@@ -56,13 +56,17 @@ from flask_dance.contrib.github import make_github_blueprint, github
 
 # Performance optimizations
 try:
-    from performance_cache import cache, cached_ai_response, cached_db_query, get_cache_stats
-    from db_optimizer import db_optimizer, get_user_stats_optimized, optimize_database_indexes
-    from asset_optimizer import asset_optimizer, setup_asset_headers, preload_critical_resources
+    from performance_cache import performance_cache
+    from database_indexing import db_index_optimizer
+    from asset_optimizer import asset_optimizer
     performance_modules_loaded = True
+    print("Performance optimization modules loaded successfully")
 except ImportError as e:
-    logging.warning(f"Performance modules not available: {e}")
+    print(f"Performance modules not available: {e}")
     performance_modules_loaded = False
+    performance_cache = None
+    db_index_optimizer = None
+    asset_optimizer = None
 
 # User feedback system
 try:
