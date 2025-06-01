@@ -245,7 +245,7 @@
             <div class="card bg-dark border-secondary">
                 <div class="card-header bg-dark border-bottom border-warning py-2">
                     <h6 class="text-light mb-0 small">
-                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Activité (7j)') }}
+                        {{ analytics_icon(size='sm', classes='me-2 text-warning') }}{{ _('Activité (7j)') }}
                     </h6>
                 </div>
                 <div class="card-body p-2">
