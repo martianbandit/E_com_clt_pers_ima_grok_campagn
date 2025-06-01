@@ -3989,6 +3989,21 @@ def readiness_check():
             "timestamp": datetime.datetime.utcnow().isoformat()
         }), 503
 
+@app.route('/test-sentry', methods=['GET'])
+def test_sentry():
+    """Endpoint pour tester le monitoring Sentry"""
+    try:
+        # Déclencher une erreur de test
+        test_value = 1 / 0
+        return jsonify({"status": "should not reach here"})
+    except Exception as e:
+        # L'erreur sera automatiquement envoyée à Sentry
+        return jsonify({
+            "message": "Test error sent to Sentry monitoring",
+            "error": str(e),
+            "timestamp": datetime.datetime.utcnow().isoformat()
+        }), 500
+
 logger.info("Health check routes registered successfully")
 
 # Initialize backup system

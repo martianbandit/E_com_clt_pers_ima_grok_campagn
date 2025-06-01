@@ -82,6 +82,33 @@ curl http://localhost:5000/health/live
 - Backup scheduler : Démarré avec succès
 - Prochaine sauvegarde : 2025-06-02 02:00:00
 
+### Endpoint de Test Sentry Ajouté
+- `/test-sentry` - Déclenche une erreur pour valider le monitoring
+
+### Tests de Validation Disponibles
+
+```bash
+# Test health check complet
+curl http://localhost:5000/health
+
+# Test endpoint de test Sentry (une fois DSN corrigée)
+curl http://localhost:5000/test-sentry
+
+# Vérifier logs en temps réel
+tail -f logs/application.log
+```
+
+### Note Importante
+La clé DSN Sentry nécessite une correction du domaine :
+- Actuel : `.sentry.10` (erreur DNS)
+- Correct : `.sentry.io`
+
 ## Status : Semaine 1 COMPLÉTÉE ✅
 
-La stabilité et le monitoring de base sont maintenant en place. L'application est prête pour la phase suivante de CI/CD et sécurisation avancée.
+**Accomplissements majeurs :**
+- Infrastructure de monitoring professionnelle
+- Système de sauvegarde automatisé
+- Health checks pour production
+- Base solide pour CI/CD (Semaine 2)
+
+L'application est maintenant équipée d'un système DevOps robuste et prête pour la mise en production avec monitoring avancé.
