@@ -3,7 +3,9 @@
 <div id="feedbackWidget" class="feedback-widget">
     <!-- Bouton d'aide flottant -->
     <div class="feedback-toggle" onclick="toggleFeedbackPanel()">
-        <img src="{{ url_for('static', filename='images/megaphone-icon.svg') }}" alt="Feedback" class="feedback-icon">
+        <svg class="feedback-icon ninja-icon ninja-icon-lg ninja-icon-glow">
+            <use href="{{ url_for('static', filename='images/ninja-icons.svg') }}#ninja-megaphone"></use>
+        </svg>
         <span class="feedback-badge" id="helpBadge">?</span>
     </div>
 

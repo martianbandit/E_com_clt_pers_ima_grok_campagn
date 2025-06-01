@@ -1,0 +1,243 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <defs>
+    <!-- Gradients pour les icônes -->
+    <linearGradient id="ninjaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF8C00;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFB347;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6B00;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="successNinja" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#28a745;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#20c997;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="warningNinja" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffc107;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD54F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fd7e14;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="dangerNinja" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#dc3545;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#F06292;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e83e8c;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="infoNinja" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#17a2b8;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#4FC3F7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00bcd4;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Effets d'ombre et lueur -->
+    <filter id="ninjaGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="ninjaShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#00000030"/>
+    </filter>
+  </defs>
+
+  <!-- Dashboard Ninja -->
+  <symbol id="ninja-dashboard" viewBox="0 0 24 24">
+    <rect x="2" y="2" width="8" height="8" rx="2" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <rect x="12" y="2" width="10" height="4" rx="2" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <rect x="12" y="8" width="10" height="4" rx="2" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <rect x="2" y="12" width="8" height="10" rx="2" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <rect x="12" y="14" width="10" height="8" rx="2" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <!-- Étoile ninja -->
+    <path d="M6 4 L7 6 L9 6 L7.5 7.5 L8 10 L6 9 L4 10 L4.5 7.5 L3 6 L5 6 Z" fill="#FFD700" opacity="0.8"/>
+  </symbol>
+
+  <!-- Boutique Ninja -->
+  <symbol id="ninja-boutique" viewBox="0 0 24 24">
+    <path d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1z" 
+          fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <rect x="10" y="6" width="4" height="1" rx="0.5" fill="#FFD700"/>
+    <circle cx="12" cy="14" r="1.5" fill="#FFD700" opacity="0.9"/>
+    <!-- Effet brillant -->
+    <path d="M8 8 Q12 10 16 8 Q12 12 8 8" fill="rgba(255,255,255,0.2)"/>
+  </symbol>
+
+  <!-- Campagne Ninja -->
+  <symbol id="ninja-campaign" viewBox="0 0 24 24">
+    <path d="M8 5L5 8L8 11L6 13L9 16L11 14L14 17L16 15L19 18L21 16L18 13L21 10L19 8L16 11L14 9L11 12L9 10L6 13Z" 
+          fill="url(#successNinja)" filter="url(#ninjaShadow)"/>
+    <circle cx="12" cy="12" r="6" fill="none" stroke="url(#ninjaGradient)" stroke-width="2" opacity="0.7"/>
+    <!-- Particules d'énergie -->
+    <circle cx="8" cy="8" r="1" fill="#FFD700" opacity="0.8">
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="16" cy="8" r="1" fill="#FFD700" opacity="0.8">
+      <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </symbol>
+
+  <!-- Client Ninja -->
+  <symbol id="ninja-client" viewBox="0 0 24 24">
+    <circle cx="12" cy="8" r="4" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <path d="M4 20c0-4 3.6-7.2 8-7.2s8 3.2 8 7.2" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <!-- Masque ninja -->
+    <path d="M8 7 L16 7 Q15 5 12 5 Q9 5 8 7" fill="#2C2C54" opacity="0.8"/>
+    <circle cx="10" cy="7.5" r="0.5" fill="#FFD700"/>
+    <circle cx="14" cy="7.5" r="0.5" fill="#FFD700"/>
+  </symbol>
+
+  <!-- Produit Ninja -->
+  <symbol id="ninja-product" viewBox="0 0 24 24">
+    <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="url(#ninjaGradient)"/>
+    <path d="M1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1z" 
+          fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <path d="M17 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="url(#ninjaGradient)"/>
+    <!-- Étoiles de qualité -->
+    <path d="M16 6 L16.5 7 L17.5 7 L16.75 7.5 L17 8.5 L16 8 L15 8.5 L15.25 7.5 L14.5 7 L15.5 7 Z" fill="#FFD700" opacity="0.9"/>
+  </symbol>
+
+  <!-- Analytics Ninja -->
+  <symbol id="ninja-analytics" viewBox="0 0 24 24">
+    <rect x="3" y="3" width="18" height="18" rx="2" fill="url(#successNinja)" filter="url(#ninjaShadow)"/>
+    <rect x="7" y="11" width="2" height="6" fill="#FFD700"/>
+    <rect x="11" y="8" width="2" height="9" fill="#FFD700"/>
+    <rect x="15" y="5" width="2" height="12" fill="#FFD700"/>
+    <!-- Tendance ascendante -->
+    <path d="M6 14 L10 10 L14 6 L18 4" stroke="#FFD700" stroke-width="2" fill="none" opacity="0.8"/>
+    <circle cx="18" cy="4" r="2" fill="#FFD700">
+      <animate attributeName="r" values="1.5;2.5;1.5" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </symbol>
+
+  <!-- Paramètres Ninja -->
+  <symbol id="ninja-settings" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <circle cx="12" cy="12" r="4" fill="#2C2C54" opacity="0.8"/>
+    <circle cx="12" cy="12" r="2" fill="#FFD700"/>
+    <!-- Dents d'engrenage -->
+    <g transform="translate(12,12)">
+      <rect x="-1" y="-12" width="2" height="4" fill="url(#ninjaGradient)" transform="rotate(0)"/>
+      <rect x="-1" y="-12" width="2" height="4" fill="url(#ninjaGradient)" transform="rotate(45)"/>
+      <rect x="-1" y="-12" width="2" height="4" fill="url(#ninjaGradient)" transform="rotate(90)"/>
+      <rect x="-1" y="-12" width="2" height="4" fill="url(#ninjaGradient)" transform="rotate(135)"/>
+      <rect x="-1" y="-12" width="2" height="4" fill="url(#ninjaGradient)" transform="rotate(180)"/>
+      <rect x="-1" y="-12" width="2" height="4" fill="url(#ninjaGradient)" transform="rotate(225)"/>
+      <rect x="-1" y="-12" width="2" height="4" fill="url(#ninjaGradient)" transform="rotate(270)"/>
+      <rect x="-1" y="-12" width="2" height="4" fill="url(#ninjaGradient)" transform="rotate(315)"/>
+    </g>
+  </symbol>
+
+  <!-- Aide Ninja -->
+  <symbol id="ninja-help" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" fill="url(#warningNinja)" filter="url(#ninjaShadow)"/>
+    <path d="M12 6c-2.2 0-4 1.8-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.2-1.8-4-4-4z" fill="#2C2C54"/>
+    <circle cx="12" cy="18" r="1" fill="#2C2C54"/>
+    <!-- Effet de questionnement -->
+    <path d="M8 4 Q12 2 16 4" stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/>
+  </symbol>
+
+  <!-- Succès Ninja -->
+  <symbol id="ninja-success" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" fill="url(#successNinja)" filter="url(#ninjaShadow)"/>
+    <path d="M8 12l2.5 2.5L16 9" stroke="#FFD700" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Étoiles de célébration -->
+    <g opacity="0.8">
+      <path d="M6 6 L6.5 7 L7.5 7 L6.75 7.5 L7 8.5 L6 8 L5 8.5 L5.25 7.5 L4.5 7 L5.5 7 Z" fill="#FFD700">
+        <animateTransform attributeName="transform" type="scale" values="0.5;1.2;0.5" dur="2s" repeatCount="indefinite"/>
+      </path>
+      <path d="M18 6 L18.5 7 L19.5 7 L18.75 7.5 L19 8.5 L18 8 L17 8.5 L17.25 7.5 L16.5 7 L17.5 7 Z" fill="#FFD700">
+        <animateTransform attributeName="transform" type="scale" values="1.2;0.5;1.2" dur="2s" repeatCount="indefinite"/>
+      </path>
+    </g>
+  </symbol>
+
+  <!-- Erreur Ninja -->
+  <symbol id="ninja-error" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" fill="url(#dangerNinja)" filter="url(#ninjaShadow)"/>
+    <path d="M8 8l8 8M16 8l-8 8" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+    <!-- Effet d'alerte -->
+    <circle cx="12" cy="12" r="12" fill="none" stroke="rgba(220,53,69,0.3)" stroke-width="2">
+      <animate attributeName="r" values="10;14;10" dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0;1" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+  </symbol>
+
+  <!-- Upload Ninja -->
+  <symbol id="ninja-upload" viewBox="0 0 24 24">
+    <rect x="4" y="2" width="16" height="20" rx="2" fill="url(#infoNinja)" filter="url(#ninjaShadow)"/>
+    <path d="M12 6v8M8 10l4-4 4 4" stroke="#FFD700" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="6" y="16" width="12" height="2" rx="1" fill="#FFD700" opacity="0.8"/>
+    <!-- Particules qui montent -->
+    <circle cx="10" cy="12" r="1" fill="#FFD700" opacity="0.6">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,-10; 0,0" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </symbol>
+
+  <!-- Download Ninja -->
+  <symbol id="ninja-download" viewBox="0 0 24 24">
+    <rect x="4" y="2" width="16" height="20" rx="2" fill="url(#successNinja)" filter="url(#ninjaShadow)"/>
+    <path d="M12 6v8M8 10l4 4 4-4" stroke="#FFD700" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="6" y="16" width="12" height="2" rx="1" fill="#FFD700" opacity="0.8"/>
+    <!-- Particules qui descendent -->
+    <circle cx="14" cy="8" r="1" fill="#FFD700" opacity="0.6">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 0,10; 0,0" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </symbol>
+
+  <!-- Email Ninja -->
+  <symbol id="ninja-email" viewBox="0 0 24 24">
+    <rect x="2" y="4" width="20" height="16" rx="2" fill="url(#infoNinja)" filter="url(#ninjaShadow)"/>
+    <path d="M2 6l10 7 10-7" stroke="#FFD700" stroke-width="2" fill="none" stroke-linejoin="round"/>
+    <!-- Enveloppe volante -->
+    <circle cx="18" cy="8" r="2" fill="#FFD700" opacity="0.7">
+      <animate attributeName="cy" values="8;6;8" dur="3s" repeatCount="indefinite"/>
+    </circle>
+  </symbol>
+
+  <!-- Search Ninja -->
+  <symbol id="ninja-search" viewBox="0 0 24 24">
+    <circle cx="10" cy="10" r="7" fill="none" stroke="url(#ninjaGradient)" stroke-width="3" filter="url(#ninjaShadow)"/>
+    <path d="M21 21l-4.35-4.35" stroke="url(#ninjaGradient)" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="10" cy="10" r="3" fill="#FFD700" opacity="0.6"/>
+    <!-- Effet de recherche -->
+    <circle cx="10" cy="10" r="5" fill="none" stroke="rgba(255,215,0,0.3)" stroke-width="1">
+      <animate attributeName="r" values="3;7;3" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0;0.6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </symbol>
+
+  <!-- Megaphone amélioré -->
+  <symbol id="ninja-megaphone" viewBox="0 0 24 24">
+    <path d="M3 8L15 6L15 18L3 16Z" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <path d="M15 6L21 3L21 21L15 18Z" fill="#FFB347"/>
+    <rect x="1" y="11" width="4" height="6" rx="1" fill="#2C2C54"/>
+    <circle cx="5" cy="14" r="1.5" fill="#FFD700"/>
+    <!-- Ondes sonores animées -->
+    <g opacity="0.7">
+      <path d="M22 8 Q26 8 26 12 Q26 16 22 16" fill="none" stroke="#FFD700" stroke-width="2">
+        <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
+      </path>
+      <path d="M22 6 Q28 6 28 12 Q28 18 22 18" fill="none" stroke="#FFD700" stroke-width="2">
+        <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+      </path>
+    </g>
+  </symbol>
+
+  <!-- Plus d'icônes ninja spécialisées -->
+  
+  <!-- Ninja Trophy -->
+  <symbol id="ninja-trophy" viewBox="0 0 24 24">
+    <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C21.1 4 22 4.9 22 6V8C22 10.76 19.76 13 17 13H16.5L16 17H18V19H6V17H8L7.5 13H7C4.24 13 2 10.76 2 8V6C2 4.9 2.9 4 4 4H7Z" 
+          fill="url(#warningNinja)" filter="url(#ninjaShadow)"/>
+    <circle cx="12" cy="8" r="1.5" fill="#FFD700"/>
+    <!-- Étoile de victoire -->
+    <path d="M12 5 L12.5 6.5 L14 6.5 L12.75 7.5 L13.25 9 L12 8.25 L10.75 9 L11.25 7.5 L10 6.5 L11.5 6.5 Z" fill="#FFD700">
+      <animateTransform attributeName="transform" type="rotate" values="0 12 7;360 12 7" dur="4s" repeatCount="indefinite"/>
+    </path>
+  </symbol>
+
+</svg>

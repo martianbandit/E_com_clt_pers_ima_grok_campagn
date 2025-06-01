@@ -1,6 +1,15 @@
-/* Système d'icônes SVG pour NinjaLead.ai */
+/* Système d'icônes Ninja personnalisées pour NinjaLead.ai */
 
-/* Classe de base pour les icônes */
+/* Classe de base pour les icônes ninja */
+.ninja-icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    transition: all 0.3s ease;
+}
+
+/* Classe de base pour les icônes standard */
 .icon {
     display: inline-block;
     width: 1em;
@@ -10,12 +19,31 @@
 }
 
 /* Tailles d'icônes */
-.icon-xs { width: 12px; height: 12px; }
-.icon-sm { width: 16px; height: 16px; }
-.icon-md { width: 20px; height: 20px; }
-.icon-lg { width: 24px; height: 24px; }
-.icon-xl { width: 32px; height: 32px; }
-.icon-2xl { width: 48px; height: 48px; }
+.icon-xs, .ninja-icon-xs { width: 12px; height: 12px; }
+.icon-sm, .ninja-icon-sm { width: 16px; height: 16px; }
+.icon-md, .ninja-icon-md { width: 20px; height: 20px; }
+.icon-lg, .ninja-icon-lg { width: 24px; height: 24px; }
+.icon-xl, .ninja-icon-xl { width: 32px; height: 32px; }
+.icon-2xl, .ninja-icon-2xl { width: 48px; height: 48px; }
+
+/* Styles spécifiques aux icônes ninja */
+.ninja-icon:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.5));
+}
+
+.ninja-icon-glow {
+    filter: drop-shadow(0 0 4px rgba(255, 140, 0, 0.3));
+}
+
+.ninja-icon-animated {
+    animation: ninja-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ninja-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
 
 /* Icônes avec couleurs spécifiques */
 .icon-primary { fill: #FF8C00; }

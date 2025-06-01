@@ -1,0 +1,114 @@
+{% macro ninja_icon(icon_name, size='md', classes='', title='') %}
+    <svg class="ninja-icon ninja-icon-{{ size }} {{ classes }}" {% if title %}title="{{ title }}"{% endif %}>
+        <use href="{{ url_for('static', filename='images/ninja-icons.svg') }}#{{ icon_name }}"></use>
+    </svg>
+{% endmacro %}
+
+{% macro ninja_button_icon(icon_name, text, url='#', size='sm', btn_class='btn-primary', icon_classes='') %}
+    <a href="{{ url }}" class="btn {{ btn_class }}">
+        {{ ninja_icon(icon_name, size=size, classes=icon_classes) }}
+        {{ text }}
+    </a>
+{% endmacro %}
+
+{% macro ninja_nav_item(icon_name, text, url, size='sm', icon_classes='') %}
+    <a href="{{ url }}" class="nav-link">
+        {{ ninja_icon(icon_name, size=size, classes=icon_classes) }}
+        {{ text }}
+    </a>
+{% endmacro %}
+
+{% macro ninja_card_header(icon_name, title, size='md', icon_classes='') %}
+    <div class="card-header d-flex align-items-center">
+        {{ ninja_icon(icon_name, size=size, classes=icon_classes + ' me-2') }}
+        <h5 class="mb-0">{{ title }}</h5>
+    </div>
+{% endmacro %}
+
+{% macro ninja_alert(icon_name, message, type='info', size='sm', icon_classes='') %}
+    <div class="alert alert-{{ type }} d-flex align-items-start">
+        {{ ninja_icon(icon_name, size=size, classes=icon_classes + ' me-2 flex-shrink-0') }}
+        <div>{{ message }}</div>
+    </div>
+{% endmacro %}
+
+{% macro ninja_list_item(icon_name, text, url='#', size='sm', icon_classes='') %}
+    <li class="mb-2">
+        <a href="{{ url }}" class="text-decoration-none d-flex align-items-center">
+            {{ ninja_icon(icon_name, size=size, classes=icon_classes + ' me-2') }}
+            {{ text }}
+        </a>
+    </li>
+{% endmacro %}
+
+{# Icônes spécialisées pour différentes sections #}
+{% macro dashboard_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-dashboard', size=size, classes=classes, title='Dashboard') }}
+{% endmacro %}
+
+{% macro boutique_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-boutique', size=size, classes=classes, title='Boutique') }}
+{% endmacro %}
+
+{% macro campaign_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-campaign', size=size, classes=classes, title='Campagnes') }}
+{% endmacro %}
+
+{% macro client_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-client', size=size, classes=classes, title='Clients') }}
+{% endmacro %}
+
+{% macro product_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-product', size=size, classes=classes, title='Produits') }}
+{% endmacro %}
+
+{% macro analytics_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-analytics', size=size, classes=classes, title='Analytics') }}
+{% endmacro %}
+
+{% macro settings_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-settings', size=size, classes=classes, title='Paramètres') }}
+{% endmacro %}
+
+{% macro help_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-help', size=size, classes=classes, title='Aide') }}
+{% endmacro %}
+
+{% macro success_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-success', size=size, classes=classes, title='Succès') }}
+{% endmacro %}
+
+{% macro error_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-error', size=size, classes=classes, title='Erreur') }}
+{% endmacro %}
+
+{% macro upload_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-upload', size=size, classes=classes, title='Télécharger') }}
+{% endmacro %}
+
+{% macro download_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-download', size=size, classes=classes, title='Télécharger') }}
+{% endmacro %}
+
+{% macro email_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-email', size=size, classes=classes, title='Email') }}
+{% endmacro %}
+
+{% macro search_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-search', size=size, classes=classes, title='Rechercher') }}
+{% endmacro %}
+
+{% macro megaphone_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-megaphone', size=size, classes=classes, title='Feedback') }}
+{% endmacro %}
+
+{% macro trophy_icon(size='md', classes='') %}
+    {{ ninja_icon('ninja-trophy', size=size, classes=classes, title='Trophée') }}
+{% endmacro %}
+
+{# Macro pour inclure la sprite d'icônes dans le document #}
+{% macro include_ninja_icons() %}
+    <div style="display: none;">
+        {% include 'static/images/ninja-icons.svg' ignore missing %}
+    </div>
+{% endmacro %}
