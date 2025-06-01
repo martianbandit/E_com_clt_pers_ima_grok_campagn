@@ -11,10 +11,10 @@
         <div class="col-md-4 text-end">
             <div class="btn-group">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createProductModal">
-                    <i class="fas fa-plus me-2"></i> {{ _('New Product') }}
+                    <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('New Product') }}
                 </button>
                 <a href="{{ url_for('import_aliexpress_form') }}" class="btn btn-success">
-                    <i class="fas fa-download me-2"></i> {{ _('AliExpress Import') }}
+                    <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('AliExpress Import') }}
                 </a>
             </div>
         </div>
@@ -27,7 +27,7 @@
                     <h5 class="mb-0">{{ _('Available Products') }}</h5>
                     <div class="input-group" style="width: 300px;">
                         <input type="text" class="form-control" id="productSearch" placeholder="{{ _('Search for a product...') }}">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <span class="input-group-text"><img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px;"></span>
                     </div>
                 </div>
                 <div class="card-body p-0">

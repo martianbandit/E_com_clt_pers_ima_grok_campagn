@@ -1,7 +1,7 @@
 {% macro theme_switcher_button() %}
 <button id="themeToggle" class="theme-toggle-btn me-2" type="button" aria-label="{{ _('Changer le thème') }}">
-    <span class="theme-icon-light"><i class="fas fa-sun" style="color: #FF8C00;"></i></span>
-    <span class="theme-icon-dark"><i class="fas fa-moon" style="color: #FF8C00;"></i></span>
+    <span class="theme-icon-light"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; filter: sepia(100%) saturate(200%) hue-rotate(30deg);"></span>
+    <span class="theme-icon-dark"><img src="{{ url_for('static', filename='images/ninja-meditation.png') }}" alt="" style="width: 16px; height: 16px; filter: sepia(100%) saturate(200%) hue-rotate(30deg);"></span>
 </button>
 {% endmacro %}
 

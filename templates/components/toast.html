@@ -2,7 +2,7 @@
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
     <div id="markeasyToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
-            <strong class="me-auto" id="toastTitle"><i class="fas fa-info-circle me-2"></i> NinjaLead</strong>
+            <strong class="me-auto" id="toastTitle"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> NinjaLead</strong>
             <small id="toastTime">à l'instant</small>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fermer"></button>
         </div>
@@ -109,13 +109,13 @@ window.showNinjaToast = function(message, type, isThemeChange = false) {
     // Mettre à jour l'icône et la couleur selon le type
     switch(type) {
         case 'success':
-            toastTitle.innerHTML = '<i class="fas fa-check-circle me-2"></i> Succès';
+            toastTitle.innerHTML = '<img src="{{ url_for("static", filename="images/ninja-trophy.png") }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Succès';
             break;
         case 'error':
-            toastTitle.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i> Erreur';
+            toastTitle.innerHTML = '<img src="{{ url_for("static", filename="images/ninja-action.png") }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Erreur';
             break;
         case 'warning':
-            toastTitle.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i> Attention';
+            toastTitle.innerHTML = '<img src="{{ url_for("static", filename="images/ninja-tech.png") }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Attention';
             break;
         case 'info':
         default:
@@ -126,7 +126,7 @@ window.showNinjaToast = function(message, type, isThemeChange = false) {
                 toastTitle.innerHTML = `<i class="fas ${icon} me-2"></i> Thème`;
                 toast.classList.add('theme-change');
             } else {
-                toastTitle.innerHTML = '<i class="fas fa-info-circle me-2"></i> Information';
+                toastTitle.innerHTML = '<img src="{{ url_for("static", filename="images/ninja-analytics.png") }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Information';
             }
             break;
     }
