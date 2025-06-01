@@ -2,9 +2,9 @@
   <defs>
     <!-- Gradients pour les icônes -->
     <linearGradient id="ninjaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FF8C00;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#FFB347;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#FF6B00;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ff8c53;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff5722;stop-opacity:1" />
     </linearGradient>
     
     <linearGradient id="successNinja" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -14,9 +14,9 @@
     </linearGradient>
     
     <linearGradient id="warningNinja" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffc107;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#FFD54F;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#fd7e14;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ff8c53;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff5722;stop-opacity:1" />
     </linearGradient>
     
     <linearGradient id="dangerNinja" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -26,9 +26,9 @@
     </linearGradient>
     
     <linearGradient id="infoNinja" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#17a2b8;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#4FC3F7;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#00bcd4;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ff8c53;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff5722;stop-opacity:1" />
     </linearGradient>
     
     <!-- Effets d'ombre et lueur -->
