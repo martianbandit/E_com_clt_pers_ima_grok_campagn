@@ -20,23 +20,23 @@
                     <p class="text-muted">{{ current_user.job_title or _('Utilisateur NinjaLead') }}</p>
                     <p class="mb-1"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ current_user.email or _('Email non défini') }}</p>
                     {% if current_user.phone %}
-                    <p class="mb-1"><i class="fas fa-phone me-2"></i> {{ current_user.phone }}</p>
+                    <p class="mb-1"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ current_user.phone }}</p>
                     {% endif %}
                     {% if current_user.company %}
-                    <p class="mb-1"><i class="fas fa-building me-2"></i> {{ current_user.company }}</p>
+                    <p class="mb-1"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ current_user.company }}</p>
                     {% endif %}
                     <p class="mb-1">
-                        <i class="fas fa-user-shield me-2"></i> 
+                        <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> 
                         <span class="badge {{ 'bg-danger' if current_user.role == 'admin' else 'bg-primary' }}">
                             {{ current_user.role|upper }}
                         </span>
                     </p>
                     <div class="mt-3">
                         <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                            <i class="fas fa-edit me-1"></i> {{ _('Modifier le profil') }}
+                            <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Modifier le profil') }}
                         </button>
                         <a href="{{ url_for('user_settings') }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="fas fa-cog me-1"></i> {{ _('Paramètres') }}
+                            <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Paramètres') }}
                         </a>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
             <!-- Statistiques d'utilisation -->
             <div class="card theme-dependent mt-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i> {{ _('Statistiques') }}</h5>
+                    <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Statistiques') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
@@ -68,7 +68,7 @@
         <div class="col-lg-8">
             <div class="card theme-dependent mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i> {{ _('À propos de moi') }}</h5>
+                    <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('À propos de moi') }}</h5>
                 </div>
                 <div class="card-body">
                     {% if current_user.bio %}
@@ -81,7 +81,7 @@
                         <div class="col-md-6">
                             <h6 class="fw-bold">{{ _('Préférences linguistiques') }}</h6>
                             <p>
-                                <i class="fas fa-language me-2"></i>
+                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                 {{ {'fr': 'Français', 'en': 'Anglais', 'es': 'Espagnol', 'de': 'Allemand'}.get(current_user.language_preference, current_user.language_preference) }}
                             </p>
                         </div>
@@ -97,7 +97,7 @@
                     {% if current_user.address %}
                     <h6 class="fw-bold mt-3">{{ _('Adresse') }}</h6>
                     <p>
-                        <i class="fas fa-map-marker-alt me-2"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                         {{ current_user.address }}
                     </p>
                     {% endif %}
@@ -107,7 +107,7 @@
             <!-- Activités récentes -->
             <div class="card theme-dependent">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-history me-2"></i> {{ _('Activités récentes') }}</h5>
+                    <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Activités récentes') }}</h5>
                 </div>
                 <div class="card-body">
                     {% if activities %}
@@ -117,15 +117,15 @@
                             <div class="d-flex">
                                 <div class="timeline-icon me-3">
                                     {% if activity.activity_type == 'login' %}
-                                    <i class="fas fa-sign-in-alt"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     {% elif activity.activity_type == 'profile_update' %}
-                                    <i class="fas fa-user-edit"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     {% elif activity.activity_type == 'campaign_create' %}
-                                    <i class="fas fa-bullhorn"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     {% elif activity.activity_type == 'product_create' %}
-                                    <i class="fas fa-box"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     {% else %}
-                                    <i class="fas fa-tasks"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     {% endif %}
                                 </div>
                                 <div class="timeline-content">
@@ -151,7 +151,7 @@
                     </div>
                     {% else %}
                     <div class="text-center py-4">
-                        <i class="fas fa-history fa-3x mb-3 text-muted"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                         <p>{{ _('Aucune activité récente à afficher.') }}</p>
                     </div>
                     {% endif %}
@@ -235,10 +235,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-2"></i>{{ _('Annuler') }}
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Annuler') }}
                     </button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>{{ _('Enregistrer les modifications') }}
+                        <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Enregistrer les modifications') }}
                     </button>
                 </div>
             </form>

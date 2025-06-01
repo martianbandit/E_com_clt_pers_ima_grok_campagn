@@ -61,10 +61,10 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1><i class="fas fa-chart-pie me-2"></i> Tableau de bord des performances par boutique</h1>
+    <h1><img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Tableau de bord des performances par boutique</h1>
     <div>
         <a href="/dashboard" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-1"></i> Retour au tableau de bord
+            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Retour au tableau de bord
         </a>
     </div>
 </div>
@@ -80,7 +80,7 @@
                         <div class="metric-value">{{ boutique_stats.total_boutiques }}</div>
                     </div>
                     <div>
-                        <i class="fas fa-store fa-3x opacity-25"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                     </div>
                 </div>
             </div>
@@ -95,7 +95,7 @@
                         <div class="metric-value">{{ global_stats.total_campaigns }}</div>
                     </div>
                     <div>
-                        <i class="fas fa-bullhorn fa-3x opacity-25"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                     </div>
                 </div>
             </div>
@@ -110,7 +110,7 @@
                         <div class="metric-value">{{ "%.1f"|format(global_stats.avg_engagement_rate) }}%</div>
                     </div>
                     <div>
-                        <i class="fas fa-thumbs-up fa-3x opacity-25"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                     </div>
                 </div>
             </div>
@@ -125,7 +125,7 @@
                         <div class="metric-value">{{ "%.1f"|format(global_stats.avg_conversion_rate) }}%</div>
                     </div>
                     <div>
-                        <i class="fas fa-chart-line fa-3x opacity-25"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                     </div>
                 </div>
             </div>
@@ -140,7 +140,7 @@
         <div class="card border-warning shadow-sm">
             <div class="card-header bg-warning text-white">
                 <h5 class="mb-0">
-                    <i class="fas fa-trophy me-2"></i>
+                    <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                     Boutique la plus performante
                 </h5>
             </div>
@@ -154,7 +154,7 @@
                     </div>
                     <div class="col-md-6 text-end">
                         <a href="/boutiques/{{ boutique_stats.top_performing.id }}" class="btn btn-warning">
-                            <i class="fas fa-search me-1"></i> Voir le détail
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Voir le détail
                         </a>
                     </div>
                 </div>
@@ -198,10 +198,10 @@
         <h5 class="mb-0">Performance des boutiques</h5>
         <div>
             <button class="btn btn-sm btn-outline-primary" id="viewAsTable">
-                <i class="fas fa-table"></i> Tableau
+                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Tableau
             </button>
             <button class="btn btn-sm btn-outline-primary" id="viewAsCards">
-                <i class="fas fa-th-large"></i> Cartes
+                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Cartes
             </button>
         </div>
     </div>
@@ -229,7 +229,7 @@
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="boutique-icon me-2 rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
-                                        <i class="fas fa-store"></i>
+                                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     </div>
                                     <strong>{{ boutique.name }}</strong>
                                 </div>
@@ -257,7 +257,7 @@
                             </td>
                             <td>
                                 <a href="/boutiques/{{ boutique.id }}" class="btn btn-sm btn-outline-secondary">
-                                    <i class="fas fa-search"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                 </a>
                             </td>
                         </tr>
@@ -276,7 +276,7 @@
                         {% if loop.index == 1 and boutique.conversion_rate > 0 %}
                             <div class="top-performer-badge">
                                 <span class="badge bg-warning text-dark">
-                                    <i class="fas fa-trophy"></i> Top performer
+                                    <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Top performer
                                 </span>
                             </div>
                         {% endif %}
@@ -317,7 +317,7 @@
                         </div>
                         <div class="card-footer bg-light">
                             <a href="/boutiques/{{ boutique.id }}" class="btn btn-sm btn-primary w-100">
-                                <i class="fas fa-chart-line me-1"></i> Voir les détails
+                                <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Voir les détails
                             </a>
                         </div>
                     </div>
@@ -328,7 +328,7 @@
 </div>
 {% else %}
 <div class="alert alert-info">
-    <i class="fas fa-info-circle me-2"></i>
+    <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
     Aucune boutique n'a encore de campagnes.
 </div>
 {% endif %}

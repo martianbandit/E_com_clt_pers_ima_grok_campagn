@@ -13,7 +13,7 @@
                 </div>
                 <div class="list-group list-group-flush">
                     <a href="#account-section" class="list-group-item list-group-item-action active" data-bs-toggle="list">
-                        <i class="fas fa-user-cog me-2"></i> {{ _('Compte') }}
+                        <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Compte') }}
                     </a>
                     <a href="#security-section" class="list-group-item list-group-item-action" data-bs-toggle="list">
                         <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Sécurité') }}
@@ -29,13 +29,13 @@
                     </a>
                     {% if current_user.role == 'admin' %}
                     <a href="#admin-section" class="list-group-item list-group-item-action" data-bs-toggle="list">
-                        <i class="fas fa-user-shield me-2"></i> {{ _('Administration') }}
+                        <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Administration') }}
                     </a>
                     {% endif %}
                 </div>
                 <div class="card-footer">
                     <a href="{{ url_for('user_profile') }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="fas fa-arrow-left me-2"></i> {{ _('Retour au profil') }}
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Retour au profil') }}
                     </a>
                 </div>
             </div>
@@ -126,7 +126,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><i class="fas fa-laptop me-2"></i> {{ _('Chrome sur Windows') }}</td>
+                                            <td><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Chrome sur Windows') }}</td>
                                             <td>Paris, France</td>
                                             <td>{{ _('Actuellement') }}</td>
                                             <td><span class="badge bg-success">{{ _('Session actuelle') }}</span></td>
@@ -142,7 +142,7 @@
                 <div class="tab-pane fade" id="notifications-section">
                     <div class="card theme-dependent mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0"><i class="fas fa-bell me-2"></i> {{ _('Préférences de notification') }}</h5>
+                            <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Préférences de notification') }}</h5>
                         </div>
                         <div class="card-body">
                             <form action="{{ url_for('update_notification_preferences') }}" method="POST">
@@ -165,7 +165,7 @@
                                 </div>
                                 
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>{{ _('Enregistrer les préférences') }}
+                                    <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Enregistrer les préférences') }}
                                 </button>
                             </form>
                         </div>
@@ -176,7 +176,7 @@
                 <div class="tab-pane fade" id="appearance-section">
                     <div class="card theme-dependent mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0"><i class="fas fa-paint-brush me-2"></i> {{ _('Apparence') }}</h5>
+                            <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Apparence') }}</h5>
                         </div>
                         <div class="card-body">
                             <form action="{{ url_for('update_appearance_settings') }}" method="POST">
@@ -187,7 +187,7 @@
                                             <input class="form-check-input" type="radio" name="theme_preference" id="theme_dark" value="dark" {{ 'checked' if current_user.theme_preference == 'dark' else '' }}>
                                             <label class="form-check-label" for="theme_dark">
                                                 <div class="theme-option dark p-3 rounded">
-                                                    <i class="fas fa-moon mb-2"></i>
+                                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                                     <div>{{ _('Sombre') }}</div>
                                                 </div>
                                             </label>
@@ -196,7 +196,7 @@
                                             <input class="form-check-input" type="radio" name="theme_preference" id="theme_light" value="light" {{ 'checked' if current_user.theme_preference == 'light' else '' }}>
                                             <label class="form-check-label" for="theme_light">
                                                 <div class="theme-option light p-3 rounded">
-                                                    <i class="fas fa-sun mb-2"></i>
+                                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                                     <div>{{ _('Clair') }}</div>
                                                 </div>
                                             </label>
@@ -205,7 +205,7 @@
                                 </div>
                                 
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-cogs me-2"></i>{{ _('Appliquer les changements') }}
+                                    <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Appliquer les changements') }}
                                 </button>
                             </form>
                         </div>
@@ -216,7 +216,7 @@
                 <div class="tab-pane fade" id="api-section">
                     <div class="card theme-dependent mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0"><i class="fas fa-key me-2"></i> {{ _('Clés API') }}</h5>
+                            <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Clés API') }}</h5>
                         </div>
                         <div class="card-body">
                             <p class="mb-4">{{ _('Gérez vos clés API pour les services externes.') }}</p>
@@ -282,28 +282,28 @@
                 <div class="tab-pane fade" id="admin-section">
                     <div class="card theme-dependent mb-4">
                         <div class="card-header">
-                            <h5 class="mb-0"><i class="fas fa-user-shield me-2"></i> {{ _('Administration') }}</h5>
+                            <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Administration') }}</h5>
                         </div>
                         <div class="card-body">
                             <p class="mb-4">{{ _('Options d\'administration avancées. Soyez prudent avec ces paramètres.') }}</p>
                             
                             <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                 {{ _('Ces actions sont réservées aux administrateurs et peuvent affecter l\'ensemble de l\'application.') }}
                             </div>
                             
                             <div class="d-flex flex-wrap gap-2 mt-4">
                                 <a href="{{ url_for('admin_users') }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-users-cog me-2"></i> {{ _('Gérer les utilisateurs') }}
+                                    <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Gérer les utilisateurs') }}
                                 </a>
                                 <a href="{{ url_for('admin_system') }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-server me-2"></i> {{ _('Paramètres système') }}
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Paramètres système') }}
                                 </a>
                                 <a href="{{ url_for('admin_logs') }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-clipboard-list me-2"></i> {{ _('Journaux d\'activité') }}
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Journaux d\'activité') }}
                                 </a>
                                 <a href="{{ url_for('admin_backup') }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-database me-2"></i> {{ _('Sauvegarde et restauration') }}
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Sauvegarde et restauration') }}
                                 </a>
                             </div>
                         </div>

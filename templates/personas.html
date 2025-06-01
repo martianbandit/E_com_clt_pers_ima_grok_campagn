@@ -8,7 +8,7 @@
         <h1>{{ _('Customer Personas') }}</h1>
         <div>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createPersonaModal">
-                <i class="fas fa-plus-circle me-2"></i> {{ _('Create New Persona') }}
+                <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Create New Persona') }}
             </button>
         </div>
     </div>
@@ -19,7 +19,7 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <span class="input-group-text"><img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>
                         <input type="text" class="form-control" id="personaSearch" placeholder="{{ _('Search personas...') }}">
                     </div>
                 </div>
@@ -57,21 +57,21 @@
                     <h5 class="card-title mb-0 text-truncate">{{ persona.title }}</h5>
                     <div class="dropdown">
                         <button class="btn btn-sm btn-link text-white" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewPersonaModal" data-persona-id="{{ persona.id }}">
-                                <i class="fas fa-eye me-2"></i> {{ _('View Details') }}
+                                <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('View Details') }}
                             </a></li>
                             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editPersonaModal" data-persona-id="{{ persona.id }}">
-                                <i class="fas fa-edit me-2"></i> {{ _('Edit') }}
+                                <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Edit') }}
                             </a></li>
                             <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assignPersonaModal" data-persona-id="{{ persona.id }}">
-                                <i class="fas fa-user-plus me-2"></i> {{ _('Assign to Customer') }}
+                                <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Assign to Customer') }}
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deletePersonaModal" data-persona-id="{{ persona.id }}" data-persona-title="{{ persona.title }}">
-                                <i class="fas fa-trash-alt me-2"></i> {{ _('Delete') }}
+                                <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Delete') }}
                             </a></li>
                         </ul>
                     </div>
@@ -115,11 +115,11 @@
         {% else %}
         <div class="col-12 text-center py-5">
             <div class="py-5">
-                <i class="fas fa-user-circle fa-4x text-muted mb-3"></i>
+                <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 64px; height: 64px; margin-right: 8px;">
                 <h5>{{ _('No personas available') }}</h5>
                 <p class="text-muted">{{ _('Create your first customer persona to get started') }}</p>
                 <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#createPersonaModal">
-                    <i class="fas fa-plus-circle me-2"></i> {{ _('Create Persona') }}
+                    <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Create Persona') }}
                 </button>
             </div>
         </div>
@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 ${data.avatar_url 
                                     ? `<img src="${data.avatar_url}" class="img-fluid rounded-circle mb-2" style="max-width: 150px;" alt="${data.title}">`
                                     : `<div class="avatar-placeholder rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto" style="width: 150px; height: 150px;">
-                                        <i class="fas fa-user fa-4x text-muted"></i>
+                                        <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 64px; height: 64px; margin-right: 8px;">
                                       </div>`
                                 }
                                 <h5>${data.title}</h5>
@@ -620,7 +620,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         ${data.customers.map(c => `
                                             <tr>
                                                 <td><a href="/view_customer/${c.id}">${c.name}</a></td>
-                                                <td>${c.is_primary ? '<i class="fas fa-check-circle text-success"></i>' : ''}</td>
+                                                <td>${c.is_primary ? '<img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">' : ''}</td>
                                                 <td>${c.relevance_score ? (c.relevance_score * 100).toFixed(0) + '%' : '-'}</td>
                                                 <td>${c.notes || ''}</td>
                                             </tr>

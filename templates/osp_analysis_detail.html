@@ -432,7 +432,7 @@
                                                             {{ headline }}
                                                             <button class="btn btn-sm btn-outline-secondary float-end copy-btn" 
                                                                     onclick="copyToClipboard(`{{ headline|replace('`', '\\`') }}`)">
-                                                                <i class="fas fa-clipboard"></i>
+                                                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                                             </button>
                                                         </li>
                                                         {% endfor %}
@@ -451,7 +451,7 @@
                                                             {{ statement }}
                                                             <button class="btn btn-sm btn-outline-secondary float-end copy-btn" 
                                                                     onclick="copyToClipboard(`{{ statement|replace('`', '\\`') }}`)">
-                                                                <i class="fas fa-clipboard"></i>
+                                                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                                             </button>
                                                         </li>
                                                         {% endfor %}
@@ -470,7 +470,7 @@
                                                             {{ value_prop }}
                                                             <button class="btn btn-sm btn-outline-secondary float-end copy-btn" 
                                                                     onclick="copyToClipboard(`{{ value_prop|replace('`', '\\`') }}`)">
-                                                                <i class="fas fa-clipboard"></i>
+                                                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                                             </button>
                                                         </li>
                                                         {% endfor %}

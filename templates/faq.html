@@ -25,7 +25,7 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading1">
                         <button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Qu\'est-ce que NinjaLead ?') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Qu\'est-ce que NinjaLead ?') }}
                         </button>
                     </h2>
                     <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="heading1" data-bs-parent="#faqAccordion">
@@ -39,7 +39,7 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading2">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('À qui s\'adresse NinjaLead ?') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('À qui s\'adresse NinjaLead ?') }}
                         </button>
                     </h2>
                     <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#faqAccordion">
@@ -53,19 +53,19 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading3">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Quels sont les principaux outils proposés par NinjaLead ?') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Quels sont les principaux outils proposés par NinjaLead ?') }}
                         </button>
                     </h2>
                     <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             <p>{{ _('NinjaLead offre plusieurs fonctionnalités, notamment :') }}</p>
                             <ul class="list-group list-group-flush">
-                                <li class="list-group-item"><i class="fas fa-chart-line text-primary me-2"></i> {{ _('Tableau de bord pour une vue d\'ensemble des performances.') }}</li>
-                                <li class="list-group-item"><i class="fas fa-users text-primary me-2"></i> {{ _('Profils clients pour segmenter et comprendre votre audience.') }}</li>
-                                <li class="list-group-item"><i class="fas fa-bullhorn text-primary me-2"></i> {{ _('Campagnes pour créer et gérer des campagnes marketing ciblées.') }}</li>
-                                <li class="list-group-item"><i class="fas fa-tags text-primary me-2"></i> {{ _('Fiches Produits pour optimiser la présentation de vos produits.') }}</li>
-                                <li class="list-group-item"><i class="fas fa-chart-bar text-primary me-2"></i> {{ _('Métriques pour analyser les résultats et ajuster les stratégies.') }}</li>
-                                <li class="list-group-item"><i class="fas fa-tools text-primary me-2"></i> {{ _('Outils OSP (Outils de Stratégie Personnalisée) pour des recommandations sur mesure.') }}</li>
+                                <li class="list-group-item"><img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Tableau de bord pour une vue d\'ensemble des performances.') }}</li>
+                                <li class="list-group-item"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Profils clients pour segmenter et comprendre votre audience.') }}</li>
+                                <li class="list-group-item"><img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Campagnes pour créer et gérer des campagnes marketing ciblées.') }}</li>
+                                <li class="list-group-item"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Fiches Produits pour optimiser la présentation de vos produits.') }}</li>
+                                <li class="list-group-item"><img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Métriques pour analyser les résultats et ajuster les stratégies.') }}</li>
+                                <li class="list-group-item"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Outils OSP (Outils de Stratégie Personnalisée) pour des recommandations sur mesure.') }}</li>
                             </ul>
                         </div>
                     </div>
@@ -75,14 +75,14 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading4">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Comment puis-je m\'inscrire sur NinjaLead ?') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Comment puis-je m\'inscrire sur NinjaLead ?') }}
                         </button>
                     </h2>
                     <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="heading4" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             <p>{{ _('Vous pouvez vous inscrire directement sur le site web de NinjaLead en cliquant sur le bouton "S\'inscrire" et en suivant les instructions.') }}</p>
                             <div class="text-center mt-3">
-                                <a href="{{ url_for('register') }}" class="btn btn-primary"><i class="fas fa-user-plus me-2"></i>{{ _('S\'inscrire maintenant') }}</a>
+                                <a href="{{ url_for('register') }}" class="btn btn-primary"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('S\'inscrire maintenant') }}</a>
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading5">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('NinjaLead propose-t-il une version gratuite ?') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('NinjaLead propose-t-il une version gratuite ?') }}
                         </button>
                     </h2>
                     <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="heading5" data-bs-parent="#faqAccordion">
@@ -106,7 +106,7 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading6">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Puis-je intégrer NinjaLead avec d\'autres outils que j\'utilise déjà ?') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Puis-je intégrer NinjaLead avec d\'autres outils que j\'utilise déjà ?') }}
                         </button>
                     </h2>
                     <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="heading6" data-bs-parent="#faqAccordion">
@@ -120,7 +120,7 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading7">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('NinjaLead est-il disponible en plusieurs langues ?') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('NinjaLead est-il disponible en plusieurs langues ?') }}
                         </button>
                     </h2>
                     <div id="collapse7" class="accordion-collapse collapse" aria-labelledby="heading7" data-bs-parent="#faqAccordion">
@@ -142,14 +142,14 @@
                 <div class="accordion-item border-0 mb-3 rounded">
                     <h2 class="accordion-header" id="heading8">
                         <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8" aria-expanded="false" aria-controls="collapse8">
-                            <i class="fas fa-question-circle text-primary me-2"></i> {{ _('Comment puis-je contacter le support client de NinjaLead ?') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Comment puis-je contacter le support client de NinjaLead ?') }}
                         </button>
                     </h2>
                     <div id="collapse8" class="accordion-collapse collapse" aria-labelledby="heading8" data-bs-parent="#faqAccordion">
                         <div class="accordion-body">
                             <p>{{ _('Pour toute assistance, vous pouvez utiliser la fonction de messagerie instantanée disponible sur le site web de NinjaLead ou consulter la section "Contact" pour d\'autres options de support.') }}</p>
                             <div class="text-center mt-3">
-                                <a href="#" class="btn btn-outline-primary"><i class="fas fa-envelope me-2"></i>{{ _('Contacter le support') }}</a>
+                                <a href="#" class="btn btn-outline-primary"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Contacter le support') }}</a>
                             </div>
                         </div>
                     </div>
@@ -162,8 +162,8 @@
                     <h3 class="card-title">{{ _('Vous avez d\'autres questions ?') }}</h3>
                     <p class="card-text">{{ _('Notre équipe est disponible pour vous aider et répondre à toutes vos questions.') }}</p>
                     <div class="d-flex justify-content-center gap-3">
-                        <a href="#" class="btn btn-primary"><i class="fas fa-envelope me-2"></i>{{ _('Nous contacter') }}</a>
-                        <a href="{{ url_for('register') }}" class="btn btn-outline-primary"><i class="fas fa-user-plus me-2"></i>{{ _('S\'inscrire') }}</a>
+                        <a href="#" class="btn btn-primary"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Nous contacter') }}</a>
+                        <a href="{{ url_for('register') }}" class="btn btn-outline-primary"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('S\'inscrire') }}</a>
                     </div>
                 </div>
             </div>

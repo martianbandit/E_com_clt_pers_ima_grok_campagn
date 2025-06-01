@@ -47,7 +47,7 @@
                     <ul class="list-unstyled mt-3 mb-4 text-start">
                         {% for feature in plan.features %}
                         <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i> {{ feature }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ feature }}
                         </li>
                         {% endfor %}
                     </ul>
@@ -56,7 +56,7 @@
                         {% if current_user.is_authenticated %}
                             {% if active_subscription and active_subscription.plan_id == plan.id %}
                                 <button class="btn btn-outline-success w-100" disabled>
-                                    <i class="fas fa-check me-2"></i>{{ _('Plan actuel') }}
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Plan actuel') }}
                                 </button>
                             {% else %}
                                 <a href="{{ url_for('payment.checkout', plan_id=plan.id, billing_period='monthly') }}" 

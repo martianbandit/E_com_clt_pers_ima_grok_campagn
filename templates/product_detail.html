@@ -26,7 +26,7 @@
                     {% else %}
                     <div class="bg-light d-flex align-items-center justify-content-center p-5 mb-3" style="height: 300px;">
                         <div>
-                            <i class="fas fa-image fa-4x text-muted mb-3"></i>
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 64px; height: 64px; margin-right: 8px;">
                             <p class="text-muted">Aucune image</p>
                         </div>
                     </div>
@@ -41,13 +41,13 @@
                     </div>
                     <div class="d-flex justify-content-center gap-2">
                         <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline-primary">
-                            <i class="fas fa-edit me-2"></i>Modifier
+                            <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Modifier
                         </a>
                         <a href="{{ url_for('shopify_export', product_id=product.id) }}" class="btn btn-success">
-                            <i class="fas fa-file-export me-2"></i> Export Shopify
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Export Shopify
                         </a>
                         <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteProductModal">
-                            <i class="fas fa-trash me-2"></i>Supprimer
+                            <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Supprimer
                         </button>
                     </div>
                 </div>
@@ -98,10 +98,10 @@
                     </div>
                     {% else %}
                     <div class="text-center py-3">
-                        <i class="fas fa-search fa-2x text-muted mb-3"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 32px; height: 32px; margin-right: 8px;">
                         <p class="mb-2">Aucune métadonnée SEO</p>
                         <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#generateContentModal">
-                            <i class="fas fa-magic me-2"></i>
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                             Générer maintenant
                         </button>
                     </div>
@@ -120,7 +120,7 @@
                         <span class="badge bg-success me-2">Optimisé</span>
                         {% endif %}
                         <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#generateContentModal">
-                            <i class="fas fa-robot me-1"></i> Générer
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Générer
                         </button>
                     </div>
                 </div>
@@ -141,10 +141,10 @@
                     <p>{{ product.base_description|nl2br }}</p>
                     {% else %}
                     <div class="text-center py-4">
-                        <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                         <p class="mb-2">Aucune description disponible</p>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateContentModal">
-                            <i class="fas fa-magic me-2"></i> Générer une Description
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Générer une Description
                         </button>
                     </div>
                     {% endif %}
@@ -160,14 +160,14 @@
                 <div class="card-body">
                     <div class="d-grid mb-3">
                         <a href="{{ url_for('shopify_export', product_id=product.id) }}" class="btn btn-success">
-                            <i class="fas fa-file-export me-2"></i> Voir Export Complet
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Voir Export Complet
                         </a>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <div class="border-end h-100 d-flex flex-column align-items-center justify-content-center px-3">
-                                <i class="fas fa-file-code fa-2x mb-2 {% if product.html_description %}text-success{% else %}text-muted{% endif %}"></i>
+                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 32px; height: 32px; margin-right: 8px;">
                                 <h6>Description HTML</h6>
                                 <p class="small text-muted mb-0">
                                     {% if product.html_description %}
@@ -180,7 +180,7 @@
                         </div>
                         <div class="col-md-4 text-center">
                             <div class="border-end h-100 d-flex flex-column align-items-center justify-content-center px-3">
-                                <i class="fas fa-list-ul fa-2x mb-2 {% if product.html_specifications %}text-success{% else %}text-muted{% endif %}"></i>
+                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 32px; height: 32px; margin-right: 8px;">
                                 <h6>Spécifications</h6>
                                 <p class="small text-muted mb-0">
                                     {% if product.html_specifications %}
@@ -193,7 +193,7 @@
                         </div>
                         <div class="col-md-4 text-center">
                             <div class="h-100 d-flex flex-column align-items-center justify-content-center px-3">
-                                <i class="fas fa-question-circle fa-2x mb-2 {% if product.html_faq %}text-success{% else %}text-muted{% endif %}"></i>
+                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 32px; height: 32px; margin-right: 8px;">
                                 <h6>FAQ</h6>
                                 <p class="small text-muted mb-0">
                                     {% if product.html_faq %}
@@ -339,7 +339,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-magic me-2"></i> Générer le Contenu
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Générer le Contenu
                     </button>
                 </div>
             </form>

@@ -21,7 +21,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-palette me-2"></i> {{ _('Marketing Image Creation') }}</h5>
+                    <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Marketing Image Creation') }}</h5>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('image_generation') }}" enctype="multipart/form-data" data-loading="true" data-loading-message="{{ _('Génération de l\'image en cours...') }}">
@@ -70,17 +70,17 @@
                                 <div class="card-header bg-success text-white">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <h6 class="mb-0">
-                                            <i class="fas fa-search me-2"></i> {{ _('Advanced SEO Options') }}
+                                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Advanced SEO Options') }}
                                         </h6>
                                         <button class="btn btn-sm btn-outline-light" type="button" data-bs-toggle="collapse" data-bs-target="#seoOptions">
-                                            <i class="fas fa-cog"></i>
+                                            <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                         </button>
                                     </div>
                                 </div>
                                 <div class="collapse" id="seoOptions">
                                     <div class="card-body">
                                         <div class="alert alert-success mb-3">
-                                            <i class="fas fa-magic me-2"></i> {{ _('AI will automatically generate optimized SEO metadata for your image. You can also customize these elements below.') }}
+                                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('AI will automatically generate optimized SEO metadata for your image. You can also customize these elements below.') }}
                                         </div>
                                         
                                         <div class="mb-3">
@@ -112,12 +112,12 @@
                         </div>
                         
                         <div class="alert alert-info" role="alert">
-                            <i class="fas fa-info-circle me-2"></i> {{ _('AI will analyze the customer profile and automatically enhance your prompt to create an image optimized for this specific customer.') }}
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('AI will analyze the customer profile and automatically enhance your prompt to create an image optimized for this specific customer.') }}
                         </div>
                         
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-magic me-2"></i> {{ _('Generate Image') }}
+                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Generate Image') }}
                             </button>
                         </div>
                     </form>
@@ -128,7 +128,7 @@
         <div class="col-md-4">
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i> {{ _('Tips') }}</h5>
+                    <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Tips') }}</h5>
                 </div>
                 <div class="card-body">
                     <h6>{{ _('For better results:') }}</h6>
@@ -155,7 +155,7 @@
             
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-th me-2"></i> {{ _('Prompt Examples') }}</h5>
+                    <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Prompt Examples') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-2">
@@ -179,7 +179,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0"><i class="fas fa-history me-2"></i> {{ _('Recently Generated Images') }}</h5>
+                    <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Recently Generated Images') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">

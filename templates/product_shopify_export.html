@@ -119,13 +119,13 @@
         <h1>Export Shopify - {{ product.name }}</h1>
         <div>
             <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-outline-secondary me-2">
-                <i class="fas fa-arrow-left me-2"></i>Retour au produit
+                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Retour au produit
             </a>
             <a href="{{ url_for('export_product_json', product_id=product.id) }}" class="btn btn-outline-primary me-2">
-                <i class="fas fa-download me-2"></i>Exporter JSON
+                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Exporter JSON
             </a>
             <a href="{{ url_for('regenerate_product_content', product_id=product.id) }}" class="btn btn-outline-success">
-                <i class="fas fa-sync me-2"></i>Régénérer le contenu
+                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Régénérer le contenu
             </a>
         </div>
     </div>
@@ -206,7 +206,7 @@
                 <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
                     <div class="action-buttons d-flex justify-content-between bg-light p-2 rounded">
                         <button id="save-description" class="btn btn-sm btn-primary">
-                            <i class="fas fa-save me-2"></i>Sauvegarder
+                            <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Sauvegarder
                         </button>
                         <span id="save-message-description" class="text-success"></span>
                     </div>
@@ -224,7 +224,7 @@
                 <div class="tab-pane fade" id="specifications" role="tabpanel" aria-labelledby="specifications-tab">
                     <div class="action-buttons d-flex justify-content-between bg-light p-2 rounded">
                         <button id="save-specifications" class="btn btn-sm btn-primary">
-                            <i class="fas fa-save me-2"></i>Sauvegarder
+                            <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Sauvegarder
                         </button>
                         <span id="save-message-specifications" class="text-success"></span>
                     </div>
@@ -242,7 +242,7 @@
                 <div class="tab-pane fade" id="faq" role="tabpanel" aria-labelledby="faq-tab">
                     <div class="action-buttons d-flex justify-content-between bg-light p-2 rounded">
                         <button id="save-faq" class="btn btn-sm btn-primary">
-                            <i class="fas fa-save me-2"></i>Sauvegarder
+                            <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Sauvegarder
                         </button>
                         <span id="save-message-faq" class="text-success"></span>
                     </div>

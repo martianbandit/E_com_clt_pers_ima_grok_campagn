@@ -6,13 +6,13 @@
         <div class="banner banner-refund active" id="banner-1">
             <div class="banner-content">
                 <div class="banner-icon">
-                    <i class="fas fa-shield-alt fa-3x"></i>
+                    <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                 </div>
                 <div class="banner-text">
                     <h3>{{ _('Satisfaction Garantie') }}</h3>
                     <p>{{ _('Remboursement à 100%% sans condition, quelle que soit la raison !') }}</p>
                     <a href="{{ url_for('refund_policy') }}" class="btn btn-light btn-sm mt-2">
-                        <i class="fas fa-info-circle me-2"></i>{{ _('En savoir plus') }}
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('En savoir plus') }}
                     </a>
                 </div>
             </div>
@@ -22,13 +22,13 @@
         <div class="banner banner-tokens" id="banner-2">
             <div class="banner-content">
                 <div class="banner-icon">
-                    <i class="fas fa-coins fa-3x"></i>
+                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                 </div>
                 <div class="banner-text">
                     <h3>{{ _('Gagnez des Tokens') }}</h3>
                     <p>{{ _('Obtenez jusqu\'à 500 tokens en partageant votre expérience !') }}</p>
                     <a href="{{ url_for('refund_policy') }}#tokens" class="btn btn-light btn-sm mt-2">
-                        <i class="fas fa-coins me-2"></i>{{ _('Participer') }}
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Participer') }}
                     </a>
                 </div>
             </div>
@@ -38,13 +38,13 @@
         <div class="banner banner-referral" id="banner-3">
             <div class="banner-content">
                 <div class="banner-icon">
-                    <i class="fas fa-users fa-3x"></i>
+                    <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                 </div>
                 <div class="banner-text">
                     <h3>{{ _('Parrainez vos amis') }}</h3>
                     <p>{{ _('1000 tokens offerts pour chaque ami inscrit avec votre lien !') }}</p>
                     <button class="btn btn-light btn-sm mt-2 copy-link-btn" data-ref-link="{{ url_for('index', _external=True) }}?ref=share">
-                        <i class="fas fa-link me-1"></i>{{ _('Copier mon lien') }}
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Copier mon lien') }}
                     </button>
                 </div>
             </div>
@@ -54,7 +54,7 @@
         <div class="banner banner-social-promo" id="banner-4">
             <div class="banner-content">
                 <div class="banner-icon">
-                    <i class="fas fa-share-alt fa-3x"></i>
+                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                 </div>
                 <div class="banner-text">
                     <h3>{{ _('Partagez et gagnez !') }}</h3>
@@ -382,7 +382,7 @@
                 // Créer un élément de notification flottant
                 const notification = document.createElement('div');
                 notification.className = 'copy-notification';
-                notification.innerHTML = '<i class="fas fa-check-circle"></i> Lien copié !';
+                notification.innerHTML = '<img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Lien copié !';
                 document.body.appendChild(notification);
                 
                 // Animer la notification

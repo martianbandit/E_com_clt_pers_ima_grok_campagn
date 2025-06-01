@@ -52,10 +52,10 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1><i class="fas fa-chart-pie me-2"></i> {{ _('Tableau de bord des performances par boutique') }}</h1>
+    <h1><img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Tableau de bord des performances par boutique') }}</h1>
     <div>
         <a href="/dashboard" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-1"></i> {{ _('Retour au tableau de bord') }}
+            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Retour au tableau de bord') }}
         </a>
     </div>
 </div>
@@ -71,7 +71,7 @@
                         <div class="metric-value">{{ boutique_stats.total_boutiques }}</div>
                     </div>
                     <div>
-                        <i class="fas fa-store fa-3x opacity-25"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                     </div>
                 </div>
             </div>
@@ -86,7 +86,7 @@
                         <div class="metric-value">{{ global_stats.total_campaigns }}</div>
                     </div>
                     <div>
-                        <i class="fas fa-bullhorn fa-3x opacity-25"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                     </div>
                 </div>
             </div>
@@ -101,7 +101,7 @@
                         <div class="metric-value">{{ "%.1f"|format(global_stats.avg_engagement_rate) }}%</div>
                     </div>
                     <div>
-                        <i class="fas fa-thumbs-up fa-3x opacity-25"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                     </div>
                 </div>
             </div>
@@ -116,7 +116,7 @@
                         <div class="metric-value">{{ "%.1f"|format(global_stats.avg_conversion_rate) }}%</div>
                     </div>
                     <div>
-                        <i class="fas fa-chart-line fa-3x opacity-25"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                     </div>
                 </div>
             </div>
@@ -131,7 +131,7 @@
         <div class="card border-warning shadow-sm">
             <div class="card-header bg-warning text-white">
                 <h5 class="mb-0">
-                    <i class="fas fa-trophy me-2"></i>
+                    <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                     {{ _('Boutique la plus performante') }}
                 </h5>
             </div>
@@ -145,7 +145,7 @@
                     </div>
                     <div class="col-md-6 text-end">
                         <a href="/boutiques/{{ boutique_stats.top_performing.id }}" class="btn btn-warning">
-                            <i class="fas fa-search me-1"></i> {{ _('Voir le détail') }}
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Voir le détail') }}
                         </a>
                     </div>
                 </div>
@@ -212,7 +212,7 @@
                                 <td>
                                     {% if boutique_stats.top_performing and boutique.id == boutique_stats.top_performing.id %}
                                         <span class="badge bg-warning text-dark me-1">
-                                            <i class="fas fa-trophy"></i>
+                                            <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                         </span>
                                     {% endif %}
                                     <strong>{{ boutique.name }}</strong>
@@ -233,7 +233,7 @@
                                 </td>
                                 <td>
                                     <a href="/boutique/{{ boutique.id }}/campaigns" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-search"></i>
+                                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     </a>
                                 </td>
                             </tr>
@@ -243,7 +243,7 @@
             </div>
         {% else %}
             <div class="alert alert-info">
-                <i class="fas fa-info-circle me-2"></i>
+                <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                 {{ _('Aucune boutique n\'a encore de campagnes.') }}
             </div>
         {% endif %}
@@ -258,7 +258,7 @@
                 <div class="card position-relative shadow-sm boutique-card">
                     {% if boutique_stats.top_performing and boutique.id == boutique_stats.top_performing.id %}
                         <span class="badge bg-warning text-dark top-performer-badge">
-                            <i class="fas fa-trophy me-1"></i> {{ _('Top performer') }}
+                            <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Top performer') }}
                         </span>
                     {% endif %}
                     <div class="card-header">
@@ -270,7 +270,7 @@
                             <div class="col-6">
                                 <div class="d-flex align-items-center">
                                     <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
-                                        <i class="fas fa-eye text-white"></i>
+                                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     </div>
                                     <div>
                                         <div class="small text-muted">{{ _('Vues') }}</div>
@@ -281,7 +281,7 @@
                             <div class="col-6">
                                 <div class="d-flex align-items-center">
                                     <div class="rounded-circle bg-success d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
-                                        <i class="fas fa-mouse-pointer text-white"></i>
+                                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     </div>
                                     <div>
                                         <div class="small text-muted">{{ _('Clics') }}</div>
@@ -294,7 +294,7 @@
                             <div class="col-6">
                                 <div class="d-flex align-items-center">
                                     <div class="rounded-circle bg-warning d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
-                                        <i class="fas fa-shopping-cart text-white"></i>
+                                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     </div>
                                     <div>
                                         <div class="small text-muted">{{ _('Conversions') }}</div>
@@ -305,7 +305,7 @@
                             <div class="col-6">
                                 <div class="d-flex align-items-center">
                                     <div class="rounded-circle bg-info d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
-                                        <i class="fas fa-bullhorn text-white"></i>
+                                        <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     </div>
                                     <div>
                                         <div class="small text-muted">{{ _('Campagnes') }}</div>
@@ -348,10 +348,10 @@
                     </div>
                     <div class="card-footer">
                         <a href="/boutique/{{ boutique.id }}/campaigns" class="btn btn-sm btn-primary">
-                            <i class="fas fa-chart-bar me-1"></i> {{ _('Détails') }}
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Détails') }}
                         </a>
                         <a href="/boutique/{{ boutique.id }}/edit" class="btn btn-sm btn-secondary">
-                            <i class="fas fa-edit me-1"></i> {{ _('Modifier') }}
+                            <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Modifier') }}
                         </a>
                     </div>
                 </div>
@@ -367,13 +367,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Remplacer par une alerte indiquant le manque de données
     document.getElementById('campaignTypesChart').parentNode.innerHTML = 
         '<div class="alert alert-info text-center p-4">' +
-        '<i class="fas fa-info-circle fa-2x mb-3"></i>' +
+        '<img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 32px; height: 32px; margin-right: 8px;">' +
         '<p>Les graphiques seront disponibles lorsque des données de campagne existeront.</p>' +
         '</div>';
         
     document.getElementById('boutiquePerformanceChart').parentNode.innerHTML = 
         '<div class="alert alert-info text-center p-4">' +
-        '<i class="fas fa-info-circle fa-2x mb-3"></i>' +
+        '<img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 32px; height: 32px; margin-right: 8px;">' +
         '<p>Les graphiques seront disponibles lorsque des données de campagne existeront.</p>' +
         '</div>';
 });

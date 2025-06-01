@@ -9,13 +9,13 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0"><i class="fas fa-search"></i> {{ _('Audit SEO Automatisé') }}</h2>
+                    <h2 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Audit SEO Automatisé') }}</h2>
                 </div>
                 <div class="card-body">
                     <p class="lead">{{ _("Analysez et optimisez vos contenus pour le référencement SEO avec nos outils intégrés à Google Trends, Serper API et DataForSEO.") }}</p>
                     
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i> {{ _("L'audit SEO vous permet d'analyser vos boutiques, campagnes et produits pour optimiser leur référencement sur les moteurs de recherche.") }}
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _("L'audit SEO vous permet d'analyser vos boutiques, campagnes et produits pour optimiser leur référencement sur les moteurs de recherche.") }}
                     </div>
                 </div>
             </div>
@@ -26,7 +26,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    <h3 class="mb-0"><i class="fas fa-chart-line"></i> {{ _('Lancer un nouvel audit SEO') }}</h3>
+                    <h3 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Lancer un nouvel audit SEO') }}</h3>
                 </div>
                 <div class="card-body">
                     <form action="{{ url_for('run_new_seo_audit') }}" method="post">
@@ -84,7 +84,7 @@
                         
                         <div class="d-grid">
                             <button type="submit" class="btn btn-success" id="run_audit_btn" disabled>
-                                <i class="fas fa-search"></i> {{ _('Lancer l\'audit') }}
+                                <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Lancer l\'audit') }}
                             </button>
                         </div>
                     </form>
@@ -95,14 +95,14 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-info text-white">
-                    <h3 class="mb-0"><i class="fas fa-tools"></i> {{ _('Outils SEO disponibles') }}</h3>
+                    <h3 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Outils SEO disponibles') }}</h3>
                 </div>
                 <div class="card-body">
                     <div class="list-group">
                         <a href="{{ url_for('seo_audit_dashboard') }}" class="list-group-item list-group-item-action">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5><i class="fas fa-search"></i> {{ _('Audit SEO complet') }}</h5>
+                                    <h5><img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Audit SEO complet') }}</h5>
                                     <p class="mb-0 text-muted">{{ _('Analyse complète des critères SEO avec score et recommandations') }}</p>
                                 </div>
                                 <span class="badge bg-primary rounded-pill">{{ _('Actif') }}</span>
@@ -111,7 +111,7 @@
                         <a href="{{ url_for('seo_keywords') }}" class="list-group-item list-group-item-action">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5><i class="fas fa-key"></i> {{ _('Analyse de mots-clés') }}</h5>
+                                    <h5><img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Analyse de mots-clés') }}</h5>
                                     <p class="mb-0 text-muted">{{ _('Recherche et analyse de mots-clés avec Google Trends') }}</p>
                                 </div>
                                 <span class="badge bg-primary rounded-pill">{{ _('Actif') }}</span>
@@ -120,7 +120,7 @@
                         <a href="#" class="list-group-item list-group-item-action disabled">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5><i class="fas fa-globe"></i> {{ _('Analyse de la concurrence') }}</h5>
+                                    <h5><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Analyse de la concurrence') }}</h5>
                                     <p class="mb-0 text-muted">{{ _('Analyse des sites concurrents avec Serper API') }}</p>
                                 </div>
                                 <span class="badge bg-secondary rounded-pill">{{ _('Bientôt') }}</span>
@@ -129,7 +129,7 @@
                         <a href="#" class="list-group-item list-group-item-action disabled">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5><i class="fas fa-chart-bar"></i> {{ _('Suivi de performance') }}</h5>
+                                    <h5><img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Suivi de performance') }}</h5>
                                     <p class="mb-0 text-muted">{{ _('Suivi des positions et des performances SEO') }}</p>
                                 </div>
                                 <span class="badge bg-secondary rounded-pill">{{ _('Bientôt') }}</span>
@@ -145,7 +145,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header bg-dark text-white">
-                    <h3 class="mb-0"><i class="fas fa-history"></i> {{ _('Audits SEO récents') }}</h3>
+                    <h3 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Audits SEO récents') }}</h3>
                 </div>
                 <div class="card-body">
                     {% if latest_audits %}
@@ -199,7 +199,7 @@
                                     <td>{{ audit.locale }}</td>
                                     <td>
                                         <a href="{{ url_for('view_seo_audit', audit_id=audit.id) }}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye"></i> {{ _('Voir') }}
+                                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Voir') }}
                                         </a>
                                     </td>
                                 </tr>
@@ -209,7 +209,7 @@
                     </div>
                     {% else %}
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i> {{ _("Aucun audit SEO n'a encore été effectué. Lancez votre premier audit !") }}
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _("Aucun audit SEO n'a encore été effectué. Lancez votre premier audit !") }}
                     </div>
                     {% endif %}
                 </div>

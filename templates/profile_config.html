@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <h1 class="mb-4"><i class="fas fa-user-cog me-2"></i>Configuration du profil</h1>
+            <h1 class="mb-4"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Configuration du profil</h1>
             
             <!-- Statistiques utilisateur -->
             <div class="row mb-4">
@@ -20,7 +20,7 @@
                                     <small>/ {{ user.tokens_total }} tokens</small>
                                 </div>
                                 <div class="align-self-center">
-                                    <i class="fas fa-coins fa-2x"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 32px; height: 32px; margin-right: 8px;">
                                 </div>
                             </div>
                         </div>
@@ -41,7 +41,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="align-self-center">
-                                    <i class="fas fa-crown fa-2x"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 32px; height: 32px; margin-right: 8px;">
                                 </div>
                             </div>
                         </div>
@@ -58,7 +58,7 @@
                                     <small>Créées</small>
                                 </div>
                                 <div class="align-self-center">
-                                    <i class="fas fa-bullhorn fa-2x"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 32px; height: 32px; margin-right: 8px;">
                                 </div>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                                     <small>Analysés</small>
                                 </div>
                                 <div class="align-self-center">
-                                    <i class="fas fa-users fa-2x"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 32px; height: 32px; margin-right: 8px;">
                                 </div>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
                 <div class="col-lg-8">
                     <div class="card border-primary shadow-sm">
                         <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0"><i class="fas fa-user-edit me-2"></i>Informations personnelles</h5>
+                            <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Informations personnelles</h5>
                         </div>
                         <div class="card-body">
                             <form method="POST" action="{{ url_for('update_profile') }}">
@@ -158,7 +158,7 @@
                                 </div>
                                 
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>Sauvegarder
+                                    <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Sauvegarder
                                 </button>
                             </form>
                         </div>
@@ -169,7 +169,7 @@
                     <!-- Avatar actuel -->
                     <div class="card border-secondary shadow-sm mb-4">
                         <div class="card-header bg-secondary text-white">
-                            <h6 class="mb-0"><i class="fas fa-image me-2"></i>Avatar actuel</h6>
+                            <h6 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Avatar actuel</h6>
                         </div>
                         <div class="card-body text-center">
                             {% if user.avatar_url %}
@@ -181,7 +181,7 @@
                             {% else %}
                                 <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
                                      style="width: 120px; height: 120px;">
-                                    <i class="fas fa-user fa-3x text-white"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                                 </div>
                             {% endif %}
                             <h6>{{ user.first_name or user.username or 'Utilisateur' }} {{ user.last_name or '' }}</h6>
@@ -192,7 +192,7 @@
                     <!-- Lien de parrainage -->
                     <div class="card border-info shadow-sm mb-4">
                         <div class="card-header bg-info text-white">
-                            <h6 class="mb-0"><i class="fas fa-share-alt me-2"></i>Lien de parrainage</h6>
+                            <h6 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Lien de parrainage</h6>
                         </div>
                         <div class="card-body">
                             {% if referral_url %}
@@ -202,7 +202,7 @@
                                            id="referralLink" readonly>
                                     <button class="btn btn-outline-info" type="button" 
                                             onclick="copyToClipboard('referralLink')">
-                                        <i class="fas fa-copy"></i>
+                                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     </button>
                                 </div>
                                 <small class="form-text text-muted mt-2">
@@ -217,7 +217,7 @@
                     <!-- Zone de danger -->
                     <div class="card border-danger shadow-sm">
                         <div class="card-header bg-danger text-white">
-                            <h6 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Zone de danger</h6>
+                            <h6 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Zone de danger</h6>
                         </div>
                         <div class="card-body">
                             <p class="text-danger">
@@ -226,7 +226,7 @@
                             </p>
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" 
                                     data-bs-target="#deleteAccountModal">
-                                <i class="fas fa-trash me-2"></i>Supprimer le compte
+                                <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Supprimer le compte
                             </button>
                         </div>
                     </div>
@@ -260,7 +260,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                 <form method="POST" action="{{ url_for('delete_account') }}" class="d-inline">
                     <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash me-2"></i>Supprimer définitivement
+                        <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Supprimer définitivement
                     </button>
                 </form>
             </div>
@@ -278,7 +278,7 @@ function copyToClipboard(elementId) {
     // Feedback visuel
     const button = element.nextElementSibling;
     const originalText = button.innerHTML;
-    button.innerHTML = '<i class="fas fa-check"></i>';
+    button.innerHTML = '<img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">';
     button.classList.remove('btn-outline-info');
     button.classList.add('btn-success');
     

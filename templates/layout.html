@@ -78,7 +78,7 @@
             {% if messages %}
                 {% for category, message in messages %}
                     <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        <i class="fas fa-info-circle me-2"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ _('Fermer') }}"></button>
                     </div>

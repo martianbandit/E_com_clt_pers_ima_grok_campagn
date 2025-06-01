@@ -8,7 +8,7 @@
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
                 <h4 class="mb-0">
-                    <i class="fas fa-language me-2"></i>{{ _('Multilingual Settings') }}
+                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Multilingual Settings') }}
                 </h4>
             </div>
             <div class="card-body">
@@ -61,10 +61,10 @@
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                         <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-times me-2"></i>{{ _('Cancel') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Cancel') }}
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>{{ _('Save Settings') }}
+                            <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Save Settings') }}
                         </button>
                     </div>
                 </form>

@@ -16,7 +16,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0"><i class="fas fa-key"></i> {{ _('Analyse de mots-clés SEO') }}</h2>
+                    <h2 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Analyse de mots-clés SEO') }}</h2>
                 </div>
                 <div class="card-body">
                     <p class="lead">{{ _("Analysez vos mots-clés avec Google Trends et découvrez les tendances et opportunités pour votre niche.") }}</p>
@@ -56,7 +56,7 @@
                                 </div>
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-search"></i> {{ _('Filtrer') }}
+                                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Filtrer') }}
                                     </button>
                                 </div>
                             </form>
@@ -94,7 +94,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header bg-dark text-white">
-                    <h3 class="mb-0"><i class="fas fa-list"></i> {{ _('Mots-clés analysés') }}</h3>
+                    <h3 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Mots-clés analysés') }}</h3>
                 </div>
                 <div class="card-body">
                     {% if keywords %}
@@ -137,11 +137,11 @@
                                     </td>
                                     <td>
                                         {% if keyword.trend_change > 10 %}
-                                        <span class="text-success"><i class="fas fa-arrow-up"></i> {{ keyword.trend_change|round(1) }}%</span>
+                                        <span class="text-success"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ keyword.trend_change|round(1) }}%</span>
                                         {% elif keyword.trend_change < -10 %}
-                                        <span class="text-danger"><i class="fas fa-arrow-down"></i> {{ keyword.trend_change|round(1) }}%</span>
+                                        <span class="text-danger"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ keyword.trend_change|round(1) }}%</span>
                                         {% else %}
-                                        <span class="text-secondary"><i class="fas fa-minus"></i> {{ keyword.trend_change|round(1) }}%</span>
+                                        <span class="text-secondary"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ keyword.trend_change|round(1) }}%</span>
                                         {% endif %}
                                     </td>
                                     <td>{{ keyword.last_updated.strftime('%d/%m/%Y') }}</td>
@@ -152,7 +152,7 @@
                     </div>
                     {% else %}
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i> {{ _("Aucun mot-clé n'a encore été analysé ou ne correspond aux critères de filtrage.") }}
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _("Aucun mot-clé n'a encore été analysé ou ne correspond aux critères de filtrage.") }}
                     </div>
                     {% endif %}
                 </div>
@@ -163,7 +163,7 @@
             {% if recommended_keywords %}
             <div class="card mb-4">
                 <div class="card-header bg-success text-white">
-                    <h3 class="mb-0"><i class="fas fa-star"></i> {{ _('Mots-clés recommandés') }}</h3>
+                    <h3 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Mots-clés recommandés') }}</h3>
                 </div>
                 <div class="card-body">
                     <p class="mb-3">{{ _('Recommandations pour la niche:') }} <strong>{{ selected_niche.name }}</strong></p>
@@ -190,11 +190,11 @@
                                 <small class="{% if keyword.trend_change > 0 %}text-success{% elif keyword.trend_change < 0 %}text-danger{% else %}text-muted{% endif %}">
                                     {{ _('Tendance:') }} 
                                     {% if keyword.trend_change > 0 %}
-                                    <i class="fas fa-arrow-up"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     {% elif keyword.trend_change < 0 %}
-                                    <i class="fas fa-arrow-down"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     {% else %}
-                                    <i class="fas fa-minus"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     {% endif %}
                                     {{ keyword.trend_change|round(1) }}%
                                 </small>
@@ -208,24 +208,24 @@
             
             <div class="card">
                 <div class="card-header bg-info text-white">
-                    <h3 class="mb-0"><i class="fas fa-lightbulb"></i> {{ _('Conseils d\'optimisation') }}</h3>
+                    <h3 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Conseils d\'optimisation') }}</h3>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <i class="fas fa-check-circle text-success me-2"></i> {{ _('Utilisez des mots-clés à faible compétition pour augmenter vos chances de classement.') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Utilisez des mots-clés à faible compétition pour augmenter vos chances de classement.') }}
                         </li>
                         <li class="list-group-item">
-                            <i class="fas fa-check-circle text-success me-2"></i> {{ _('Concentrez-vous sur les mots-clés en tendance pour attirer plus de trafic.') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Concentrez-vous sur les mots-clés en tendance pour attirer plus de trafic.') }}
                         </li>
                         <li class="list-group-item">
-                            <i class="fas fa-check-circle text-success me-2"></i> {{ _('Utilisez des mots-clés à longue traîne (3-5 mots) pour cibler des intentions spécifiques.') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Utilisez des mots-clés à longue traîne (3-5 mots) pour cibler des intentions spécifiques.') }}
                         </li>
                         <li class="list-group-item">
-                            <i class="fas fa-check-circle text-success me-2"></i> {{ _('Analysez régulièrement vos mots-clés pour suivre les changements de tendances.') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Analysez régulièrement vos mots-clés pour suivre les changements de tendances.') }}
                         </li>
                         <li class="list-group-item">
-                            <i class="fas fa-check-circle text-success me-2"></i> {{ _('Intégrez vos mots-clés de manière naturelle dans votre contenu, avec une densité de 1-3%.') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Intégrez vos mots-clés de manière naturelle dans votre contenu, avec une densité de 1-3%.') }}
                         </li>
                     </ul>
                 </div>

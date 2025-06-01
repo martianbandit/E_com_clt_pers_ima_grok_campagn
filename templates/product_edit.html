@@ -113,10 +113,10 @@
 
                         <div class="d-flex justify-content-between">
                             <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-secondary">
-                                <i class="fas fa-times me-2"></i>Annuler
+                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Annuler
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                                <img src="{{ url_for('static', filename='images/ninja-trophy.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Enregistrer les modifications
                             </button>
                         </div>
                     </form>
@@ -135,7 +135,7 @@
                         <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.alt_text or product.name }}">
                         {% else %}
                         <div class="bg-light text-center py-5">
-                            <i class="fas fa-image fa-3x text-muted"></i>
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                             <p class="mt-2 mb-0 text-muted">Aucune image</p>
                         </div>
                         {% endif %}
@@ -158,15 +158,15 @@
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <i class="fas fa-info-circle me-2 text-info"></i>
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                             Une description de base concise mais informative aidera l'IA à générer du contenu de qualité.
                         </li>
                         <li class="list-group-item">
-                            <i class="fas fa-info-circle me-2 text-info"></i>
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                             Pour une personnalisation optimale, associez le produit à une boutique et un public cible.
                         </li>
                         <li class="list-group-item">
-                            <i class="fas fa-info-circle me-2 text-info"></i>
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                             Pour un meilleur référencement, utilisez les outils de génération de contenu après avoir sauvegardé ces informations de base.
                         </li>
                     </ul>

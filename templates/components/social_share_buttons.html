@@ -2,7 +2,7 @@
 <div class="social-share-container">
     <div class="social-share-header">
         <h5 class="mb-2">
-            <i class="fas fa-share-alt me-2" style="color: #ff6b35;"></i>{{ _('Exporter et partager cette campagne') }}
+            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Exporter et partager cette campagne') }}
         </h5>
         <p class="text-muted small">{{ _('Utilisez ces boutons pour publier votre campagne sur vos réseaux sociaux favoris') }}</p>
     </div>
@@ -60,7 +60,7 @@
         
         <!-- Bouton de copie du lien -->
         <button class="social-button copy-link" data-url="{{ current_url }}" data-toggle="tooltip" title="{{ _('Copier le lien') }}">
-            <i class="fas fa-link" style="color: #cc4a28;"></i>
+            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
             <span>{{ _('Copier') }}</span>
         </button>
     </div>
@@ -70,16 +70,16 @@
         <h6 class="text-muted small mb-2" style="color: #ff6b35 !important;">{{ _('Exporter en') }}:</h6>
         <div class="btn-group btn-group-sm">
             <button class="btn btn-outline-warning export-pdf" style="border-color: #ff6b35; color: #ff6b35;">
-                <i class="far fa-file-pdf me-1" style="color: #cc4a28;"></i> PDF
+                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> PDF
             </button>
             <button class="btn btn-outline-warning export-image" style="border-color: #ff6b35; color: #ff6b35;">
-                <i class="far fa-file-image me-1" style="color: #cc4a28;"></i> {{ _('Image') }}
+                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Image') }}
             </button>
             <button class="btn btn-outline-warning export-text" style="border-color: #ff6b35; color: #ff6b35;">
-                <i class="far fa-file-alt me-1" style="color: #cc4a28;"></i> {{ _('Texte') }}
+                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Texte') }}
             </button>
             <button class="btn btn-outline-warning export-html" style="border-color: #ff6b35; color: #ff6b35;">
-                <i class="fas fa-code me-1" style="color: #cc4a28;"></i> HTML
+                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> HTML
             </button>
         </div>
     </div>
@@ -229,7 +229,7 @@
                 // Mettre à jour le texte et l'apparence du bouton
                 const originalText = this.innerHTML;
                 this.classList.add('copied');
-                this.innerHTML = '<i class="fas fa-check"></i><span>{{ _("Copié !") }}</span>';
+                this.innerHTML = '<img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"><span>{{ _("Copié !") }}</span>';
                 
                 // Restaurer l'état initial après 2 secondes
                 setTimeout(() => {

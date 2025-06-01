@@ -24,7 +24,7 @@
                     <h5 class="mb-0">Image de la campagne</h5>
                     <div>
                         <a href="{{ url_for('generate_campaign_image', campaign_id=campaign.id) }}" class="btn btn-sm btn-light">
-                            <i class="fas fa-sync-alt"></i> {% if campaign.image_url %}Régénérer l'image{% else %}Générer une image{% endif %}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {% if campaign.image_url %}Régénérer l'image{% else %}Générer une image{% endif %}
                         </a>
                         {% if campaign.image_url %}
                         <span class="badge bg-light text-dark ms-2">SEO optimisée</span>
@@ -82,7 +82,7 @@
                     {% endif %}
                     {% else %}
                     <div class="text-center py-5">
-                        <i class="fas fa-image fa-3x text-muted mb-3"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                         <p>Aucune image n'a été générée pour cette campagne.</p>
                         <p class="small text-muted">Cliquez sur "Générer une image" pour en créer une basée sur le contenu de la campagne.</p>
                     </div>
@@ -119,7 +119,7 @@
             {% if campaign.similar_products|length > 0 %}
             <div class="card mb-4">
                 <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i> Produits similaires</h5>
+                    <h5 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Produits similaires</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -130,7 +130,7 @@
                                 <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="height: 180px; object-fit: cover;">
                                 {% else %}
                                 <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
-                                    <i class="fas fa-image text-muted fa-3x"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 48px; height: 48px; margin-right: 8px;">
                                 </div>
                                 {% endif %}
                                 <div class="card-body">
@@ -143,7 +143,7 @@
                                     {% endif %}
                                     {% if product.product_url %}
                                     <a href="{{ product.product_url }}" target="_blank" class="btn btn-sm btn-outline-primary w-100 mt-2">
-                                        <i class="fas fa-external-link-alt me-1"></i> Voir sur AliExpress
+                                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Voir sur AliExpress
                                     </a>
                                     {% endif %}
                                 </div>
@@ -178,7 +178,7 @@
                             {% endif %}
                         </div>
                         <a href="{{ url_for('view_customer', customer_id=campaign.customer.id) }}" class="btn btn-sm btn-outline-primary ms-auto">
-                            <i class="fas fa-eye me-1"></i> Voir le profil complet
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Voir le profil complet
                         </a>
                     </div>
                 </div>
@@ -194,14 +194,14 @@
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="{{ url_for('campaigns') }}" class="btn btn-outline-primary">
-                            <i class="fas fa-arrow-left me-2"></i> Retour aux campagnes
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Retour aux campagnes
                         </a>
                         <a href="#" class="btn btn-outline-success" onclick="printCampaign()">
-                            <i class="fas fa-print me-2"></i> Imprimer la campagne
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Imprimer la campagne
                         </a>
                         <a href="{{ url_for('delete_campaign', campaign_id=campaign.id) }}" class="btn btn-outline-danger" 
                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette campagne? Cette action est irréversible.');">
-                            <i class="fas fa-trash me-2"></i> Supprimer la campagne
+                            <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Supprimer la campagne
                         </a>
                     </div>
                 </div>
@@ -211,7 +211,7 @@
             <div class="card mb-4 shadow-sm border-primary wow-effect">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">
-                        <i class="fas fa-share-alt me-2"></i>Partager cette campagne
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Partager cette campagne
                     </h5>
                 </div>
                 <div class="card-body">
@@ -232,7 +232,7 @@
                 </div>
                 <div class="card-body">
                     <button class="btn btn-sm btn-outline-secondary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseData">
-                        <i class="fas fa-code me-2"></i> Afficher/Masquer les données
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Afficher/Masquer les données
                     </button>
                     <div class="collapse" id="collapseData">
                         <div class="card card-body">

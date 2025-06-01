@@ -206,7 +206,7 @@
                         {% endfor %}
                     {% else %}
                         <div class="list-group-item text-center py-4">
-                            <i class="fas fa-bullhorn fa-2x text-muted mb-2"></i>
+                            <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 32px; height: 32px; margin-right: 8px;">
                             <p class="mb-0">No campaigns created yet</p>
                         </div>
                     {% endif %}
@@ -237,7 +237,7 @@
                             <img src="{{ campaign.image_url }}" class="card-img-top campaign-image" alt="Campaign image" style="height: 200px; object-fit: cover;">
                             <div class="position-absolute top-0 end-0 m-2">
                                 <a href="{{ url_for('generate_campaign_image', campaign_id=campaign.id) }}" class="btn btn-sm btn-light" title="Régénérer l'image">
-                                    <i class="fas fa-sync-alt"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                 </a>
                             </div>
                         </div>
@@ -265,7 +265,7 @@
     </div>
 {% else %}
     <div class="alert alert-info">
-        <i class="fas fa-info-circle me-2"></i>
+        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
         No campaigns created yet. Use the form to create your first campaign.
     </div>
 {% endif %}

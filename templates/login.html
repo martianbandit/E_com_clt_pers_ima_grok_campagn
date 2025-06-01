@@ -21,20 +21,20 @@
                         <div class="mb-3">
                             <label for="username" class="form-label">{{ _('Nom d\'utilisateur') }}</label>
                             <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <span class="input-group-text"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>
                                 <input type="text" class="form-control" id="username" name="username" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">{{ _('Mot de passe') }}</label>
                             <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <span class="input-group-text"><img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>
                                 <input type="password" class="form-control" id="password" name="password" required>
                             </div>
                         </div>
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-sign-in-alt me-2"></i> {{ _('Se connecter') }}
+                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Se connecter') }}
                             </button>
                         </div>
                     </form>

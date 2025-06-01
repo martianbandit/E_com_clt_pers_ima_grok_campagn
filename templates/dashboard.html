@@ -22,7 +22,7 @@
         <div class="card">
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">
-                    <i class="fas fa-store me-2"></i>
+                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                     {{ _('Your Boutiques') }}
                 </h5>
             </div>
@@ -42,13 +42,13 @@
                     </div>
                 {% else %}
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                         {{ _('You haven\'t added any boutiques yet. Add your first boutique to get started.') }}
                     </div>
                 {% endif %}
                 
                 <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addBoutiqueModal">
-                    <i class="fas fa-plus me-2"></i>
+                    <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                     {{ _('Add New Boutique') }}
                 </button>
             </div>
@@ -59,7 +59,7 @@
         <div class="card">
             <div class="card-header bg-success text-white">
                 <h5 class="mb-0">
-                    <i class="fas fa-tags me-2"></i>
+                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                     {{ _('Niche Markets') }}
                 </h5>
             </div>
@@ -79,13 +79,13 @@
                     </div>
                 {% else %}
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                         {{ _('No niche markets defined yet. Add your first niche to target specific customer segments.') }}
                     </div>
                 {% endif %}
                 
                 <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addNicheModal">
-                    <i class="fas fa-plus me-2"></i>
+                    <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                     {{ _('Add New Niche') }}
                 </button>
             </div>
@@ -99,7 +99,7 @@
         <div class="card border-warning shadow-sm">
             <div class="card-header bg-warning text-white">
                 <h5 class="mb-0">
-                    <i class="fas fa-chart-line me-2"></i>
+                    <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                     {{ _('Performance des campagnes') }}
                 </h5>
             </div>
@@ -115,7 +115,7 @@
                     </div>
                     <div class="col-md-4 text-center text-md-end">
                         <a href="{{ url_for('boutique_dashboard') }}" class="btn btn-warning btn-lg">
-                            <i class="fas fa-chart-pie me-2"></i>
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                             {{ _('Analytics Détaillés') }}
                         </a>
                     </div>
@@ -130,7 +130,7 @@
         <div class="card">
             <div class="card-header bg-info text-white">
                 <h5 class="mb-0">
-                    <i class="fas fa-lightbulb me-2"></i>
+                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                     {{ _('Prochaines étapes') }}
                 </h5>
             </div>
@@ -140,14 +140,14 @@
                         <div class="d-flex">
                             <div class="flex-shrink-0">
                                 <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                    <i class="fas fa-users text-white"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h5>{{ _('Générer des profils clients') }}</h5>
                                 <p class="mb-0">{{ _('Créez des profils clients détaillés pour la niche de votre boutique.') }}</p>
                                 <a href="/profiles" class="btn btn-sm btn-outline-primary mt-2">
-                                    <i class="fas fa-arrow-right me-1"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     {{ _('Profils clients') }}
                                 </a>
                             </div>
@@ -157,14 +157,14 @@
                         <div class="d-flex">
                             <div class="flex-shrink-0">
                                 <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                    <i class="fas fa-bullhorn text-white"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h5>{{ _('Créer des campagnes marketing') }}</h5>
                                 <p class="mb-0">{{ _('Développez des campagnes marketing personnalisées pour vos clients.') }}</p>
                                 <a href="/campaigns" class="btn btn-sm btn-outline-success mt-2">
-                                    <i class="fas fa-arrow-right me-1"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     {{ _('Campagnes') }}
                                 </a>
                             </div>
@@ -174,14 +174,14 @@
                         <div class="d-flex">
                             <div class="flex-shrink-0">
                                 <div class="bg-info rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                    <i class="fas fa-image text-white"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h5>{{ _('Générer des images marketing') }}</h5>
                                 <p class="mb-0">{{ _('Créez des images personnalisées qui reflètent le style de votre boutique.') }}</p>
                                 <a href="/image_generation" class="btn btn-sm btn-outline-info mt-2">
-                                    <i class="fas fa-arrow-right me-1"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                     {{ _('Générer des images') }}
                                 </a>
                             </div>
@@ -216,7 +216,7 @@
                         <input type="text" class="form-control" id="target-demographic" placeholder="{{ _('e.g., Women 25-40, Urban professionals') }}">
                     </div>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>{{ _('Add Boutique') }}
+                        <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Add Boutique') }}
                     </button>
                 </form>
             </div>
@@ -247,7 +247,7 @@
                         <textarea class="form-control" id="key-characteristics" rows="2" placeholder="{{ _('e.g., Eco-friendly, Handmade, Limited edition') }}"></textarea>
                     </div>
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-plus me-2"></i>{{ _('Add Niche') }}
+                        <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Add Niche') }}
                     </button>
                 </form>
             </div>

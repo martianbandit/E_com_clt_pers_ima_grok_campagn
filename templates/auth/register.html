@@ -14,7 +14,7 @@
 
         <div class="card border-0 shadow-sm">
             <div class="card-header theme-dependent">
-                <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i>{{ _('Inscription') }}</h4>
+                <h4 class="mb-0"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Inscription') }}</h4>
             </div>
             <div class="card-body p-4">
                 <!-- Formulaire d'inscription -->
@@ -24,7 +24,7 @@
                     <div class="mb-3">
                         <label for="username" class="form-label">{{ _('Nom d\'utilisateur') }}</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <span class="input-group-text"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>
                             <input type="text" class="form-control" id="username" name="username" 
                                    placeholder="{{ _('Choisissez un nom d\'utilisateur') }}" required
                                    minlength="3" maxlength="50">
@@ -41,7 +41,7 @@
                     <div class="mb-3">
                         <label for="email" class="form-label">{{ _('Email') }}</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <span class="input-group-text"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>
                             <input type="email" class="form-control" id="email" name="email" 
                                    placeholder="{{ _('Votre adresse email') }}" required>
                         </div>
@@ -57,7 +57,7 @@
                     <div class="mb-3">
                         <label for="password" class="form-label">{{ _('Mot de passe') }}</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <span class="input-group-text"><img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>
                             <input type="password" class="form-control" id="password" name="password" 
                                    placeholder="{{ _('Choisissez un mot de passe sécurisé') }}" required
                                    minlength="8">
@@ -75,7 +75,7 @@
                     <div class="mb-4">
                         <label for="password2" class="form-label">{{ _('Confirmer le mot de passe') }}</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <span class="input-group-text"><img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>
                             <input type="password" class="form-control" id="password2" name="password2" 
                                    placeholder="{{ _('Confirmez votre mot de passe') }}" required>
                         </div>
@@ -90,7 +90,7 @@
                     
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-user-plus me-2"></i>{{ _('Créer mon compte') }}
+                            <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Créer mon compte') }}
                         </button>
                     </div>
                 </form>
@@ -133,7 +133,7 @@
         
         <div class="text-center mt-4">
             <a href="{{ url_for('index') }}" class="text-decoration-none">
-                <i class="fas fa-arrow-left me-1"></i> {{ _('Retour à l\'accueil') }}
+                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Retour à l\'accueil') }}
             </a>
         </div>
     </div>

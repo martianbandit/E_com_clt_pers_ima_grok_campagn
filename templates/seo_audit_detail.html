@@ -18,7 +18,7 @@
                 <div class="card-header bg-primary text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h2 class="mb-0">
-                            <i class="fas fa-search"></i> 
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> 
                             {% if audited_object_type == 'boutique' %}
                             {{ _('Audit SEO : Boutique') }} "{{ audited_object.name }}"
                             {% elif audited_object_type == 'campaign' %}
@@ -120,7 +120,7 @@
                                         {% if audit.results and audit.results.title_analysis and audit.results.title_analysis.recommendations %}
                                             {% for rec in audit.results.title_analysis.recommendations %}
                                             <li class="list-group-item list-group-item-danger">
-                                                <i class="fas fa-exclamation-circle"></i> {{ rec }}
+                                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ rec }}
                                             </li>
                                             {% endfor %}
                                         {% endif %}
@@ -128,7 +128,7 @@
                                         {% if audit.results and audit.results.description_analysis and audit.results.description_analysis.recommendations %}
                                             {% for rec in audit.results.description_analysis.recommendations %}
                                             <li class="list-group-item list-group-item-danger">
-                                                <i class="fas fa-exclamation-circle"></i> {{ rec }}
+                                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ rec }}
                                             </li>
                                             {% endfor %}
                                         {% endif %}
@@ -136,7 +136,7 @@
                                         {% if audit.results and audit.results.content_quality and audit.results.content_quality.recommendations %}
                                             {% for rec in audit.results.content_quality.recommendations %}
                                             <li class="list-group-item list-group-item-warning">
-                                                <i class="fas fa-exclamation-triangle"></i> {{ rec }}
+                                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ rec }}
                                             </li>
                                             {% endfor %}
                                         {% endif %}
@@ -144,7 +144,7 @@
                                         {% if audit.results and audit.results.technical_seo and audit.results.technical_seo.recommendations %}
                                             {% for rec in audit.results.technical_seo.recommendations %}
                                             <li class="list-group-item list-group-item-warning">
-                                                <i class="fas fa-exclamation-triangle"></i> {{ rec }}
+                                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ rec }}
                                             </li>
                                             {% endfor %}
                                         {% endif %}
@@ -170,37 +170,37 @@
                             <ul class="nav nav-tabs" id="auditTabs" role="tablist">
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link active" id="title-tab" data-bs-toggle="tab" data-bs-target="#title-content" type="button" role="tab" aria-controls="title-content" aria-selected="true">
-                                        <i class="fas fa-heading"></i> {{ _('Titre') }}
+                                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Titre') }}
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="description-tab" data-bs-toggle="tab" data-bs-target="#description-content" type="button" role="tab" aria-controls="description-content" aria-selected="false">
-                                        <i class="fas fa-align-left"></i> {{ _('Description') }}
+                                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Description') }}
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="keywords-tab" data-bs-toggle="tab" data-bs-target="#keywords-content" type="button" role="tab" aria-controls="keywords-content" aria-selected="false">
-                                        <i class="fas fa-key"></i> {{ _('Mots-clés') }}
+                                        <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Mots-clés') }}
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="trends-tab" data-bs-toggle="tab" data-bs-target="#trends-content" type="button" role="tab" aria-controls="trends-content" aria-selected="false">
-                                        <i class="fas fa-chart-line"></i> {{ _('Tendances') }}
+                                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Tendances') }}
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="serp-tab" data-bs-toggle="tab" data-bs-target="#serp-content" type="button" role="tab" aria-controls="serp-content" aria-selected="false">
-                                        <i class="fas fa-search"></i> {{ _('SERP') }}
+                                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('SERP') }}
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="content-tab" data-bs-toggle="tab" data-bs-target="#content-quality" type="button" role="tab" aria-controls="content-quality" aria-selected="false">
-                                        <i class="fas fa-file-alt"></i> {{ _('Contenu') }}
+                                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Contenu') }}
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="technical-tab" data-bs-toggle="tab" data-bs-target="#technical-content" type="button" role="tab" aria-controls="technical-content" aria-selected="false">
-                                        <i class="fas fa-cogs"></i> {{ _('Technique') }}
+                                        <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Technique') }}
                                     </button>
                                 </li>
                             </ul>
@@ -261,13 +261,13 @@
                                                             <ul class="list-group">
                                                                 {% for rec in audit.results.title_analysis.recommendations %}
                                                                 <li class="list-group-item">
-                                                                    <i class="fas fa-check-circle text-success me-2"></i> {{ rec }}
+                                                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ rec }}
                                                                 </li>
                                                                 {% endfor %}
                                                             </ul>
                                                             {% else %}
                                                             <p class="text-success">
-                                                                <i class="fas fa-thumbs-up"></i> {{ _('Votre titre est bien optimisé!') }}
+                                                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Votre titre est bien optimisé!') }}
                                                             </p>
                                                             {% endif %}
                                                         </div>
@@ -346,13 +346,13 @@
                                                             <ul class="list-group">
                                                                 {% for rec in audit.results.description_analysis.recommendations %}
                                                                 <li class="list-group-item">
-                                                                    <i class="fas fa-check-circle text-success me-2"></i> {{ rec }}
+                                                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ rec }}
                                                                 </li>
                                                                 {% endfor %}
                                                             </ul>
                                                             {% else %}
                                                             <p class="text-success">
-                                                                <i class="fas fa-thumbs-up"></i> {{ _('Votre description est bien optimisée!') }}
+                                                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Votre description est bien optimisée!') }}
                                                             </p>
                                                             {% endif %}
                                                         </div>

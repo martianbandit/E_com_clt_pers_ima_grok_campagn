@@ -12,42 +12,42 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">
-                        <i class="fas fa-home me-2"></i>{{ _('Accueil') }}
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Accueil') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/dashboard' %}active{% endif %}" href="/dashboard">
-                        <i class="fas fa-chart-line me-2"></i>{{ _('Tableau de bord') }}
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Tableau de bord') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/profiles' %}active{% endif %}" href="/profiles">
-                        <i class="fas fa-users me-2"></i>{{ _('Profils clients') }}
+                        <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Profils clients') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/campaigns' %}active{% endif %}" href="/campaigns">
-                        <i class="fas fa-bullhorn me-2"></i>{{ _('Campagnes') }}
+                        <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Campagnes') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/products' %}active{% endif %}" href="/products">
-                        <i class="fas fa-box me-2"></i>{{ _('Fiches Produits') }}
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Fiches Produits') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/metrics' or request.path == '/metrics_dashboard' %}active{% endif %}" href="/metrics">
-                        <i class="fas fa-chart-bar me-2"></i>{{ _('Métriques') }}
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Métriques') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/osp-tools' %}active{% endif %}" href="/osp-tools">
-                        <i class="fas fa-tools me-2"></i>{{ _('Outils OSP') }}
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Outils OSP') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/profile' %}active{% endif %}" href="{{ url_for('user_profile_config') }}">
-                        <i class="fas fa-user-cog me-2"></i>{{ _('Profil') }}
+                        <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Profil') }}
                     </a>
                 </li>
             </ul>
@@ -60,7 +60,7 @@
                 <!-- Bouton direct profil utilisateur -->
                 {% if current_user and current_user.is_authenticated %}
                 <a href="/user/profile" class="btn btn-primary btn-sm me-2">
-                    <i class="fas fa-user-ninja me-1"></i>{{ _('Mon Profil') }}
+                    <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Mon Profil') }}
                 </a>
                 {% endif %}
                 
@@ -72,14 +72,14 @@
                 {% if current_user and current_user.is_authenticated %}
                 <div class="dropdown me-2">
                     <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user-ninja me-1"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                         <span class="d-none d-md-inline">{{ current_user.first_name or 'Admin' }}</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                         <li class="dropdown-item-text">
                             <div class="d-flex align-items-center">
                                 <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
-                                    <i class="fas fa-user-ninja"></i>
+                                    <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                 </div>
                                 <div>
                                     <strong>{{ current_user.first_name }} {{ current_user.last_name }}</strong>
@@ -91,38 +91,38 @@
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="/user/profile">
-                            <i class="fas fa-user me-2"></i>{{ _('Profil') }}
+                            <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Profil') }}
                         </a></li>
                         <li><a class="dropdown-item" href="/user/settings">
-                            <i class="fas fa-cog me-2"></i>{{ _('Paramètres') }}
+                            <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Paramètres') }}
                         </a></li>
                         <li><a class="dropdown-item" href="/user-info">
-                            <i class="fas fa-info-circle me-2"></i>{{ _('Info Compte') }}
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Info Compte') }}
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="/logout">
-                            <i class="fas fa-sign-out-alt me-2"></i>{{ _('Déconnexion') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Déconnexion') }}
                         </a></li>
                     </ul>
                 </div>
                 {% else %}
                 <div class="dropdown me-2">
                     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="authDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-sign-in-alt me-1"></i>
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                         <span class="d-none d-md-inline">{{ _('Connexion') }}</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown">
                         <li><a class="dropdown-item" href="{{ url_for('login') }}">
-                            <i class="fas fa-sign-in-alt me-2"></i>{{ _('Se connecter') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Se connecter') }}
                         </a></li>
                         <li><a class="dropdown-item" href="{{ url_for('register') }}">
-                            <i class="fas fa-user-plus me-2"></i>{{ _('S\'inscrire') }}
+                            <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('S\'inscrire') }}
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><p class="dropdown-item-text small text-muted px-2">{{ _('Ou connectez-vous avec') }}</p></li>
 
                         <li><a class="dropdown-item" href="{{ url_for('replit_auth.login') }}">
-                            <i class="fas fa-code me-2"></i>Replit
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">Replit
                         </a></li>
                         <li><a class="dropdown-item" href="{{ url_for('github.login') }}">
                             <i class="fab fa-github me-2"></i>GitHub

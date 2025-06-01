@@ -2,29 +2,29 @@
 {% if current_user.is_authenticated %}
 <div class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-user-ninja me-1"></i> {{ _('Mon Compte') }}
+        <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Mon Compte') }}
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
         <li>
             <a class="dropdown-item" href="/user/profile">
-                <i class="fas fa-id-card me-2"></i> {{ _('Mon Profil') }}
+                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Mon Profil') }}
             </a>
         </li>
         <li>
             <a class="dropdown-item" href="/user/settings">
-                <i class="fas fa-cog me-2"></i> {{ _('Paramètres') }}
+                <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Paramètres') }}
             </a>
         </li>
         <li><hr class="dropdown-divider"></li>
         <li>
             <a class="dropdown-item" href="/user-info">
-                <i class="fas fa-info-circle me-2"></i> {{ _('Infos Compte') }}
+                <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Infos Compte') }}
             </a>
         </li>
         <li><hr class="dropdown-divider"></li>
         <li>
             <a class="dropdown-item" href="/logout">
-                <i class="fas fa-sign-out-alt me-2"></i> {{ _('Déconnexion') }}
+                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Déconnexion') }}
             </a>
         </li>
     </ul>
@@ -32,7 +32,7 @@
 {% else %}
 <li class="nav-item">
     <a class="nav-link" href="/login">
-        <i class="fas fa-sign-in-alt me-1"></i> {{ _('Connexion') }}
+        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Connexion') }}
     </a>
 </li>
 {% endif %}

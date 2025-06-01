@@ -114,14 +114,14 @@
                 <div class="card-body">
                     <p>{{ _('Import directly from') }} <strong>AliExpress</strong> {{ _('and generate:') }}</p>
                     <ul class="fa-ul mb-4">
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('SEO optimized descriptions') }}</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Intelligent pricing strategies') }}</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Shopify compatible HTML') }}</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Alternative text and metadata') }}</li>
+                        <li><span class="fa-li"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>{{ _('SEO optimized descriptions') }}</li>
+                        <li><span class="fa-li"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>{{ _('Intelligent pricing strategies') }}</li>
+                        <li><span class="fa-li"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>{{ _('Shopify compatible HTML') }}</li>
+                        <li><span class="fa-li"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>{{ _('Alternative text and metadata') }}</li>
                     </ul>
                     <div class="d-grid">
                         <a href="{{ url_for('import_aliexpress_form') }}" class="btn btn-success">
-                            <i class="fas fa-download me-2"></i> {{ _('Import from AliExpress') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Import from AliExpress') }}
                         </a>
                     </div>
                 </div>
@@ -136,14 +136,14 @@
                 <div class="card-body">
                     <p>{{ _('Generate optimized content for your existing products:') }}</p>
                     <ul class="fa-ul mb-4">
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Customer persona targeted descriptions') }}</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Product variants and options') }}</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Comparative analysis') }}</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('SEO optimization') }}</li>
+                        <li><span class="fa-li"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>{{ _('Customer persona targeted descriptions') }}</li>
+                        <li><span class="fa-li"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>{{ _('Product variants and options') }}</li>
+                        <li><span class="fa-li"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>{{ _('Comparative analysis') }}</li>
+                        <li><span class="fa-li"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>{{ _('SEO optimization') }}</li>
                     </ul>
                     <div class="d-grid">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateContentModal">
-                            <i class="fas fa-magic me-2"></i> {{ _('Generate Content') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Generate Content') }}
                         </button>
                     </div>
                 </div>
@@ -158,14 +158,14 @@
                 <div class="card-body">
                     <p>{{ _('Create optimized marketing images for your products:') }}</p>
                     <ul class="fa-ul mb-4">
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('AI-powered image generation') }}</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Product showcases') }}</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Lifestyle imagery') }}</li>
-                        <li><span class="fa-li"><i class="fas fa-check-circle text-success"></i></span>{{ _('Brand-consistent visuals') }}</li>
+                        <li><span class="fa-li"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>{{ _('AI-powered image generation') }}</li>
+                        <li><span class="fa-li"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>{{ _('Product showcases') }}</li>
+                        <li><span class="fa-li"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>{{ _('Lifestyle imagery') }}</li>
+                        <li><span class="fa-li"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>{{ _('Brand-consistent visuals') }}</li>
                     </ul>
                     <div class="d-grid">
                         <button type="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#imageGeneratorModal">
-                            <i class="fas fa-image me-2"></i> {{ _('Generate Images') }}
+                            <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Generate Images') }}
                         </button>
                     </div>
                 </div>
@@ -226,10 +226,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-2"></i>{{ _('Cancel') }}
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Cancel') }}
                     </button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>{{ _('Create Product') }}
+                        <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Create Product') }}
                     </button>
                 </div>
             </form>
@@ -302,7 +302,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-magic me-2"></i> {{ _('Generate Content') }}
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Generate Content') }}
                     </button>
                 </div>
             </form>
@@ -326,7 +326,7 @@
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                 <form id="deleteProductForm" method="POST">
                     <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash me-2"></i>{{ _('Delete') }}
+                        <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Delete') }}
                     </button>
                 </form>
             </div>
@@ -461,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-info text-white">
-                        <i class="fas fa-magic me-2"></i> {{ _('Generate Image') }}
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> {{ _('Generate Image') }}
                     </button>
                 </div>
             </form>

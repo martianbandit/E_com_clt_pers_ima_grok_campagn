@@ -49,7 +49,7 @@
                         <div class="mb-3">
                             {{ form.email.label(class="auth-form-label") }}
                             <div class="input-group">
-                                <span class="auth-input-group-text"><i class="fas fa-envelope"></i></span>
+                                <span class="auth-input-group-text"><img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>
                                 {{ form.email(class="auth-form-control") }}
                             </div>
                             {% if form.email.errors %}
@@ -63,7 +63,7 @@
                         <div class="mb-3">
                             {{ form.password.label(class="auth-form-label") }}
                             <div class="input-group">
-                                <span class="auth-input-group-text"><i class="fas fa-lock"></i></span>
+                                <span class="auth-input-group-text"><img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"></span>
                                 {{ form.password(class="auth-form-control") }}
                             </div>
                             {% if form.password.errors %}

@@ -21,7 +21,7 @@
                 <img src="{{ customer.avatar_url }}" alt="Avatar de {{ customer.name }}" class="img-fluid rounded-circle avatar-image mb-2" style="max-width: 120px; max-height: 120px;">
                 <div>
                     <button class="btn btn-sm btn-outline-primary regenerate-avatar generate-avatar" data-customer-id="{{ customer.id }}">
-                        <i class="fas fa-sync-alt me-1"></i> Régénérer
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Régénérer
                     </button>
                 </div>
                 <div class="avatar-error mt-2 d-none alert alert-danger">
@@ -204,7 +204,7 @@
                             {% if not customer.avatar_url and customer.avatar_prompt %}
                             <div class="mt-3 avatar-container">
                                 <button class="btn btn-sm btn-outline-primary generate-avatar" data-customer-id="{{ customer.id }}">
-                                    <i class="fas fa-portrait me-2"></i> Générer un avatar
+                                    <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Générer un avatar
                                 </button>
                                 <div class="avatar-loading d-none mt-2">
                                     <div class="spinner-border spinner-border-sm text-primary" role="status">
@@ -355,7 +355,7 @@
                                     <td>{{ campaign.created_at.strftime('%d/%m/%Y') }}</td>
                                     <td>
                                         <a href="{{ url_for('view_campaign', campaign_id=campaign.id) }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye"></i>
+                                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                                         </a>
                                     </td>
                                 </tr>
@@ -376,21 +376,21 @@
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="{{ url_for('edit_customer', customer_id=customer.id) }}" class="btn btn-outline-primary">
-                            <i class="fas fa-edit me-2"></i> Modifier le profil
+                            <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Modifier le profil
                         </a>
                         {% if not customer.persona %}
                         <div class="persona-container">
                             <a href="#" class="btn btn-outline-success generate-persona" data-customer-id="{{ customer.id }}">
-                                <i class="fas fa-magic me-2"></i> Générer un persona
+                                <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Générer un persona
                             </a>
                         </div>
                         {% endif %}
                         <a href="{{ url_for('campaigns') }}?customer_id={{ customer.id }}" class="btn btn-outline-info">
-                            <i class="fas fa-bullhorn me-2"></i> Créer une campagne
+                            <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Créer une campagne
                         </a>
                         <a href="{{ url_for('delete_customer', customer_id=customer.id) }}" class="btn btn-outline-danger" 
                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce client? Cette action est irréversible.');">
-                            <i class="fas fa-trash me-2"></i> Supprimer ce client
+                            <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Supprimer ce client
                         </a>
                     </div>
                 </div>
@@ -403,7 +403,7 @@
                 </div>
                 <div class="card-body">
                     <button class="btn btn-sm btn-outline-secondary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseData">
-                        <i class="fas fa-code me-2"></i> Afficher/Masquer les données
+                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Afficher/Masquer les données
                     </button>
                     <div class="collapse" id="collapseData">
                         <div class="card card-body">
@@ -444,7 +444,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Arrêter l'animation de chargement
                 hideLoading();
                 this.disabled = false;
-                this.innerHTML = '<i class="fas fa-magic me-2"></i> Générer un persona';
+                this.innerHTML = '<img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Générer un persona';
                 
                 if (data.success) {
                     // Recharger la page pour afficher le nouveau persona
@@ -459,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Arrêter l'animation de chargement
                 hideLoading();
                 this.disabled = false;
-                this.innerHTML = '<i class="fas fa-magic me-2"></i> Générer un persona';
+                this.innerHTML = '<img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Générer un persona';
                 
                 alert('Une erreur est survenue lors de la génération du persona.');
             });
