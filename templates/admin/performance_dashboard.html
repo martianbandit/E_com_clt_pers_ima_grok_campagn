@@ -190,7 +190,7 @@
                                         </div>
                                     {% else %}
                                         <div class="alert alert-warning">
-                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            {{ error_icon(size='sm', classes='me-2') }}
                                             {{ performance_data.asset_stats.message }}
                                         </div>
                                     {% endif %}
