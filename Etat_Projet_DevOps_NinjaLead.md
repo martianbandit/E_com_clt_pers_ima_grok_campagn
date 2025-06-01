@@ -144,13 +144,13 @@
 ### 3.3 Performance & Scalabilité (Priorité MOYENNE)
 
 #### 3.3.1 Backend Optimizations
-- ❌ **Redis cache** pour sessions + données
+- ✅ **Redis cache** pour sessions + données (avec fallback mémoire)
 - ❌ **CDN** pour assets statiques
-- ❌ **Database indexing** optimisé
-- ❌ **API response caching**
+- ✅ **Database indexing** optimisé (PostgreSQL indexes intelligents)
+- ✅ **API response caching** (cache intelligent avec clés TTL)
 
 #### 3.3.2 Frontend Optimizations
-- ❌ **Minification** JS/CSS automatique
+- ✅ **Minification** JS/CSS automatique (avec compression gzip)
 - ❌ **Image optimization** pipeline
 - ❌ **Progressive loading** pour grandes listes
 - ❌ **Service Worker** pour cache offline

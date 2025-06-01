@@ -4180,19 +4180,19 @@ def performance_dashboard():
     # Statistiques du cache
     if performance_modules_loaded:
         try:
-            performance_data['cache_stats'] = get_cache_stats()
+            performance_data['cache_stats'] = performance_cache.get_cache_stats() if performance_cache else {"status": "not_available"}
         except Exception:
             performance_data['cache_stats'] = {"status": "error"}
         
         # Statistiques de base de données
         try:
-            performance_data['db_stats'] = db_optimizer.get_performance_stats()
+            performance_data['db_stats'] = db_index_optimizer.get_index_statistics() if db_index_optimizer else {"status": "not_available"}
         except Exception:
-            performance_data['db_stats'] = {}
+            performance_data['db_stats'] = {"status": "error"}
         
         # Statistiques d'optimisation des assets
         try:
-            performance_data['asset_stats'] = asset_optimizer.get_optimization_stats()
+            performance_data['asset_stats'] = asset_optimizer.get_optimization_stats() if asset_optimizer else {"status": "not_available"}
         except Exception:
             performance_data['asset_stats'] = {"message": "Assets optimization not run yet"}
     else:
@@ -4217,21 +4217,20 @@ def run_performance_optimization():
     if performance_modules_loaded:
         try:
             # Optimisation des assets
-            compressed_files = asset_optimizer.compress_static_files()
-            results['assets'] = f"{compressed_files} fichiers compressés"
+            if asset_optimizer:
+                asset_results = asset_optimizer.optimize_all_assets()
+                results['assets'] = f"Assets optimisés: {asset_results.get('files_processed', 0)} fichiers"
             
             # Optimisation de la base de données
-            indexes_created = optimize_database_indexes()
-            results['database'] = f"{len(indexes_created)} index créés"
+            if db_index_optimizer:
+                db_index_optimizer.create_performance_indexes()
+                db_index_optimizer.optimize_table_statistics()
+                results['database'] = "Index de performance créés et statistiques mises à jour"
             
             # Nettoyage du cache
-            if hasattr(cache, 'redis_client') and cache.cache_available:
-                cache.redis_client.flushdb()
-                results['cache'] = "Cache Redis nettoyé"
-            else:
-                cache.memory_cache.clear()
-                cache.memory_cache_ttl.clear()
-                results['cache'] = "Cache mémoire nettoyé"
+            if performance_cache:
+                performance_cache.clear_all_cache()
+                results['cache'] = "Cache nettoyé avec succès"
                 
         except Exception as e:
             results['error'] = f"Erreur d'optimisation: {str(e)}"
