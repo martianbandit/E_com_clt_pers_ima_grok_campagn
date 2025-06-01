@@ -10,7 +10,34 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from security_enhancements import init_security_extensions, add_security_headers, setup_error_handlers
 from security_middleware import security_middleware
 from centralized_logging import setup_logging
-# GDPR sera initialisé après la création de db
+# Modules de sécurité et performance avancés (initialisation conditionnelle)
+try:
+    from encryption_manager import encryption_manager, get_encryption_status
+    encryption_available = True
+except ImportError as e:
+    logger.warning(f"Module de chiffrement non disponible: {e}")
+    encryption_available = False
+
+try:
+    from redis_cache_manager import cache_manager, SessionManager, BusinessDataCache
+    cache_available = True
+except ImportError as e:
+    logger.warning(f"Module de cache Redis non disponible: {e}")
+    cache_available = False
+
+try:
+    from database_optimization import DatabaseOptimizer
+    db_optimization_available = True
+except ImportError as e:
+    logger.warning(f"Module d'optimisation DB non disponible: {e}")
+    db_optimization_available = False
+
+try:
+    from ddos_protection import ddos_protection, ddos_protection_middleware, get_ddos_stats
+    ddos_protection_available = True
+except ImportError as e:
+    logger.warning(f"Module de protection DDoS non disponible: {e}")
+    ddos_protection_available = False
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, g

@@ -52,6 +52,7 @@ dependencies = [
     "apscheduler>=3.10.4",
     "oauthlib>=3.2.2",
     "psutil>=5.9.6",
+    "cryptography>=41.0.0",
 ]
 
 [project.optional-dependencies]
