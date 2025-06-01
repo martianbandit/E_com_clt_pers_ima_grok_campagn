@@ -1,0 +1,523 @@
+/* Optimisations mobiles avancées pour NinjaLead */
+
+/* Variables pour mobile */
+:root {
+    --mobile-padding: 8px;
+    --mobile-font-size: 14px;
+    --mobile-button-height: 40px;
+    --mobile-spacing: 12px;
+}
+
+/* Styles de base pour mobile */
+@media (max-width: 768px) {
+    /* Body et layout principal */
+    body {
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow-x: hidden;
+    }
+    
+    .container, .container-fluid {
+        padding-left: var(--mobile-padding) !important;
+        padding-right: var(--mobile-padding) !important;
+        max-width: 100% !important;
+    }
+    
+    /* Navigation mobile */
+    .navbar {
+        padding: 0.5rem var(--mobile-padding) !important;
+        min-height: 60px;
+    }
+    
+    .navbar-brand {
+        font-size: 1.1rem !important;
+        padding: 0 !important;
+    }
+    
+    .navbar-nav {
+        margin-top: 1rem;
+    }
+    
+    .nav-link {
+        padding: 0.75rem 1rem !important;
+        font-size: var(--mobile-font-size) !important;
+    }
+    
+    /* Hamburger menu amélioré */
+    .navbar-toggler {
+        border: none !important;
+        padding: 0.25rem 0.5rem !important;
+        font-size: 1.1rem !important;
+    }
+    
+    /* Cards et conteneurs */
+    .card {
+        margin-bottom: var(--mobile-spacing) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    }
+    
+    .card-body {
+        padding: 1rem !important;
+    }
+    
+    .card-header {
+        padding: 0.75rem 1rem !important;
+        font-size: 1rem !important;
+    }
+    
+    /* Boutons optimisés pour mobile */
+    .btn {
+        min-height: var(--mobile-button-height) !important;
+        padding: 0.5rem 1rem !important;
+        font-size: var(--mobile-font-size) !important;
+        border-radius: 6px !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .btn-lg {
+        min-height: 48px !important;
+        font-size: 1rem !important;
+        padding: 0.75rem 1.5rem !important;
+    }
+    
+    .btn-sm {
+        min-height: 36px !important;
+        font-size: 0.875rem !important;
+        padding: 0.375rem 0.75rem !important;
+    }
+    
+    /* Groupes de boutons */
+    .btn-group {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+    
+    .btn-group .btn {
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+        border-radius: 6px !important;
+    }
+    
+    /* Tables responsive */
+    .table-responsive {
+        border: none !important;
+        margin-bottom: 0 !important;
+    }
+    
+    .table {
+        font-size: 0.875rem !important;
+        margin-bottom: 0 !important;
+    }
+    
+    .table td, .table th {
+        padding: 0.5rem 0.25rem !important;
+        border-top: 1px solid rgba(255,255,255,0.1) !important;
+    }
+    
+    /* Formulaires */
+    .form-control {
+        min-height: var(--mobile-button-height) !important;
+        font-size: var(--mobile-font-size) !important;
+        padding: 0.5rem 0.75rem !important;
+        border-radius: 6px !important;
+    }
+    
+    .form-select {
+        min-height: var(--mobile-button-height) !important;
+        font-size: var(--mobile-font-size) !important;
+        padding: 0.5rem 0.75rem !important;
+    }
+    
+    .form-label {
+        font-size: var(--mobile-font-size) !important;
+        margin-bottom: 0.5rem !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Modals pour mobile */
+    .modal-dialog {
+        margin: 0.5rem !important;
+        max-width: calc(100% - 1rem) !important;
+    }
+    
+    .modal-content {
+        border-radius: 8px !important;
+    }
+    
+    .modal-header {
+        padding: 1rem !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    }
+    
+    .modal-body {
+        padding: 1rem !important;
+        max-height: 60vh !important;
+        overflow-y: auto !important;
+    }
+    
+    .modal-footer {
+        padding: 1rem !important;
+        border-top: 1px solid rgba(255,255,255,0.1) !important;
+    }
+    
+    /* Texts et typography */
+    h1 {
+        font-size: 1.75rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    h2 {
+        font-size: 1.5rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    h3 {
+        font-size: 1.25rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    h4, h5, h6 {
+        font-size: 1.1rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    p, .lead {
+        font-size: var(--mobile-font-size) !important;
+        line-height: 1.5 !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Alertes */
+    .alert {
+        padding: 0.75rem !important;
+        margin-bottom: var(--mobile-spacing) !important;
+        font-size: var(--mobile-font-size) !important;
+        border-radius: 6px !important;
+    }
+    
+    /* Badges et labels */
+    .badge {
+        font-size: 0.75rem !important;
+        padding: 0.25em 0.5em !important;
+    }
+    
+    /* Footer mobile */
+    .footer {
+        padding: 1.5rem var(--mobile-padding) !important;
+    }
+    
+    .footer .row {
+        margin: 0 !important;
+    }
+    
+    .footer .col-lg-3,
+    .footer .col-md-4,
+    .footer .col-sm-6 {
+        margin-bottom: 1.5rem !important;
+        padding: 0 !important;
+    }
+    
+    .footer h6 {
+        font-size: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .footer .list-unstyled li {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .footer .footer-link {
+        font-size: var(--mobile-font-size) !important;
+        padding: 0.25rem 0 !important;
+        display: block !important;
+    }
+}
+
+/* Optimisations spécifiques pour très petits écrans */
+@media (max-width: 576px) {
+    :root {
+        --mobile-padding: 6px;
+        --mobile-font-size: 13px;
+        --mobile-button-height: 38px;
+        --mobile-spacing: 10px;
+    }
+    
+    /* Navigation ultra-compacte */
+    .navbar {
+        min-height: 56px !important;
+        padding: 0.25rem var(--mobile-padding) !important;
+    }
+    
+    .navbar-brand {
+        font-size: 1rem !important;
+    }
+    
+    .navbar-brand img {
+        height: 24px !important;
+        width: auto !important;
+    }
+    
+    /* Cards ultra-compactes */
+    .card-body {
+        padding: 0.75rem !important;
+    }
+    
+    .card-header {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    /* Boutons plus petits */
+    .btn {
+        min-height: 36px !important;
+        padding: 0.375rem 0.75rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* Tables très compactes */
+    .table {
+        font-size: 0.8rem !important;
+    }
+    
+    .table td, .table th {
+        padding: 0.375rem 0.2rem !important;
+    }
+    
+    /* Textes plus petits */
+    h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    h2 {
+        font-size: 1.3rem !important;
+    }
+    
+    h3 {
+        font-size: 1.1rem !important;
+    }
+    
+    p, .lead {
+        font-size: 0.875rem !important;
+    }
+}
+
+/* Optimisations pour le mode paysage mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .navbar {
+        min-height: 50px !important;
+        padding: 0.25rem var(--mobile-padding) !important;
+    }
+    
+    .container, .container-fluid {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    
+    .modal-body {
+        max-height: 50vh !important;
+    }
+}
+
+/* Amélioration des interactions tactiles */
+@media (hover: none) and (pointer: coarse) {
+    /* Augmentation des zones de touch */
+    .btn, .nav-link, .dropdown-item, .form-control, .form-select {
+        min-height: 44px !important;
+    }
+    
+    /* Suppression des effets hover sur tactile */
+    .btn:hover,
+    .nav-link:hover,
+    .card:hover {
+        transform: none !important;
+    }
+    
+    /* Amélioration des focus pour navigation clavier */
+    .btn:focus,
+    .form-control:focus,
+    .form-select:focus {
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.25) !important;
+        outline: none !important;
+    }
+}
+
+/* Correction spécifique pour le Product Management visible dans l'image */
+@media (max-width: 768px) {
+    /* Container principal product management */
+    .product-management-container {
+        padding: var(--mobile-padding) !important;
+        margin: 0 !important;
+    }
+    
+    /* Titre Product Management */
+    .product-management-title {
+        font-size: 1.5rem !important;
+        margin-bottom: 1rem !important;
+        padding: 0 !important;
+    }
+    
+    /* Boutons New Product et AliExpress Import */
+    .product-action-buttons {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .product-action-buttons .btn {
+        width: 100% !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+    
+    /* Section Available Products */
+    .available-products-section {
+        background: rgba(45, 45, 45, 0.95) !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .available-products-title {
+        font-size: 1.1rem !important;
+        margin-bottom: 0.75rem !important;
+        color: #ffffff !important;
+    }
+    
+    /* Search bar pour products */
+    .product-search-container {
+        margin-bottom: 1rem !important;
+    }
+    
+    .product-search-input {
+        width: 100% !important;
+        background: rgba(60, 60, 60, 0.8) !important;
+        border: 1px solid rgba(255, 107, 53, 0.3) !important;
+        color: #ffffff !important;
+        padding: 0.75rem !important;
+        border-radius: 6px !important;
+    }
+    
+    .product-search-input::placeholder {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+    
+    /* Table headers améliorés */
+    .product-table-header {
+        background: rgba(255, 107, 53, 0.1) !important;
+        border-bottom: 2px solid rgba(255, 107, 53, 0.3) !important;
+    }
+    
+    .product-table-header th {
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        color: #ff6b35 !important;
+        padding: 0.75rem 0.5rem !important;
+        text-align: center !important;
+    }
+    
+    /* Lignes du tableau products */
+    .product-table-row {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        background: rgba(30, 30, 30, 0.6) !important;
+    }
+    
+    .product-table-row:hover {
+        background: rgba(255, 107, 53, 0.1) !important;
+    }
+    
+    .product-table-row td {
+        padding: 0.75rem 0.5rem !important;
+        font-size: 0.875rem !important;
+        color: #ffffff !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+    
+    /* Product names/links */
+    .product-name-link {
+        color: #ff8c35 !important;
+        text-decoration: none !important;
+        font-weight: 500 !important;
+        display: block !important;
+        padding: 0.25rem !important;
+    }
+    
+    .product-name-link:hover {
+        color: #ffaa35 !important;
+        text-decoration: underline !important;
+    }
+    
+    /* Category badges */
+    .product-category-badge {
+        background: rgba(255, 107, 53, 0.2) !important;
+        color: #ff8c35 !important;
+        padding: 0.25rem 0.5rem !important;
+        border-radius: 4px !important;
+        font-size: 0.75rem !important;
+        font-weight: 500 !important;
+    }
+    
+    /* Price display */
+    .product-price {
+        font-weight: 600 !important;
+        color: #4ade80 !important;
+    }
+    
+    /* Actions column */
+    .product-actions {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.25rem !important;
+        align-items: center !important;
+    }
+    
+    .product-action-btn {
+        min-width: 60px !important;
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.75rem !important;
+        border-radius: 4px !important;
+    }
+}
+
+/* Correction pour les icônes ninja qui doivent rester orange */
+@media (max-width: 768px) {
+    .ninja-icon-glow {
+        filter: sepia(100%) saturate(200%) hue-rotate(30deg) drop-shadow(0 0 8px rgba(255, 140, 0, 0.8)) !important;
+    }
+    
+    .navbar .nav-link img {
+        width: 16px !important;
+        height: 16px !important;
+    }
+    
+    .theme-toggle-btn {
+        width: 32px !important;
+        height: 32px !important;
+        border: 2px solid #ff6b35 !important;
+    }
+}
+
+/* Amélioration du contraste et de la lisibilité */
+@media (max-width: 768px) {
+    /* Augmentation du contraste pour les textes */
+    .text-muted {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    /* Bordures plus visibles */
+    .border {
+        border-color: rgba(255, 107, 53, 0.3) !important;
+    }
+    
+    /* Ombres améliorées pour la profondeur */
+    .card, .modal-content, .dropdown-menu {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    }
+}
