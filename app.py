@@ -106,8 +106,8 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-please-change-in-production")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# Initialize monitoring (disabled until proper DSN is configured)
-# init_sentry()
+# Initialize monitoring with provided DSN
+init_sentry()
 
 # Configure and initialize rate limiting
 def init_rate_limiting():
@@ -4022,18 +4022,9 @@ def readiness_check():
 
 @app.route('/test-sentry', methods=['GET'])
 def test_sentry():
-    """Endpoint pour tester le monitoring Sentry"""
-    try:
-        # Déclencher une erreur de test
-        test_value = 1 / 0
-        return jsonify({"status": "should not reach here"})
-    except Exception as e:
-        # L'erreur sera automatiquement envoyée à Sentry
-        return jsonify({
-            "message": "Test error sent to Sentry monitoring",
-            "error": str(e),
-            "timestamp": datetime.datetime.utcnow().isoformat()
-        }), 500
+    """Endpoint pour tester le monitoring Sentry selon la documentation officielle"""
+    1/0  # raises an error
+    return "<p>Hello, World!</p>"
 
 logger.info("Health check routes registered successfully")
 
