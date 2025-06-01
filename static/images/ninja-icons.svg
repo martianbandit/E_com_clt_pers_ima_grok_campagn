@@ -107,8 +107,8 @@
     <rect x="11" y="8" width="2" height="9" fill="#ff6b35"/>
     <rect x="15" y="5" width="2" height="12" fill="#ff6b35"/>
     <!-- Tendance ascendante -->
-    <path d="M6 14 L10 10 L14 6 L18 4" stroke="#FFD700" stroke-width="2" fill="none" opacity="0.8"/>
-    <circle cx="18" cy="4" r="2" fill="#FFD700">
+    <path d="M6 14 L10 10 L14 6 L18 4" stroke="#ff6b35" stroke-width="2" fill="none" opacity="0.8"/>
+    <circle cx="18" cy="4" r="2" fill="#ff6b35">
       <animate attributeName="r" values="1.5;2.5;1.5" dur="2s" repeatCount="indefinite"/>
     </circle>
   </symbol>
@@ -117,7 +117,7 @@
   <symbol id="ninja-settings" viewBox="0 0 24 24">
     <circle cx="12" cy="12" r="10" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
     <circle cx="12" cy="12" r="4" fill="#2C2C54" opacity="0.8"/>
-    <circle cx="12" cy="12" r="2" fill="#FFD700"/>
+    <circle cx="12" cy="12" r="2" fill="#ff6b35"/>
     <!-- Dents d'engrenage -->
     <g transform="translate(12,12)">
       <rect x="-1" y="-12" width="2" height="4" fill="url(#ninjaGradient)" transform="rotate(0)"/>
@@ -143,13 +143,13 @@
   <!-- Succès Ninja -->
   <symbol id="ninja-success" viewBox="0 0 24 24">
     <circle cx="12" cy="12" r="10" fill="url(#successNinja)" filter="url(#ninjaShadow)"/>
-    <path d="M8 12l2.5 2.5L16 9" stroke="#FFD700" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M8 12l2.5 2.5L16 9" stroke="#ff6b35" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     <!-- Étoiles de célébration -->
     <g opacity="0.8">
-      <path d="M6 6 L6.5 7 L7.5 7 L6.75 7.5 L7 8.5 L6 8 L5 8.5 L5.25 7.5 L4.5 7 L5.5 7 Z" fill="#FFD700">
+      <path d="M6 6 L6.5 7 L7.5 7 L6.75 7.5 L7 8.5 L6 8 L5 8.5 L5.25 7.5 L4.5 7 L5.5 7 Z" fill="#ff6b35">
         <animateTransform attributeName="transform" type="scale" values="0.5;1.2;0.5" dur="2s" repeatCount="indefinite"/>
       </path>
-      <path d="M18 6 L18.5 7 L19.5 7 L18.75 7.5 L19 8.5 L18 8 L17 8.5 L17.25 7.5 L16.5 7 L17.5 7 Z" fill="#FFD700">
+      <path d="M18 6 L18.5 7 L19.5 7 L18.75 7.5 L19 8.5 L18 8 L17 8.5 L17.25 7.5 L16.5 7 L17.5 7 Z" fill="#ff6b35">
         <animateTransform attributeName="transform" type="scale" values="1.2;0.5;1.2" dur="2s" repeatCount="indefinite"/>
       </path>
     </g>
@@ -158,7 +158,7 @@
   <!-- Erreur Ninja -->
   <symbol id="ninja-error" viewBox="0 0 24 24">
     <circle cx="12" cy="12" r="10" fill="url(#dangerNinja)" filter="url(#ninjaShadow)"/>
-    <path d="M8 8l8 8M16 8l-8 8" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+    <path d="M8 8l8 8M16 8l-8 8" stroke="#ff6b35" stroke-width="3" stroke-linecap="round"/>
     <!-- Effet d'alerte -->
     <circle cx="12" cy="12" r="12" fill="none" stroke="rgba(220,53,69,0.3)" stroke-width="2">
       <animate attributeName="r" values="10;14;10" dur="1.5s" repeatCount="indefinite"/>
@@ -169,10 +169,10 @@
   <!-- Upload Ninja -->
   <symbol id="ninja-upload" viewBox="0 0 24 24">
     <rect x="4" y="2" width="16" height="20" rx="2" fill="url(#infoNinja)" filter="url(#ninjaShadow)"/>
-    <path d="M12 6v8M8 10l4-4 4 4" stroke="#FFD700" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    <rect x="6" y="16" width="12" height="2" rx="1" fill="#FFD700" opacity="0.8"/>
+    <path d="M12 6v8M8 10l4-4 4 4" stroke="#ff6b35" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="6" y="16" width="12" height="2" rx="1" fill="#ff6b35" opacity="0.8"/>
     <!-- Particules qui montent -->
-    <circle cx="10" cy="12" r="1" fill="#FFD700" opacity="0.6">
+    <circle cx="10" cy="12" r="1" fill="#ff6b35" opacity="0.6">
       <animateTransform attributeName="transform" type="translate" values="0,0; 0,-10; 0,0" dur="2s" repeatCount="indefinite"/>
     </circle>
   </symbol>
@@ -180,10 +180,10 @@
   <!-- Download Ninja -->
   <symbol id="ninja-download" viewBox="0 0 24 24">
     <rect x="4" y="2" width="16" height="20" rx="2" fill="url(#successNinja)" filter="url(#ninjaShadow)"/>
-    <path d="M12 6v8M8 10l4 4 4-4" stroke="#FFD700" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    <rect x="6" y="16" width="12" height="2" rx="1" fill="#FFD700" opacity="0.8"/>
+    <path d="M12 6v8M8 10l4 4 4-4" stroke="#ff6b35" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="6" y="16" width="12" height="2" rx="1" fill="#ff6b35" opacity="0.8"/>
     <!-- Particules qui descendent -->
-    <circle cx="14" cy="8" r="1" fill="#FFD700" opacity="0.6">
+    <circle cx="14" cy="8" r="1" fill="#ff6b35" opacity="0.6">
       <animateTransform attributeName="transform" type="translate" values="0,0; 0,10; 0,0" dur="2s" repeatCount="indefinite"/>
     </circle>
   </symbol>
@@ -191,9 +191,9 @@
   <!-- Email Ninja -->
   <symbol id="ninja-email" viewBox="0 0 24 24">
     <rect x="2" y="4" width="20" height="16" rx="2" fill="url(#infoNinja)" filter="url(#ninjaShadow)"/>
-    <path d="M2 6l10 7 10-7" stroke="#FFD700" stroke-width="2" fill="none" stroke-linejoin="round"/>
+    <path d="M2 6l10 7 10-7" stroke="#ff6b35" stroke-width="2" fill="none" stroke-linejoin="round"/>
     <!-- Enveloppe volante -->
-    <circle cx="18" cy="8" r="2" fill="#FFD700" opacity="0.7">
+    <circle cx="18" cy="8" r="2" fill="#ff6b35" opacity="0.7">
       <animate attributeName="cy" values="8;6;8" dur="3s" repeatCount="indefinite"/>
     </circle>
   </symbol>
@@ -202,7 +202,7 @@
   <symbol id="ninja-search" viewBox="0 0 24 24">
     <circle cx="10" cy="10" r="7" fill="none" stroke="url(#ninjaGradient)" stroke-width="3" filter="url(#ninjaShadow)"/>
     <path d="M21 21l-4.35-4.35" stroke="url(#ninjaGradient)" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="10" cy="10" r="3" fill="#FFD700" opacity="0.6"/>
+    <circle cx="10" cy="10" r="3" fill="#ff6b35" opacity="0.6"/>
     <!-- Effet de recherche -->
     <circle cx="10" cy="10" r="5" fill="none" stroke="rgba(255,215,0,0.3)" stroke-width="1">
       <animate attributeName="r" values="3;7;3" dur="2s" repeatCount="indefinite"/>
@@ -225,13 +225,13 @@
     
     <!-- Ondes sonores réalistes -->
     <g opacity="0.8">
-      <path d="M21 10 Q23 10 23 12 Q23 14 21 14" fill="none" stroke="#FFD700" stroke-width="1.5" stroke-linecap="round">
+      <path d="M21 10 Q23 10 23 12 Q23 14 21 14" fill="none" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round">
         <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite"/>
       </path>
-      <path d="M21 8 Q25 8 25 12 Q25 16 21 16" fill="none" stroke="#FFD700" stroke-width="1.2" stroke-linecap="round">
+      <path d="M21 8 Q25 8 25 12 Q25 16 21 16" fill="none" stroke="#ff6b35" stroke-width="1.2" stroke-linecap="round">
         <animate attributeName="opacity" values="1;0.4;1" dur="1.2s" repeatCount="indefinite" begin="0.3s"/>
       </path>
-      <path d="M21 6 Q27 6 27 12 Q27 18 21 18" fill="none" stroke="#FFD700" stroke-width="1" stroke-linecap="round">
+      <path d="M21 6 Q27 6 27 12 Q27 18 21 18" fill="none" stroke="#ff6b35" stroke-width="1" stroke-linecap="round">
         <animate attributeName="opacity" values="0.6;0.9;0.6" dur="1.2s" repeatCount="indefinite" begin="0.6s"/>
       </path>
     </g>
@@ -247,9 +247,9 @@
   <symbol id="ninja-trophy" viewBox="0 0 24 24">
     <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C21.1 4 22 4.9 22 6V8C22 10.76 19.76 13 17 13H16.5L16 17H18V19H6V17H8L7.5 13H7C4.24 13 2 10.76 2 8V6C2 4.9 2.9 4 4 4H7Z" 
           fill="url(#warningNinja)" filter="url(#ninjaShadow)"/>
-    <circle cx="12" cy="8" r="1.5" fill="#FFD700"/>
+    <circle cx="12" cy="8" r="1.5" fill="#ff6b35"/>
     <!-- Étoile de victoire -->
-    <path d="M12 5 L12.5 6.5 L14 6.5 L12.75 7.5 L13.25 9 L12 8.25 L10.75 9 L11.25 7.5 L10 6.5 L11.5 6.5 Z" fill="#FFD700">
+    <path d="M12 5 L12.5 6.5 L14 6.5 L12.75 7.5 L13.25 9 L12 8.25 L10.75 9 L11.25 7.5 L10 6.5 L11.5 6.5 Z" fill="#ff6b35">
       <animateTransform attributeName="transform" type="rotate" values="0 12 7;360 12 7" dur="4s" repeatCount="indefinite"/>
     </path>
   </symbol>

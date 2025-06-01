@@ -151,16 +151,10 @@
                     release: "ninjaleads@1.0.0",
                     
                     integrations: [
-                        new Sentry.Integrations.Feedback({
+                        Sentry.feedbackIntegration({
                             colorScheme: "system",
+                            isNameRequired: true,
                             isEmailRequired: true,
-                            showBranding: false,
-                            formTitle: "Signaler un problème",
-                            submitButtonLabel: "Envoyer le rapport",
-                            messageLabel: "Décrivez le problème rencontré",
-                            emailLabel: "Votre adresse email",
-                            nameLabel: "Votre nom (optionnel)",
-                            successMessageText: "Merci pour votre retour !",
                         }),
                         new Sentry.Integrations.BrowserTracing({
                             enableLongTask: true,
