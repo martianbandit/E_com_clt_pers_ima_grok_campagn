@@ -48,14 +48,14 @@
 }
 
 /* Icônes avec couleurs spécifiques */
-.icon-primary { fill: #FF8C00; }
-.icon-success { fill: #28a745; }
-.icon-warning { fill: #ffc107; }
-.icon-danger { fill: #dc3545; }
-.icon-info { fill: #17a2b8; }
-.icon-light { fill: #f8f9fa; }
-.icon-dark { fill: #343a40; }
-.icon-white { fill: #ffffff; }
+.icon-primary { fill: #ff6b35; filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.6)); }
+.icon-success { fill: #28a745; filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.4)); }
+.icon-warning { fill: #ff6b35; filter: drop-shadow(0 0 6px rgba(255, 107, 53, 0.7)); }
+.icon-danger { fill: #dc3545; filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.4)); }
+.icon-info { fill: #ff6b35; filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.5)); }
+.icon-light { fill: #f8f9fa; filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.6)); }
+.icon-dark { fill: #343a40; filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.4)); }
+.icon-white { fill: #ffffff; filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.6)); }
 
 /* Icônes dans les boutons */
 .btn .icon {
@@ -205,9 +205,36 @@
 
 /* Focus et accessibilité */
 .icon-interactive:focus {
-    outline: 2px solid #FF8C00;
+    outline: 2px solid #ff6b35;
     outline-offset: 2px;
     border-radius: 2px;
+}
+
+/* Classes Bootstrap avec style orange uniforme */
+.text-warning .ninja-icon,
+.text-warning .icon {
+    fill: #ff6b35 !important;
+    filter: drop-shadow(0 0 6px rgba(255, 107, 53, 0.8)) !important;
+}
+
+.text-white .ninja-icon,
+.text-white .icon {
+    fill: #ff6b35 !important;
+    filter: drop-shadow(0 0 6px rgba(255, 107, 53, 0.8)) !important;
+}
+
+/* Icônes dans les en-têtes de cartes */
+.card-header .ninja-icon,
+.card-header .icon {
+    fill: #ff6b35 !important;
+    filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.6)) !important;
+}
+
+/* Icônes dans les métriques et tableaux de bord */
+.metrics .ninja-icon,
+.dashboard .ninja-icon {
+    fill: #ff6b35 !important;
+    filter: drop-shadow(0 0 6px rgba(255, 107, 53, 0.7)) !important;
 }
 
 /* Icônes dans les formulaires */
