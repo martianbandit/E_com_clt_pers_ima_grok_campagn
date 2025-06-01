@@ -649,7 +649,7 @@ function createFloatingFeedbackButton() {
         height: 56px;
         border-radius: 50%;
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
-        border: none;
+        border: 2px solid #ff6b35;
         box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
         z-index: 1000;
         display: flex;
