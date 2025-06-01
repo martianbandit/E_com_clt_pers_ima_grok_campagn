@@ -3,7 +3,10 @@
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="/">
             <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="NinjaLead.ai" class="ninjalead-logo me-2" style="width: 48px; height: 48px;">
-            <span class="brand-text-ninja">NinjaLead</span>
+            <div class="brand-info">
+                <span class="brand-text-ninja">NinjaLead</span>
+                <div class="brand-slogan">Le marketing, c'est facile... quand on a un ninja dans sa poche</div>
+            </div>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -234,5 +237,27 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.brand-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+}
+
+.brand-slogan {
+    font-size: 0.75rem;
+    font-style: italic;
+    color: #888;
+    margin-top: -2px;
+    font-weight: 400;
+}
+
+[data-bs-theme="dark"] .brand-slogan {
+    color: #ccc;
+}
+
+[data-bs-theme="light"] .brand-slogan {
+    color: #666;
 }
 </style>
