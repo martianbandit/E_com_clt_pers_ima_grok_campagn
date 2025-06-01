@@ -100,7 +100,7 @@ def init_sentry():
         sentry_sdk.init(
             dsn=sentry_dsn,
             integrations=[
-                FlaskIntegration(auto_enabling_integrations=False),
+                FlaskIntegration(),
                 SqlalchemyIntegration(),
                 RedisIntegration(),
             ],
