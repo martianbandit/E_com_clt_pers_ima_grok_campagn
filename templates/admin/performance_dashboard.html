@@ -8,7 +8,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
                     <h4 class="card-title mb-0">
-                        <i class="fas fa-tachometer-alt me-2"></i>
+                        <img src="{{ url_for('static', filename='img/icons/performance-dashboard.svg') }}" alt="Performance" style="width: 24px; height: 24px; margin-right: 8px; filter: brightness(0) invert(1);">
                         Tableau de Bord Performance
                     </h4>
                     <button type="button" class="btn btn-light btn-sm" onclick="runOptimization()">
@@ -23,7 +23,7 @@
                         <div class="col-md-4">
                             <div class="card bg-success text-white">
                                 <div class="card-body text-center">
-                                    <i class="fas fa-memory fa-2x mb-2"></i>
+                                    <img src="{{ url_for('static', filename='img/icons/cache-memory.svg') }}" alt="Cache" style="width: 48px; height: 48px; margin-bottom: 8px; filter: brightness(0) invert(1);">
                                     <h5>Cache</h5>
                                     <p class="mb-0">{{ performance_data.cache_stats.type|title }}</p>
                                     {% if performance_data.cache_stats.cached_items %}
@@ -35,7 +35,7 @@
                         <div class="col-md-4">
                             <div class="card bg-info text-white">
                                 <div class="card-body text-center">
-                                    <i class="fas fa-database fa-2x mb-2"></i>
+                                    <img src="{{ url_for('static', filename='img/icons/database-performance.svg') }}" alt="Database" style="width: 48px; height: 48px; margin-bottom: 8px; filter: brightness(0) invert(1);">
                                     <h5>Base de Données</h5>
                                     <p class="mb-0">
                                         {% if performance_data.db_stats %}
