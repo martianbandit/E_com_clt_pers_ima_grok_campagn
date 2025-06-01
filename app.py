@@ -34,6 +34,14 @@ except ImportError as e:
     logging.warning(f"Performance modules not available: {e}")
     performance_modules_loaded = False
 
+# User feedback system
+try:
+    from user_feedback_system import feedback_manager, FeedbackType, FeedbackPriority
+    feedback_system_loaded = True
+except ImportError as e:
+    logging.warning(f"Feedback system not available: {e}")
+    feedback_system_loaded = False
+
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, 
                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -4092,6 +4100,14 @@ try:
 except Exception as e:
     logger.error(f"Failed to initialize backup system: {str(e)}")
 
+# Initialize feedback system
+if feedback_system_loaded:
+    try:
+        feedback_manager.init_app(app)
+        logger.info("User feedback system initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize feedback system: {str(e)}")
+
 # Routes pour le tableau de bord des performances
 @app.route('/admin/performance')
 @login_required
@@ -4164,6 +4180,60 @@ def run_performance_optimization():
         results['error'] = "Modules de performance non disponibles"
     
     return jsonify(results)
+
+# Routes API pour le système de feedback utilisateur
+@app.route('/api/contextual-help', methods=['POST'])
+def get_contextual_help():
+    """Retourne l'aide contextuelle pour une page"""
+    if feedback_system_loaded:
+        data = request.get_json()
+        page_route = data.get('page_route', '/')
+        user_role = current_user.role if current_user.is_authenticated else None
+        
+        help_data = feedback_manager.get_contextual_help(page_route, user_role)
+        return jsonify(help_data)
+    else:
+        return jsonify({
+            'title': 'Aide',
+            'description': 'Système d\'aide non disponible',
+            'tips': ['Contactez l\'administrateur pour assistance']
+        })
+
+@app.route('/api/submit-feedback', methods=['POST'])
+def submit_user_feedback():
+    """Collecte et traite un feedback utilisateur"""
+    if not feedback_system_loaded:
+        return jsonify({'success': False, 'error': 'Système de feedback non disponible'}), 503
+    
+    try:
+        data = request.get_json()
+        user_id = current_user.id if current_user.is_authenticated else 'anonymous'
+        
+        feedback_type = data.get('type')
+        priority = data.get('priority', 'medium')
+        message = data.get('message')
+        context = data.get('context', {})
+        
+        if not feedback_type or not message:
+            return jsonify({'success': False, 'error': 'Type et message requis'}), 400
+        
+        # Collecte le feedback via le gestionnaire
+        result = feedback_manager.collect_feedback(
+            user_id=user_id,
+            feedback_type=feedback_type,
+            message=message,
+            context=context,
+            priority=priority
+        )
+        
+        if result['success']:
+            return jsonify(result)
+        else:
+            return jsonify(result), 500
+            
+    except Exception as e:
+        logger.error(f"Error processing feedback: {e}")
+        return jsonify({'success': False, 'error': 'Erreur interne du serveur'}), 500
 
 # Route de test Sentry pour vérifier l'installation
 @app.route("/sentry-debug")

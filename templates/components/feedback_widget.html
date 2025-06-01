@@ -1,0 +1,476 @@
+{% macro feedback_widget() %}
+<!-- Widget de feedback utilisateur flottant -->
+<div id="feedbackWidget" class="feedback-widget">
+    <!-- Bouton d'aide flottant -->
+    <div class="feedback-toggle" onclick="toggleFeedbackPanel()">
+        <i class="fas fa-question-circle"></i>
+        <span class="feedback-badge" id="helpBadge">?</span>
+    </div>
+
+    <!-- Panel de feedback -->
+    <div class="feedback-panel" id="feedbackPanel" style="display: none;">
+        <div class="feedback-header">
+            <h5>
+                <i class="fas fa-headset me-2"></i>
+                Assistance & Feedback
+            </h5>
+            <button type="button" class="btn-close feedback-close" onclick="toggleFeedbackPanel()"></button>
+        </div>
+
+        <!-- Onglets -->
+        <div class="feedback-tabs">
+            <button class="feedback-tab active" onclick="switchFeedbackTab('help')">
+                <i class="fas fa-info-circle me-1"></i>
+                Aide
+            </button>
+            <button class="feedback-tab" onclick="switchFeedbackTab('feedback')">
+                <i class="fas fa-comment me-1"></i>
+                Feedback
+            </button>
+        </div>
+
+        <!-- Contenu aide contextuelle -->
+        <div class="feedback-content" id="helpContent">
+            <div class="contextual-help">
+                <h6 id="helpTitle">Chargement...</h6>
+                <p id="helpDescription">Récupération de l'aide contextuelle...</p>
+                <div id="helpTips">
+                    <!-- Les conseils seront chargés dynamiquement -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenu formulaire de feedback -->
+        <div class="feedback-content" id="feedbackContent" style="display: none;">
+            <form id="feedbackForm" onsubmit="submitFeedback(event)">
+                <div class="mb-3">
+                    <label for="feedbackType" class="form-label">Type de feedback</label>
+                    <select class="form-select" id="feedbackType" required>
+                        <option value="">Sélectionnez un type</option>
+                        <option value="bug_report">🐛 Signaler un bug</option>
+                        <option value="feature_request">💡 Demande de fonctionnalité</option>
+                        <option value="ui_ux_issue">🎨 Problème d'interface</option>
+                        <option value="performance_issue">⚡ Problème de performance</option>
+                        <option value="assistance_request">🆘 Demande d'assistance</option>
+                        <option value="general_feedback">💬 Feedback général</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="feedbackPriority" class="form-label">Priorité</label>
+                    <select class="form-select" id="feedbackPriority">
+                        <option value="low">🟢 Faible</option>
+                        <option value="medium" selected>🟡 Moyenne</option>
+                        <option value="high">🟠 Élevée</option>
+                        <option value="critical">🔴 Critique</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="feedbackMessage" class="form-label">Votre message</label>
+                    <textarea class="form-control" id="feedbackMessage" rows="4" 
+                              placeholder="Décrivez votre problème ou suggestion en détail..." required></textarea>
+                    <div class="form-text">
+                        <small>Informations automatiques incluses: page actuelle, navigateur, session</small>
+                    </div>
+                </div>
+
+                <div class="feedback-actions">
+                    <button type="submit" class="btn btn-primary" id="submitFeedbackBtn">
+                        <i class="fas fa-paper-plane me-1"></i>
+                        Envoyer
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="clearFeedbackForm()">
+                        <i class="fas fa-times me-1"></i>
+                        Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Message de confirmation -->
+        <div class="feedback-success" id="feedbackSuccess" style="display: none;">
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Merci pour votre feedback!</strong>
+                <p class="mb-0">Votre message a été envoyé avec succès. Notre équipe l'examinera rapidement.</p>
+                <small class="text-muted">ID de référence: <span id="feedbackId"></span></small>
+            </div>
+            <button class="btn btn-outline-primary btn-sm" onclick="resetFeedbackWidget()">
+                <i class="fas fa-plus me-1"></i>
+                Nouveau feedback
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+.feedback-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+    font-family: inherit;
+}
+
+.feedback-toggle {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #FF8C00, #FF6B00);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(255, 140, 0, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.feedback-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(255, 140, 0, 0.4);
+}
+
+.feedback-toggle i {
+    color: white;
+    font-size: 24px;
+}
+
+.feedback-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.feedback-panel {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 400px;
+    max-height: 600px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feedback-header {
+    background: linear-gradient(135deg, #FF8C00, #FF6B00);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: between;
+    align-items: center;
+}
+
+.feedback-header h5 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.feedback-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feedback-tabs {
+    display: flex;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.feedback-tab {
+    flex: 1;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.feedback-tab.active {
+    background: white;
+    color: #FF8C00;
+    border-bottom: 2px solid #FF8C00;
+}
+
+.feedback-tab:hover:not(.active) {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.feedback-content {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.contextual-help h6 {
+    color: #FF8C00;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.contextual-help p {
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.help-tips {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 10px;
+}
+
+.help-tip {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #495057;
+}
+
+.help-tip i {
+    color: #28a745;
+    margin-right: 8px;
+    margin-top: 2px;
+    font-size: 12px;
+}
+
+.feedback-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.feedback-success {
+    padding: 20px;
+    text-align: center;
+}
+
+/* Dark theme support */
+[data-bs-theme="dark"] .feedback-panel {
+    background: #2b2b2b;
+    border-color: #404040;
+}
+
+[data-bs-theme="dark"] .feedback-content {
+    color: #e0e0e0;
+}
+
+[data-bs-theme="dark"] .feedback-tabs {
+    background: #404040;
+    border-color: #555;
+}
+
+[data-bs-theme="dark"] .feedback-tab {
+    color: #a0a0a0;
+}
+
+[data-bs-theme="dark"] .feedback-tab.active {
+    background: #2b2b2b;
+    color: #FF8C00;
+}
+
+[data-bs-theme="dark"] .help-tips {
+    background: #404040;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .feedback-panel {
+        width: 300px;
+        bottom: 70px;
+        right: -10px;
+    }
+    
+    .feedback-widget {
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .feedback-toggle {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .feedback-toggle i {
+        font-size: 20px;
+    }
+}
+</style>
+
+<script>
+let feedbackPanelOpen = false;
+let currentFeedbackTab = 'help';
+
+function toggleFeedbackPanel() {
+    const panel = document.getElementById('feedbackPanel');
+    feedbackPanelOpen = !feedbackPanelOpen;
+    
+    if (feedbackPanelOpen) {
+        panel.style.display = 'block';
+        loadContextualHelp();
+    } else {
+        panel.style.display = 'none';
+    }
+}
+
+function switchFeedbackTab(tab) {
+    // Update tab buttons
+    document.querySelectorAll('.feedback-tab').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[onclick="switchFeedbackTab('${tab}')"]`).classList.add('active');
+    
+    // Update content
+    document.getElementById('helpContent').style.display = tab === 'help' ? 'block' : 'none';
+    document.getElementById('feedbackContent').style.display = tab === 'feedback' ? 'block' : 'none';
+    
+    currentFeedbackTab = tab;
+    
+    if (tab === 'help') {
+        loadContextualHelp();
+    }
+}
+
+function loadContextualHelp() {
+    const currentPath = window.location.pathname;
+    
+    fetch('/api/contextual-help', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            page_route: currentPath
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('helpTitle').textContent = data.title || 'Aide';
+        document.getElementById('helpDescription').textContent = data.description || 'Description non disponible';
+        
+        const tipsContainer = document.getElementById('helpTips');
+        if (data.tips && data.tips.length > 0) {
+            tipsContainer.innerHTML = '<div class="help-tips">' + 
+                data.tips.map(tip => `<div class="help-tip"><i class="fas fa-lightbulb"></i>${tip}</div>`).join('') +
+                '</div>';
+        } else {
+            tipsContainer.innerHTML = '';
+        }
+    })
+    .catch(error => {
+        console.warn('Could not load contextual help:', error);
+        document.getElementById('helpTitle').textContent = 'Aide';
+        document.getElementById('helpDescription').textContent = 'Utilisez le formulaire de feedback pour obtenir de l\'aide.';
+        document.getElementById('helpTips').innerHTML = '';
+    });
+}
+
+function submitFeedback(event) {
+    event.preventDefault();
+    
+    const submitBtn = document.getElementById('submitFeedbackBtn');
+    const originalText = submitBtn.innerHTML;
+    
+    // Loading state
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Envoi...';
+    submitBtn.disabled = true;
+    
+    const feedbackData = {
+        type: document.getElementById('feedbackType').value,
+        priority: document.getElementById('feedbackPriority').value,
+        message: document.getElementById('feedbackMessage').value,
+        context: {
+            page_url: window.location.href,
+            page_route: window.location.pathname,
+            user_agent: navigator.userAgent,
+            screen_resolution: `${window.screen.width}x${window.screen.height}`,
+            viewport_size: `${window.innerWidth}x${window.innerHeight}`
+        }
+    };
+    
+    fetch('/api/submit-feedback', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(feedbackData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('feedbackContent').style.display = 'none';
+            document.getElementById('feedbackSuccess').style.display = 'block';
+            document.getElementById('feedbackId').textContent = data.feedback_id || 'N/A';
+        } else {
+            throw new Error(data.error || 'Erreur lors de l\'envoi');
+        }
+    })
+    .catch(error => {
+        alert('Erreur lors de l\'envoi du feedback: ' + error.message);
+        console.error('Feedback submission error:', error);
+    })
+    .finally(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+}
+
+function clearFeedbackForm() {
+    document.getElementById('feedbackForm').reset();
+}
+
+function resetFeedbackWidget() {
+    document.getElementById('feedbackSuccess').style.display = 'none';
+    document.getElementById('feedbackContent').style.display = 'block';
+    clearFeedbackForm();
+    switchFeedbackTab('help');
+}
+
+// Auto-load help when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial help badge
+    document.getElementById('helpBadge').textContent = '?';
+});
+</script>
+{% endmacro %}

@@ -50,7 +50,7 @@
                         <div class="col-md-4">
                             <div class="card bg-warning text-white">
                                 <div class="card-body text-center">
-                                    <i class="fas fa-file-archive fa-2x mb-2"></i>
+                                    <img src="{{ url_for('static', filename='img/icons/asset-optimization.svg') }}" alt="Assets" style="width: 48px; height: 48px; margin-bottom: 8px; filter: brightness(0) invert(1);">
                                     <h5>Assets</h5>
                                     {% if performance_data.asset_stats.files_compressed %}
                                         <p class="mb-0">{{ performance_data.asset_stats.files_compressed }} fichiers</p>
