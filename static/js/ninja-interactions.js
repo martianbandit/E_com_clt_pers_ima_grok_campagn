@@ -1,11 +1,11 @@
 // JavaScript pour les interactions "Ninja Marketing"
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Ajouter l'effet d'animation au défilement pour le logo MarkEasy
+    // Ajouter l'effet d'animation au défilement pour le logo NinjaLead
     let lastScrollTop = 0;
     window.addEventListener('scroll', function() {
         const st = window.pageYOffset || document.documentElement.scrollTop;
-        const logo = document.querySelector('.markeasy-logo');
+        const logo = document.querySelector('.ninjalead-logo');
         
         // Si on défile plus de 100px et on défile vers le bas
         if (st > 100 && st > lastScrollTop) {
@@ -140,9 +140,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Ajouter des interactions pour le logo MarkEasy du footer
+    // Ajouter des interactions pour le logo NinjaLead du footer
     function initLogoEffects() {
-        const footerLogo = document.querySelector('.markeasy-logo-large');
+        const footerLogo = document.querySelector('.ninjalead-logo-large');
         if (footerLogo) {
             footerLogo.addEventListener('mouseenter', function() {
                 this.style.transform = 'scale(1.05)';
