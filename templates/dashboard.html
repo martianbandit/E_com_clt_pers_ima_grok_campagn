@@ -84,7 +84,7 @@
                     </div>
                 {% endif %}
                 
-                <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addNicheModal">
+                <button class="btn mt-3 dashboard-btn-neon" data-bs-toggle="modal" data-bs-target="#addNicheModal">
                     <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                     {{ _('Add New Niche') }}
                 </button>
@@ -96,8 +96,8 @@
 <div class="row mb-4">
     <!-- Carte de résumé des performances -->
     <div class="col-12">
-        <div class="card border-warning shadow-sm">
-            <div class="card-header bg-warning text-white">
+        <div class="card shadow-sm" style="border: 2px solid #FF8C00;">
+            <div class="card-header text-white" style="background-color: #FF8C00;"
                 <h5 class="mb-0">
                     <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                     {{ _('Performance des campagnes') }}
@@ -114,7 +114,7 @@
                         </p>
                     </div>
                     <div class="col-md-4 text-center text-md-end">
-                        <a href="{{ url_for('boutique_dashboard') }}" class="btn btn-warning btn-lg">
+                        <a href="{{ url_for('boutique_dashboard') }}" class="btn btn-lg dashboard-btn-neon">
                             <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
                             {{ _('Analytics Détaillés') }}
                         </a>
@@ -252,7 +252,7 @@
 <div class="modal fade" id="addBoutiqueModal" tabindex="-1" aria-labelledby="addBoutiqueModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header text-white" style="background-color: #FF8C00;">
                 <h5 class="modal-title" id="addBoutiqueModalLabel">{{ _('Add New Boutique') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -301,7 +301,7 @@
                         <label for="key-characteristics" class="form-label">{{ _('Key Characteristics') }}</label>
                         <textarea class="form-control" id="key-characteristics" rows="2" placeholder="{{ _('e.g., Eco-friendly, Handmade, Limited edition') }}"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn dashboard-btn-neon">
                         <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Add Niche') }}
                     </button>
                 </form>
