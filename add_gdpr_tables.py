@@ -30,7 +30,7 @@ def run_migration():
             conn.execute(text("""
                 CREATE TABLE IF NOT EXISTS gdpr_request (
                     id SERIAL PRIMARY KEY,
-                    user_id INTEGER NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+                    user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                     request_type VARCHAR(50) NOT NULL,
                     status VARCHAR(20) DEFAULT 'pending' NOT NULL,
                     description TEXT,
@@ -51,7 +51,7 @@ def run_migration():
             conn.execute(text("""
                 CREATE TABLE IF NOT EXISTS consent_record (
                     id SERIAL PRIMARY KEY,
-                    user_id INTEGER NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+                    user_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                     purpose VARCHAR(50) NOT NULL,
                     consent_given BOOLEAN NOT NULL,
                     consent_text TEXT NOT NULL,

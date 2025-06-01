@@ -10,8 +10,7 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from security_enhancements import init_security_extensions, add_security_headers, setup_error_handlers
 from security_middleware import security_middleware
 from centralized_logging import setup_logging
-from gdpr_compliance import gdpr_compliance
-from gdpr_routes import gdpr_bp
+# GDPR sera initialisé après la création de db
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, g
@@ -208,11 +207,17 @@ security_middleware.init_app(app)
 # Initialisation du système de logs centralisés
 centralized_logs = setup_logging(app)
 
-# Initialisation du système GDPR
-gdpr_compliance.init_app(app)
-
-# Enregistrement des routes GDPR
-app.register_blueprint(gdpr_bp)
+# Initialisation du système GDPR (après création de db)
+try:
+    from gdpr_compliance import gdpr_compliance
+    from gdpr_routes import gdpr_bp
+    gdpr_compliance.init_app(app)
+    app.register_blueprint(gdpr_bp)
+    logger.info("✅ Système GDPR initialisé avec succès")
+except ImportError as e:
+    logger.warning(f"Module GDPR non disponible: {e}")
+except Exception as e:
+    logger.error(f"Erreur lors de l'initialisation GDPR: {e}")
 
 # Configuration OAuth GitHub
 app.config["GITHUB_OAUTH_CLIENT_ID"] = os.environ.get("GITHUB_CLIENT_ID")
