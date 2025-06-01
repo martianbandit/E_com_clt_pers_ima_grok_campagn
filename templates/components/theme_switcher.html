@@ -1,8 +1,11 @@
 {% macro theme_switcher_button() %}
-<button id="themeToggle" class="theme-toggle-btn me-2" type="button" aria-label="{{ _('Changer le thème') }}">
-    <span class="theme-icon-light"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; filter: sepia(100%) saturate(200%) hue-rotate(30deg);"></span>
-    <span class="theme-icon-dark"><img src="{{ url_for('static', filename='images/ninja-meditation.png') }}" alt="" style="width: 16px; height: 16px; filter: sepia(100%) saturate(200%) hue-rotate(30deg);"></span>
-</button>
+<div class="d-flex align-items-center">
+    <button id="themeToggle" class="theme-toggle-btn me-2" type="button" aria-label="Changer le thème" title="Basculer entre thème clair/sombre">
+        <span class="theme-icon-light"><img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="Mode clair" style="width: 16px; height: 16px; filter: sepia(100%) saturate(200%) hue-rotate(30deg);"></span>
+        <span class="theme-icon-dark"><img src="{{ url_for('static', filename='images/ninja-meditation.png') }}" alt="Mode sombre" style="width: 16px; height: 16px; filter: sepia(100%) saturate(200%) hue-rotate(30deg);"></span>
+    </button>
+    <small class="text-muted d-none d-md-inline" style="font-size: 0.75rem;">Thème</small>
+</div>
 {% endmacro %}
 
 {% macro theme_switcher_script() %}

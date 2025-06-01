@@ -52,13 +52,20 @@ html[data-bs-theme="dark"] .markeasy-logo {
     background: transparent;
     overflow: hidden;
     cursor: pointer;
-    border: 1px solid var(--border-color);
+    border: 2px solid var(--vibrant-orange, #ff6b35);
     transition: all 0.3s ease;
+    box-shadow: 0 0 8px rgba(255, 107, 53, 0.3);
 }
 
 .theme-toggle-btn:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.6);
+    border-color: #ff8c35;
+}
+
+.theme-toggle-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.4);
 }
 
 /* Animation de rotation pour le bouton de thème */

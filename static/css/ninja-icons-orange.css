@@ -1,0 +1,145 @@
+/* NinjaLead - Icônes Orange avec Aura */
+
+/* Styles pour les icônes ninja avec effet orange et aura */
+.ninja-icon {
+    fill: var(--vibrant-orange, #ff6b35);
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.6));
+}
+
+/* Aura orange pour les icônes du menu */
+.nav-link .ninja-icon,
+.navbar-nav .ninja-icon,
+.sidebar .ninja-icon {
+    fill: var(--vibrant-orange, #ff6b35);
+    filter: drop-shadow(0 0 6px rgba(255, 107, 53, 0.8));
+}
+
+.nav-link:hover .ninja-icon,
+.navbar-nav .nav-link:hover .ninja-icon,
+.sidebar .nav-link:hover .ninja-icon {
+    fill: #ff8c35;
+    filter: drop-shadow(0 0 10px rgba(255, 140, 53, 1));
+    transform: scale(1.1);
+}
+
+/* Effet d'aura pour les icônes actives */
+.nav-link.active .ninja-icon,
+.navbar-nav .nav-link.active .ninja-icon {
+    fill: #ff8c35;
+    filter: drop-shadow(0 0 12px rgba(255, 140, 53, 1)) drop-shadow(0 0 20px rgba(255, 107, 53, 0.4));
+    animation: ninja-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes ninja-glow {
+    from {
+        filter: drop-shadow(0 0 8px rgba(255, 140, 53, 0.8));
+    }
+    to {
+        filter: drop-shadow(0 0 16px rgba(255, 140, 53, 1)) drop-shadow(0 0 24px rgba(255, 107, 53, 0.5));
+    }
+}
+
+/* Classe spéciale pour les icônes avec aura ninja */
+.ninja-icon-glow {
+    filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.8));
+    animation: ninja-icon-pulse 3s ease-in-out infinite;
+}
+
+@keyframes ninja-icon-pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 6px rgba(255, 107, 53, 0.6));
+    }
+    50% {
+        filter: drop-shadow(0 0 12px rgba(255, 140, 53, 0.9));
+    }
+}
+
+/* Icônes dans les boutons */
+.btn .ninja-icon {
+    fill: currentColor;
+    margin-right: 0.5rem;
+}
+
+.btn-primary .ninja-icon,
+.btn-ninja .ninja-icon {
+    fill: white;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+}
+
+/* Icônes dans les cartes */
+.card-header .ninja-icon {
+    fill: var(--vibrant-orange, #ff6b35);
+    filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.5));
+}
+
+/* Styles spéciaux pour différentes tailles */
+.ninja-icon-sm {
+    width: 16px;
+    height: 16px;
+}
+
+.ninja-icon-md {
+    width: 24px;
+    height: 24px;
+}
+
+.ninja-icon-lg {
+    width: 32px;
+    height: 32px;
+}
+
+.ninja-icon-xl {
+    width: 48px;
+    height: 48px;
+}
+
+.ninja-icon-2xl {
+    width: 64px;
+    height: 64px;
+}
+
+/* Mode sombre - ajustements des couleurs */
+[data-bs-theme="dark"] .ninja-icon {
+    fill: #ff8c35;
+    filter: drop-shadow(0 0 6px rgba(255, 140, 53, 0.8));
+}
+
+[data-bs-theme="dark"] .nav-link .ninja-icon,
+[data-bs-theme="dark"] .navbar-nav .ninja-icon,
+[data-bs-theme="dark"] .sidebar .ninja-icon {
+    fill: #ff8c35;
+    filter: drop-shadow(0 0 8px rgba(255, 140, 53, 0.9));
+}
+
+[data-bs-theme="dark"] .nav-link:hover .ninja-icon,
+[data-bs-theme="dark"] .navbar-nav .nav-link:hover .ninja-icon {
+    fill: #ffaa35;
+    filter: drop-shadow(0 0 12px rgba(255, 170, 53, 1));
+}
+
+/* Icônes dans les alertes et notifications */
+.alert .ninja-icon {
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+}
+
+.alert-success .ninja-icon {
+    fill: #28a745;
+    filter: drop-shadow(0 0 4px rgba(40, 167, 69, 0.5));
+}
+
+.alert-danger .ninja-icon {
+    fill: #dc3545;
+    filter: drop-shadow(0 0 4px rgba(220, 53, 69, 0.5));
+}
+
+.alert-warning .ninja-icon {
+    fill: #ffc107;
+    filter: drop-shadow(0 0 4px rgba(255, 193, 7, 0.5));
+}
+
+.alert-info .ninja-icon {
+    fill: #17a2b8;
+    filter: drop-shadow(0 0 4px rgba(23, 162, 184, 0.5));
+}
