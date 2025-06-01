@@ -51,29 +51,11 @@ def secure_log(level, message, **kwargs):
     logger.log(level, message, extra=safe_kwargs)
 
 
-# Protection basique contre les attaques par déni de service
-from collections import defaultdict
-from time import time
-
-request_counts = defaultdict(list)
-
-def rate_limit_check(ip_address, max_requests=100, time_window=3600):
-    """Vérifie les limites de taux de requête par IP"""
-    current_time = time()
-    
-    # Nettoyer les anciennes requêtes
-    request_counts[ip_address] = [
-        req_time for req_time in request_counts[ip_address]
-        if current_time - req_time < time_window
-    ]
-    
-    # Vérifier si la limite est dépassée
-    if len(request_counts[ip_address]) >= max_requests:
-        return False
-    
-    # Ajouter la requête actuelle
-    request_counts[ip_address].append(current_time)
-    return True
+# Protection robuste contre les attaques par déni de service avec Flask-Limiter
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+import redis
+import os
 
 # Module de gestion des erreurs
 from error_handlers import register_error_handlers
@@ -123,6 +105,51 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Initialize monitoring
 init_sentry()
+
+# Configure and initialize rate limiting
+def init_rate_limiting():
+    """Initialize robust rate limiting with Flask-Limiter"""
+    try:
+        # Try to use Redis if available, fallback to memory
+        redis_url = os.environ.get("REDIS_URL")
+        if redis_url:
+            storage_uri = redis_url
+            logger.info("Rate limiting configured with Redis backend")
+        else:
+            storage_uri = "memory://"
+            logger.info("Rate limiting configured with memory backend")
+        
+        limiter = Limiter(
+            app=app,
+            key_func=get_remote_address,
+            default_limits=["1000 per day", "200 per hour", "50 per minute"],
+            storage_uri=storage_uri,
+            strategy="fixed-window",
+            headers_enabled=True,
+            swallow_errors=True  # Continue serving if rate limiting fails
+        )
+        
+        # Apply specific limits to sensitive endpoints
+        @limiter.limit("5 per minute")
+        def login_rate_limit():
+            pass
+        
+        @limiter.limit("3 per minute") 
+        def register_rate_limit():
+            pass
+            
+        @limiter.limit("20 per minute")
+        def ai_generation_rate_limit():
+            pass
+        
+        logger.info("Rate limiting system initialized successfully")
+        return limiter
+        
+    except Exception as e:
+        logger.error(f"Failed to initialize rate limiting: {str(e)}")
+        return None
+
+limiter = init_rate_limiting()
 
 # Configuration de sécurité
 app.config['SESSION_COOKIE_SECURE'] = True
@@ -269,13 +296,7 @@ github_bp = make_github_blueprint(scope=["user:email"])
 app.register_blueprint(github_bp, url_prefix="/github")
 
 # Protection contre les attaques par déni de service
-@app.before_request
-def check_rate_limit():
-    """Vérifie les limites de taux avant chaque requête"""
-    client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-    
-    if not rate_limit_check(client_ip):
-        return jsonify({'error': 'Trop de requêtes'}), 429
+# Rate limiting is now handled by Flask-Limiter automatically
 
 # Route d'accueil
 @app.route('/home')
@@ -397,6 +418,7 @@ def github_logged_in(blueprint, token):
 
 # Routes d'authentification
 @app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("10 per minute") if limiter else lambda f: f
 def login():
     """Page de connexion avec email/mot de passe + options OAuth"""
     if current_user.is_authenticated:

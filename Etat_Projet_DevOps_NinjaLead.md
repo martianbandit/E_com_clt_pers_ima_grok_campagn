@@ -102,11 +102,11 @@
 ### 3.1 DevOps & Infrastructure (Priorité HAUTE)
 
 #### 3.1.1 Monitoring & Observabilité
-- ❌ **APM (Application Performance Monitoring)**
-  - Intégrer Sentry ou équivalent
-  - Métriques temps de réponse
-  - Alertes automatiques
-- ❌ **Health checks** endpoints
+- ✅ **APM (Application Performance Monitoring)**
+  - Sentry intégré avec traces_sample_rate=1.0
+  - Métriques temps de réponse activées
+  - Route de test /sentry-debug fonctionnelle
+- ✅ **Health checks** endpoints (/health, /health/live, /health/ready)
 - ❌ **Métriques business** (conversions, utilisation IA)
 - ❌ **Logs centralisés** avec rotation
 
@@ -117,7 +117,7 @@
 - ❌ **Sécurité scanning** (bandit, safety)
 
 #### 3.1.3 Base de Données
-- ❌ **Backups automatiques** avec retention
+- ✅ **Backups automatiques** avec retention (système complet implémenté)
 - ❌ **Réplication read-only** pour analytics
 - ❌ **Connection pooling** optimisé
 - ❌ **Migrations automatiques** en CI/CD
@@ -171,10 +171,10 @@
 ### Sprint 1 (Semaines 1-2) - CRITIQUE
 **Objectif : Stabilité et Monitoring**
 
-#### Semaine 1
-- [ ] **Jour 1-2** : Setup monitoring (Sentry + métriques)
-- [ ] **Jour 3-4** : Health checks + status page
-- [ ] **Jour 5** : Backup automatique BDD
+#### ~~Semaine 1~~ ✅ TERMINÉE
+- [x] **Jour 1-2** : Setup monitoring (Sentry + métriques)
+- [x] **Jour 3-4** : Health checks + status page
+- [x] **Jour 5** : Backup automatique BDD
 
 #### Semaine 2
 - [ ] **Jour 1-2** : Rate limiting implémentation
