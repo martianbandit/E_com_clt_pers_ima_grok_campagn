@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function createFeedbackModal() {
     const modalHTML = `
     <div class="modal fade" id="ninjaFeedbackModal" tabindex="-1" aria-labelledby="ninjaFeedbackModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content ninja-feedback-modal">
                 <div class="modal-header ninja-feedback-header">
                     <h5 class="modal-title ninja-feedback-title" id="ninjaFeedbackModalLabel">
@@ -113,8 +113,8 @@ function addFeedbackStyles() {
     <style>
     .ninja-feedback-modal {
         border: none;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.25);
         background: var(--bs-body-bg);
         overflow: hidden;
     }
@@ -122,9 +122,9 @@ function addFeedbackStyles() {
     .ninja-feedback-header {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         color: white;
-        border-radius: 15px 15px 0 0;
+        border-radius: 12px 12px 0 0;
         border: none;
-        padding: 1.25rem 1.5rem;
+        padding: 0.875rem 1rem;
         position: relative;
     }
 
@@ -141,7 +141,7 @@ function addFeedbackStyles() {
 
     .ninja-feedback-title {
         font-weight: 600;
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         margin: 0;
         display: flex;
         align-items: center;
@@ -152,12 +152,14 @@ function addFeedbackStyles() {
     .ninja-btn-close {
         background: rgba(255, 255, 255, 0.2);
         border-radius: 50%;
-        padding: 0.5rem;
+        padding: 0.375rem;
         opacity: 1;
         filter: brightness(0) invert(1);
         position: relative;
         z-index: 1;
         transition: all 0.3s ease;
+        width: 30px;
+        height: 30px;
     }
 
     .ninja-btn-close:hover {
@@ -166,19 +168,19 @@ function addFeedbackStyles() {
     }
 
     .ninja-feedback-body {
-        padding: 1.5rem;
+        padding: 1rem;
         background: var(--bs-body-bg);
     }
 
     .ninja-feedback-types {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
-        padding: 1rem;
+        gap: 0.5rem;
+        padding: 0.75rem;
         background: rgba(255, 107, 53, 0.05);
-        border-radius: 10px;
-        border-left: 4px solid #ff6b35;
-        margin-bottom: 1rem;
+        border-radius: 8px;
+        border-left: 3px solid #ff6b35;
+        margin-bottom: 0.75rem;
     }
 
     .ninja-form-check {
@@ -191,10 +193,11 @@ function addFeedbackStyles() {
         font-weight: 500;
         color: var(--bs-body-color);
         cursor: pointer;
-        padding: 0.75rem;
-        border-radius: 8px;
+        padding: 0.5rem;
+        border-radius: 6px;
         transition: all 0.3s ease;
-        border: 2px solid transparent;
+        border: 1px solid transparent;
+        font-size: 0.9rem;
     }
 
     .ninja-check-label:hover {
@@ -216,15 +219,15 @@ function addFeedbackStyles() {
         color: var(--bs-body-color);
         display: flex;
         align-items: center;
-        margin-bottom: 0.5rem;
-        font-size: 0.95rem;
+        margin-bottom: 0.375rem;
+        font-size: 0.875rem;
     }
 
     .ninja-input, .ninja-textarea {
-        border: 2px solid #e9ecef;
-        border-radius: 10px;
-        padding: 0.75rem 1rem;
-        font-size: 0.95rem;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
         transition: all 0.3s ease;
         background: var(--bs-body-bg);
     }
@@ -238,32 +241,32 @@ function addFeedbackStyles() {
 
     .ninja-form-text {
         color: #6c757d;
-        font-size: 0.875rem;
-        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        margin-top: 0.375rem;
         font-style: italic;
     }
 
     .ninja-system-info {
-        padding: 1rem;
+        padding: 0.75rem;
         background: rgba(108, 117, 125, 0.1);
-        border-radius: 8px;
-        border-left: 3px solid #6c757d;
-        margin-top: 1rem;
+        border-radius: 6px;
+        border-left: 2px solid #6c757d;
+        margin-top: 0.75rem;
     }
 
     .ninja-feedback-footer {
-        padding: 1rem 1.5rem;
+        padding: 0.75rem 1rem;
         border: none;
         background: rgba(255, 107, 53, 0.02);
         display: flex;
-        gap: 1rem;
+        gap: 0.75rem;
     }
 
     .ninja-btn-primary {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         border: none;
-        border-radius: 10px;
-        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
         font-weight: 600;
         color: white;
         transition: all 0.3s ease;
@@ -271,6 +274,7 @@ function addFeedbackStyles() {
         align-items: center;
         position: relative;
         overflow: hidden;
+        font-size: 0.875rem;
     }
 
     .ninja-btn-primary::before {
@@ -296,14 +300,15 @@ function addFeedbackStyles() {
 
     .ninja-btn-secondary {
         background: transparent;
-        border: 2px solid #6c757d;
-        border-radius: 10px;
-        padding: 0.75rem 1.5rem;
+        border: 1px solid #6c757d;
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
         font-weight: 600;
         color: #6c757d;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
+        font-size: 0.875rem;
     }
 
     .ninja-btn-secondary:hover {
