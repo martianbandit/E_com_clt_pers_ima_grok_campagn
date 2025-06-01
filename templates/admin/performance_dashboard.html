@@ -1,18 +1,29 @@
 {% extends "layout.html" %}
+{% from 'components/ninja_icons.html' import ninja_icon, ninja_card_header, analytics_icon, settings_icon, dashboard_icon, success_icon, error_icon, help_icon %}
 {% block title %}Tableau de Bord Performance - {{ super() }}{% endblock %}
 
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/icon-system.css') }}">
+{% endblock %}
+
 {% block content %}
+<!-- Sprite d'icônes ninja -->
+<div style="display: none;">
+    {% include 'static/images/ninja-icons.svg' ignore missing %}
+</div>
+
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
                     <h4 class="card-title mb-0">
-                        <img src="{{ url_for('static', filename='img/icons/performance-dashboard.svg') }}" alt="Performance" style="width: 24px; height: 24px; margin-right: 8px; filter: brightness(0) invert(1);">
+                        {{ analytics_icon(size='lg', classes='me-2 text-white') }}
                         Tableau de Bord Performance
                     </h4>
                     <button type="button" class="btn btn-light btn-sm" onclick="runOptimization()">
-                        <i class="fas fa-sync-alt me-1"></i>
+                        {{ settings_icon(size='sm', classes='me-1') }}
                         Optimiser
                     </button>
                 </div>
@@ -23,7 +34,7 @@
                         <div class="col-md-4">
                             <div class="card bg-success text-white">
                                 <div class="card-body text-center">
-                                    <img src="{{ url_for('static', filename='img/icons/cache-memory.svg') }}" alt="Cache" style="width: 48px; height: 48px; margin-bottom: 8px; filter: brightness(0) invert(1);">
+                                    {{ dashboard_icon(size='2xl', classes='text-white mb-2 ninja-icon-glow') }}
                                     <h5>Cache</h5>
                                     <p class="mb-0">{{ performance_data.cache_stats.type|title }}</p>
                                     {% if performance_data.cache_stats.cached_items %}
@@ -35,7 +46,7 @@
                         <div class="col-md-4">
                             <div class="card bg-info text-white">
                                 <div class="card-body text-center">
-                                    <img src="{{ url_for('static', filename='img/icons/database-performance.svg') }}" alt="Database" style="width: 48px; height: 48px; margin-bottom: 8px; filter: brightness(0) invert(1);">
+                                    {{ analytics_icon(size='2xl', classes='text-white mb-2 ninja-icon-glow') }}
                                     <h5>Base de Données</h5>
                                     <p class="mb-0">
                                         {% if performance_data.db_stats %}
@@ -50,7 +61,7 @@
                         <div class="col-md-4">
                             <div class="card bg-warning text-white">
                                 <div class="card-body text-center">
-                                    <img src="{{ url_for('static', filename='img/icons/asset-optimization.svg') }}" alt="Assets" style="width: 48px; height: 48px; margin-bottom: 8px; filter: brightness(0) invert(1);">
+                                    {{ settings_icon(size='2xl', classes='text-white mb-2 ninja-icon-glow') }}
                                     <h5>Assets</h5>
                                     {% if performance_data.asset_stats.files_compressed %}
                                         <p class="mb-0">{{ performance_data.asset_stats.files_compressed }} fichiers</p>
@@ -66,7 +77,7 @@
                     <!-- Cache Statistics -->
                     <div class="row mb-4">
                         <div class="col-12">
-                            <h5><i class="fas fa-memory me-2"></i>Statistiques du Cache</h5>
+                            <h5>{{ dashboard_icon(size='sm', classes='me-2') }}Statistiques du Cache</h5>
                             <div class="card">
                                 <div class="card-body">
                                     {% if performance_data.cache_stats.type == 'redis' %}
@@ -90,7 +101,7 @@
                                         </div>
                                     {% else %}
                                         <div class="alert alert-info">
-                                            <i class="fas fa-info-circle me-2"></i>
+                                            {{ help_icon(size='sm', classes='me-2') }}
                                             Cache mémoire actif avec {{ performance_data.cache_stats.cached_items or 0 }} éléments
                                         </div>
                                     {% endif %}
@@ -102,7 +113,7 @@
                     <!-- Database Performance -->
                     <div class="row mb-4">
                         <div class="col-12">
-                            <h5><i class="fas fa-database me-2"></i>Performance Base de Données</h5>
+                            <h5>{{ analytics_icon(size='sm', classes='me-2') }}Performance Base de Données</h5>
                             <div class="card">
                                 <div class="card-body">
                                     {% if performance_data.db_stats %}
@@ -142,7 +153,7 @@
                                         </div>
                                     {% else %}
                                         <div class="alert alert-info">
-                                            <i class="fas fa-info-circle me-2"></i>
+                                            {{ help_icon(size='sm', classes='me-2') }}
                                             Aucune statistique de requête disponible pour le moment
                                         </div>
                                     {% endif %}
@@ -154,7 +165,7 @@
                     <!-- Asset Optimization -->
                     <div class="row">
                         <div class="col-12">
-                            <h5><i class="fas fa-file-archive me-2"></i>Optimisation des Assets</h5>
+                            <h5>{{ settings_icon(size='sm', classes='me-2') }}Optimisation des Assets</h5>
                             <div class="card">
                                 <div class="card-body">
                                     {% if performance_data.asset_stats.files_compressed %}
