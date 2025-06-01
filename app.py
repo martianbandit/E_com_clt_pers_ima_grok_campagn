@@ -8,6 +8,7 @@ import stripe
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 from security_enhancements import init_security_extensions, add_security_headers, setup_error_handlers
+from security_middleware import security_middleware
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, g
@@ -186,22 +187,20 @@ if limiter:
     apply_rate_limits_to_routes(app, limiter)
     setup_advanced_rate_limiting(app, limiter)
 
-# Configuration de sécurité
+# Configuration de sécurité avancée
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(hours=1)
 
-# Middleware de sécurité pour les en-têtes
-@app.after_request
-def add_security_headers(response):
-    """Ajoute les en-têtes de sécurité à toutes les réponses"""
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['X-Frame-Options'] = 'DENY'
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'"
-    return response
+# Configuration du middleware de sécurité
+app.config['SECURITY_RATE_LIMIT_REQUESTS'] = 100
+app.config['SECURITY_RATE_LIMIT_WINDOW'] = 3600
+app.config['SECURITY_BLOCK_ATTACKS'] = True
+app.config['SECURITY_LOG_ATTACKS'] = True
+
+# Initialisation du middleware de sécurité avancée
+security_middleware.init_app(app)
 
 # Configuration OAuth GitHub
 app.config["GITHUB_OAUTH_CLIENT_ID"] = os.environ.get("GITHUB_CLIENT_ID")
