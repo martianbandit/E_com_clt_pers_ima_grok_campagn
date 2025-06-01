@@ -10,7 +10,7 @@ import psutil
 from datetime import datetime, timedelta
 from flask import jsonify, request
 from sqlalchemy import text
-from app import db, app
+# Imports will be done dynamically to avoid circular imports
 import redis
 
 class HealthChecker:

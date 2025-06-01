@@ -3879,15 +3879,116 @@ def send_campaign(campaign_id):
             'error': str(e)
         }), 500
 
-# Import and register health check routes
-try:
-    from health_checks import register_health_routes
-    register_health_routes(app)
-    logger.info("Health check routes registered successfully")
-except ImportError:
-    logger.warning("Health check module not available")
-except Exception as e:
-    logger.error(f"Failed to register health check routes: {str(e)}")
+# Health check endpoints
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Endpoint principal de vérification de santé"""
+    import psutil
+    from sqlalchemy import text
+    
+    # Vérification base de données
+    try:
+        start_time = time.time()
+        result = db.session.execute(text("SELECT 1")).fetchone()
+        db_response_time = (time.time() - start_time) * 1000
+        db_status = {
+            "status": "healthy" if result else "unhealthy",
+            "response_time_ms": round(db_response_time, 2),
+            "timestamp": datetime.datetime.utcnow().isoformat()
+        }
+    except Exception as e:
+        db_status = {
+            "status": "unhealthy",
+            "error": str(e),
+            "timestamp": datetime.datetime.utcnow().isoformat()
+        }
+    
+    # Vérification système
+    try:
+        cpu_percent = psutil.cpu_percent(interval=0.1)
+        memory = psutil.virtual_memory()
+        disk = psutil.disk_usage('/')
+        
+        system_status = {
+            "status": "healthy",
+            "cpu_percent": cpu_percent,
+            "memory_percent": memory.percent,
+            "disk_percent": round((disk.used / disk.total) * 100, 2),
+            "timestamp": datetime.datetime.utcnow().isoformat()
+        }
+    except Exception as e:
+        system_status = {
+            "status": "unhealthy",
+            "error": str(e),
+            "timestamp": datetime.datetime.utcnow().isoformat()
+        }
+    
+    # Vérification services IA
+    ai_status = {
+        "status": "configured" if (os.environ.get("OPENAI_API_KEY") or os.environ.get("XAI_API_KEY")) else "not_configured",
+        "openai": "configured" if os.environ.get("OPENAI_API_KEY") else "not_configured",
+        "xai": "configured" if os.environ.get("XAI_API_KEY") else "not_configured",
+        "timestamp": datetime.datetime.utcnow().isoformat()
+    }
+    
+    # Statut global
+    overall_status = "healthy"
+    if db_status["status"] != "healthy":
+        overall_status = "unhealthy"
+    elif system_status["status"] != "healthy":
+        overall_status = "degraded"
+    
+    response = {
+        "status": overall_status,
+        "timestamp": datetime.datetime.utcnow().isoformat(),
+        "application": {
+            "name": "NinjaLead.ai",
+            "version": os.environ.get("APP_VERSION", "1.0.0"),
+            "environment": os.environ.get("ENVIRONMENT", "production")
+        },
+        "services": {
+            "database": db_status,
+            "ai_services": ai_status
+        },
+        "system": system_status
+    }
+    
+    status_code = 200 if overall_status == "healthy" else 503
+    return jsonify(response), status_code
+
+@app.route('/health/live', methods=['GET'])
+def liveness_check():
+    """Endpoint simple pour vérifier si l'application est vivante"""
+    return jsonify({
+        "status": "alive",
+        "timestamp": datetime.datetime.utcnow().isoformat()
+    }), 200
+
+@app.route('/health/ready', methods=['GET'])
+def readiness_check():
+    """Endpoint pour vérifier si l'application est prête"""
+    try:
+        from sqlalchemy import text
+        result = db.session.execute(text("SELECT 1")).fetchone()
+        if result:
+            return jsonify({
+                "status": "ready",
+                "timestamp": datetime.datetime.utcnow().isoformat()
+            }), 200
+        else:
+            return jsonify({
+                "status": "not_ready",
+                "reason": "Database not available",
+                "timestamp": datetime.datetime.utcnow().isoformat()
+            }), 503
+    except Exception as e:
+        return jsonify({
+            "status": "not_ready",
+            "reason": f"Database error: {str(e)}",
+            "timestamp": datetime.datetime.utcnow().isoformat()
+        }), 503
+
+logger.info("Health check routes registered successfully")
 
 # Initialize backup system
 try:
