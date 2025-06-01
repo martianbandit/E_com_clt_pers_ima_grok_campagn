@@ -78,33 +78,36 @@ db = SQLAlchemy(model_class=Base)
 # Initialize Sentry for monitoring
 def init_sentry():
     """Initialize Sentry monitoring if DSN is available"""
-    sentry_dsn = os.environ.get("SENTRY_DSN", "https://350994d4ed87e5e65b314481f8257c07@o4509423969107968.ingest.us.sentry.io/4509424027303936")
+    sentry_dsn = os.environ.get("SENTRY_DSN")
     
-    try:
-        sentry_sdk.init(
-            dsn=sentry_dsn,
-            integrations=[
-                FlaskIntegration(),
-                SqlalchemyIntegration(),
-            ],
-            traces_sample_rate=1.0,  # Set traces_sample_rate to 1.0 to capture 100% of transactions for performance monitoring
-            send_default_pii=True,  # Include request headers and IP for better debugging
-            attach_stacktrace=True,
-            debug=False,
-            environment=os.environ.get("ENVIRONMENT", "production"),
-            release=os.environ.get("APP_VERSION", "1.0.0"),
-        )
-        logger.info("Sentry monitoring initialized with 100% trace sampling")
-    except Exception as e:
-        logger.error(f"Failed to initialize Sentry: {str(e)}")
+    if sentry_dsn:
+        try:
+            sentry_sdk.init(
+                dsn=sentry_dsn,
+                integrations=[
+                    FlaskIntegration(),
+                    SqlalchemyIntegration(),
+                ],
+                traces_sample_rate=1.0,
+                send_default_pii=True,
+                attach_stacktrace=True,
+                debug=False,
+                environment=os.environ.get("ENVIRONMENT", "production"),
+                release=os.environ.get("APP_VERSION", "1.0.0"),
+            )
+            logger.info("Sentry monitoring initialized with 100% trace sampling")
+        except Exception as e:
+            logger.error(f"Failed to initialize Sentry: {str(e)}")
+    else:
+        logger.info("Sentry monitoring disabled - no DSN provided")
 
 # create the app
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key-please-change-in-production")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-# Initialize monitoring
-init_sentry()
+# Initialize monitoring (disabled until proper DSN is configured)
+# init_sentry()
 
 # Configure and initialize rate limiting
 def init_rate_limiting():
