@@ -11,43 +11,67 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">
-                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Accueil') }}
+                    <a class="nav-link nav-link-neon {% if request.path == '/' %}active{% endif %}" href="/">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="nav-icon-neon">
+                            <path d="m12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81l5-4.5M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
+                        </svg>
+                        {{ _('Accueil') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/dashboard' %}active{% endif %}" href="/dashboard">
-                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Tableau de bord') }}
+                    <a class="nav-link nav-link-neon {% if request.path == '/dashboard' %}active{% endif %}" href="/dashboard">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="nav-icon-neon">
+                            <path d="M13,3V9H21V3M13,21H21V11H13M3,21H11V15H3M3,13H11V3H3V13Z"/>
+                        </svg>
+                        {{ _('Tableau de bord') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/profiles' %}active{% endif %}" href="/profiles">
-                        <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Profils clients') }}
+                    <a class="nav-link nav-link-neon {% if request.path == '/profiles' %}active{% endif %}" href="/profiles">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="nav-icon-neon">
+                            <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A3.001 3.001 0 0 0 17 6H7c-1.1 0-2 .9-2 2v2h2V8h10v2H9v12h2v-6h2v6h7zm-12.5-11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S6 8.17 6 9s.67 1.5 1.5 1.5zM11 24H4v-8c0-1.1.9-2 2-2h3c1.1 0 2 .9 2 2v8z"/>
+                        </svg>
+                        {{ _('Profils clients') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/campaigns' %}active{% endif %}" href="/campaigns">
-                        <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Campagnes') }}
+                    <a class="nav-link nav-link-neon {% if request.path == '/campaigns' %}active{% endif %}" href="/campaigns">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="nav-icon-neon">
+                            <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                        </svg>
+                        {{ _('Campagnes') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/products' %}active{% endif %}" href="/products">
-                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Fiches Produits') }}
+                    <a class="nav-link nav-link-neon {% if request.path == '/products' %}active{% endif %}" href="/products">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="nav-icon-neon">
+                            <path d="M4,6H20V16H4M20,18A2,2 0 0,0 22,16V6C22,4.89 21.1,4 20,4H4C2.89,4 2,4.89 2,6V16A2,2 0 0,0 4,18H0V20H24V18H20Z"/>
+                        </svg>
+                        {{ _('Fiches Produits') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/metrics' or request.path == '/metrics_dashboard' %}active{% endif %}" href="/metrics">
-                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Métriques') }}
+                    <a class="nav-link nav-link-neon {% if request.path == '/metrics' or request.path == '/metrics_dashboard' %}active{% endif %}" href="/metrics">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="nav-icon-neon">
+                            <path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z"/>
+                        </svg>
+                        {{ _('Métriques') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/osp-tools' %}active{% endif %}" href="/osp-tools">
-                        <img src="{{ url_for('static', filename='images/ninja-logo.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Outils OSP') }}
+                    <a class="nav-link nav-link-neon {% if request.path == '/osp-tools' %}active{% endif %}" href="/osp-tools">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="nav-icon-neon">
+                            <path d="M20.5,11H19V7C19,5.89 18.1,5 17,5H13V3.5A2.5,2.5 0 0,0 10.5,1A2.5,2.5 0 0,0 8,3.5V5H4C2.89,5 2,5.89 2,7V10.8H3.5C5,10.8 6.2,12 6.2,13.5C6.2,15 5,16.2 3.5,16.2H2V20C2,21.11 2.89,22 4,22H7.8V20.5C7.8,19 9,17.8 10.5,17.8C12,17.8 13.2,19 13.2,20.5V22H17C18.11,22 19,21.11 19,20V16H20.5A2.5,2.5 0 0,0 23,13.5A2.5,2.5 0 0,0 20.5,11Z"/>
+                        </svg>
+                        {{ _('Outils OSP') }}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/profile' %}active{% endif %}" href="{{ url_for('user_profile_config') }}">
-                        <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Profil') }}
+                    <a class="nav-link nav-link-neon {% if request.path == '/profile' %}active{% endif %}" href="{{ url_for('user_profile_config') }}">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="nav-icon-neon">
+                            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,6A2,2 0 0,0 10,8A2,2 0 0,0 12,10A2,2 0 0,0 14,8A2,2 0 0,0 12,6M12,13C14.67,13 20,14.33 20,17V20H4V17C4,14.33 9.33,13 12,13M12,14.9C9.03,14.9 5.9,16.36 5.9,17V18.1H18.1V17C18.1,16.36 14.97,14.9 12,14.9Z"/>
+                        </svg>
+                        {{ _('Profil') }}
                     </a>
                 </li>
             </ul>
