@@ -197,6 +197,55 @@
     </div>
 </div>
 
+<style>
+    /* Dashboard buttons with neon effect */
+    .dashboard-btn-neon {
+        background-color: rgba(255, 140, 0, 0.1) !important;
+        border: 2px solid #FF8C00 !important;
+        color: #FF8C00 !important;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .dashboard-btn-neon::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.3), transparent);
+        transition: left 0.5s;
+    }
+    
+    .dashboard-btn-neon:hover::before {
+        left: 100%;
+    }
+    
+    .dashboard-btn-neon:hover {
+        color: #FFA500 !important;
+        background-color: rgba(255, 165, 0, 0.2) !important;
+        border-color: #FFA500 !important;
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 
+            0 0 15px rgba(255, 140, 0, 0.6),
+            0 0 30px rgba(255, 140, 0, 0.4),
+            0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .dashboard-icon-neon {
+        margin-right: 6px;
+        transition: all 0.3s ease;
+        filter: drop-shadow(0 0 4px rgba(255, 140, 0, 0.6));
+    }
+    
+    .dashboard-btn-neon:hover .dashboard-icon-neon {
+        filter: drop-shadow(0 0 8px rgba(255, 165, 0, 0.9));
+        transform: scale(1.1);
+    }
+</style>
+
 <!-- Add Boutique Modal -->
 <div class="modal fade" id="addBoutiqueModal" tabindex="-1" aria-labelledby="addBoutiqueModalLabel" aria-hidden="true">
     <div class="modal-dialog">
