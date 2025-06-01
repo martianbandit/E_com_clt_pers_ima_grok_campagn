@@ -3888,9 +3888,10 @@ def health_check():
     
     # Vérification base de données
     try:
-        start_time = time.time()
+        import time as time_module
+        start_time = time_module.time()
         result = db.session.execute(text("SELECT 1")).fetchone()
-        db_response_time = (time.time() - start_time) * 1000
+        db_response_time = (time_module.time() - start_time) * 1000
         db_status = {
             "status": "healthy" if result else "unhealthy",
             "response_time_ms": round(db_response_time, 2),
