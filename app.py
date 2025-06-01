@@ -78,25 +78,25 @@ db = SQLAlchemy(model_class=Base)
 # Initialize Sentry for monitoring
 def init_sentry():
     """Initialize Sentry monitoring if DSN is available"""
-    sentry_dsn = os.environ.get("SENTRY_DSN")
-    if sentry_dsn:
+    sentry_dsn = os.environ.get("SENTRY_DSN", "https://350994d4ed87e5e65b314481f8257c07@o4509423969107968.ingest.us.sentry.io/4509424027303936")
+    
+    try:
         sentry_sdk.init(
             dsn=sentry_dsn,
             integrations=[
                 FlaskIntegration(),
                 SqlalchemyIntegration(),
-                RedisIntegration(),
             ],
             traces_sample_rate=1.0,  # Set traces_sample_rate to 1.0 to capture 100% of transactions for performance monitoring
-            send_default_pii=False,  # Don't send personal information
+            send_default_pii=True,  # Include request headers and IP for better debugging
             attach_stacktrace=True,
             debug=False,
             environment=os.environ.get("ENVIRONMENT", "production"),
             release=os.environ.get("APP_VERSION", "1.0.0"),
         )
         logger.info("Sentry monitoring initialized with 100% trace sampling")
-    else:
-        logger.warning("SENTRY_DSN not found, monitoring disabled")
+    except Exception as e:
+        logger.error(f"Failed to initialize Sentry: {str(e)}")
 
 # create the app
 app = Flask(__name__)
