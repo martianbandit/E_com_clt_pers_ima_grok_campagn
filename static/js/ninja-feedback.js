@@ -350,11 +350,11 @@ class NinjaFeedbackManager {
                     <strong class="me-auto">Erreur</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
                 </div>
-                <div class="toast-body">
-                    ${message}
-                </div>
+                <div class="toast-body"></div>
             </div>
         `;
+        // Safely set the message content as text only
+        toast.querySelector('.toast-body').textContent = message;
         document.body.appendChild(toast);
         
         setTimeout(() => {
