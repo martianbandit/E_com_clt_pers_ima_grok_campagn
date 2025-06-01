@@ -149,8 +149,8 @@ body {
 }
 
 .theme-card-header-primary.theme-light {
-    background-color: #e6f0ff;
-    color: #0d6efd;
+    background-color: #fff4e6;
+    color: #FF8C00;
 }
 
 .theme-card-header-success.theme-dark {
@@ -169,8 +169,8 @@ body {
 }
 
 .theme-card-header-info.theme-light {
-    background-color: #e3f2fd;
-    color: #0288d1;
+    background-color: #fff4e6;
+    color: #FF8C00;
 }
 
 .theme-card-header-warning.theme-dark {

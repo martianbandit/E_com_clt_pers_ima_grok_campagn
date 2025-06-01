@@ -1,19 +1,19 @@
 /* MarkEasy - Thème moderne et attrayant */
 :root {
-    --primary-color: #0d6efd;
-    --primary-dark: #0b5ed7;
+    --primary-color: #FF8C00;
+    --primary-dark: #E67E00;
     --secondary-color: #6c757d;
     --success-color: #198754;
-    --info-color: #0dcaf0;
+    --info-color: #FF8C00;
     --warning-color: #ffc107;
     --danger-color: #dc3545;
     --light-color: #f8f9fa;
     --dark-color: #212529;
-    --orange-accent: #ff6b35;
-    --gradient-primary: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    --orange-accent: #FF8C00;
+    --gradient-primary: linear-gradient(135deg, #FF8C00 0%, #E67E00 100%);
     --gradient-success: linear-gradient(135deg, #198754 0%, #146c43 100%);
     --gradient-warning: linear-gradient(135deg, #ffc107 0%, #ffb302 100%);
-    --gradient-orange: linear-gradient(135deg, #ff6b35 0%, #ff5722 100%);
+    --gradient-orange: linear-gradient(135deg, #FF8C00 0%, #E67E00 100%);
     --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
@@ -23,11 +23,11 @@
 
 /* Variables pour le thème sombre */
 [data-bs-theme="dark"] {
-    --primary-color: #6ea8fe;
-    --primary-dark: #2569d6;
+    --primary-color: #FFA500;
+    --primary-dark: #FF8C00;
     --secondary-color: #adb5bd;
     --success-color: #75b798;
-    --info-color: #6edff6;
+    --info-color: #FFA500;
     --warning-color: #ffda6a;
     --danger-color: #ea868f;
     --light-color: #343a40;
@@ -454,8 +454,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    border-color: #FF8C00;
+    box-shadow: 0 0 0 0.2rem rgba(255, 140, 0, 0.25);
 }
 
 /* Loading Animation */
@@ -476,7 +476,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 50px;
     height: 50px;
     border: 5px solid #f3f3f3;
-    border-top: 5px solid var(--primary-color);
+    border-top: 5px solid #FF8C00;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
