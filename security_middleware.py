@@ -97,11 +97,13 @@ ATTACK_PATTERNS = [
     (re.compile(r'\.\./', re.IGNORECASE), 'PATH_TRAVERSAL'),
     (re.compile(r'%2e%2e%2f', re.IGNORECASE), 'PATH_TRAVERSAL_ENCODED'),
     
-    # Command injection
-    (re.compile(r'[;&|`$(){}[\]<>]', re.IGNORECASE), 'COMMAND_INJECTION'),
+    # Command injection (more specific patterns)
+    (re.compile(r';\s*(rm|cat|ls|wget|curl|nc|bash|sh)\s', re.IGNORECASE), 'COMMAND_INJECTION'),
+    (re.compile(r'\|\s*(rm|cat|ls|wget|curl|nc|bash|sh)\s', re.IGNORECASE), 'COMMAND_INJECTION'),
+    (re.compile(r'`[^`]*`', re.IGNORECASE), 'COMMAND_INJECTION_BACKTICKS'),
     
-    # LDAP injection
-    (re.compile(r'[()=*!&|]', re.IGNORECASE), 'LDAP_INJECTION_CHARS'),
+    # LDAP injection (exclude common chars in normal content)
+    (re.compile(r'\(\s*\|\s*\(', re.IGNORECASE), 'LDAP_INJECTION'),
 ]
 
 class SecurityMiddleware:
