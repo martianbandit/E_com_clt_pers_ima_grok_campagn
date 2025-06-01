@@ -630,11 +630,11 @@ function createFloatingFeedbackButton() {
     floatingBtn.id = 'floating-feedback-btn';
     floatingBtn.className = 'ninja-floating-feedback';
     floatingBtn.innerHTML = `
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#ffffff">
             <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-            <circle cx="8" cy="10" r="1" fill="#ff6b35"/>
-            <circle cx="12" cy="10" r="1" fill="#ff6b35"/>
-            <circle cx="16" cy="10" r="1" fill="#ff6b35"/>
+            <circle cx="8" cy="10" r="1.5" fill="#ffffff"/>
+            <circle cx="12" cy="10" r="1.5" fill="#ffffff"/>
+            <circle cx="16" cy="10" r="1.5" fill="#ffffff"/>
         </svg>
     `;
     
@@ -662,6 +662,7 @@ function createFloatingFeedbackButton() {
     .ninja-floating-feedback:hover {
         transform: scale(1.1);
         box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
+        background: linear-gradient(135deg, #e55528 0%, #d44821 100%);
     }
     
     .ninja-floating-feedback:active {
