@@ -4092,6 +4092,79 @@ try:
 except Exception as e:
     logger.error(f"Failed to initialize backup system: {str(e)}")
 
+# Routes pour le tableau de bord des performances
+@app.route('/admin/performance')
+@login_required
+def performance_dashboard():
+    """Tableau de bord des performances et optimisations"""
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    
+    performance_data = {}
+    
+    # Statistiques du cache
+    if performance_modules_loaded:
+        try:
+            performance_data['cache_stats'] = get_cache_stats()
+        except Exception:
+            performance_data['cache_stats'] = {"type": "memory", "status": "active"}
+        
+        # Statistiques de base de données
+        try:
+            performance_data['db_stats'] = db_optimizer.get_performance_stats()
+        except Exception:
+            performance_data['db_stats'] = {}
+        
+        # Statistiques d'optimisation des assets
+        try:
+            performance_data['asset_stats'] = asset_optimizer.get_optimization_stats()
+        except Exception:
+            performance_data['asset_stats'] = {"message": "Assets optimization not run yet"}
+    else:
+        performance_data = {
+            'cache_stats': {"status": "Performance modules not loaded"},
+            'db_stats': {},
+            'asset_stats': {"message": "Performance modules not available"}
+        }
+    
+    return render_template('admin/performance_dashboard.html', 
+                         performance_data=performance_data)
+
+@app.route('/admin/performance/optimize', methods=['POST'])
+@login_required
+def run_performance_optimization():
+    """Exécute les optimisations de performance"""
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'Non autorisé'}), 403
+    
+    results = {}
+    
+    if performance_modules_loaded:
+        try:
+            # Optimisation des assets
+            compressed_files = asset_optimizer.compress_static_files()
+            results['assets'] = f"{compressed_files} fichiers compressés"
+            
+            # Optimisation de la base de données
+            indexes_created = optimize_database_indexes()
+            results['database'] = f"{len(indexes_created)} index créés"
+            
+            # Nettoyage du cache
+            if hasattr(cache, 'redis_client') and cache.cache_available:
+                cache.redis_client.flushdb()
+                results['cache'] = "Cache Redis nettoyé"
+            else:
+                cache.memory_cache.clear()
+                cache.memory_cache_ttl.clear()
+                results['cache'] = "Cache mémoire nettoyé"
+                
+        except Exception as e:
+            results['error'] = f"Erreur d'optimisation: {str(e)}"
+    else:
+        results['error'] = "Modules de performance non disponibles"
+    
+    return jsonify(results)
+
 # Route de test Sentry pour vérifier l'installation
 @app.route("/sentry-debug")
 def trigger_error():

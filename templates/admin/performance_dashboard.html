@@ -1,0 +1,271 @@
+{% extends "layout.html" %}
+{% block title %}Tableau de Bord Performance - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        Tableau de Bord Performance
+                    </h4>
+                    <button type="button" class="btn btn-light btn-sm" onclick="runOptimization()">
+                        <i class="fas fa-sync-alt me-1"></i>
+                        Optimiser
+                    </button>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- Performance Overview -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-memory fa-2x mb-2"></i>
+                                    <h5>Cache</h5>
+                                    <p class="mb-0">{{ performance_data.cache_stats.type|title }}</p>
+                                    {% if performance_data.cache_stats.cached_items %}
+                                        <small>{{ performance_data.cache_stats.cached_items }} éléments</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-info text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-database fa-2x mb-2"></i>
+                                    <h5>Base de Données</h5>
+                                    <p class="mb-0">
+                                        {% if performance_data.db_stats %}
+                                            {{ performance_data.db_stats|length }} types de requêtes
+                                        {% else %}
+                                            Monitoring actif
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-file-archive fa-2x mb-2"></i>
+                                    <h5>Assets</h5>
+                                    {% if performance_data.asset_stats.files_compressed %}
+                                        <p class="mb-0">{{ performance_data.asset_stats.files_compressed }} fichiers</p>
+                                        <small>{{ performance_data.asset_stats.savings_percentage }}% économisé</small>
+                                    {% else %}
+                                        <p class="mb-0">{{ performance_data.asset_stats.message }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cache Statistics -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5><i class="fas fa-memory me-2"></i>Statistiques du Cache</h5>
+                            <div class="card">
+                                <div class="card-body">
+                                    {% if performance_data.cache_stats.type == 'redis' %}
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <strong>Mémoire utilisée:</strong><br>
+                                                {{ performance_data.cache_stats.memory_usage }}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Clients connectés:</strong><br>
+                                                {{ performance_data.cache_stats.connected_clients }}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Hits:</strong><br>
+                                                {{ performance_data.cache_stats.keyspace_hits }}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Misses:</strong><br>
+                                                {{ performance_data.cache_stats.keyspace_misses }}
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            Cache mémoire actif avec {{ performance_data.cache_stats.cached_items or 0 }} éléments
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Database Performance -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5><i class="fas fa-database me-2"></i>Performance Base de Données</h5>
+                            <div class="card">
+                                <div class="card-body">
+                                    {% if performance_data.db_stats %}
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Type de Requête</th>
+                                                        <th>Nombre</th>
+                                                        <th>Temps Moyen</th>
+                                                        <th>Temps Max</th>
+                                                        <th>Requêtes Lentes</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for query_type, stats in performance_data.db_stats.items() %}
+                                                    <tr>
+                                                        <td><code>{{ query_type }}</code></td>
+                                                        <td>{{ stats.count }}</td>
+                                                        <td>{{ stats.avg_time }}s</td>
+                                                        <td>
+                                                            <span class="{% if stats.max_time > 1 %}text-danger{% elif stats.max_time > 0.5 %}text-warning{% else %}text-success{% endif %}">
+                                                                {{ stats.max_time }}s
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            {% if stats.slow_queries_count > 0 %}
+                                                                <span class="badge bg-warning">{{ stats.slow_queries_count }}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-success">0</span>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            Aucune statistique de requête disponible pour le moment
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Asset Optimization -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h5><i class="fas fa-file-archive me-2"></i>Optimisation des Assets</h5>
+                            <div class="card">
+                                <div class="card-body">
+                                    {% if performance_data.asset_stats.files_compressed %}
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <strong>Fichiers compressés:</strong><br>
+                                                {{ performance_data.asset_stats.files_compressed }}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Taille originale:</strong><br>
+                                                {{ performance_data.asset_stats.total_original_size }}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Taille compressée:</strong><br>
+                                                {{ performance_data.asset_stats.total_compressed_size }}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Économies:</strong><br>
+                                                <span class="text-success fw-bold">{{ performance_data.asset_stats.savings_percentage }}%</span>
+                                                ({{ performance_data.asset_stats.total_savings }})
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            {{ performance_data.asset_stats.message }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de résultats d'optimisation -->
+<div class="modal fade" id="optimizationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Résultats d'Optimisation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="optimizationResults">
+                <!-- Résultats seront insérés ici -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" onclick="location.reload()">Actualiser</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function runOptimization() {
+    const btn = document.querySelector('button[onclick="runOptimization()"]');
+    const originalText = btn.innerHTML;
+    
+    // Afficher le loading
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Optimisation...';
+    btn.disabled = true;
+    
+    fetch('/admin/performance/optimize', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Afficher les résultats dans le modal
+        let resultsHtml = '<div class="list-group">';
+        
+        if (data.error) {
+            resultsHtml += `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>${data.error}</div>`;
+        } else {
+            if (data.assets) {
+                resultsHtml += `<div class="list-group-item"><i class="fas fa-file-archive me-2 text-success"></i><strong>Assets:</strong> ${data.assets}</div>`;
+            }
+            if (data.database) {
+                resultsHtml += `<div class="list-group-item"><i class="fas fa-database me-2 text-info"></i><strong>Base de données:</strong> ${data.database}</div>`;
+            }
+            if (data.cache) {
+                resultsHtml += `<div class="list-group-item"><i class="fas fa-memory me-2 text-warning"></i><strong>Cache:</strong> ${data.cache}</div>`;
+            }
+        }
+        
+        resultsHtml += '</div>';
+        document.getElementById('optimizationResults').innerHTML = resultsHtml;
+        
+        // Afficher le modal
+        new bootstrap.Modal(document.getElementById('optimizationModal')).show();
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        document.getElementById('optimizationResults').innerHTML = 
+            '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>Erreur lors de l\'optimisation</div>';
+        new bootstrap.Modal(document.getElementById('optimizationModal')).show();
+    })
+    .finally(() => {
+        // Restaurer le bouton
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    });
+}
+</script>
+{% endblock %}
