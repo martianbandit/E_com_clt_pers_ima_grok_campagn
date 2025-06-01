@@ -7,6 +7,7 @@ import sys
 import stripe
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
+from security_enhancements import init_security_extensions, add_security_headers, setup_error_handlers
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, g
@@ -4005,6 +4006,15 @@ def test_sentry():
         }), 500
 
 logger.info("Health check routes registered successfully")
+
+# Initialize security enhancements
+try:
+    talisman, limiter = init_security_extensions(app)
+    add_security_headers(app)
+    setup_error_handlers(app)
+    logger.info("Security enhancements initialized successfully")
+except Exception as e:
+    logger.error(f"Error initializing security enhancements: {e}")
 
 # Initialize backup system
 try:

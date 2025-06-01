@@ -58,12 +58,12 @@ def init_security_extensions(app):
     
     # Flask-Limiter pour le rate limiting
     limiter = Limiter(
-        app,
         key_func=get_remote_address,
         default_limits=["1000 per day", "100 per hour"],
         storage_uri="memory://",  # Utiliser Redis en production
         strategy="fixed-window"
     )
+    limiter.init_app(app)
     
     # Configuration des sessions sécurisées
     app.config.update(
