@@ -113,18 +113,20 @@ function addFeedbackStyles() {
     <style>
     .ninja-feedback-modal {
         border: none;
-        border-radius: 12px;
-        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.25);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
         background: var(--bs-body-bg);
         overflow: hidden;
+        max-width: 480px;
+        width: 90vw;
     }
 
     .ninja-feedback-header {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         color: white;
-        border-radius: 12px 12px 0 0;
+        border-radius: 8px 8px 0 0;
         border: none;
-        padding: 0.875rem 1rem;
+        padding: 0.75rem;
         position: relative;
     }
 
@@ -168,8 +170,10 @@ function addFeedbackStyles() {
     }
 
     .ninja-feedback-body {
-        padding: 1rem;
+        padding: 0.75rem;
         background: var(--bs-body-bg);
+        max-height: 50vh;
+        overflow-y: auto;
     }
 
     .ninja-feedback-types {
