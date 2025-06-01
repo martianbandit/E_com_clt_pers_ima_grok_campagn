@@ -219,7 +219,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
+    text-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
     letter-spacing: -0.5px;
 }
 
@@ -228,7 +228,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.6));
+    filter: drop-shadow(0 0 15px rgba(255, 140, 0, 0.8));
 }
 
 [data-bs-theme="light"] .brand-text-ninja {
@@ -236,7 +236,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.5));
 }
 
 .brand-info {
@@ -265,6 +265,16 @@
     color: #FF8C00 !important;
     -webkit-text-fill-color: #FF8C00 !important;
     background: none !important;
-    filter: drop-shadow(0 0 6px rgba(255, 140, 0, 0.4));
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.7)) !important;
+}
+
+.ninjalead-logo {
+    filter: drop-shadow(0 0 15px rgba(255, 140, 0, 0.6));
+}
+
+[data-bs-theme="dark"] .ninjalead-logo {
+    filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.8));
 }
 </style>
