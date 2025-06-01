@@ -84,9 +84,13 @@
 - ✅ **Dashboard performance** intégré avec métriques complètes
 
 ### 2.2 Sécurité Avancée
-- 🔄 **Rate limiting** par utilisateur/IP (script existant)
+- ✅ **Rate limiting** par utilisateur/IP (Flask-Limiter intégré)
+- ✅ **Middleware de sécurité avancée** avec détection d'attaques
+- ✅ **Content Security Policy** et headers de sécurité
+- ✅ **Sanitisation d'entrées** avec protection XSS/SQL injection
+- ✅ **Audit logs** des actions critiques (système complet)
+- ✅ **Logs centralisés** avec rotation et archivage
 - 🔄 **Validation avancée** des uploads
-- 🔄 **Audit logs** des actions critiques
 - 🔄 **Secrets management** centralisé
 
 ### 2.3 Fonctionnalités Métier
@@ -109,7 +113,7 @@
 - ✅ **Health checks** endpoints (/health, /health/live, /health/ready)
 - ✅ **Métriques business** (tracking usage IA et conversions avec système de métriques)
 - ✅ **Système de feedback utilisateur** intégré avec Sentry.io
-- ❌ **Logs centralisés** avec rotation
+- ✅ **Logs centralisés** avec rotation et archivage automatique
 
 #### 3.1.2 CI/CD Pipeline
 - ✅ **GitHub Actions** pour déploiement automatique

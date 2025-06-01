@@ -9,6 +9,7 @@ import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 from security_enhancements import init_security_extensions, add_security_headers, setup_error_handlers
 from security_middleware import security_middleware
+from centralized_logging import setup_logging
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, g
@@ -201,6 +202,9 @@ app.config['SECURITY_LOG_ATTACKS'] = True
 
 # Initialisation du middleware de sécurité avancée
 security_middleware.init_app(app)
+
+# Initialisation du système de logs centralisés
+centralized_logs = setup_logging(app)
 
 # Configuration OAuth GitHub
 app.config["GITHUB_OAUTH_CLIENT_ID"] = os.environ.get("GITHUB_CLIENT_ID")
