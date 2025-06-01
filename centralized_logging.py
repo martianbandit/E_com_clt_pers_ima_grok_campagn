@@ -214,7 +214,9 @@ class CentralizedLogger:
             from flask import g
             import time
             
-            duration = time.time() - g.start_time
+            # Safely get start_time with fallback
+            start_time = getattr(g, 'start_time', time.time())
+            duration = time.time() - start_time
             
             # Log de fin de requête
             self.log_request('INFO', 'Request completed', {

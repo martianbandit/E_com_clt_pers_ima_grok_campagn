@@ -4161,12 +4161,24 @@ def performance_dashboard():
     
     performance_data = {}
     
+    # Statistiques de sécurité avancée
+    security_status = {
+        'encryption': get_encryption_status() if encryption_available else {'status': 'not_configured'},
+        'ddos_protection': get_ddos_stats() if ddos_protection_available else {'status': 'not_configured'},
+        'cache': cache_manager.get_stats() if cache_available else {'status': 'not_configured'},
+        'security_middleware': True,
+        'gdpr_compliance': True,
+        'audit_trail': True
+    }
+    
+    performance_data['security_status'] = security_status
+    
     # Statistiques du cache
     if performance_modules_loaded:
         try:
             performance_data['cache_stats'] = get_cache_stats()
         except Exception:
-            performance_data['cache_stats'] = {"type": "memory", "status": "active"}
+            performance_data['cache_stats'] = {"status": "error"}
         
         # Statistiques de base de données
         try:

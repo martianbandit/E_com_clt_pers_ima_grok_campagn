@@ -150,8 +150,12 @@ class SecurityMiddleware:
             request_data.extend(request.args.values())
         if request.form:
             request_data.extend(request.form.values())
-        if request.json:
-            request_data.extend(self._extract_json_values(request.json))
+        # Safely check for JSON content
+        try:
+            if request.is_json and request.get_json(silent=True):
+                request_data.extend(self._extract_json_values(request.get_json(silent=True)))
+        except Exception:
+            pass  # Skip JSON parsing if it fails
         
         # Vérifier les headers suspects
         user_agent = request.headers.get('User-Agent', '')

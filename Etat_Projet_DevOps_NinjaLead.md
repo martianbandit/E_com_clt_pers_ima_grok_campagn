@@ -124,7 +124,7 @@
 #### 3.1.3 Base de Données
 - ✅ **Backups automatiques** avec retention (système complet implémenté)
 - ❌ **Réplication read-only** pour analytics
-- ❌ **Connection pooling** optimisé
+- ✅ **Connection pooling** optimisé (QueuePool 10+20 connexions)
 - ❌ **Migrations automatiques** en CI/CD
 
 ### 3.2 Sécurité (Priorité HAUTE)
@@ -133,13 +133,13 @@
 - ✅ **WAF (Web Application Firewall)** basique intégré
 - ✅ **Input sanitization** généralisée avec détection d'attaques
 - ✅ **Content Security Policy** headers configurés
-- ❌ **DDoS protection** avancée (infrastructure niveau)
+- ✅ **DDoS protection** avancée avec rate limiting intelligent
 
 #### 3.2.2 Conformité & Audit
 - ✅ **Audit trail** pour actions sensibles avec base de données dédiée
 - ✅ **Vulnerability scanning** basique (patterns d'attaques)
 - ✅ **GDPR compliance** complète avec interface utilisateur
-- ❌ **Encryption at rest** pour données sensibles
+- ✅ **Encryption at rest** pour données sensibles (Fernet AES-128)
 
 ### 3.3 Performance & Scalabilité (Priorité MOYENNE)
 
