@@ -311,8 +311,8 @@
             }, 500);
         }
         
-        // Démarrer la rotation automatique (3 secondes par bannière)
-        let rotationInterval = setInterval(rotateBanners, 3000);
+        // Démarrer la rotation automatique (8 secondes par bannière)
+        let rotationInterval = setInterval(rotateBanners, 8000);
         
         // Permettre le clic sur les indicateurs pour changer de bannière
         indicators.forEach((indicator, index) => {
@@ -354,7 +354,7 @@
                 }, 300);
                 
                 // Redémarrer la rotation automatique
-                rotationInterval = setInterval(rotateBanners, 3000);
+                rotationInterval = setInterval(rotateBanners, 8000);
             });
         });
         
