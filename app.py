@@ -24,6 +24,16 @@ from i18n import babel, get_locale, get_supported_languages, get_language_name, 
 from flask_dance.consumer import oauth_authorized, oauth_error
 from flask_dance.contrib.github import make_github_blueprint, github
 
+# Performance optimizations
+try:
+    from performance_cache import cache, cached_ai_response, cached_db_query, get_cache_stats
+    from db_optimizer import db_optimizer, get_user_stats_optimized, optimize_database_indexes
+    from asset_optimizer import asset_optimizer, setup_asset_headers, preload_critical_resources
+    performance_modules_loaded = True
+except ImportError as e:
+    logging.warning(f"Performance modules not available: {e}")
+    performance_modules_loaded = False
+
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, 
                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
