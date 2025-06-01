@@ -351,14 +351,123 @@ function addFeedbackStyles() {
         margin-bottom: 0;
     }
 
-    /* Responsive */
-    @media (max-width: 576px) {
-        .ninja-feedback-types {
-            flex-direction: column;
+    /* Responsive - Mobile First */
+    @media (max-width: 768px) {
+        .modal-dialog {
+            margin: 0.5rem;
+            max-width: calc(100vw - 1rem);
+        }
+        
+        .ninja-feedback-modal {
+            border-radius: 12px;
         }
         
         .ninja-feedback-header {
-            padding: 1rem;
+            padding: 1rem 1.25rem;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .ninja-feedback-title {
+            font-size: 1rem;
+        }
+        
+        .ninja-feedback-body {
+            padding: 1.25rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .ninja-feedback-types {
+            padding: 0.75rem;
+            gap: 0.5rem;
+        }
+        
+        .ninja-check-label {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+        }
+        
+        .ninja-form-label {
+            font-size: 0.9rem;
+            margin-bottom: 0.375rem;
+        }
+        
+        .ninja-input, .ninja-textarea {
+            padding: 0.625rem 0.875rem;
+            font-size: 0.9rem;
+            border-radius: 8px;
+        }
+        
+        .ninja-textarea {
+            rows: 3;
+            min-height: 80px;
+        }
+        
+        .ninja-form-text {
+            font-size: 0.8rem;
+            margin-top: 0.375rem;
+        }
+        
+        .ninja-system-info {
+            padding: 0.75rem;
+            margin-top: 0.75rem;
+        }
+        
+        .ninja-system-info small {
+            font-size: 0.75rem;
+        }
+        
+        .ninja-feedback-footer {
+            padding: 1rem 1.25rem;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .ninja-btn-primary, .ninja-btn-secondary {
+            width: 100%;
+            justify-content: center;
+            padding: 0.875rem 1.25rem;
+            font-size: 0.95rem;
+            border-radius: 8px;
+        }
+        
+        /* Touch-friendly interactions */
+        .ninja-check-label {
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-check-input {
+            min-width: 20px;
+            min-height: 20px;
+            margin-right: 0.75rem;
+        }
+        
+        /* Improved focus states for mobile */
+        .ninja-input:focus, .ninja-textarea:focus {
+            transform: none;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+        }
+        
+        /* Better button hover states for touch */
+        .ninja-btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        .ninja-btn-secondary:active {
+            transform: scale(0.98);
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .modal-dialog {
+            margin: 0.25rem;
+            max-width: calc(100vw - 0.5rem);
+        }
+        
+        .ninja-feedback-header {
+            padding: 0.875rem 1rem;
         }
         
         .ninja-feedback-body {
@@ -366,14 +475,64 @@ function addFeedbackStyles() {
         }
         
         .ninja-feedback-footer {
-            padding: 1rem;
-            flex-direction: column;
-            gap: 0.5rem;
+            padding: 0.875rem 1rem;
+        }
+        
+        .ninja-feedback-types {
+            padding: 0.625rem;
+        }
+        
+        .ninja-check-label {
+            font-size: 0.85rem;
+            padding: 0.5rem;
+        }
+        
+        .ninja-form-label {
+            font-size: 0.85rem;
+        }
+        
+        .ninja-input, .ninja-textarea {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
         }
         
         .ninja-btn-primary, .ninja-btn-secondary {
-            width: 100%;
-            justify-content: center;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+        }
+    }
+    
+    /* Landscape phone optimizations */
+    @media (max-height: 500px) and (orientation: landscape) {
+        .ninja-feedback-body {
+            max-height: 60vh;
+            padding: 0.75rem;
+        }
+        
+        .ninja-feedback-types {
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        
+        .ninja-form-check {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .ninja-textarea {
+            rows: 2;
+            min-height: 60px;
+        }
+        
+        .ninja-feedback-footer {
+            flex-direction: row;
+            gap: 1rem;
+        }
+        
+        .ninja-btn-primary, .ninja-btn-secondary {
+            width: auto;
+            flex: 1;
         }
     }
     </style>`;
@@ -386,11 +545,20 @@ function setupFeedbackButtons() {
     const headerBtn = document.querySelector('[id*="feedback"], [class*="feedback"]') || createFeedbackButton('header');
     const footerBtn = document.querySelector('footer [id*="feedback"], footer [class*="feedback"]') || createFeedbackButton('footer');
 
-    // Attacher les événements
+    // Attacher les événements avec support tactile
     if (headerBtn) {
         headerBtn.addEventListener('click', (e) => {
             e.preventDefault();
             openFeedbackModal('bug');
+        });
+        
+        // Support tactile amélioré
+        headerBtn.addEventListener('touchstart', (e) => {
+            headerBtn.style.transform = 'scale(0.95)';
+        });
+        
+        headerBtn.addEventListener('touchend', (e) => {
+            headerBtn.style.transform = '';
         });
     }
 
@@ -399,10 +567,22 @@ function setupFeedbackButtons() {
             e.preventDefault();
             openFeedbackModal('suggestion');
         });
+        
+        // Support tactile amélioré
+        footerBtn.addEventListener('touchstart', (e) => {
+            footerBtn.style.transform = 'scale(0.95)';
+        });
+        
+        footerBtn.addEventListener('touchend', (e) => {
+            footerBtn.style.transform = '';
+        });
     }
 
     // Configuration du formulaire
     setupFormHandlers();
+    
+    // Créer le bouton flottant pour mobile
+    createFloatingFeedbackButton();
 }
 
 function createFeedbackButton(location) {
@@ -436,6 +616,96 @@ function createFeedbackButton(location) {
     }
     
     return button;
+}
+
+function createFloatingFeedbackButton() {
+    // Créer un bouton flottant pour mobile
+    const floatingBtn = document.createElement('button');
+    floatingBtn.type = 'button';
+    floatingBtn.id = 'floating-feedback-btn';
+    floatingBtn.className = 'ninja-floating-feedback';
+    floatingBtn.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            <circle cx="8" cy="10" r="1" fill="#ff6b35"/>
+            <circle cx="12" cy="10" r="1" fill="#ff6b35"/>
+            <circle cx="16" cy="10" r="1" fill="#ff6b35"/>
+        </svg>
+    `;
+    
+    // Styles pour le bouton flottant
+    const floatingStyles = `
+    <style>
+    .ninja-floating-feedback {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
+        border: none;
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .ninja-floating-feedback:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
+    }
+    
+    .ninja-floating-feedback:active {
+        transform: scale(0.95);
+    }
+    
+    /* Masquer sur desktop */
+    @media (min-width: 768px) {
+        .ninja-floating-feedback {
+            display: none;
+        }
+    }
+    
+    /* Animation d'apparition */
+    @keyframes ninja-float-in {
+        from {
+            transform: scale(0) rotate(180deg);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+        }
+    }
+    
+    .ninja-floating-feedback {
+        animation: ninja-float-in 0.5s ease-out;
+    }
+    </style>`;
+    
+    document.head.insertAdjacentHTML('beforeend', floatingStyles);
+    document.body.appendChild(floatingBtn);
+    
+    // Événement de clic
+    floatingBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openFeedbackModal('bug');
+    });
+    
+    // Support tactile amélioré
+    floatingBtn.addEventListener('touchstart', (e) => {
+        floatingBtn.style.transform = 'scale(0.9)';
+    });
+    
+    floatingBtn.addEventListener('touchend', (e) => {
+        floatingBtn.style.transform = '';
+    });
+    
+    return floatingBtn;
 }
 
 function setupFormHandlers() {
