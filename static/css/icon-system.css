@@ -237,6 +237,44 @@
     filter: drop-shadow(0 0 6px rgba(255, 107, 53, 0.7)) !important;
 }
 
+/* Force toutes les icônes SVG à utiliser notre couleur orange */
+svg[class*="ninja-icon"],
+svg use,
+.ninja-icon svg,
+.ninja-icon use {
+    fill: #ff6b35 !important;
+    color: #ff6b35 !important;
+}
+
+/* Override pour tous les symboles dans le sprite */
+#ninja-dashboard,
+#ninja-analytics,
+#ninja-users,
+#ninja-campaigns,
+#ninja-products,
+#ninja-settings,
+#ninja-security,
+#ninja-performance,
+#ninja-database,
+#ninja-cache,
+#ninja-assets,
+#ninja-feedback,
+#ninja-metrics,
+#ninja-growth,
+#ninja-targets,
+#ninja-optimization {
+    fill: #ff6b35 !important;
+}
+
+/* Classes globales pour toutes les icônes */
+.icon,
+.ninja-icon,
+svg.icon,
+svg.ninja-icon {
+    fill: #ff6b35 !important;
+    filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.6)) !important;
+}
+
 /* Icônes dans les formulaires */
 .form-label .icon {
     margin-right: 0.25rem;
