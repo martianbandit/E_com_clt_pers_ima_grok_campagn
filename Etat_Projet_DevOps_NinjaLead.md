@@ -112,10 +112,10 @@
 - ❌ **Logs centralisés** avec rotation
 
 #### 3.1.2 CI/CD Pipeline
-- ❌ **GitHub Actions** pour déploiement automatique
-- ❌ **Tests automatisés** (unit + intégration)
-- ❌ **Linting & formatting** (black, flake8)
-- ❌ **Sécurité scanning** (bandit, safety)
+- ✅ **GitHub Actions** pour déploiement automatique
+- ✅ **Tests automatisés** (unit + intégration)
+- ✅ **Linting & formatting** (black, flake8)
+- ✅ **Sécurité scanning** (bandit, safety)
 
 #### 3.1.3 Base de Données
 - ✅ **Backups automatiques** avec retention (système complet implémenté)

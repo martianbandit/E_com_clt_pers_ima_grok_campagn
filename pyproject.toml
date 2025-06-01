@@ -7,7 +7,7 @@ name = "ninjaleads-ai"
 version = "1.0.0"
 description = "NinjaLead.ai - Plateforme de génération de leads et marketing avec IA"
 readme = "README.md"
-license = {file = "LICENSE"}
+license = {text = "MIT"}
 authors = [
     {name = "NinjaLead Team", email = "contact@ninjaleads.ai"},
 ]
