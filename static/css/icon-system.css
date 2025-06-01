@@ -1,0 +1,238 @@
+/* Système d'icônes SVG pour NinjaLead.ai */
+
+/* Classe de base pour les icônes */
+.icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    fill: currentColor;
+}
+
+/* Tailles d'icônes */
+.icon-xs { width: 12px; height: 12px; }
+.icon-sm { width: 16px; height: 16px; }
+.icon-md { width: 20px; height: 20px; }
+.icon-lg { width: 24px; height: 24px; }
+.icon-xl { width: 32px; height: 32px; }
+.icon-2xl { width: 48px; height: 48px; }
+
+/* Icônes avec couleurs spécifiques */
+.icon-primary { fill: #FF8C00; }
+.icon-success { fill: #28a745; }
+.icon-warning { fill: #ffc107; }
+.icon-danger { fill: #dc3545; }
+.icon-info { fill: #17a2b8; }
+.icon-light { fill: #f8f9fa; }
+.icon-dark { fill: #343a40; }
+.icon-white { fill: #ffffff; }
+
+/* Icônes dans les boutons */
+.btn .icon {
+    margin-right: 0.5rem;
+    vertical-align: -0.125em;
+}
+
+.btn .icon:last-child {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+/* Icônes dans la navigation */
+.nav-link .icon,
+.sidebar-link .icon {
+    margin-right: 0.75rem;
+    width: 18px;
+    height: 18px;
+}
+
+/* Icônes dans les cartes */
+.card-header .icon {
+    margin-right: 0.5rem;
+    width: 20px;
+    height: 20px;
+}
+
+/* Icônes dans les alertes */
+.alert .icon {
+    margin-right: 0.5rem;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+/* Animations pour les icônes */
+.icon-spin {
+    animation: icon-spin 1s linear infinite;
+}
+
+.icon-pulse {
+    animation: icon-pulse 2s ease-in-out infinite;
+}
+
+.icon-bounce {
+    animation: icon-bounce 1s ease-in-out infinite;
+}
+
+@keyframes icon-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes icon-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes icon-bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+/* Icônes interactives */
+.icon-interactive {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.icon-interactive:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+/* États des icônes */
+.icon-loading {
+    opacity: 0.6;
+    animation: icon-spin 1s linear infinite;
+}
+
+.icon-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Icônes avec fond circulaire */
+.icon-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: currentColor;
+    color: white;
+    padding: 0.5rem;
+}
+
+.icon-circle .icon {
+    fill: white;
+}
+
+/* Icônes avec badges */
+.icon-badge {
+    position: relative;
+    display: inline-block;
+}
+
+.icon-badge::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: #dc3545;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.icon-badge.badge-success::after { background: #28a745; }
+.icon-badge.badge-warning::after { background: #ffc107; }
+.icon-badge.badge-info::after { background: #17a2b8; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-link .icon,
+    .sidebar-link .icon {
+        width: 16px;
+        height: 16px;
+        margin-right: 0.5rem;
+    }
+    
+    .card-header .icon {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+/* Dark theme */
+[data-bs-theme="dark"] .icon-light {
+    fill: #343a40;
+}
+
+[data-bs-theme="dark"] .icon-dark {
+    fill: #f8f9fa;
+}
+
+/* Focus et accessibilité */
+.icon-interactive:focus {
+    outline: 2px solid #FF8C00;
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* Icônes dans les formulaires */
+.form-label .icon {
+    margin-right: 0.25rem;
+    width: 14px;
+    height: 14px;
+}
+
+.input-group-text .icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* Icônes dans les dropdowns */
+.dropdown-item .icon {
+    margin-right: 0.5rem;
+    width: 16px;
+    height: 16px;
+}
+
+/* Corrections spécifiques pour le feedback widget */
+.feedback-toggle .icon {
+    width: 28px;
+    height: 28px;
+    transition: transform 0.2s ease;
+}
+
+.feedback-toggle:hover .icon {
+    transform: scale(1.1);
+}
+
+/* Correction pour les images manquantes */
+img[src*="static/"] {
+    max-width: 100%;
+    height: auto;
+}
+
+img[alt="Feedback"], 
+img[alt="feedback"] {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* Fallback pour les images non trouvées */
+img[src]:not([src=""]):not([src*="data:"]) {
+    background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+    position: relative;
+}
+
+img[src]:not([src=""]):not([src*="data:"]):after {
+    content: "📷";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    opacity: 0.5;
+}

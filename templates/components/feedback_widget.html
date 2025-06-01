@@ -3,7 +3,7 @@
 <div id="feedbackWidget" class="feedback-widget">
     <!-- Bouton d'aide flottant -->
     <div class="feedback-toggle" onclick="toggleFeedbackPanel()">
-        <i class="fas fa-question-circle"></i>
+        <img src="{{ url_for('static', filename='images/megaphone-icon.svg') }}" alt="Feedback" class="feedback-icon">
         <span class="feedback-badge" id="helpBadge">?</span>
     </div>
 
@@ -135,6 +135,17 @@
 .feedback-toggle i {
     color: white;
     font-size: 24px;
+}
+
+.feedback-icon {
+    width: 28px;
+    height: 28px;
+    transition: transform 0.2s ease;
+    display: block;
+}
+
+.feedback-toggle:hover .feedback-icon {
+    transform: scale(1.1);
 }
 
 .feedback-badge {

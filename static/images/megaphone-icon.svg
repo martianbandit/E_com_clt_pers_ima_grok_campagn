@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32">
+  <defs>
+    <linearGradient id="megaphoneGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF8C00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6B00;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Megaphone body -->
+  <path d="M8 20 L35 15 L35 35 L8 30 Z" fill="url(#megaphoneGradient)" stroke="#333" stroke-width="2"/>
+  
+  <!-- Megaphone horn -->
+  <path d="M35 15 L55 8 L55 42 L35 35 Z" fill="#FFB347" stroke="#333" stroke-width="2"/>
+  
+  <!-- Handle -->
+  <rect x="6" y="25" width="8" height="10" rx="2" fill="#666" stroke="#333" stroke-width="1"/>
+  
+  <!-- Support -->
+  <circle cx="15" cy="32" r="3" fill="#999" stroke="#333" stroke-width="1"/>
+  
+  <!-- Sound waves -->
+  <path d="M55 20 Q65 20 65 25 Q65 30 55 30" fill="none" stroke="#FFD700" stroke-width="2" opacity="0.7"/>
+  <path d="M55 15 Q70 15 70 25 Q70 35 55 35" fill="none" stroke="#FFD700" stroke-width="2" opacity="0.5"/>
+  
+  <!-- Inner detail -->
+  <circle cx="45" cy="25" r="6" fill="#FF4500" opacity="0.6"/>
+</svg>
