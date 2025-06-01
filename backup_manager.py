@@ -7,12 +7,60 @@ import os
 import subprocess
 import logging
 import gzip
+import shlex
 from datetime import datetime, timedelta
 from pathlib import Path
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
+
+def validate_database_url(database_url):
+    """
+    Validates and sanitizes the database URL to prevent command injection
+    
+    Args:
+        database_url: The database URL to validate
+        
+    Returns:
+        str: Sanitized database URL or None if invalid
+    """
+    if not database_url:
+        return None
+        
+    try:
+        # Parse the URL to validate its structure
+        parsed = urlparse(database_url)
+        
+        # Ensure it's a PostgreSQL URL
+        if not parsed.scheme.startswith('postgres'):
+            logger.error("Invalid database URL scheme - must be postgresql://")
+            return None
+            
+        # Reconstruct URL to ensure it's properly formatted
+        # This removes any potential command injection attempts
+        if parsed.password:
+            auth = f"{parsed.username}:{parsed.password}"
+        else:
+            auth = parsed.username
+            
+        port_part = f":{parsed.port}" if parsed.port else ""
+        
+        sanitized_url = f"{parsed.scheme}://{auth}@{parsed.hostname}{port_part}{parsed.path}"
+        
+        # Additional validation - ensure no shell metacharacters
+        dangerous_chars = [';', '&', '|', '`', '$', '(', ')', '<', '>', '\n', '\r']
+        for char in dangerous_chars:
+            if char in sanitized_url:
+                logger.error(f"Dangerous character '{char}' found in database URL")
+                return None
+                
+        return sanitized_url
+        
+    except Exception as e:
+        logger.error(f"Error validating database URL: {str(e)}")
+        return None
 
 class BackupManager:
     """Gestionnaire des sauvegardes automatiques de la base de données"""
@@ -67,8 +115,9 @@ class BackupManager:
         """Crée une sauvegarde de la base de données"""
         try:
             database_url = os.environ.get("DATABASE_URL")
+            database_url = validate_database_url(database_url)
             if not database_url:
-                logger.error("DATABASE_URL not configured")
+                logger.error("DATABASE_URL not configured or invalid")
                 return False
             
             # Générer le nom du fichier de sauvegarde
@@ -79,10 +128,10 @@ class BackupManager:
             
             logger.info(f"Starting database backup to {backup_path}")
             
-            # Commande pg_dump
+            # Commande pg_dump avec paramètres sécurisés
             cmd = [
                 "pg_dump",
-                database_url,
+                shlex.quote(database_url),
                 "--no-password",
                 "--verbose",
                 "--clean",
@@ -175,8 +224,9 @@ class BackupManager:
                 return False
             
             database_url = os.environ.get("DATABASE_URL")
+            database_url = validate_database_url(database_url)
             if not database_url:
-                logger.error("DATABASE_URL not configured")
+                logger.error("DATABASE_URL not configured or invalid")
                 return False
             
             # Décompresser temporairement
@@ -188,10 +238,10 @@ class BackupManager:
             
             logger.info(f"Starting database restore from {backup_filename}")
             
-            # Commande psql pour restaurer
+            # Commande psql pour restaurer avec paramètres sécurisés
             cmd = [
                 "psql",
-                database_url,
+                shlex.quote(database_url),
                 "--quiet",
                 "-f", str(temp_sql_path)
             ]
