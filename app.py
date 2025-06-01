@@ -78,7 +78,7 @@ db = SQLAlchemy(model_class=Base)
 # Initialize Sentry for monitoring
 def init_sentry():
     """Initialize Sentry monitoring if DSN is available"""
-    sentry_dsn = os.environ.get("SENTRY_DSN")
+    sentry_dsn = os.environ.get("SENTRY_DSN", "https://350994d4ed87e5e65b314481f8257c07@o4509423969107968.ingest.us.sentry.io/4509424027303936")
     
     if sentry_dsn:
         try:
