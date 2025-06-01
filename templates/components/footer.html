@@ -115,6 +115,13 @@
                             <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Programme de tokens') }}
                         </a>
                     </li>
+                    <li class="mb-2">
+                        <button id="footer-feedback-btn" class="btn btn-link footer-link p-0 text-start" type="button">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="me-2">
+                                <use href="{{ url_for('static', filename='images/ninja-icons.svg') }}#ninja-feedback"></use>
+                            </svg>{{ _('Signaler un problème') }}
+                        </button>
+                    </li>
                 </ul>
                 
                 <!-- Réseaux sociaux -->
