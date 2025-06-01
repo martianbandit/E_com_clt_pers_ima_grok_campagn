@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Politique de Confidentialité - NinjaLead.ai{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">Politique de Confidentialité</h1>
+            <p class="text-muted">Dernière mise à jour : {{ moment().format('DD/MM/YYYY') }}</p>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2>1. Responsable du traitement</h2>
+                    <p><strong>NinjaLead.ai</strong> est responsable du traitement de vos données personnelles.</p>
+                    <p><strong>Contact DPO :</strong> dpo@ninjaleads.ai</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2>2. Données collectées</h2>
+                    <h3>2.1 Données d'identification</h3>
+                    <ul>
+                        <li>Nom d'utilisateur</li>
+                        <li>Adresse email</li>
+                        <li>Mot de passe (chiffré)</li>
+                    </ul>
+
+                    <h3>2.2 Données d'usage</h3>
+                    <ul>
+                        <li>Campagnes marketing créées</li>
+                        <li>Personas clients générés</li>
+                        <li>Historique d'utilisation de l'IA</li>
+                        <li>Préférences utilisateur</li>
+                    </ul>
+
+                    <h3>2.3 Données techniques</h3>
+                    <ul>
+                        <li>Adresse IP</li>
+                        <li>User-Agent (navigateur)</li>
+                        <li>Logs d'activité</li>
+                        <li>Données de performance</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2>3. Finalités et bases légales</h2>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Finalité</th>
+                                    <th>Base légale</th>
+                                    <th>Données traitées</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for purpose in processing_purposes %}
+                                <tr>
+                                    <td>{{ purpose.description }}</td>
+                                    <td><span class="badge bg-secondary">{{ purpose.legal_basis }}</span></td>
+                                    <td>
+                                        {% if purpose.purpose == 'account_management' %}
+                                            Email, nom d'utilisateur, préférences
+                                        {% elif purpose.purpose == 'service_provision' %}
+                                            Campagnes, personas, historique IA
+                                        {% elif purpose.purpose == 'marketing_communication' %}
+                                            Email, préférences marketing
+                                        {% elif purpose.purpose == 'analytics' %}
+                                            Données d'usage anonymisées
+                                        {% elif purpose.purpose == 'security' %}
+                                            Logs de sécurité, IP
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2>4. Partage avec des tiers</h2>
+                    {% for third_party in third_parties %}
+                    <div class="border p-3 mb-3 rounded">
+                        <h5>{{ third_party.third_party }}</h5>
+                        <p><strong>Finalité :</strong> {{ third_party.purpose }}</p>
+                        <p><strong>Données partagées :</strong> {{ third_party.data_shared | join(', ') }}</p>
+                        <p><strong>Base légale :</strong> {{ third_party.legal_basis }}</p>
+                        <p><strong>Politique de confidentialité :</strong> 
+                            <a href="{{ third_party.privacy_policy }}" target="_blank">{{ third_party.privacy_policy }}</a>
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2>5. Durée de conservation</h2>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Catégorie de données</th>
+                                    <th>Durée de conservation</th>
+                                    <th>Base légale</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for retention in retention_info %}
+                                <tr>
+                                    <td>{{ retention.description }}</td>
+                                    <td>
+                                        {% set years = (retention.retention_period_days / 365) | round %}
+                                        {% if years >= 1 %}
+                                            {{ years }} an{% if years > 1 %}s{% endif %}
+                                        {% else %}
+                                            {{ retention.retention_period_days }} jours
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ retention.legal_basis }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2>6. Vos droits</h2>
+                    <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+                    
+                    <h3>6.1 Droit d'accès (Article 15)</h3>
+                    <p>Vous pouvez demander l'accès à vos données personnelles et obtenir une copie de celles-ci.</p>
+                    
+                    <h3>6.2 Droit de rectification (Article 16)</h3>
+                    <p>Vous pouvez demander la correction de données inexactes ou incomplètes.</p>
+                    
+                    <h3>6.3 Droit d'effacement (Article 17)</h3>
+                    <p>Vous pouvez demander la suppression de vos données dans certaines circonstances.</p>
+                    
+                    <h3>6.4 Droit de portabilité (Article 20)</h3>
+                    <p>Vous pouvez récupérer vos données dans un format structuré et lisible par machine.</p>
+                    
+                    <h3>6.5 Droit d'opposition (Article 21)</h3>
+                    <p>Vous pouvez vous opposer au traitement de vos données pour des raisons légitimes.</p>
+                    
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle"></i>
+                        Pour exercer vos droits, rendez-vous sur votre 
+                        <a href="{{ url_for('gdpr.privacy_dashboard') }}">tableau de bord confidentialité</a> 
+                        ou contactez notre DPO à l'adresse dpo@ninjaleads.ai
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2>7. Sécurité des données</h2>
+                    <p>Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos données :</p>
+                    <ul>
+                        <li>Chiffrement des mots de passe</li>
+                        <li>Connexions HTTPS sécurisées</li>
+                        <li>Surveillance de sécurité en temps réel</li>
+                        <li>Accès restreint aux données</li>
+                        <li>Logs d'audit complets</li>
+                        <li>Sauvegarde régulière des données</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2>8. Transferts internationaux</h2>
+                    <p>Vos données peuvent être transférées vers des pays tiers dans le cadre de l'utilisation de services d'intelligence artificielle (OpenAI, xAI). Ces transferts sont encadrés par des garanties appropriées conformément au RGPD.</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2>9. Contact et réclamations</h2>
+                    <p><strong>Délégué à la Protection des Données (DPO) :</strong></p>
+                    <p>Email : dpo@ninjaleads.ai</p>
+                    
+                    <p><strong>Autorité de contrôle :</strong></p>
+                    <p>Vous avez le droit d'introduire une réclamation auprès de la CNIL (Commission Nationale de l'Informatique et des Libertés) ou de votre autorité de protection des données locale.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h2>10. Modifications</h2>
+                    <p>Cette politique de confidentialité peut être mise à jour périodiquement. Nous vous informerons de tout changement significatif par email ou via notre plateforme.</p>
+                    <p><strong>Version :</strong> 1.0</p>
+                    <p><strong>Date d'entrée en vigueur :</strong> {{ moment().format('DD/MM/YYYY') }}</p>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{{ url_for('gdpr.privacy_dashboard') }}" class="btn btn-primary">
+                    Gérer mes données personnelles
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

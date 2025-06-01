@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de Bord Confidentialité - NinjaLead.ai{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">🔒 Confidentialité et Données Personnelles</h1>
+                <a href="{{ url_for('gdpr.download_my_data') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-download"></i> Télécharger mes données
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Consentements -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">🎯 Gestion des Consentements</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Gérez vos préférences de consentement pour le traitement de vos données.</p>
+                    
+                    <form method="POST" action="{{ url_for('gdpr.update_consent') }}">
+                        <!-- Consentement Marketing -->
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" name="consent" value="true" 
+                                   id="marketing_consent" 
+                                   {% if consents.get('marketing_communication', False) %}checked{% endif %}
+                                   onchange="this.form.submit()">
+                            <input type="hidden" name="purpose" value="marketing_communication">
+                            <label class="form-check-label" for="marketing_consent">
+                                <strong>Communications Marketing</strong><br>
+                                <small class="text-muted">Recevoir des newsletters et offres promotionnelles</small>
+                            </label>
+                        </div>
+                    </form>
+
+                    <form method="POST" action="{{ url_for('gdpr.update_consent') }}">
+                        <!-- Consentement Analytics -->
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" name="consent" value="true" 
+                                   id="analytics_consent"
+                                   {% if consents.get('analytics', False) %}checked{% endif %}
+                                   onchange="this.form.submit()">
+                            <input type="hidden" name="purpose" value="analytics">
+                            <label class="form-check-label" for="analytics_consent">
+                                <strong>Analyse d'Usage</strong><br>
+                                <small class="text-muted">Améliorer le service via l'analyse des données d'usage</small>
+                            </label>
+                        </div>
+                    </form>
+
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Information :</strong> Les données nécessaires au fonctionnement du service 
+                        (compte utilisateur, campagnes) sont traitées sur base contractuelle.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mes Droits GDPR -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">⚖️ Mes Droits GDPR</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Exercez vos droits sur vos données personnelles.</p>
+                    
+                    <!-- Droit d'accès -->
+                    <div class="mb-3">
+                        <h6>Droit d'accès (Article 15)</h6>
+                        <p class="small text-muted">Obtenir une copie de toutes vos données personnelles</p>
+                        <form method="POST" action="{{ url_for('gdpr.request_data_access') }}" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Demander l'accès</button>
+                        </form>
+                    </div>
+
+                    <!-- Droit de portabilité -->
+                    <div class="mb-3">
+                        <h6>Droit de portabilité (Article 20)</h6>
+                        <p class="small text-muted">Récupérer vos données dans un format structuré</p>
+                        <form method="POST" action="{{ url_for('gdpr.request_data_portability') }}" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-info">Demander la portabilité</button>
+                        </form>
+                    </div>
+
+                    <!-- Droit d'effacement -->
+                    <div class="mb-3">
+                        <h6>Droit d'effacement (Article 17)</h6>
+                        <p class="small text-muted">Demander la suppression de vos données</p>
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#erasureModal">
+                            Demander l'effacement
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informations sur le traitement -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">📋 Finalités de Traitement</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for purpose in processing_purposes %}
+                        <div class="col-md-6 mb-3">
+                            <div class="border p-3 rounded">
+                                <h6>{{ purpose.purpose.replace('_', ' ').title() }}</h6>
+                                <p class="small text-muted mb-1">{{ purpose.description }}</p>
+                                <span class="badge bg-secondary">{{ purpose.legal_basis }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historique des demandes -->
+    {% if gdpr_requests %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">📝 Historique des Demandes GDPR</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Statut</th>
+                                    <th>Date de demande</th>
+                                    <th>Date de traitement</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for req in gdpr_requests %}
+                                <tr>
+                                    <td>{{ req.request_type.title() }}</td>
+                                    <td>
+                                        {% if req.status == 'pending' %}
+                                            <span class="badge bg-warning">En attente</span>
+                                        {% elif req.status == 'processing' %}
+                                            <span class="badge bg-info">En cours</span>
+                                        {% elif req.status == 'completed' %}
+                                            <span class="badge bg-success">Terminé</span>
+                                        {% elif req.status == 'rejected' %}
+                                            <span class="badge bg-danger">Rejeté</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ req.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                    <td>
+                                        {% if req.processed_at %}
+                                            {{ req.processed_at.strftime('%d/%m/%Y %H:%M') }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Modal d'effacement -->
+<div class="modal fade" id="erasureModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Demande d'effacement de données</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('gdpr.request_data_erasure') }}">
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Attention :</strong> Cette action peut être irréversible. Certaines données 
+                        peuvent être conservées pour des raisons légales.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Motif de la demande</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" 
+                                  placeholder="Expliquez pourquoi vous souhaitez effacer vos données..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Types de données à effacer (optionnel)</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="specific_data" value="marketing_data" id="marketing_data">
+                            <label class="form-check-label" for="marketing_data">Données marketing</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="specific_data" value="analytics_data" id="analytics_data">
+                            <label class="form-check-label" for="analytics_data">Données d'analyse</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="specific_data" value="user_content" id="user_content">
+                            <label class="form-check-label" for="user_content">Contenu utilisateur (campagnes, clients)</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Soumettre la demande</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
