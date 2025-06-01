@@ -52,7 +52,7 @@
                                                 <img src="{{ product.image_url }}" alt="{{ product.name }}" class="me-2" style="width: 40px; height: 40px; object-fit: cover;">
                                                 {% else %}
                                                 <div class="bg-light d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
-                                                    <i class="fas fa-box text-muted"></i>
+                                                    <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 20px; height: 20px;" class="text-muted">
                                                 </div>
                                                 {% endif %}
                                                 <div>
@@ -69,18 +69,18 @@
                                         <td>
                                             <div class="btn-group btn-group-sm">
                                                 <a href="{{ url_for('view_product', product_id=product.id) }}" class="btn btn-outline-primary">
-                                                    <i class="fas fa-eye"></i>
+                                                    <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 14px; height: 14px;">
                                                 </a>
                                                 <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline-secondary">
-                                                    <i class="fas fa-edit"></i>
+                                                    <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 14px; height: 14px;">
                                                 </a>
                                                 <a href="{{ url_for('shopify_export', product_id=product.id) }}" class="btn btn-outline-success">
-                                                    <i class="fas fa-file-export"></i>
+                                                    <img src="{{ url_for('static', filename='images/ninja-megaphone.png') }}" alt="" style="width: 14px; height: 14px;">
                                                 </a>
                                                 <button type="button" class="btn btn-outline-danger delete-product-btn" 
                                                         data-product-id="{{ product.id }}" 
                                                         data-product-name="{{ product.name }}">
-                                                    <i class="fas fa-trash-alt"></i>
+                                                    <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 14px; height: 14px; filter: hue-rotate(0deg) saturate(150%) brightness(80%);">
                                                 </button>
                                             </div>
                                         </td>
@@ -90,7 +90,7 @@
                                     <tr>
                                         <td colspan="5" class="text-center py-4">
                                             <div class="py-3">
-                                                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                                <img src="{{ url_for('static', filename='images/ninja-meditation.png') }}" alt="" style="width: 48px; height: 48px;" class="text-muted mb-3">
                                                 <p class="mb-1">{{ _('No products available') }}</p>
                                                 <p class="text-muted small mb-0">{{ _('Create your first product or import from AliExpress') }}</p>
                                             </div>

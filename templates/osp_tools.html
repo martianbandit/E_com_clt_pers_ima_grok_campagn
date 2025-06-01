@@ -60,7 +60,7 @@
                     </div>
                     <div class="mt-3">
                         <a href="#" class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-list me-2"></i>{{ _("Voir toutes les analyses") }}
+                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _("Voir toutes les analyses") }}
                         </a>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                 <div class="card-body">
                     <p>{{ _("Générez une carte de valeur complète pour votre produit selon la méthodologie OSP, incluant des phrases d'accroche, des déclarations de positionnement et des propositions de valeur percutantes.") }}</p>
                     <a href="{{ url_for('value_map_generator') }}" class="btn btn-primary">
-                        <i class="fas fa-map me-2"></i>{{ _("Créer une Carte de Valeur") }}
+                        <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _("Créer une Carte de Valeur") }}
                     </a>
                 </div>
             </div>
@@ -91,7 +91,7 @@
                 <div class="card-body">
                     <p>{{ _("Analysez votre contenu marketing selon les directives OSP et obtenez des recommandations précises pour l'améliorer, avec un focus sur la clarté, la structure et l'efficacité.") }}</p>
                     <a href="{{ url_for('content_analyzer') }}" class="btn btn-success">
-                        <i class="fas fa-search me-2"></i>{{ _("Analyser du Contenu") }}
+                        <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _("Analyser du Contenu") }}
                     </a>
                 </div>
             </div>
@@ -107,7 +107,7 @@
                 <div class="card-body">
                     <p>{{ _("Optimisez votre contenu pour les moteurs de recherche avec des métadonnées, des balises structurées et des recommandations de géo-localisation selon les meilleures pratiques OSP.") }}</p>
                     <a href="{{ url_for('seo_optimizer') }}" class="btn btn-info">
-                        <i class="fas fa-search-plus me-2"></i>{{ _("Optimiser pour le SEO") }}
+                        <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _("Optimiser pour le SEO") }}
                     </a>
                 </div>
             </div>
@@ -120,7 +120,7 @@
                 <div class="card-body">
                     <p>{{ _("Accédez à la documentation complète des outils OSP Marketing et apprenez à appliquer leurs méthodologies dans votre stratégie marketing.") }}</p>
                     <a href="#" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#resourcesModal">
-                        <i class="fas fa-book me-2"></i>{{ _("Consulter les Ressources") }}
+                        <img src="{{ url_for('static', filename='images/ninja-meditation.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _("Consulter les Ressources") }}
                     </a>
                 </div>
             </div>
