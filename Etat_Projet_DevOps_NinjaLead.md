@@ -176,10 +176,10 @@
 - [x] **Jour 3-4** : Health checks + status page
 - [x] **Jour 5** : Backup automatique BDD
 
-#### Semaine 2
-- [ ] **Jour 1-2** : Rate limiting implémentation
-- [ ] **Jour 3-4** : Tests automatisés critiques
-- [ ] **Jour 5** : Documentation technique
+#### Semaine 2 ✅ TERMINÉE
+- [x] **Jour 1-2** : Rate limiting implémentation (Flask-Limiter, limites par endpoint)
+- [x] **Jour 3-4** : Tests automatisés critiques (pytest, sécurité, intégration)
+- [x] **Jour 5-7** : Pipeline CI/CD complet (GitHub Actions, Docker, sécurité)
 
 ### Sprint 2 (Semaines 3-4) - HAUTE PRIORITÉ
 **Objectif : CI/CD et Sécurité**
