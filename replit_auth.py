@@ -205,18 +205,10 @@ def logged_in(blueprint, token):
         issuer_url = os.environ.get('ISSUER_URL', "https://replit.com/oidc")
         jwks_uri = f"{issuer_url}/.well-known/openid-configuration"
         try:
-            # En production, cette URL devrait être mise en cache
-            import requests
-            oidc_config = requests.get(jwks_uri).json()
-            jwks_uri = oidc_config.get('jwks_uri')
-            # Utilisez PyJWK pour récupérer les clés et vérifier
-            # Pour des raisons de sécurité, décoder sans vérification de signature pour l'instant
-            # En production, implémenter une vérification appropriée des clés JWT
-            user_claims = jwt.decode(
-                token['id_token'],
-                options={"verify_signature": False},
-                algorithms=['RS256']
-            )
+            # Bloquer la connexion si aucune clé de vérification n'est disponible
+            print("ERREUR DE SÉCURITÉ: Aucune clé JWT disponible pour vérifier la signature")
+            flash("Configuration d'authentification incomplète. Connexion refusée pour des raisons de sécurité.", "error")
+            return redirect(url_for('replit_auth.error'))
         except Exception as e:
             # Sécurité: Bloquer la connexion si la vérification JWT échoue
             print(f"ERREUR DE SÉCURITÉ: Impossible de vérifier la signature JWT: {e}")
