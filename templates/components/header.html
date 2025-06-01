@@ -4,7 +4,7 @@
         <a class="navbar-brand d-flex align-items-center" href="/">
             <img src="{{ url_for('static', filename='images/ninja-logo-transparent.png') }}" alt="NinjaLead.ai" class="ninjalead-logo me-2" style="width: 48px; height: 48px;">
             <div class="brand-info">
-                <span class="brand-text-complete">NinjaLeads<span class="brand-ai-orange">.ai</span></span>
+                <span class="brand-text-complete">NinjaLeads<span style="color: #FF6B00 !important; background: none !important; -webkit-background-clip: initial !important; -webkit-text-fill-color: #FF6B00 !important; text-shadow: 0 0 8px rgba(255, 107, 0, 0.8) !important; filter: brightness(1.3) saturate(1.5) !important;">.ai</span></span>
                 <div class="brand-slogan">"Le marketing, c'est facile... quand on a un ninja dans sa poche"</div>
             </div>
         </a>
@@ -217,17 +217,26 @@
     font-size: 1.5rem;
     color: #333;
     letter-spacing: -0.5px;
-    filter: drop-shadow(0 0 15px rgba(255, 107, 0, 0.6));
+    filter: 
+        drop-shadow(0 0 8px rgba(255, 107, 0, 0.8))
+        drop-shadow(0 0 15px rgba(255, 107, 0, 0.6))
+        drop-shadow(0 0 25px rgba(255, 107, 0, 0.4));
 }
 
 [data-bs-theme="dark"] .brand-text-complete {
     color: #fff;
-    filter: drop-shadow(0 0 20px rgba(255, 107, 0, 0.8));
+    filter: 
+        drop-shadow(0 0 10px rgba(255, 107, 0, 1))
+        drop-shadow(0 0 20px rgba(255, 107, 0, 0.8))
+        drop-shadow(0 0 30px rgba(255, 107, 0, 0.6));
 }
 
 [data-bs-theme="light"] .brand-text-complete {
     color: #333;
-    filter: drop-shadow(0 0 12px rgba(255, 107, 0, 0.5));
+    filter: 
+        drop-shadow(0 0 6px rgba(255, 107, 0, 0.7))
+        drop-shadow(0 0 12px rgba(255, 107, 0, 0.5))
+        drop-shadow(0 0 20px rgba(255, 107, 0, 0.3));
 }
 
 .brand-info {

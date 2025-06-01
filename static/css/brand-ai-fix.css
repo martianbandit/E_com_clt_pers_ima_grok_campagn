@@ -1,36 +1,36 @@
 /* Fix spécifique pour le .ai orange */
 .brand-ai-orange {
     display: inline !important;
-    color: #FF8C00 !important;
+    color: #FF6B00 !important;
     background: none !important;
     -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: #FF8C00 !important;
+    -webkit-text-fill-color: #FF6B00 !important;
     background-clip: initial !important;
     font-family: inherit !important;
     font-weight: 900 !important;
     font-size: inherit !important;
     text-shadow: 
-        0 0 3px rgba(255, 140, 0, 0.9),
-        0 0 6px rgba(255, 140, 0, 0.7),
-        0 0 10px rgba(255, 140, 0, 0.5) !important;
-    filter: brightness(1.2) contrast(1.1) !important;
+        0 0 5px rgba(255, 107, 0, 1),
+        0 0 10px rgba(255, 107, 0, 0.8),
+        0 0 15px rgba(255, 107, 0, 0.6) !important;
+    filter: brightness(1.2) contrast(1.2) saturate(1.3) !important;
 }
 
 [data-bs-theme="dark"] .brand-ai-orange {
-    color: #FFA500 !important;
-    -webkit-text-fill-color: #FFA500 !important;
+    color: #FF6B00 !important;
+    -webkit-text-fill-color: #FF6B00 !important;
     text-shadow: 
-        0 0 5px rgba(255, 165, 0, 1),
-        0 0 10px rgba(255, 140, 0, 0.8),
-        0 0 15px rgba(255, 140, 0, 0.6) !important;
-    filter: brightness(1.3) contrast(1.2) !important;
+        0 0 8px rgba(255, 107, 0, 1),
+        0 0 15px rgba(255, 107, 0, 0.9),
+        0 0 20px rgba(255, 107, 0, 0.7) !important;
+    filter: brightness(1.4) contrast(1.3) saturate(1.5) !important;
 }
 
 [data-bs-theme="light"] .brand-ai-orange {
-    color: #FF8C00 !important;
-    -webkit-text-fill-color: #FF8C00 !important;
+    color: #FF6B00 !important;
+    -webkit-text-fill-color: #FF6B00 !important;
     text-shadow: 
-        0 0 2px rgba(255, 140, 0, 0.9),
-        0 0 5px rgba(255, 140, 0, 0.7) !important;
-    filter: brightness(1.1) contrast(1.1) !important;
+        0 0 3px rgba(255, 107, 0, 1),
+        0 0 8px rgba(255, 107, 0, 0.8) !important;
+    filter: brightness(1.1) contrast(1.1) saturate(1.2) !important;
 }
