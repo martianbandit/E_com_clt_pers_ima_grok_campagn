@@ -4052,3 +4052,9 @@ try:
     logger.info("Backup system initialized successfully")
 except Exception as e:
     logger.error(f"Failed to initialize backup system: {str(e)}")
+
+# Route de test Sentry pour vérifier l'installation
+@app.route("/sentry-debug")
+def trigger_error():
+    """Route de test pour vérifier que Sentry capture les erreurs"""
+    division_by_zero = 1 / 0  # Déclenche intentionnellement une erreur
