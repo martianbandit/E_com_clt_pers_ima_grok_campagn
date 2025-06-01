@@ -4235,6 +4235,92 @@ def submit_user_feedback():
         logger.error(f"Error processing feedback: {e}")
         return jsonify({'success': False, 'error': 'Erreur interne du serveur'}), 500
 
+# API endpoint pour le système de feedback ninja
+@app.route('/api/feedback', methods=['POST'])
+def handle_ninja_feedback():
+    """Traite les soumissions du formulaire de feedback ninja personnalisé"""
+    try:
+        data = request.get_json()
+        
+        # Validation des données requises
+        required_fields = ['type', 'name', 'email', 'message']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({
+                    'success': False, 
+                    'error': f'Le champ {field} est requis'
+                }), 400
+        
+        # Validation de l'email
+        import re
+        email_pattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        if not re.match(email_pattern, data['email']):
+            return jsonify({
+                'success': False, 
+                'error': 'Format d\'email invalide'
+            }), 400
+        
+        # Structurer les données pour Sentry
+        sentry_data = {
+            'level': 'info' if data['type'] == 'suggestion' else 'error',
+            'message': f"[{data['type'].upper()}] {data['message'][:100]}...",
+            'tags': {
+                'feedback_type': data['type'],
+                'source': 'ninja_feedback_form'
+            },
+            'user': {
+                'email': data['email'],
+                'username': data['name']
+            },
+            'extra': {
+                'feedback_type': data['type'],
+                'full_message': data['message'],
+                'system_info': data.get('systemInfo', {}),
+                'timestamp': datetime.datetime.utcnow().isoformat()
+            }
+        }
+        
+        # Envoyer vers Sentry si configuré
+        try:
+            import sentry_sdk
+            sentry_sdk.capture_message(
+                sentry_data['message'],
+                level=sentry_data['level'],
+                tags=sentry_data['tags'],
+                user=sentry_data['user'],
+                extra=sentry_data['extra']
+            )
+            logger.info(f"Feedback envoyé vers Sentry: {data['type']} de {data['name']}")
+        except Exception as sentry_error:
+            logger.warning(f"Erreur lors de l'envoi vers Sentry: {sentry_error}")
+        
+        # Enregistrer localement dans les logs
+        feedback_log = {
+            'timestamp': datetime.datetime.utcnow().isoformat(),
+            'type': data['type'],
+            'name': data['name'],
+            'email': data['email'],
+            'message': data['message'],
+            'system_info': data.get('systemInfo', {}),
+            'user_id': current_user.id if current_user.is_authenticated else None
+        }
+        
+        logger.info(f"Feedback reçu: {json.dumps(feedback_log, ensure_ascii=False)}")
+        
+        # Réponse de succès
+        return jsonify({
+            'success': True,
+            'message': 'Votre feedback a été envoyé avec succès. Notre équipe ninja l\'examine.',
+            'feedback_id': str(uuid.uuid4())
+        })
+        
+    except Exception as e:
+        logger.error(f"Erreur lors du traitement du feedback: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Une erreur interne est survenue. Veuillez réessayer.'
+        }), 500
+
 # Route de test Sentry pour vérifier l'installation
 @app.route("/sentry-debug")
 def trigger_error():

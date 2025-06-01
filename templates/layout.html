@@ -106,6 +106,10 @@
     {% from 'components/feedback_widget.html' import feedback_widget %}
     {{ feedback_widget() }}
 
+    <!-- Modal de feedback ninja personnalisé -->
+    {% from 'components/ninja_feedback_modal.html' import ninja_feedback_modal %}
+    {{ ninja_feedback_modal() }}
+
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -120,6 +124,7 @@
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/loading-simple.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ninja-feedback.js') }}"></script>
     
     <!-- Include Theme Switcher Script -->
     {% from 'components/theme_switcher.html' import theme_switcher_script %}

@@ -267,4 +267,67 @@
           fill="none" stroke="#ff6b35" stroke-width="1" opacity="0.5"/>
   </symbol>
 
+  <!-- Chat Ninja -->
+  <symbol id="ninja-chat" viewBox="0 0 24 24">
+    <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 3.04 1.05 4.35L2 22l5.65-1.05C9.96 21.64 11.46 22 13 22h7c1.1 0 2-.9 2-2V12c0-5.52-4.48-10-10-10z" 
+          fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <circle cx="8" cy="12" r="1.5" fill="#ff6b35"/>
+    <circle cx="12" cy="12" r="1.5" fill="#ff6b35"/>
+    <circle cx="16" cy="12" r="1.5" fill="#ff6b35"/>
+  </symbol>
+
+  <!-- Alert Ninja -->
+  <symbol id="ninja-alert" viewBox="0 0 24 24">
+    <path d="M12 2L1 21h22L12 2z" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <path d="M12 8v5" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="12" cy="17" r="1" fill="#ff6b35"/>
+  </symbol>
+
+  <!-- Idea Ninja -->
+  <symbol id="ninja-idea" viewBox="0 0 24 24">
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7z" 
+          fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <path d="M9 21v-1h6v1c0 .55-.45 1-1 1h-4c-.55 0-1-.45-1-1z" fill="#ff6b35"/>
+    <path d="M12 6v6" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+
+  <!-- Send Ninja -->
+  <symbol id="ninja-send" viewBox="0 0 24 24">
+    <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <path d="M7 12l15-2" stroke="#ff6b35" stroke-width="1" opacity="0.7"/>
+  </symbol>
+
+  <!-- Close Ninja -->
+  <symbol id="ninja-close" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <path d="M15 9l-6 6M9 9l6 6" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+
+  <!-- Loading Ninja -->
+  <symbol id="ninja-loading" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" fill="none" stroke="#ff6b35" stroke-width="4" opacity="0.2"/>
+    <path d="M12 2a10 10 0 0 1 10 10" fill="none" stroke="#ff6b35" stroke-width="4" stroke-linecap="round">
+      <animateTransform attributeName="transform" type="rotate" values="0 12 12;360 12 12" dur="1s" repeatCount="indefinite"/>
+    </path>
+  </symbol>
+
+  <!-- Success Ninja -->
+  <symbol id="ninja-success" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <path d="M9 12l2 2 4-4" stroke="#ff6b35" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
+  <!-- Info Ninja -->
+  <symbol id="ninja-info" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <path d="M12 8v8M12 6v.01" stroke="#ff6b35" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+
+  <!-- Image Ninja -->
+  <symbol id="ninja-image" viewBox="0 0 24 24">
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="url(#ninjaGradient)" filter="url(#ninjaShadow)"/>
+    <circle cx="8.5" cy="8.5" r="1.5" fill="#ff6b35"/>
+    <path d="M21 15l-5-5L5 21" stroke="#ff6b35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+
 </svg>
