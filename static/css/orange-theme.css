@@ -1,0 +1,78 @@
+/* Palette de couleurs orange pour NinjaLeads.ai */
+
+.bg-orange {
+    background-color: #FF8C00 !important;
+}
+
+.bg-gradient-orange {
+    background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 50%, #E67E00 100%) !important;
+}
+
+.btn-orange {
+    background-color: #FF8C00;
+    border-color: #FF8C00;
+    color: white;
+}
+
+.btn-orange:hover {
+    background-color: #E67E00;
+    border-color: #E67E00;
+    color: white;
+}
+
+.btn-outline-orange {
+    color: #FF8C00;
+    border-color: #FF8C00;
+    background-color: transparent;
+}
+
+.btn-outline-orange:hover {
+    background-color: #FF8C00;
+    border-color: #FF8C00;
+    color: white;
+}
+
+.text-orange {
+    color: #FF8C00 !important;
+}
+
+/* Remplacer toutes les instances de bleu par orange */
+.bg-primary {
+    background-color: #FF8C00 !important;
+}
+
+.btn-primary {
+    background-color: #FF8C00 !important;
+    border-color: #FF8C00 !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #E67E00 !important;
+    border-color: #E67E00 !important;
+}
+
+.btn-outline-primary {
+    color: #FF8C00 !important;
+    border-color: #FF8C00 !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    background-color: #FF8C00 !important;
+    border-color: #FF8C00 !important;
+    color: white !important;
+}
+
+.text-primary {
+    color: #FF8C00 !important;
+}
+
+.border-primary {
+    border-color: #FF8C00 !important;
+}
+
+/* Gradients */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #FF8C00 0%, #FF6B00 50%, #E67E00 100%) !important;
+}
