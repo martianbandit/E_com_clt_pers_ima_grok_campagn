@@ -1,42 +1,201 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
-name = "repl-nix-workspace"
-version = "0.1.0"
-description = "Add your description here"
+name = "ninjaleads-ai"
+version = "1.0.0"
+description = "NinjaLead.ai - Plateforme de génération de leads et marketing avec IA"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "NinjaLead Team", email = "contact@ninjaleads.ai"},
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Framework :: Flask",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 requires-python = ">=3.11"
 dependencies = [
-    "email-validator>=2.2.0",
-    "flask-babel>=4.0.0",
-    "flask>=3.1.0",
-    "flask-sqlalchemy>=3.1.1",
-    "gunicorn>=23.0.0",
-    "openai>=1.76.2",
-    "psycopg2-binary>=2.9.10",
-    "pydantic>=2.11.4",
-    "python-dotenv>=1.1.0",
-    "trafilatura>=2.0.0",
-    "werkzeug>=3.1.3",
-    "flask-dance>=7.1.0",
+    "flask>=2.3.3",
+    "flask-sqlalchemy>=3.0.5",
     "flask-login>=0.6.3",
-    "oauthlib>=3.2.2",
-    "pyjwt>=2.10.1",
-    "markupsafe>=3.0.2",
-    "sqlalchemy>=2.0.40",
-    "flask-wtf>=1.2.2",
-    "requests>=2.32.3",
-    "wtforms>=3.2.1",
-    "pytrends>=4.9.0",
-    "stripe>=12.1.0",
-    "sentry-sdk[flask]>=2.29.1",
-    "redis>=6.2.0",
-    "apscheduler>=3.11.0",
-    "psutil>=7.0.0",
-    "pytest>=8.3.5",
-    "pytest-cov>=6.1.1",
-    "pytest-flask>=1.3.0",
-    "bandit>=1.8.3",
-    "black>=25.1.0",
-    "flake8>=7.2.0",
-    "safety>=3.2.4",
-    "flask-limiter>=3.12",
+    "flask-wtf>=1.1.1",
+    "flask-babel>=4.0.0",
+    "flask-dance>=7.0.0",
+    "flask-limiter>=3.5.0",
     "flask-talisman>=1.1.0",
+    "gunicorn>=21.2.0",
+    "psycopg2-binary>=2.9.7",
+    "redis>=5.0.0",
+    "sqlalchemy>=2.0.23",
+    "werkzeug>=2.3.7",
+    "wtforms>=3.0.1",
+    "markupsafe>=2.1.3",
+    "openai>=1.3.0",
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+    "sentry-sdk[flask]>=1.38.0",
+    "stripe>=7.8.0",
+    "trafilatura>=1.6.4",
+    "pytrends>=4.9.2",
+    "pydantic>=2.5.0",
+    "pyjwt>=2.8.0",
+    "email-validator>=2.1.0",
+    "apscheduler>=3.10.4",
+    "oauthlib>=3.2.2",
+    "psutil>=5.9.6",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "pytest-cov>=4.1.0",
+    "pytest-flask>=1.3.0",
+    "pytest-mock>=3.12.0",
+    "pytest-benchmark>=4.0.0",
+    "black>=23.11.0",
+    "flake8>=6.1.0",
+    "isort>=5.12.0",
+    "mypy>=1.7.1",
+    "bandit>=1.7.5",
+    "safety>=2.3.5",
+    "coverage>=7.3.2",
+    "locust>=2.17.0",
+]
+security = [
+    "bandit[toml]>=1.7.5",
+    "safety>=2.3.5",
+    "semgrep>=1.45.0",
+]
+monitoring = [
+    "sentry-sdk[flask]>=1.38.0",
+    "prometheus-client>=0.19.0",
+    "structlog>=23.2.0",
+]
+
+[project.urls]
+Homepage = "https://ninjaleads.ai"
+Documentation = "https://docs.ninjaleads.ai"
+Repository = "https://github.com/ninjaleads/ninjaleads-ai"
+"Bug Tracker" = "https://github.com/ninjaleads/ninjaleads-ai/issues"
+
+[tool.black]
+line-length = 127
+target-version = ["py311"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.pytest_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 127
+known_first_party = ["app", "models", "forms"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "flask_dance.*",
+    "trafilatura.*",
+    "pytrends.*",
+    "openai.*",
+    "stripe.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--verbose",
+    "--tb=short",
+    "--cov=.",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "benchmark: marks tests as performance benchmarks",
+    "security: marks tests as security tests",
+]
+filterwarnings = [
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["."]
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+    "*/venv/*",
+    "*/.venv/*",
+    "*/env/*",
+    "*/__pycache__/*",
+    "*/node_modules/*",
+    "setup.py",
+    "conftest.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "migrations"]
+skips = ["B101", "B601"]
+
+[tool.bandit.assert_used]
+skips = ["*_test.py", "*test*.py"]
