@@ -210,18 +210,22 @@
                                 <span class="badge bg-primary">{{ niche.customers|length }}</span>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-outline-primary edit-niche-btn" 
-                                        data-niche-id="{{ niche.id }}"
-                                        data-niche-name="{{ niche.name }}"
-                                        data-niche-description="{{ niche.description }}"
-                                        data-niche-characteristics="{{ niche.key_characteristics }}">
-                                    <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger delete-niche-btn" 
-                                        data-niche-id="{{ niche.id }}"
-                                        data-niche-name="{{ niche.name }}">
-                                    <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
-                                </button>
+                                <div class="btn-group btn-group-sm action-buttons-neon">
+                                    <button class="btn btn-outline-secondary action-btn-neon edit-btn edit-niche-btn" 
+                                            data-niche-id="{{ niche.id }}"
+                                            data-niche-name="{{ niche.name }}"
+                                            data-niche-description="{{ niche.description }}"
+                                            data-niche-characteristics="{{ niche.key_characteristics }}"
+                                            title="{{ _('Edit') }}">
+                                        ✏️
+                                    </button>
+                                    <button class="btn btn-outline-secondary action-btn-neon delete-btn delete-niche-btn" 
+                                            data-niche-id="{{ niche.id }}"
+                                            data-niche-name="{{ niche.name }}"
+                                            title="{{ _('Delete') }}">
+                                        🗑️
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}
@@ -282,15 +286,15 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <a href="{{ url_for('view_customer', customer_id=customer.id) }}" class="btn btn-primary">
-                                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
+                                    <div class="btn-group btn-group-sm action-buttons-neon">
+                                        <a href="{{ url_for('view_customer', customer_id=customer.id) }}" class="btn btn-outline-secondary action-btn-neon view-btn" title="{{ _('View') }}">
+                                            👁️
                                         </a>
-                                        <a href="{{ url_for('edit_customer', customer_id=customer.id) }}" class="btn btn-warning">
-                                            <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
+                                        <a href="{{ url_for('edit_customer', customer_id=customer.id) }}" class="btn btn-outline-secondary action-btn-neon edit-btn" title="{{ _('Edit') }}">
+                                            ✏️
                                         </a>
-                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ customer.id }}">
-                                            <img src="{{ url_for('static', filename='images/ninja-action.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">
+                                        <button type="button" class="btn btn-outline-secondary action-btn-neon delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal{{ customer.id }}" title="{{ _('Delete') }}">
+                                            🗑️
                                         </button>
                                     </div>
                                     
