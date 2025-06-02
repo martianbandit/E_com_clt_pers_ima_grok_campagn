@@ -154,6 +154,7 @@ PROMPT_TRANSLATIONS = {
                 
         **INFORMATIONS CONTEXTUELLES À INTÉGRER :**
         - Intérêts personnels: {interests}
+        - Objectif principal: {objectif}
         - Historique d'achats: {purchases}
         
         **DIRECTIVES DE RÉDACTION OBLIGATOIRES :**
@@ -746,6 +747,7 @@ async def generate_enhanced_customer_data_async(
     gender = customer.get("gender", "Unknown")
     language = customer.get("language", "English")
     interests = ", ".join(customer.get("interests", []))
+    objectif = customer.get("objectif", "Non spécifié")
     purchase_history = customer.get("purchase_history", [])
     
     # Format purchase history for prompt
@@ -792,6 +794,7 @@ async def generate_enhanced_customer_data_async(
         location=location,
         niche=niche,
         interests=interests,
+        objectif=objectif,
         purchases=purchase_str,
         existing_personas_summary=existing_personas_summary,
         boutique_context=boutique_context

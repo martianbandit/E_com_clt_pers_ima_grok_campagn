@@ -1608,6 +1608,18 @@ def edit_customer(customer_id):
             customer.gender = request.form.get('gender', customer.gender)
             customer.language = request.form.get('language', customer.language)
             customer.interests = request.form.get('interests', customer.interests)
+            
+            # Gestion de l'objectif (liste déroulante ou saisie personnalisée)
+            objectif_selection = request.form.get('objectif', '')
+            objectif_custom = request.form.get('objectif_custom', '')
+            
+            if objectif_selection == 'custom' and objectif_custom:
+                customer.objectif = objectif_custom.strip()
+            elif objectif_selection and objectif_selection != 'custom':
+                customer.objectif = objectif_selection
+            else:
+                customer.objectif = None
+            
             customer.preferred_device = request.form.get('preferred_device', customer.preferred_device)
             customer.persona = request.form.get('persona', customer.persona)
             
