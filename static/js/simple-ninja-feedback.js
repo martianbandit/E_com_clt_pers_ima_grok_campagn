@@ -113,23 +113,28 @@ function addFeedbackStyles() {
     <style>
     .ninja-feedback-modal {
         border: none;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
-        background: var(--bs-body-bg);
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
+        background: rgba(26, 26, 26, 0.98);
+        backdrop-filter: blur(10px);
         overflow: hidden;
-        max-width: 380px;
-        width: 85vw;
-        max-height: 60vh;
+        max-width: 360px;
+        width: 90vw;
+        max-height: 70vh;
+        border: 1px solid rgba(255, 107, 53, 0.3);
     }
 
     .ninja-feedback-header {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         color: white;
-        border-radius: 8px 8px 0 0;
+        border-radius: 12px 12px 0 0;
         border: none;
-        padding: 0.4rem 0.6rem;
+        padding: 0.75rem 1rem;
         position: relative;
-        min-height: 28px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .ninja-feedback-header::before {
@@ -145,26 +150,32 @@ function addFeedbackStyles() {
 
     .ninja-feedback-title {
         font-weight: 600;
-        font-size: 0.75rem;
+        font-size: 1rem;
         margin: 0;
         display: flex;
         align-items: center;
         position: relative;
         z-index: 1;
-        line-height: 1.2;
+        line-height: 1.3;
+        flex: 1;
     }
 
     .ninja-btn-close {
         background: rgba(255, 255, 255, 0.2);
         border-radius: 50%;
-        padding: 0.375rem;
-        opacity: 1;
-        filter: brightness(0) invert(1);
-        position: relative;
-        z-index: 1;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
         transition: all 0.3s ease;
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .ninja-btn-close:hover {
@@ -173,11 +184,12 @@ function addFeedbackStyles() {
     }
 
     .ninja-feedback-body {
-        padding: 0.5rem;
-        background: var(--bs-body-bg);
-        max-height: 35vh;
+        padding: 1rem;
+        background: rgba(26, 26, 26, 0.95);
+        max-height: 50vh;
         overflow-y: auto;
         flex: 1;
+        color: #ffffff;
     }
 
     .ninja-feedback-types {
@@ -266,24 +278,23 @@ function addFeedbackStyles() {
     }
 
     .ninja-feedback-footer {
-        padding: 0.4rem 0.5rem;
+        padding: 1rem;
         border: none;
-        background: rgba(255, 107, 53, 0.02);
+        background: rgba(255, 107, 53, 0.05);
         display: flex;
-        gap: 0.4rem;
-        min-height: 36px;
-        max-height: 36px;
+        gap: 0.75rem;
+        min-height: 60px;
+        border-top: 1px solid rgba(255, 107, 53, 0.2);
     }
 
     .ninja-btn-primary {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         border: none;
-        border-radius: 4px;
-        padding: 0.25rem 0.5rem;
-        font-weight: 500;
-        font-size: 0.7rem;
-        min-height: 28px;
-        max-height: 28px;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        min-height: 44px;
         color: white;
         transition: all 0.3s ease;
         display: flex;
@@ -316,17 +327,18 @@ function addFeedbackStyles() {
 
     .ninja-btn-secondary {
         background: transparent;
-        border: 1px solid #6c757d;
-        border-radius: 4px;
-        padding: 0.25rem 0.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
         font-weight: 500;
-        color: #6c757d;
+        color: #ffffff;
         transition: all 0.3s ease;
-        font-size: 0.7rem;
-        min-height: 28px;
-        max-height: 28px;
+        font-size: 0.9rem;
+        min-height: 44px;
         display: flex;
         align-items: center;
+        justify-content: center;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .ninja-btn-secondary:hover {
