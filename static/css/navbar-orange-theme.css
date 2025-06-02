@@ -1,0 +1,189 @@
+/* Optimisation du menu déroulant avec palette orange NinjaLead */
+
+/* Variables pour la palette orange */
+:root {
+    --ninja-orange: #FF6B00;
+    --ninja-orange-light: #FF8533;
+    --ninja-orange-dark: #E55A00;
+    --ninja-orange-glow: rgba(255, 107, 0, 0.8);
+    --ninja-orange-bg: rgba(255, 107, 0, 0.1);
+    --ninja-orange-border: rgba(255, 107, 0, 0.3);
+}
+
+/* Uniformisation des boutons du header */
+.btn-ninja-uniform,
+.ninja-header-feedback-btn,
+#languageDropdown,
+#userDropdown,
+#authDropdown,
+.theme-toggle-btn {
+    background: var(--ninja-orange-bg) !important;
+    border: 1px solid var(--ninja-orange-border) !important;
+    color: var(--ninja-orange) !important;
+    border-radius: 6px !important;
+    padding: 0.375rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Effet hover uniforme pour tous les boutons */
+.btn-ninja-uniform:hover,
+.ninja-header-feedback-btn:hover,
+#languageDropdown:hover,
+#userDropdown:hover,
+#authDropdown:hover,
+.theme-toggle-btn:hover {
+    background: var(--ninja-orange) !important;
+    color: white !important;
+    border-color: var(--ninja-orange-dark) !important;
+    box-shadow: 0 0 15px var(--ninja-orange-glow) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Effet aura pour les icônes dans les boutons */
+.btn-ninja-uniform svg,
+.ninja-header-feedback-btn svg,
+#languageDropdown::before,
+#userDropdown img,
+#authDropdown::before,
+.theme-toggle-btn svg {
+    filter: drop-shadow(0 0 6px var(--ninja-orange-glow)) !important;
+    transition: filter 0.3s ease !important;
+}
+
+/* Aura renforcée au hover */
+.btn-ninja-uniform:hover svg,
+.ninja-header-feedback-btn:hover svg,
+#languageDropdown:hover::before,
+#userDropdown:hover img,
+#authDropdown:hover::before,
+.theme-toggle-btn:hover svg {
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8)) !important;
+}
+
+/* Optimisation des icônes dans le menu déroulant */
+.dropdown-menu .dropdown-item img,
+.dropdown-menu .dropdown-item svg {
+    filter: drop-shadow(0 0 4px var(--ninja-orange-glow)) !important;
+    transition: filter 0.3s ease !important;
+}
+
+.dropdown-menu .dropdown-item:hover img,
+.dropdown-menu .dropdown-item:hover svg {
+    filter: drop-shadow(0 0 8px var(--ninja-orange-glow)) !important;
+}
+
+/* Personnalisation du menu déroulant */
+.dropdown-menu {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid var(--ninja-orange-border) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(255, 107, 0, 0.2) !important;
+    padding: 0.5rem 0 !important;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem !important;
+    color: #333 !important;
+    transition: all 0.3s ease !important;
+    border-radius: 4px !important;
+    margin: 0 0.25rem !important;
+}
+
+.dropdown-item:hover {
+    background: var(--ninja-orange-bg) !important;
+    color: var(--ninja-orange) !important;
+    transform: translateX(5px) !important;
+}
+
+.dropdown-divider {
+    border-color: var(--ninja-orange-border) !important;
+    margin: 0.5rem 0 !important;
+}
+
+.dropdown-item-text {
+    color: var(--ninja-orange-dark) !important;
+    font-weight: 500 !important;
+}
+
+/* Icônes de navigation avec aura orange */
+.nav-icon-neon {
+    filter: drop-shadow(0 0 6px var(--ninja-orange-glow)) !important;
+    transition: filter 0.3s ease !important;
+}
+
+.nav-link-neon:hover .nav-icon-neon,
+.nav-link-neon.active .nav-icon-neon {
+    filter: drop-shadow(0 0 12px var(--ninja-orange-glow)) !important;
+}
+
+/* Optimisation mobile pour les boutons */
+@media (max-width: 768px) {
+    .btn-ninja-uniform,
+    .ninja-header-feedback-btn,
+    #languageDropdown,
+    #userDropdown,
+    #authDropdown,
+    .theme-toggle-btn {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.8rem !important;
+        min-height: 36px !important;
+    }
+    
+    .dropdown-menu {
+        min-width: 200px !important;
+        max-width: 90vw !important;
+    }
+    
+    .dropdown-item {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+/* Animation de pulsation pour les icônes importantes */
+@keyframes ninja-pulse {
+    0% { filter: drop-shadow(0 0 6px var(--ninja-orange-glow)); }
+    50% { filter: drop-shadow(0 0 12px var(--ninja-orange-glow)); }
+    100% { filter: drop-shadow(0 0 6px var(--ninja-orange-glow)); }
+}
+
+.ninja-icon-pulse {
+    animation: ninja-pulse 2s infinite ease-in-out !important;
+}
+
+/* Styles spéciaux pour le bouton feedback */
+.ninja-header-feedback-btn {
+    background: linear-gradient(135deg, var(--ninja-orange-bg), rgba(255, 107, 0, 0.05)) !important;
+}
+
+.ninja-header-feedback-btn:hover {
+    background: linear-gradient(135deg, var(--ninja-orange), var(--ninja-orange-dark)) !important;
+}
+
+/* Amélioration du bouton thème */
+.theme-toggle-btn {
+    position: relative !important;
+}
+
+.theme-toggle-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, var(--ninja-orange-glow), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+.theme-toggle-btn:hover::after {
+    opacity: 0.3;
+}
