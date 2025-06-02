@@ -2809,7 +2809,7 @@ def assign_persona_to_customer_api(customer_id):
         return jsonify({
             "success": True,
             "message": "Persona assigné avec succès",
-            "association_id": association.id
+            "association_id": association_id
         })
         
     except Exception as e:
