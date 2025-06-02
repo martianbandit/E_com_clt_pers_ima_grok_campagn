@@ -1,4 +1,24 @@
 {% macro ninjalead_header() %}
+<!-- Bannière promotionnelle responsive -->
+<div class="header-banner-container header-banner-pulse">
+    <div class="header-banner-content">
+        <div class="header-banner-text">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="header-banner-icon">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            🎉 <span class="highlight">Remboursement 100% garanti</span> + 1000 tokens gratuits en partageant votre expérience !
+        </div>
+        <div class="header-banner-action">
+            <a href="{{ url_for('refund_policy') }}" class="header-banner-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/>
+                </svg>
+                Découvrir
+            </a>
+        </div>
+    </div>
+</div>
+
 <nav class="navbar navbar-expand-lg theme-dependent">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="/">
