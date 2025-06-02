@@ -142,7 +142,7 @@ class NinjaFeedbackManager {
         }
 
         const submitBtn = document.getElementById('submitFeedbackBtn');
-        const originalText = submitBtn.innerHTML;
+        const originalText = submitBtn.textContent;
         
         // État de chargement
         submitBtn.classList.add('loading');
@@ -171,7 +171,7 @@ class NinjaFeedbackManager {
         } finally {
             // Restaurer le bouton
             submitBtn.classList.remove('loading');
-            submitBtn.innerHTML = originalText;
+            submitBtn.textContent = originalText;
             submitBtn.disabled = false;
         }
     }
