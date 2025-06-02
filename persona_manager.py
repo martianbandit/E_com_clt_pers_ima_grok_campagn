@@ -191,7 +191,11 @@ async def enrich_persona_with_ai(
             response_format={"type": "json_object"}
         )
         
-        enrichment = json.loads(response.choices[0].message.content)
+        content = response.choices[0].message.content
+        if content:
+            enrichment = json.loads(content)
+        else:
+            return persona
         
         # Mettre à jour le persona avec les données enrichies
         for key, value in enrichment.items():

@@ -2735,7 +2735,7 @@ async def enrich_persona_with_ai_route(persona_id):
 def search_personas():
     """Rechercher des personas selon des critères"""
     try:
-        from persona_manager import find_matching_personas
+        from simple_persona_manager import search_personas_simple
         
         data = request.get_json()
         criteria = data.get('criteria', {})
@@ -2743,30 +2743,12 @@ def search_personas():
         niche_market_id = data.get('niche_market_id')
         boutique_id = data.get('boutique_id')
         
-        personas = find_matching_personas(
-            criteria=criteria,
-            limit=limit,
-            niche_market_id=niche_market_id,
-            boutique_id=boutique_id
-        )
-        
-        personas_data = []
-        for persona in personas:
-            personas_data.append({
-                "id": persona.id,
-                "title": persona.title,
-                "description": persona.description,
-                "age_range": persona.age_range,
-                "gender_affinity": persona.gender_affinity,
-                "income_bracket": persona.income_bracket,
-                "interests": persona.interests,
-                "avatar_url": persona.avatar_url
-            })
+        personas = search_personas_simple(criteria)
         
         return jsonify({
             "success": True,
-            "personas": personas_data,
-            "total_found": len(personas_data)
+            "personas": personas,
+            "total_found": len(personas)
         })
         
     except Exception as e:
@@ -2778,13 +2760,13 @@ def search_personas():
 def get_customer_personas_api(customer_id):
     """Récupérer tous les personas d'un client"""
     try:
-        from persona_manager import get_customer_personas
+        from simple_persona_manager import get_customer_personas_simple
         
         customer = Customer.query.get_or_404(customer_id)
         if customer.user_id != current_user.numeric_id:
             return jsonify({"success": False, "error": "Accès non autorisé"}), 403
         
-        personas_data = get_customer_personas(customer_id)
+        personas_data = get_customer_personas_simple(customer_id)
         
         return jsonify({
             "success": True,
@@ -2801,7 +2783,7 @@ def get_customer_personas_api(customer_id):
 def assign_persona_to_customer_api(customer_id):
     """Assigner un persona à un client"""
     try:
-        from persona_manager import assign_persona_to_customer
+        from simple_persona_manager import assign_persona_simple
         
         customer = Customer.query.get_or_404(customer_id)
         if customer.user_id != current_user.numeric_id:
@@ -2816,7 +2798,7 @@ def assign_persona_to_customer_api(customer_id):
         if not persona_id:
             return jsonify({"success": False, "error": "ID du persona requis"}), 400
         
-        association = assign_persona_to_customer(
+        association_id = assign_persona_simple(
             customer_id=customer_id,
             persona_id=persona_id,
             is_primary=is_primary,
