@@ -113,25 +113,25 @@ function addFeedbackStyles() {
     <style>
     .ninja-feedback-modal {
         border: none;
-        border-radius: 12px;
-        box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
-        background: rgba(26, 26, 26, 0.98);
-        backdrop-filter: blur(10px);
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(255, 107, 53, 0.25);
+        background: rgba(26, 26, 26, 0.95);
+        backdrop-filter: blur(8px);
         overflow: hidden;
-        max-width: 360px;
-        width: 90vw;
-        max-height: 70vh;
-        border: 1px solid rgba(255, 107, 53, 0.3);
+        max-width: 340px;
+        width: 88vw;
+        max-height: 65vh;
+        border: 1px solid rgba(255, 107, 53, 0.25);
     }
 
     .ninja-feedback-header {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         color: white;
-        border-radius: 12px 12px 0 0;
+        border-radius: 8px 8px 0 0;
         border: none;
-        padding: 0.75rem 1rem;
+        padding: 0.6rem 0.8rem;
         position: relative;
-        min-height: 44px;
+        min-height: 38px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -150,13 +150,13 @@ function addFeedbackStyles() {
 
     .ninja-feedback-title {
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 0.9rem;
         margin: 0;
         display: flex;
         align-items: center;
         position: relative;
         z-index: 1;
-        line-height: 1.3;
+        line-height: 1.2;
         flex: 1;
     }
 
@@ -166,11 +166,11 @@ function addFeedbackStyles() {
         border: none;
         color: white;
         cursor: pointer;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: bold;
         transition: all 0.3s ease;
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -184,9 +184,9 @@ function addFeedbackStyles() {
     }
 
     .ninja-feedback-body {
-        padding: 1rem;
+        padding: 0.7rem;
         background: rgba(26, 26, 26, 0.95);
-        max-height: 50vh;
+        max-height: 45vh;
         overflow-y: auto;
         flex: 1;
         color: #ffffff;
@@ -278,23 +278,23 @@ function addFeedbackStyles() {
     }
 
     .ninja-feedback-footer {
-        padding: 1rem;
+        padding: 0.7rem;
         border: none;
         background: rgba(255, 107, 53, 0.05);
         display: flex;
-        gap: 0.75rem;
-        min-height: 60px;
+        gap: 0.6rem;
+        min-height: 48px;
         border-top: 1px solid rgba(255, 107, 53, 0.2);
     }
 
     .ninja-btn-primary {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         border: none;
-        border-radius: 8px;
-        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
         font-weight: 600;
-        font-size: 0.9rem;
-        min-height: 44px;
+        font-size: 0.85rem;
+        min-height: 38px;
         color: white;
         transition: all 0.3s ease;
         display: flex;
@@ -328,13 +328,13 @@ function addFeedbackStyles() {
     .ninja-btn-secondary {
         background: transparent;
         border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 8px;
-        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
         font-weight: 500;
         color: #ffffff;
         transition: all 0.3s ease;
-        font-size: 0.9rem;
-        min-height: 44px;
+        font-size: 0.85rem;
+        min-height: 38px;
         display: flex;
         align-items: center;
         justify-content: center;
