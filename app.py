@@ -2217,6 +2217,138 @@ def database_stats_api():
         logging.error(f"Erreur stats DB: {str(e)}")
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route('/service-worker.js')
+def service_worker():
+    """Sert le Service Worker"""
+    from flask import send_from_directory
+    return send_from_directory('static/js', 'service-worker.js', mimetype='application/javascript')
+
+@app.route('/offline')
+def offline_page():
+    """Page hors ligne pour le Service Worker"""
+    return render_template('offline.html')
+
+@app.route('/api/customers/paginated')
+@login_required
+def customers_paginated():
+    """API pour le chargement progressif des clients"""
+    from progressive_loading_system import progressive_loader, search_filter_manager
+    
+    try:
+        # Paramètres de pagination
+        page = int(request.args.get('page', 1))
+        per_page = min(int(request.args.get('per_page', 20)), 100)
+        
+        # Paramètres de filtre
+        search_term = request.args.get('search', '').strip()
+        filters = {
+            'language': request.args.get('language'),
+            'gender': request.args.get('gender'),
+            'age_range': request.args.get('age_range')
+        }
+        
+        # Filtrer les valeurs vides
+        filters = {k: v for k, v in filters.items() if v and v != 'all'}
+        
+        # Requête de base
+        base_query = Customer.query.filter_by(owner_id=current_user.numeric_id) if current_user.numeric_id else Customer.query.filter_by(id=-1)
+        
+        # Appliquer les filtres
+        filtered_query = search_filter_manager.apply_filters(
+            base_query, 
+            filters, 
+            search_term, 
+            ['name', 'location', 'interests']
+        )
+        
+        # Paginer
+        pagination_data = progressive_loader.paginate_query(
+            filtered_query.order_by(Customer.created_at.desc()),
+            page=page,
+            per_page=per_page,
+            endpoint='customers_paginated'
+        )
+        
+        # Préparer la réponse
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Requête AJAX - renvoyer HTML des items
+            items_html = render_template('partials/customer_items.html', customers=pagination_data['items'])
+            
+            return jsonify({
+                "success": True,
+                "items_html": items_html,
+                "has_more": pagination_data['has_next'],
+                "total_items": pagination_data['total'],
+                "current_page": pagination_data['page'],
+                "total_pages": pagination_data['pages']
+            })
+        else:
+            # Requête normale - page complète
+            return render_template('customers_progressive.html', 
+                                 pagination=pagination_data,
+                                 search_term=search_term,
+                                 filters=filters)
+        
+    except Exception as e:
+        logging.error(f"Erreur customers_paginated: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/campaigns/paginated')
+@login_required
+def campaigns_paginated():
+    """API pour le chargement progressif des campagnes"""
+    from progressive_loading_system import progressive_loader, search_filter_manager
+    
+    try:
+        page = int(request.args.get('page', 1))
+        per_page = min(int(request.args.get('per_page', 20)), 100)
+        
+        search_term = request.args.get('search', '').strip()
+        filters = {
+            'status': request.args.get('status'),
+            'campaign_type': request.args.get('campaign_type'),
+            'boutique_id': request.args.get('boutique_id')
+        }
+        
+        filters = {k: v for k, v in filters.items() if v and v != 'all'}
+        
+        base_query = Campaign.query.filter_by(owner_id=current_user.numeric_id) if current_user.numeric_id else Campaign.query.filter_by(id=-1)
+        
+        filtered_query = search_filter_manager.apply_filters(
+            base_query, 
+            filters, 
+            search_term, 
+            ['title', 'description', 'content']
+        )
+        
+        pagination_data = progressive_loader.paginate_query(
+            filtered_query.order_by(Campaign.created_at.desc()),
+            page=page,
+            per_page=per_page,
+            endpoint='campaigns_paginated'
+        )
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            items_html = render_template('partials/campaign_items.html', campaigns=pagination_data['items'])
+            
+            return jsonify({
+                "success": True,
+                "items_html": items_html,
+                "has_more": pagination_data['has_next'],
+                "total_items": pagination_data['total'],
+                "current_page": pagination_data['page'],
+                "total_pages": pagination_data['pages']
+            })
+        else:
+            return render_template('campaigns_progressive.html', 
+                                 pagination=pagination_data,
+                                 search_term=search_term,
+                                 filters=filters)
+        
+    except Exception as e:
+        logging.error(f"Erreur campaigns_paginated: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route('/image_generation', methods=['GET', 'POST'])
 def image_generation():
     """Page de génération d'images marketing optimisées avec stockage persistant"""
