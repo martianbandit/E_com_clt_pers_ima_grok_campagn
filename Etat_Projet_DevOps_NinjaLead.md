@@ -174,7 +174,7 @@
 
 #### 3.3.1 Backend Optimizations
 - ✅ **Redis cache** pour sessions + données (avec fallback mémoire)
-- ❌ **CDN** pour assets statiques
+- ✅ **CDN** pour assets statiques (système complet avec compression gzip)
 - ✅ **Database indexing** optimisé (PostgreSQL indexes intelligents)
 - ✅ **API response caching** (cache intelligent avec clés TTL)
 
