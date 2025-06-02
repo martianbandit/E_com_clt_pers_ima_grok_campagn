@@ -201,14 +201,14 @@ function addFeedbackStyles() {
         font-weight: 400;
         color: var(--bs-body-color);
         cursor: pointer;
-        padding: 0.15rem 0.3rem;
-        border-radius: 3px;
+        padding: 0.2rem 0.35rem;
+        border-radius: 4px;
         transition: all 0.3s ease;
         border: 1px solid transparent;
-        font-size: 0.65rem;
-        min-height: 22px;
-        max-height: 22px;
-        line-height: 1.1;
+        font-size: 0.7rem;
+        min-height: 26px;
+        max-height: 26px;
+        line-height: 1.2;
     }
 
     .ninja-check-label:hover {
@@ -266,24 +266,24 @@ function addFeedbackStyles() {
     }
 
     .ninja-feedback-footer {
-        padding: 0.3rem 0.4rem;
+        padding: 0.4rem 0.5rem;
         border: none;
         background: rgba(255, 107, 53, 0.02);
         display: flex;
-        gap: 0.3rem;
-        min-height: 32px;
-        max-height: 32px;
+        gap: 0.4rem;
+        min-height: 36px;
+        max-height: 36px;
     }
 
     .ninja-btn-primary {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         border: none;
-        border-radius: 3px;
-        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        padding: 0.25rem 0.5rem;
         font-weight: 500;
-        font-size: 0.65rem;
-        min-height: 24px;
-        max-height: 24px;
+        font-size: 0.7rem;
+        min-height: 28px;
+        max-height: 28px;
         color: white;
         transition: all 0.3s ease;
         display: flex;
@@ -317,14 +317,14 @@ function addFeedbackStyles() {
     .ninja-btn-secondary {
         background: transparent;
         border: 1px solid #6c757d;
-        border-radius: 3px;
-        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        padding: 0.25rem 0.5rem;
         font-weight: 500;
         color: #6c757d;
         transition: all 0.3s ease;
-        font-size: 0.65rem;
-        min-height: 24px;
-        max-height: 24px;
+        font-size: 0.7rem;
+        min-height: 28px;
+        max-height: 28px;
         display: flex;
         align-items: center;
     }
