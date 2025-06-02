@@ -278,23 +278,24 @@ function addFeedbackStyles() {
     }
 
     .ninja-feedback-footer {
-        padding: 0.7rem;
+        padding: 0.4rem;
         border: none;
         background: rgba(255, 107, 53, 0.05);
         display: flex;
-        gap: 0.6rem;
-        min-height: 48px;
+        gap: 0.4rem;
+        min-height: 32px;
         border-top: 1px solid rgba(255, 107, 53, 0.2);
     }
 
     .ninja-btn-primary {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         border: none;
-        border-radius: 6px;
-        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        padding: 0.2rem 0.6rem;
         font-weight: 600;
-        font-size: 0.85rem;
-        min-height: 38px;
+        font-size: 0.75rem;
+        min-height: 25px;
+        max-height: 25px;
         color: white;
         transition: all 0.3s ease;
         display: flex;
@@ -328,13 +329,14 @@ function addFeedbackStyles() {
     .ninja-btn-secondary {
         background: transparent;
         border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 6px;
-        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        padding: 0.2rem 0.6rem;
         font-weight: 500;
         color: #ffffff;
         transition: all 0.3s ease;
-        font-size: 0.85rem;
-        min-height: 38px;
+        font-size: 0.75rem;
+        min-height: 25px;
+        max-height: 25px;
         display: flex;
         align-items: center;
         justify-content: center;
