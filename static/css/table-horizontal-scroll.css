@@ -1,0 +1,193 @@
+/* Table Horizontal Scroll - Profiles Page */
+
+.table-responsive-horizontal {
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+    position: relative;
+}
+
+/* Scrollbar personnalisé pour une meilleure UX */
+.table-responsive-horizontal::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive-horizontal::-webkit-scrollbar-track {
+    background: rgba(255, 107, 53, 0.1);
+    border-radius: 4px;
+}
+
+.table-responsive-horizontal::-webkit-scrollbar-thumb {
+    background: #FF6B35;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.table-responsive-horizontal::-webkit-scrollbar-thumb:hover {
+    background: #FF8C42;
+}
+
+/* Indicateur visuel de scroll */
+.table-responsive-horizontal::before {
+    content: "← Glissez pour voir plus →";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 107, 53, 0.9);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Afficher l'indicateur sur mobile uniquement */
+@media (max-width: 768px) {
+    .table-responsive-horizontal::before {
+        opacity: 1;
+    }
+    
+    /* Animation de fade-out après 3 secondes */
+    .table-responsive-horizontal::before {
+        animation: fade-out-hint 5s ease-in-out;
+    }
+}
+
+@keyframes fade-out-hint {
+    0%, 60% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+/* Amélioration du sticky header */
+.table-responsive-horizontal .sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Largeur minimale pour les colonnes */
+.table-responsive-horizontal table {
+    min-width: 800px;
+    white-space: nowrap;
+}
+
+/* Largeurs spécifiques pour les colonnes */
+.table-responsive-horizontal th:nth-child(1),
+.table-responsive-horizontal td:nth-child(1) {
+    min-width: 80px; /* Avatar */
+}
+
+.table-responsive-horizontal th:nth-child(2),
+.table-responsive-horizontal td:nth-child(2) {
+    min-width: 150px; /* Name */
+}
+
+.table-responsive-horizontal th:nth-child(3),
+.table-responsive-horizontal td:nth-child(3) {
+    min-width: 80px; /* Age */
+}
+
+.table-responsive-horizontal th:nth-child(4),
+.table-responsive-horizontal td:nth-child(4) {
+    min-width: 150px; /* Location */
+}
+
+.table-responsive-horizontal th:nth-child(5),
+.table-responsive-horizontal td:nth-child(5) {
+    min-width: 100px; /* Language */
+}
+
+.table-responsive-horizontal th:nth-child(6),
+.table-responsive-horizontal td:nth-child(6) {
+    min-width: 120px; /* Niche */
+}
+
+.table-responsive-horizontal th:nth-child(7),
+.table-responsive-horizontal td:nth-child(7) {
+    min-width: 100px; /* Created */
+}
+
+.table-responsive-horizontal th:nth-child(8),
+.table-responsive-horizontal td:nth-child(8) {
+    min-width: 80px; /* Usage */
+}
+
+.table-responsive-horizontal th:nth-child(9),
+.table-responsive-horizontal td:nth-child(9) {
+    min-width: 120px; /* Actions */
+}
+
+/* Amélioration des boutons d'action avec aura orange */
+.table-responsive-horizontal .btn-group .btn {
+    border: 1px solid #FF6B35;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.table-responsive-horizontal .btn-group .btn:hover {
+    background: #FF6B35;
+    border-color: #FF8C42;
+    box-shadow: 
+        0 0 12px rgba(255, 107, 53, 0.6),
+        0 0 24px rgba(255, 107, 53, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Responsive amélioré */
+@media (max-width: 992px) {
+    .table-responsive-horizontal table {
+        min-width: 700px;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-responsive-horizontal table {
+        min-width: 600px;
+        font-size: 0.875rem;
+    }
+    
+    .table-responsive-horizontal th,
+    .table-responsive-horizontal td {
+        padding: 0.5rem 0.75rem;
+    }
+    
+    /* Réduire la largeur des colonnes sur mobile */
+    .table-responsive-horizontal th:nth-child(1),
+    .table-responsive-horizontal td:nth-child(1) {
+        min-width: 60px;
+    }
+    
+    .table-responsive-horizontal th:nth-child(2),
+    .table-responsive-horizontal td:nth-child(2) {
+        min-width: 120px;
+    }
+    
+    .table-responsive-horizontal th:nth-child(4),
+    .table-responsive-horizontal td:nth-child(4) {
+        min-width: 120px;
+    }
+}
+
+/* Effets visuels pour la table */
+.table-responsive-horizontal .table tbody tr:hover {
+    background-color: rgba(255, 107, 53, 0.1);
+    transition: background-color 0.2s ease;
+}
+
+/* Badge improvements avec aura orange */
+.table-responsive-horizontal .badge {
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.table-responsive-horizontal .badge:hover {
+    box-shadow: 0 0 8px rgba(255, 107, 53, 0.4);
+    transform: scale(1.05);
+}
