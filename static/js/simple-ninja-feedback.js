@@ -275,8 +275,8 @@ function addFeedbackStyles() {
 
     .ninja-form-text {
         color: #6c757d;
-        font-size: 0.8rem;
-        margin-top: 0.375rem;
+        font-size: 0.75rem;
+        margin-top: 0.2rem;
         font-style: italic;
     }
 
