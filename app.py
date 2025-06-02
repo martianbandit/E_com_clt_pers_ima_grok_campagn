@@ -2842,7 +2842,7 @@ def generate_persona_from_customer_api(customer_id):
         from persona_manager import generate_persona_from_customer
         
         customer = Customer.query.get_or_404(customer_id)
-        if customer.owner_id != current_user.numeric_id:
+        if customer.user_id != current_user.numeric_id:
             return jsonify({"success": False, "error": "Accès non autorisé"}), 403
         
         data = request.get_json() or {}

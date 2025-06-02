@@ -64,7 +64,36 @@ def create_persona_from_text(
         data.update(additional_data)
         
     # Création du persona
-    persona = CustomerPersona.create_from_dict(data, niche_market_id, boutique_id)
+    persona = CustomerPersona(
+        title=title,
+        description=description,
+        primary_goal=data.get('objectif_principal'),
+        pain_points=data.get('points_douleur'),
+        buying_triggers=data.get('declencheurs_achat'),
+        age_range=data.get('tranche_age'),
+        gender_affinity=data.get('affinite_genre'),
+        location_type=data.get('type_localisation'),
+        income_bracket=data.get('tranche_revenu'),
+        education_level=data.get('niveau_etudes'),
+        values=data.get('valeurs'),
+        interests=data.get('centres_interet'),
+        lifestyle=data.get('mode_vie'),
+        personality_traits=data.get('traits_personnalite'),
+        buying_habits=data.get('habitudes_achat'),
+        brand_affinities=data.get('affinites_marques'),
+        price_sensitivity=data.get('sensibilite_prix'),
+        decision_factors=data.get('facteurs_decision'),
+        preferred_channels=data.get('canaux_preferes'),
+        content_preferences=data.get('preferences_contenu'),
+        social_media_behavior=data.get('comportement_reseaux_sociaux'),
+        niche_specific_attributes=data.get('attributs_specifiques'),
+        custom_fields=data.get('champs_personnalises'),
+        avatar_url=data.get('url_avatar'),
+        avatar_prompt=data.get('prompt_avatar'),
+        niche_market_id=niche_market_id,
+        boutique_id=boutique_id
+    )
+    
     db.session.add(persona)
     db.session.commit()
     
