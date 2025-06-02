@@ -884,6 +884,76 @@ class Metric(db.Model):
             'latest_metrics': latest_metrics
         }
 
+class StoredImage(db.Model):
+    """Model for storing AI-generated images with persistent file management"""
+    __tablename__ = 'stored_images'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    hash = db.Column(db.String(32), unique=True, nullable=False, index=True)
+    
+    # URLs et chemins
+    original_url = db.Column(db.Text, nullable=False)  # URL originale de l'IA
+    local_path = db.Column(db.Text, nullable=False)    # Chemin local du fichier
+    filename = db.Column(db.String(255), nullable=False)
+    
+    # Métadonnées de génération
+    prompt = db.Column(db.Text, nullable=False)
+    model = db.Column(db.String(50), nullable=False)   # dall-e-3, grok-vision, etc.
+    size = db.Column(db.String(20), default="1024x1024")
+    image_type = db.Column(db.String(50), default="general")  # avatar, campaign, product
+    
+    # Métadonnées fichier
+    file_size = db.Column(db.Integer, nullable=True)
+    content_type = db.Column(db.String(50), nullable=True)
+    
+    # Associations
+    user_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=True)
+    entity_id = db.Column(db.Integer, nullable=True)  # ID de l'entité associée
+    
+    # Gestion lifecycle
+    is_permanent = db.Column(db.Boolean, default=False)
+    access_count = db.Column(db.Integer, default=0)
+    last_accessed = db.Column(db.DateTime, nullable=True)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relations
+    user = db.relationship('User', backref=db.backref('stored_images', lazy=True))
+    
+    def to_dict(self):
+        """Convertit l'objet en dictionnaire pour le cache et l'API"""
+        return {
+            'id': self.id,
+            'hash': self.hash,
+            'original_url': self.original_url,
+            'local_path': self.local_path,
+            'filename': self.filename,
+            'prompt': self.prompt,
+            'model': self.model,
+            'size': self.size,
+            'image_type': self.image_type,
+            'file_size': self.file_size,
+            'content_type': self.content_type,
+            'user_id': self.user_id,
+            'entity_id': self.entity_id,
+            'is_permanent': self.is_permanent,
+            'access_count': self.access_count,
+            'last_accessed': self.last_accessed.isoformat() if self.last_accessed else None,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
+        }
+    
+    def mark_accessed(self):
+        """Marque l'image comme récemment accédée"""
+        self.access_count += 1
+        self.last_accessed = datetime.utcnow()
+        db.session.commit()
+    
+    def __repr__(self):
+        return f'<StoredImage {self.filename} ({self.image_type})>'
+
 class Product(db.Model):
     """Model for storing product information and generated content"""
     id = db.Column(db.Integer, primary_key=True)
