@@ -2699,6 +2699,195 @@ def test_integration_endpoint(integration_key):
         logging.error(f"Erreur test intégration {integration_key}: {str(e)}")
         return jsonify({"success": False, "error": str(e)}), 500
 
+# Routes avancées pour la gestion des personas
+@app.route('/api/personas/enrich/<int:persona_id>', methods=['POST'])
+@login_required
+async def enrich_persona_with_ai_route(persona_id):
+    """Enrichir un persona avec l'IA"""
+    try:
+        from persona_manager import enrich_persona_with_ai
+        
+        persona = await enrich_persona_with_ai(persona_id)
+        
+        if persona:
+            return jsonify({
+                "success": True,
+                "message": "Persona enrichi avec succès",
+                "persona": {
+                    "id": persona.id,
+                    "title": persona.title,
+                    "description": persona.description,
+                    "primary_goal": persona.primary_goal,
+                    "pain_points": persona.pain_points,
+                    "age_range": persona.age_range,
+                    "interests": persona.interests
+                }
+            })
+        else:
+            return jsonify({"success": False, "error": "Erreur lors de l'enrichissement"}), 500
+            
+    except Exception as e:
+        logging.error(f"Erreur enrichissement persona {persona_id}: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/personas/search', methods=['POST'])
+@login_required
+def search_personas():
+    """Rechercher des personas selon des critères"""
+    try:
+        from persona_manager import find_matching_personas
+        
+        data = request.get_json()
+        criteria = data.get('criteria', {})
+        limit = data.get('limit', 10)
+        niche_market_id = data.get('niche_market_id')
+        boutique_id = data.get('boutique_id')
+        
+        personas = find_matching_personas(
+            criteria=criteria,
+            limit=limit,
+            niche_market_id=niche_market_id,
+            boutique_id=boutique_id
+        )
+        
+        personas_data = []
+        for persona in personas:
+            personas_data.append({
+                "id": persona.id,
+                "title": persona.title,
+                "description": persona.description,
+                "age_range": persona.age_range,
+                "gender_affinity": persona.gender_affinity,
+                "income_bracket": persona.income_bracket,
+                "interests": persona.interests,
+                "avatar_url": persona.avatar_url
+            })
+        
+        return jsonify({
+            "success": True,
+            "personas": personas_data,
+            "total_found": len(personas_data)
+        })
+        
+    except Exception as e:
+        logging.error(f"Erreur recherche personas: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/customers/<int:customer_id>/personas', methods=['GET'])
+@login_required
+def get_customer_personas_api(customer_id):
+    """Récupérer tous les personas d'un client"""
+    try:
+        from persona_manager import get_customer_personas
+        
+        customer = Customer.query.get_or_404(customer_id)
+        if customer.owner_id != current_user.numeric_id:
+            return jsonify({"success": False, "error": "Accès non autorisé"}), 403
+        
+        personas_data = get_customer_personas(customer_id)
+        
+        return jsonify({
+            "success": True,
+            "personas": personas_data,
+            "customer_name": customer.name
+        })
+        
+    except Exception as e:
+        logging.error(f"Erreur récupération personas client {customer_id}: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/customers/<int:customer_id>/personas/assign', methods=['POST'])
+@login_required
+def assign_persona_to_customer_api(customer_id):
+    """Assigner un persona à un client"""
+    try:
+        from persona_manager import assign_persona_to_customer
+        
+        customer = Customer.query.get_or_404(customer_id)
+        if customer.owner_id != current_user.numeric_id:
+            return jsonify({"success": False, "error": "Accès non autorisé"}), 403
+        
+        data = request.get_json()
+        persona_id = data.get('persona_id')
+        is_primary = data.get('is_primary', False)
+        relevance_score = data.get('relevance_score', 1.0)
+        notes = data.get('notes', '')
+        
+        if not persona_id:
+            return jsonify({"success": False, "error": "ID du persona requis"}), 400
+        
+        association = assign_persona_to_customer(
+            customer_id=customer_id,
+            persona_id=persona_id,
+            is_primary=is_primary,
+            relevance_score=relevance_score,
+            notes=notes
+        )
+        
+        return jsonify({
+            "success": True,
+            "message": "Persona assigné avec succès",
+            "association_id": association.id
+        })
+        
+    except Exception as e:
+        logging.error(f"Erreur assignation persona au client {customer_id}: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/customers/<int:customer_id>/personas/generate', methods=['POST'])
+@login_required
+def generate_persona_from_customer_api(customer_id):
+    """Générer un nouveau persona à partir d'un client"""
+    try:
+        from persona_manager import generate_persona_from_customer
+        
+        customer = Customer.query.get_or_404(customer_id)
+        if customer.owner_id != current_user.numeric_id:
+            return jsonify({"success": False, "error": "Accès non autorisé"}), 403
+        
+        data = request.get_json() or {}
+        title = data.get('title')
+        save_as_primary = data.get('save_as_primary', True)
+        
+        persona = generate_persona_from_customer(
+            customer_id=customer_id,
+            title=title,
+            save_as_primary=save_as_primary
+        )
+        
+        return jsonify({
+            "success": True,
+            "message": "Persona généré avec succès",
+            "persona": {
+                "id": persona.id,
+                "title": persona.title,
+                "description": persona.description,
+                "avatar_url": persona.avatar_url
+            }
+        })
+        
+    except Exception as e:
+        logging.error(f"Erreur génération persona pour client {customer_id}: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/personas/stats')
+@login_required
+def get_personas_stats_api():
+    """Récupérer les statistiques des personas"""
+    try:
+        from persona_manager import get_personas_stats
+        
+        stats = get_personas_stats()
+        
+        return jsonify({
+            "success": True,
+            "stats": stats
+        })
+        
+    except Exception as e:
+        logging.error(f"Erreur statistiques personas: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route('/image_generation', methods=['GET', 'POST'])
 def image_generation():
     """Page de génération d'images marketing optimisées avec stockage persistant"""

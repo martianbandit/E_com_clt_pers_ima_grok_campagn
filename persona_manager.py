@@ -21,42 +21,42 @@ def create_persona_from_text(
     Crée un nouveau persona à partir d'une description textuelle
     
     Args:
-        title: Titre du persona (ex: "Jeune maman urbaine")
+        title: Titre du persona (ex: "Jeune maman urbaine", "Entrepreneur tech", "Retraité", "Etudiant" , etc.)
         description: Description détaillée du persona
-        niche_market_id: ID de la niche de marché (optionnel)
-        boutique_id: ID de la boutique (optionnel)
-        additional_data: Données supplémentaires pour le persona (optionnel)
+        niche_market_id: ID de la niche de marché 
+        boutique_id: ID de la boutique 
+        additional_data: Données supplémentaires pour le persona 
         
     Returns:
         Instance de CustomerPersona créée
     """
     # Valeurs par défaut pour les données supplémentaires
     data = {
-        'title': title,
+        'titre': title,
         'description': description,
-        'primary_goal': None,
-        'pain_points': None,
-        'buying_triggers': None,
-        'age_range': None,
-        'gender_affinity': None,
-        'location_type': None,
-        'income_bracket': None,
-        'education_level': None,
-        'values': None,
-        'interests': None,
-        'lifestyle': None,
-        'personality_traits': None,
-        'buying_habits': None,
-        'brand_affinities': None,
-        'price_sensitivity': None,
-        'decision_factors': None,
-        'preferred_channels': None,
-        'content_preferences': None,
-        'social_media_behavior': None,
-        'niche_specific_attributes': None,
-        'custom_fields': None,
-        'avatar_url': None,
-        'avatar_prompt': None
+        'objectif_principal': None,
+        'points_douleur': None,
+        'declencheurs_achat': None,
+        'tranche_age': None,
+        'affinite_genre': None,
+        'type_localisation': None,
+        'tranche_revenu': None,
+        'niveau_etudes': None,
+        'valeurs': None,
+        'centres_interet': None,
+        'mode_vie': None,
+        'traits_personnalite': None,
+        'habitudes_achat': None,
+        'affinites_marques': None,
+        'sensibilite_prix': None,
+        'facteurs_decision': None,
+        'canaux_preferes': None,
+        'preferences_contenu': None,
+        'comportement_reseaux_sociaux': None,
+        'attributs_specifiques': None,
+        'champs_personnalises': None,
+        'url_avatar': None,
+        'prompt_avatar': None
     }
     
     # Mise à jour avec les données supplémentaires fournies
