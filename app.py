@@ -971,8 +971,11 @@ def change_language(lang):
     if request.referrer:
         from urllib.parse import urlparse
         parsed_url = urlparse(request.referrer)
-        # Only redirect to URLs on the same site (no netloc/domain or matching our own domain)
-        if not parsed_url.netloc or parsed_url.netloc == request.host:
+        # Only redirect to URLs on the same site and with safe schemes
+        if (parsed_url.scheme in ['http', 'https'] and 
+            parsed_url.netloc == request.host and 
+            not parsed_url.fragment.startswith('javascript:') and
+            not parsed_url.path.startswith('//')):
             return redirect(request.referrer)
     # Default to index if referrer is missing or external
     return redirect(url_for('index'))
