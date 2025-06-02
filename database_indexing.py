@@ -275,7 +275,8 @@ class DatabaseIndexOptimizer:
                 
                 for table in tables:
                     try:
-                        conn.execute(text(f"ANALYZE {table}"))
+                        # Use proper SQL identifier quoting to prevent SQL injection
+                        conn.execute(text(f'ANALYZE "{table}"'))
                         logger.debug(f"Analyzed table: {table}")
                     except Exception as e:
                         logger.warning(f"Failed to analyze table {table}: {e}")
