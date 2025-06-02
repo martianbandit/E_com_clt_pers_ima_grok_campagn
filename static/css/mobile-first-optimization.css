@@ -22,6 +22,27 @@
     --mobile-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
+/* Protection des icônes ninja existantes */
+.ninja-icon,
+.nav-link .ninja-icon,
+.navbar-nav .ninja-icon,
+.sidebar .ninja-icon {
+    fill: var(--vibrant-orange, #ff6b35) !important;
+    filter: drop-shadow(0 0 6px rgba(255, 107, 53, 0.8)) !important;
+    transition: all 0.3s ease !important;
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.nav-link:hover .ninja-icon,
+.navbar-nav .nav-link:hover .ninja-icon,
+.sidebar .nav-link:hover .ninja-icon {
+    fill: #ff8c35 !important;
+    filter: drop-shadow(0 0 10px rgba(255, 140, 53, 1)) !important;
+    transform: scale(1.1) !important;
+}
+
 /* Design mobile-first */
 @media screen and (max-width: 768px) {
     /* Body et structure de base */
@@ -133,6 +154,18 @@
         text-decoration: none !important;
         transition: all 0.2s ease !important;
         -webkit-tap-highlight-color: transparent !important;
+    }
+    
+    /* Force la visibilité des icônes dans les liens de navigation */
+    .nav-link img,
+    .nav-link svg,
+    .nav-link .ninja-icon {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: 20px !important;
+        height: 20px !important;
+        flex-shrink: 0 !important;
     }
     
     .nav-link:active {
