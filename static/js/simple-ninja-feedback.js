@@ -679,7 +679,7 @@ function setupFeedbackButtons() {
     // Configuration du formulaire
     setupFormHandlers();
     
-    // Créer le bouton flottant pour mobile
+    // Créer le bouton flottanttant pour mobile
     createFloatingFeedbackButton();
 }
 
@@ -755,7 +755,7 @@ function createFloatingFeedbackButton() {
     .ninja-floating-feedback:hover {
         transform: scale(1.1);
         box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
-        background: linear-gradient(135deg, #e55528 0%, #d44821 100%);
+        background: linear-gradient(135deg, #e55528 0%, #d44821 100%);1 100%);
     }
     
     .ninja-floating-feedback:active {
