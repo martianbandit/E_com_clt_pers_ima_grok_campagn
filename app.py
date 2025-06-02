@@ -2349,6 +2349,325 @@ def campaigns_paginated():
         logging.error(f"Erreur campaigns_paginated: {str(e)}")
         return jsonify({"success": False, "error": str(e)}), 500
 
+# Routes d'export de campagnes
+@app.route('/api/campaigns/<int:campaign_id>/export/pdf', methods=['POST'])
+@login_required
+def export_campaign_pdf(campaign_id):
+    """Exporter une campagne en PDF"""
+    try:
+        campaign = Campaign.query.get_or_404(campaign_id)
+        
+        # Vérifier que l'utilisateur possède cette campagne
+        if campaign.owner_id != current_user.numeric_id:
+            return jsonify({"success": False, "error": "Accès non autorisé"}), 403
+        
+        # Générer le PDF avec weasyprint
+        from weasyprint import HTML, CSS
+        import tempfile
+        
+        # Créer le HTML de la campagne
+        html_content = render_template('export/campaign_pdf.html', campaign=campaign)
+        
+        # Créer un fichier temporaire
+        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp_file:
+            HTML(string=html_content).write_pdf(tmp_file.name)
+            
+            # Lire le contenu du PDF
+            with open(tmp_file.name, 'rb') as pdf_file:
+                pdf_content = pdf_file.read()
+        
+        # Nettoyer le fichier temporaire
+        os.unlink(tmp_file.name)
+        
+        # Retourner le PDF
+        from flask import Response
+        response = Response(pdf_content, mimetype='application/pdf')
+        response.headers['Content-Disposition'] = f'attachment; filename=campagne-{campaign.id}.pdf'
+        
+        return response
+        
+    except ImportError:
+        # Fallback si weasyprint n'est pas disponible
+        return jsonify({
+            "success": False, 
+            "error": "Fonctionnalité PDF non disponible. Installation de weasyprint requise."
+        }), 500
+    except Exception as e:
+        logging.error(f"Erreur export PDF campagne {campaign_id}: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/campaigns/<int:campaign_id>/export/image', methods=['POST'])
+@login_required
+def export_campaign_image(campaign_id):
+    """Exporter une campagne comme image"""
+    try:
+        campaign = Campaign.query.get_or_404(campaign_id)
+        
+        if campaign.owner_id != current_user.numeric_id:
+            return jsonify({"success": False, "error": "Accès non autorisé"}), 403
+        
+        # Si la campagne a déjà une image, la retourner
+        if campaign.image_url:
+            import requests
+            img_response = requests.get(campaign.image_url)
+            if img_response.status_code == 200:
+                from flask import Response
+                response = Response(img_response.content, mimetype='image/png')
+                response.headers['Content-Disposition'] = f'attachment; filename=campagne-{campaign.id}.png'
+                return response
+        
+        # Sinon, générer une nouvelle image
+        from integrated_image_service import generate_campaign_marketing_image
+        
+        result = generate_campaign_marketing_image(
+            campaign.title or "Campagne Marketing",
+            campaign.content or campaign.description or "",
+            current_user.id
+        )
+        
+        if result and result.get('success') and result.get('image_url'):
+            # Télécharger l'image générée
+            import requests
+            img_response = requests.get(result['image_url'])
+            if img_response.status_code == 200:
+                from flask import Response
+                response = Response(img_response.content, mimetype='image/png')
+                response.headers['Content-Disposition'] = f'attachment; filename=campagne-{campaign.id}.png'
+                return response
+        
+        return jsonify({"success": False, "error": "Impossible de générer l'image"}), 500
+        
+    except Exception as e:
+        logging.error(f"Erreur export image campagne {campaign_id}: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/campaigns/<int:campaign_id>/export/json')
+@login_required
+def export_campaign_json(campaign_id):
+    """Exporter une campagne en JSON"""
+    try:
+        campaign = Campaign.query.get_or_404(campaign_id)
+        
+        if campaign.owner_id != current_user.numeric_id:
+            return jsonify({"success": False, "error": "Accès non autorisé"}), 403
+        
+        campaign_data = {
+            "id": campaign.id,
+            "title": campaign.title,
+            "description": campaign.description,
+            "content": campaign.content,
+            "campaign_type": campaign.campaign_type,
+            "status": getattr(campaign, 'status', 'active'),
+            "image_url": campaign.image_url,
+            "created_at": campaign.created_at.isoformat() if campaign.created_at else None,
+            "updated_at": campaign.updated_at.isoformat() if hasattr(campaign, 'updated_at') and campaign.updated_at else None,
+            "metadata": {
+                "exported_at": datetime.now().isoformat(),
+                "exported_by": current_user.email,
+                "platform": "NinjaLead.ai"
+            }
+        }
+        
+        # Ajouter les données de profil si disponibles
+        if hasattr(campaign, 'profile_data') and campaign.profile_data:
+            try:
+                import json
+                campaign_data["profile_data"] = json.loads(campaign.profile_data) if isinstance(campaign.profile_data, str) else campaign.profile_data
+            except:
+                campaign_data["profile_data"] = campaign.profile_data
+        
+        return jsonify(campaign_data)
+        
+    except Exception as e:
+        logging.error(f"Erreur export JSON campagne {campaign_id}: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+# Routes de publication sur réseaux sociaux
+@app.route('/api/campaigns/<int:campaign_id>/publish/<platform>', methods=['POST'])
+@login_required
+def publish_campaign_to_platform(campaign_id, platform):
+    """Publier une campagne sur une plateforme spécifique"""
+    try:
+        campaign = Campaign.query.get_or_404(campaign_id)
+        
+        if campaign.owner_id != current_user.numeric_id:
+            return jsonify({"success": False, "error": "Accès non autorisé"}), 403
+        
+        from social_media_integration import social_media
+        
+        # Préparer le contenu pour la publication
+        content = {
+            'text': f"{campaign.title}\n\n{campaign.description or campaign.content or ''}",
+            'image_url': campaign.image_url,
+            'link': request.url_root + f"campaigns/{campaign_id}"
+        }
+        
+        # Publier selon la plateforme
+        if platform == 'facebook':
+            post_id = social_media.publish_to_facebook(
+                content['text'],
+                content['image_url'],
+                content['link']
+            )
+        elif platform == 'instagram':
+            if not content['image_url']:
+                return jsonify({"success": False, "error": "Image requise pour Instagram"}), 400
+            post_id = social_media.publish_to_instagram(
+                content['image_url'],
+                content['text']
+            )
+        elif platform == 'linkedin':
+            post_id = social_media.publish_to_linkedin(
+                content['text'],
+                content['image_url'],
+                content['link']
+            )
+        elif platform == 'twitter':
+            # Limiter le texte pour Twitter
+            twitter_text = content['text'][:250] + "..." if len(content['text']) > 250 else content['text']
+            post_id = social_media.publish_to_twitter(
+                twitter_text,
+                content['image_url']
+            )
+        else:
+            return jsonify({"success": False, "error": "Plateforme non supportée"}), 400
+        
+        if post_id:
+            # Enregistrer la métrique de publication
+            log_metric(
+                'social_media_publish',
+                {
+                    'campaign_id': campaign_id,
+                    'platform': platform,
+                    'post_id': post_id,
+                    'content_length': len(content['text'])
+                },
+                category='social_media',
+                status='success',
+                customer_id=current_user.numeric_id
+            )
+            
+            return jsonify({
+                "success": True,
+                "platform": platform,
+                "post_id": post_id,
+                "message": f"Publication sur {platform} réussie"
+            })
+        else:
+            return jsonify({
+                "success": False,
+                "error": f"Échec de la publication sur {platform}. Vérifiez votre configuration."
+            }), 500
+        
+    except Exception as e:
+        logging.error(f"Erreur publication campagne {campaign_id} sur {platform}: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/campaigns/<int:campaign_id>/publish/multiple', methods=['POST'])
+@login_required
+def publish_campaign_multiple(campaign_id):
+    """Publier une campagne sur toutes les plateformes configurées"""
+    try:
+        campaign = Campaign.query.get_or_404(campaign_id)
+        
+        if campaign.owner_id != current_user.numeric_id:
+            return jsonify({"success": False, "error": "Accès non autorisé"}), 403
+        
+        from social_media_integration import social_media
+        
+        # Préparer le contenu
+        content = {
+            'text': f"{campaign.title}\n\n{campaign.description or campaign.content or ''}",
+            'image_url': campaign.image_url,
+            'link': request.url_root + f"campaigns/{campaign_id}"
+        }
+        
+        # Publier sur toutes les plateformes configurées
+        results = social_media.schedule_post(
+            social_media.enabled_platforms,
+            content
+        )
+        
+        # Compter les succès
+        success_count = sum(1 for result in results.values() if result.get('success'))
+        total_count = len(results)
+        
+        # Enregistrer les métriques
+        log_metric(
+            'social_media_bulk_publish',
+            {
+                'campaign_id': campaign_id,
+                'platforms': list(results.keys()),
+                'success_count': success_count,
+                'total_count': total_count,
+                'results': results
+            },
+            category='social_media',
+            status='success' if success_count > 0 else 'error',
+            customer_id=current_user.numeric_id
+        )
+        
+        return jsonify({
+            "success": success_count > 0,
+            "results": results,
+            "summary": f"{success_count}/{total_count} publications réussies"
+        })
+        
+    except Exception as e:
+        logging.error(f"Erreur publication multiple campagne {campaign_id}: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+# Routes email marketing
+@app.route('/api/campaigns/<int:campaign_id>/email/create', methods=['POST'])
+@login_required
+def create_email_campaign_from_campaign(campaign_id):
+    """Créer une campagne email basée sur une campagne marketing"""
+    try:
+        campaign = Campaign.query.get_or_404(campaign_id)
+        
+        if campaign.owner_id != current_user.numeric_id:
+            return jsonify({"success": False, "error": "Accès non autorisé"}), 403
+        
+        from email_marketing_integration import email_marketing
+        
+        if not email_marketing.enabled:
+            return jsonify({
+                "success": False,
+                "error": "Email marketing non configuré. Veuillez configurer SendGrid."
+            }), 400
+        
+        # Créer le contenu HTML de l'email
+        html_content = render_template(
+            'email/campaign_template.html',
+            campaign=campaign,
+            user_name=current_user.username or current_user.email
+        )
+        
+        # Créer la campagne email via SendGrid
+        email_campaign_id = email_marketing.create_email_campaign(
+            title=f"Campagne: {campaign.title}",
+            subject=campaign.title,
+            html_content=html_content,
+            list_ids=[],  # À configurer selon vos listes
+            sender_id=None
+        )
+        
+        if email_campaign_id:
+            return jsonify({
+                "success": True,
+                "email_campaign_id": email_campaign_id,
+                "message": "Campagne email créée avec succès"
+            })
+        else:
+            return jsonify({
+                "success": False,
+                "error": "Erreur lors de la création de la campagne email"
+            }), 500
+        
+    except Exception as e:
+        logging.error(f"Erreur création campagne email {campaign_id}: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route('/image_generation', methods=['GET', 'POST'])
 def image_generation():
     """Page de génération d'images marketing optimisées avec stockage persistant"""
