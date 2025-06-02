@@ -198,16 +198,17 @@ function addFeedbackStyles() {
     .ninja-check-label {
         display: flex;
         align-items: center;
-        font-weight: 500;
+        font-weight: 400;
         color: var(--bs-body-color);
         cursor: pointer;
-        padding: 0.25rem 0.4rem;
-        border-radius: 4px;
+        padding: 0.15rem 0.3rem;
+        border-radius: 3px;
         transition: all 0.3s ease;
         border: 1px solid transparent;
-        font-size: 0.75rem;
-        min-height: 28px;
-        line-height: 1.2;
+        font-size: 0.65rem;
+        min-height: 22px;
+        max-height: 22px;
+        line-height: 1.1;
     }
 
     .ninja-check-label:hover {
@@ -265,22 +266,24 @@ function addFeedbackStyles() {
     }
 
     .ninja-feedback-footer {
-        padding: 0.4rem 0.6rem;
+        padding: 0.3rem 0.4rem;
         border: none;
         background: rgba(255, 107, 53, 0.02);
         display: flex;
-        gap: 0.4rem;
-        min-height: 40px;
+        gap: 0.3rem;
+        min-height: 32px;
+        max-height: 32px;
     }
 
     .ninja-btn-primary {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         border: none;
-        border-radius: 4px;
-        padding: 0.3rem 0.6rem;
-        font-weight: 600;
-        font-size: 0.75rem;
-        min-height: 32px;
+        border-radius: 3px;
+        padding: 0.2rem 0.4rem;
+        font-weight: 500;
+        font-size: 0.65rem;
+        min-height: 24px;
+        max-height: 24px;
         color: white;
         transition: all 0.3s ease;
         display: flex;
@@ -314,13 +317,14 @@ function addFeedbackStyles() {
     .ninja-btn-secondary {
         background: transparent;
         border: 1px solid #6c757d;
-        border-radius: 4px;
-        padding: 0.3rem 0.6rem;
-        font-weight: 600;
+        border-radius: 3px;
+        padding: 0.2rem 0.4rem;
+        font-weight: 500;
         color: #6c757d;
         transition: all 0.3s ease;
-        font-size: 0.75rem;
-        min-height: 32px;
+        font-size: 0.65rem;
+        min-height: 24px;
+        max-height: 24px;
         display: flex;
         align-items: center;
     }
