@@ -113,28 +113,31 @@ function addFeedbackStyles() {
     <style>
     .ninja-feedback-modal {
         border: none;
-        border-radius: 8px;
-        box-shadow: 0 4px 16px rgba(255, 107, 53, 0.25);
-        background: rgba(26, 26, 26, 0.95);
-        backdrop-filter: blur(8px);
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+        background: rgba(26, 26, 26, 0.97);
+        backdrop-filter: blur(10px);
         overflow: hidden;
-        max-width: 340px;
-        width: 88vw;
-        max-height: 65vh;
-        border: 1px solid rgba(255, 107, 53, 0.25);
+        max-width: 320px;
+        width: 85vw;
+        max-height: 60vh;
+        border: 1px solid rgba(255, 107, 53, 0.4);
+        display: flex;
+        flex-direction: column;
     }
 
     .ninja-feedback-header {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         color: white;
-        border-radius: 8px 8px 0 0;
+        border-radius: 10px 10px 0 0;
         border: none;
-        padding: 0.6rem 0.8rem;
+        padding: 0.5rem 0.7rem;
         position: relative;
-        min-height: 38px;
+        min-height: 34px;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        flex-shrink: 0;
     }
 
     .ninja-feedback-header::before {
@@ -150,27 +153,28 @@ function addFeedbackStyles() {
 
     .ninja-feedback-title {
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         margin: 0;
         display: flex;
         align-items: center;
         position: relative;
         z-index: 1;
-        line-height: 1.2;
+        line-height: 1.1;
         flex: 1;
+        letter-spacing: 0.3px;
     }
 
     .ninja-btn-close {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.25);
         border-radius: 50%;
         border: none;
         color: white;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 12px;
         font-weight: bold;
-        transition: all 0.3s ease;
-        width: 32px;
-        height: 32px;
+        transition: all 0.2s ease;
+        width: 26px;
+        height: 26px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -184,23 +188,25 @@ function addFeedbackStyles() {
     }
 
     .ninja-feedback-body {
-        padding: 0.7rem;
+        padding: 0.5rem 0.6rem;
         background: rgba(26, 26, 26, 0.95);
-        max-height: 45vh;
+        max-height: 40vh;
         overflow-y: auto;
         flex: 1;
         color: #ffffff;
+        font-size: 0.8rem;
+        line-height: 1.3;
     }
 
     .ninja-feedback-types {
         display: flex;
         flex-direction: column;
-        gap: 0.3rem;
-        padding: 0.4rem;
-        background: rgba(255, 107, 53, 0.05);
-        border-radius: 6px;
+        gap: 0.2rem;
+        padding: 0.3rem;
+        background: rgba(255, 107, 53, 0.08);
+        border-radius: 5px;
         border-left: 2px solid #ff6b35;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.4rem;
     }
 
     .ninja-form-check {
@@ -291,11 +297,12 @@ function addFeedbackStyles() {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         border: none;
         border-radius: 4px;
-        padding: 0.2rem 0.6rem;
+        padding: 0.25rem 0.7rem;
         font-weight: 600;
-        font-size: 0.75rem;
-        min-height: 25px;
-        max-height: 25px;
+        font-size: 0.7rem;
+        min-height: 26px;
+        max-height: 26px;
+        line-height: 1;
         color: white;
         transition: all 0.3s ease;
         display: flex;
@@ -330,13 +337,14 @@ function addFeedbackStyles() {
         background: transparent;
         border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 4px;
-        padding: 0.2rem 0.6rem;
+        padding: 0.25rem 0.7rem;
         font-weight: 500;
         color: #ffffff;
         transition: all 0.3s ease;
-        font-size: 0.75rem;
-        min-height: 25px;
-        max-height: 25px;
+        font-size: 0.7rem;
+        min-height: 26px;
+        max-height: 26px;
+        line-height: 1;
         display: flex;
         align-items: center;
         justify-content: center;
