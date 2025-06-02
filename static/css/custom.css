@@ -64,7 +64,6 @@ body {
 
 /* Classes spécifiques */
 .card-boutique {
-    border-left: 4px solid var(--vibrant-orange);
     transition: transform 0.2s;
 }
 
@@ -73,7 +72,6 @@ body {
 }
 
 .card-niche {
-    border-left: 4px solid var(--vibrant-orange);
     transition: transform 0.2s;
 }
 
@@ -193,7 +191,6 @@ pre.bg-light {
 .value-map-item {
     margin-bottom: 0.75rem;
     padding: 0.5rem;
-    border-left: 3px solid var(--vibrant-orange);
     background-color: var(--pure-white);
     color: var(--carbon-black);
 }
