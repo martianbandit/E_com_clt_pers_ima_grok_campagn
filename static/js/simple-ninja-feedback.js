@@ -131,9 +131,9 @@ function addFeedbackStyles() {
         color: white;
         border-radius: 10px 10px 0 0;
         border: none;
-        padding: 0.6rem 0.8rem;
+        padding: 0.4rem 0.6rem;
         position: relative;
-        min-height: 40px;
+        min-height: 36px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -174,11 +174,11 @@ function addFeedbackStyles() {
         border: none;
         color: white;
         cursor: pointer;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: bold;
         transition: all 0.2s ease;
-        width: 28px;
-        height: 28px;
+        width: 26px;
+        height: 26px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -192,9 +192,9 @@ function addFeedbackStyles() {
     }
 
     .ninja-feedback-body {
-        padding: 0.5rem 0.6rem;
+        padding: 0.4rem 0.6rem;
         background: rgba(26, 26, 26, 0.95);
-        max-height: 40vh;
+        max-height: 42vh;
         overflow-y: auto;
         flex: 1;
         color: #ffffff;
@@ -205,12 +205,12 @@ function addFeedbackStyles() {
     .ninja-feedback-types {
         display: flex;
         flex-direction: column;
-        gap: 0.2rem;
-        padding: 0.3rem;
+        gap: 0.15rem;
+        padding: 0.25rem;
         background: rgba(255, 107, 53, 0.08);
         border-radius: 5px;
         border-left: 2px solid #ff6b35;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.3rem;
     }
 
     .ninja-form-check {
@@ -252,17 +252,18 @@ function addFeedbackStyles() {
         color: var(--bs-body-color);
         display: flex;
         align-items: center;
-        margin-bottom: 0.375rem;
-        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+        font-size: 0.8rem;
     }
 
     .ninja-input, .ninja-textarea {
         border: 1px solid #e9ecef;
-        border-radius: 6px;
-        padding: 0.5rem 0.75rem;
-        font-size: 0.875rem;
+        border-radius: 5px;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
         transition: all 0.3s ease;
         background: var(--bs-body-bg);
+        margin-bottom: 0.3rem;
     }
 
     .ninja-input:focus, .ninja-textarea:focus {
