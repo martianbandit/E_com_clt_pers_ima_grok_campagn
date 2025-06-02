@@ -21,42 +21,42 @@ def create_persona_from_text(
     Crée un nouveau persona à partir d'une description textuelle
     
     Args:
-        title: Titre du persona (ex: "Jeune maman urbaine", "Entrepreneur tech", "Retraité", "Etudiant" , etc.)
+        title: Titre du persona (ex: "Jeune maman urbaine")
         description: Description détaillée du persona
-        niche_market_id: ID de la niche de marché 
-        boutique_id: ID de la boutique 
-        additional_data: Données supplémentaires pour le persona 
+        niche_market_id: ID de la niche de marché (optionnel)
+        boutique_id: ID de la boutique (optionnel)
+        additional_data: Données supplémentaires pour le persona (optionnel)
         
     Returns:
         Instance de CustomerPersona créée
     """
     # Valeurs par défaut pour les données supplémentaires
     data = {
-        'titre': title,
+        'title': title,
         'description': description,
-        'objectif_principal': None,
-        'points_douleur': None,
-        'declencheurs_achat': None,
-        'tranche_age': None,
-        'affinite_genre': None,
-        'type_localisation': None,
-        'tranche_revenu': None,
-        'niveau_etudes': None,
-        'valeurs': None,
-        'centres_interet': None,
-        'mode_vie': None,
-        'traits_personnalite': None,
-        'habitudes_achat': None,
-        'affinites_marques': None,
-        'sensibilite_prix': None,
-        'facteurs_decision': None,
-        'canaux_preferes': None,
-        'preferences_contenu': None,
-        'comportement_reseaux_sociaux': None,
-        'attributs_specifiques': None,
-        'champs_personnalises': None,
-        'url_avatar': None,
-        'prompt_avatar': None
+        'primary_goal': None,
+        'pain_points': None,
+        'buying_triggers': None,
+        'age_range': None,
+        'gender_affinity': None,
+        'location_type': None,
+        'income_bracket': None,
+        'education_level': None,
+        'values': None,
+        'interests': None,
+        'lifestyle': None,
+        'personality_traits': None,
+        'buying_habits': None,
+        'brand_affinities': None,
+        'price_sensitivity': None,
+        'decision_factors': None,
+        'preferred_channels': None,
+        'content_preferences': None,
+        'social_media_behavior': None,
+        'niche_specific_attributes': None,
+        'custom_fields': None,
+        'avatar_url': None,
+        'avatar_prompt': None
     }
     
     # Mise à jour avec les données supplémentaires fournies
@@ -64,36 +64,7 @@ def create_persona_from_text(
         data.update(additional_data)
         
     # Création du persona
-    persona = CustomerPersona(
-        title=title,
-        description=description,
-        primary_goal=data.get('objectif_principal'),
-        pain_points=data.get('points_douleur'),
-        buying_triggers=data.get('declencheurs_achat'),
-        age_range=data.get('tranche_age'),
-        gender_affinity=data.get('affinite_genre'),
-        location_type=data.get('type_localisation'),
-        income_bracket=data.get('tranche_revenu'),
-        education_level=data.get('niveau_etudes'),
-        values=data.get('valeurs'),
-        interests=data.get('centres_interet'),
-        lifestyle=data.get('mode_vie'),
-        personality_traits=data.get('traits_personnalite'),
-        buying_habits=data.get('habitudes_achat'),
-        brand_affinities=data.get('affinites_marques'),
-        price_sensitivity=data.get('sensibilite_prix'),
-        decision_factors=data.get('facteurs_decision'),
-        preferred_channels=data.get('canaux_preferes'),
-        content_preferences=data.get('preferences_contenu'),
-        social_media_behavior=data.get('comportement_reseaux_sociaux'),
-        niche_specific_attributes=data.get('attributs_specifiques'),
-        custom_fields=data.get('champs_personnalises'),
-        avatar_url=data.get('url_avatar'),
-        avatar_prompt=data.get('prompt_avatar'),
-        niche_market_id=niche_market_id,
-        boutique_id=boutique_id
-    )
-    
+    persona = CustomerPersona.create_from_dict(data, niche_market_id, boutique_id)
     db.session.add(persona)
     db.session.commit()
     
@@ -191,11 +162,7 @@ async def enrich_persona_with_ai(
             response_format={"type": "json_object"}
         )
         
-        content = response.choices[0].message.content
-        if content:
-            enrichment = json.loads(content)
-        else:
-            return persona
+        enrichment = json.loads(response.choices[0].message.content)
         
         # Mettre à jour le persona avec les données enrichies
         for key, value in enrichment.items():

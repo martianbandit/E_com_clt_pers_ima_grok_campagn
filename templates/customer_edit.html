@@ -129,32 +129,6 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label for="objectif" class="form-label">Objectif du persona</label>
-                            <select class="form-select" id="objectif" name="objectif" onchange="handleObjectifChange(this)">
-                                <option value="">-- Sélectionnez un objectif --</option>
-                                <option value="Accroître sa productivité personnelle" {% if customer.objectif == 'Accroître sa productivité personnelle' %}selected{% endif %}>Accroître sa productivité personnelle</option>
-                                <option value="Améliorer son bien-être et sa santé" {% if customer.objectif == 'Améliorer son bien-être et sa santé' %}selected{% endif %}>Améliorer son bien-être et sa santé</option>
-                                <option value="Développer ses compétences professionnelles" {% if customer.objectif == 'Développer ses compétences professionnelles' %}selected{% endif %}>Développer ses compétences professionnelles</option>
-                                <option value="Optimiser ses finances personnelles" {% if customer.objectif == 'Optimiser ses finances personnelles' %}selected{% endif %}>Optimiser ses finances personnelles</option>
-                                <option value="Créer ou développer son entreprise" {% if customer.objectif == 'Créer ou développer son entreprise' %}selected{% endif %}>Créer ou développer son entreprise</option>
-                                <option value="Améliorer sa vie familiale et sociale" {% if customer.objectif == 'Améliorer sa vie familiale et sociale' %}selected{% endif %}>Améliorer sa vie familiale et sociale</option>
-                                <option value="Adopter un mode de vie plus durable" {% if customer.objectif == 'Adopter un mode de vie plus durable' %}selected{% endif %}>Adopter un mode de vie plus durable</option>
-                                <option value="Enrichir ses loisirs et hobbies" {% if customer.objectif == 'Enrichir ses loisirs et hobbies' %}selected{% endif %}>Enrichir ses loisirs et hobbies</option>
-                                <option value="Améliorer son apparence et style" {% if customer.objectif == 'Améliorer son apparence et style' %}selected{% endif %}>Améliorer son apparence et style</option>
-                                <option value="Optimiser son environnement de vie" {% if customer.objectif == 'Optimiser son environnement de vie' %}selected{% endif %}>Optimiser son environnement de vie</option>
-                                <option value="Développer ses relations sociales" {% if customer.objectif == 'Développer ses relations sociales' %}selected{% endif %}>Développer ses relations sociales</option>
-                                <option value="Voyager et découvrir de nouvelles cultures" {% if customer.objectif == 'Voyager et découvrir de nouvelles cultures' %}selected{% endif %}>Voyager et découvrir de nouvelles cultures</option>
-                                <option value="Gagner du temps dans ses tâches quotidiennes" {% if customer.objectif == 'Gagner du temps dans ses tâches quotidiennes' %}selected{% endif %}>Gagner du temps dans ses tâches quotidiennes</option>
-                                <option value="Acquérir de nouvelles connaissances" {% if customer.objectif == 'Acquérir de nouvelles connaissances' %}selected{% endif %}>Acquérir de nouvelles connaissances</option>
-                                <option value="Sauvegarder et organiser ses souvenirs" {% if customer.objectif == 'Sauvegarder et organiser ses souvenirs' %}selected{% endif %}>Sauvegarder et organiser ses souvenirs</option>
-                                <option value="custom">✏️ Saisir un objectif personnalisé...</option>
-                            </select>
-                            <input type="text" class="form-control mt-2 d-none" id="objectif_custom" name="objectif_custom" 
-                                   placeholder="Saisissez l'objectif personnalisé..." value="{{ customer.objectif if customer.objectif not in ['Accroître sa productivité personnelle', 'Améliorer son bien-être et sa santé', 'Développer ses compétences professionnelles', 'Optimiser ses finances personnelles', 'Créer ou développer son entreprise', 'Améliorer sa vie familiale et sociale', 'Adopter un mode de vie plus durable', 'Enrichir ses loisirs et hobbies', 'Améliorer son apparence et style', 'Optimiser son environnement de vie', 'Développer ses relations sociales', 'Voyager et découvrir de nouvelles cultures', 'Gagner du temps dans ses tâches quotidiennes', 'Acquérir de nouvelles connaissances', 'Sauvegarder et organiser ses souvenirs'] else '' }}">
-                            <small class="form-text text-muted">L'objectif guide la génération du persona et les stratégies marketing</small>
-                        </div>
-                        
-                        <div class="mb-3">
                             <label for="preferred_device" class="form-label">Appareil préféré</label>
                             <input type="text" class="form-control" id="preferred_device" name="preferred_device" value="{{ customer.preferred_device }}">
                         </div>
@@ -221,37 +195,4 @@
         </div>
     </div>
 </div>
-
-<script>
-function handleObjectifChange(selectElement) {
-    const customInput = document.getElementById('objectif_custom');
-    
-    if (selectElement.value === 'custom') {
-        customInput.classList.remove('d-none');
-        customInput.focus();
-        customInput.setAttribute('required', 'required');
-    } else {
-        customInput.classList.add('d-none');
-        customInput.removeAttribute('required');
-        customInput.value = '';
-    }
-}
-
-// Au chargement de la page, vérifier si un objectif personnalisé existe
-document.addEventListener('DOMContentLoaded', function() {
-    const selectElement = document.getElementById('objectif');
-    const customInput = document.getElementById('objectif_custom');
-    
-    // Si le champ personnalisé a une valeur et qu'elle n'est pas dans les options prédéfinies
-    if (customInput.value && customInput.value.trim() !== '') {
-        const predefinedOptions = Array.from(selectElement.options).map(opt => opt.value);
-        if (!predefinedOptions.includes(customInput.value)) {
-            selectElement.value = 'custom';
-            customInput.classList.remove('d-none');
-            customInput.setAttribute('required', 'required');
-        }
-    }
-});
-</script>
-
 {% endblock %}

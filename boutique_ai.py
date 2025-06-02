@@ -49,7 +49,7 @@ def get_prompt_language():
         # Récupérer la langue de la session si disponible
         if session and 'language' in session:
             return session['language']
-        return 'fr'  # Langue par défaut
+        return 'en'  # Langue par défaut
     except Exception as e:
         logger.warning(f"Erreur lors de la récupération de la langue: {e}")
         return 'en'  # Fallback à l'anglais en cas d'erreur
@@ -58,7 +58,7 @@ def get_prompt_language():
 PROMPT_TRANSLATIONS = {
     # Prompts pour la génération de personas clients
     "customer_persona": {
-        "fr": """
+        "en": """
         Create a detailed customer persona for {name}, a {age}-year-old {gender} from {location}.
 
         Include the following sections in your response:
@@ -103,89 +103,49 @@ PROMPT_TRANSLATIONS = {
         "fr": """
         Créez un persona client détaillé pour {name}, {gender} de {age} ans vivant à {location}.
 
-        **STRUCTURE OBLIGATOIRE - Incluez ces sections dans votre réponse :**
+        Incluez les sections suivantes dans votre réponse:
 
-        1. **CONTEXTE & OBJECTIF BUSINESS**
-        - Rappel de l'objectif de ce persona pour l'entreprise
-        - Contexte d'utilisation dans la stratégie marketing
-        - Lien avec les objectifs commerciaux de la niche {niche}
+        1. CONTEXTE & VUE D'ENSEMBLE
+        - Bref récit de fond (2-3 phrases)
+        - Traits de personnalité et perspective générale
+        - Situation de vie et défis quotidiens
 
-        2. **PORTRAIT DÉMOGRAPHIQUE COMPLET**
-        - Bref récit de fond personnel (2-3 phrases)
-        - Situation familiale, professionnelle et géographique
-        - Traits de personnalité dominants et perspective générale
-        - Mode de vie et défis quotidiens
+        2. PSYCHOLOGIE D'ACHAT
+        - Motivations principales pour acheter dans la niche {niche}
+        - Points de douleur et frustrations lors des achats
+        - Facteurs de décision (sensibilité au prix, focus sur la qualité, etc.)
+        - Comment ils découvrent de nouveaux produits (réseaux sociaux, bouche à oreille, etc.)
 
-        3. **OBJECTIFS & ASPIRATIONS DU PERSONA**
-        - Objectifs personnels en lien avec la niche {niche}
-        - Ce qu'il/elle cherche à accomplir ou améliorer
-        - Aspirations à court et moyen terme
-        - Comment votre entreprise peut l'aider à atteindre ses objectifs
-
-        4. **DÉFIS & POINTS DOULOUREUX**
-        - Principales frustrations dans la niche {niche}
-        - Obstacles rencontrés lors des achats
-        - Problèmes non résolus que votre offre pourrait adresser
-        - Facteurs de stress ou d'inquiétude liés à ses besoins
-
-        5. **ATTENTES & EXIGENCES SPÉCIFIQUES**
-        - Ce qu'il/elle attend d'un produit/service dans cette niche
-        - Standards de qualité et critères de sélection
-        - Niveau de service client espéré
-        - Expérience utilisateur idéale
-
-        6. **MOTIVATIONS & FREINS À L'ACHAT**
-        - Facteurs qui l'incitent à acheter (déclencheurs positifs)
-        - Ce qui peut l'empêcher d'acheter (objections et barrières)
-        - Émotions qui influencent sa décision d'achat
-        - Sensibilité au prix et budget disponible
-
-        7. **CANAUX DE COMMUNICATION & DÉCOUVERTE**
-        - Réseaux sociaux utilisés et fréquence d'usage
-        - Sources d'information privilégiées
-        - Comment il/elle découvre de nouveaux produits
-        - Préférences de contact et moments opportuns
-
-        8. **HABITUDES D'ACHAT & COMPORTEMENT**
-        - Processus de décision typique
-        - Fréquence d'achat et habitudes de dépenses
-        - Influence des avis et recommandations
+        3. APERÇU DU SEGMENT DE MARCHÉ
+        - Où ils se situent dans le marché global de {niche}
+        - Préférences spécifiques dans la catégorie {niche}
+        - Fréquence d'achat typique et habitudes de dépenses
         - Affinités de marque et caractéristiques de fidélité
+
+        4. RÉCEPTIVITÉ AU CONTENU & MARKETING
+        - Types de messages marketing qui résonnent le plus
+        - Canaux de communication préférés
+        - Préférences de format de contenu (vidéo, texte, visuel, etc.)
+        - Ton de voix qui les attire
                 
-        **INFORMATIONS CONTEXTUELLES À INTÉGRER :**
-        - Intérêts personnels: {interests}
-        - Objectif principal: {objectif}
-        - Historique d'achats: {purchases}
+        CONTEXTE SUPPLÉMENTAIRE:
+        - Intérêts: {interests}
+        - Achats récents: {purchases}
         
-        **DIRECTIVES DE RÉDACTION OBLIGATOIRES :**
-        - **LANGUE : Rédigez ENTIÈREMENT en français**
-        - Créez un persona réaliste et nuancé (évitez les stéréotypes)
+        DIRECTIVES DE STYLE:
+        - Écrivez de manière claire et perspicace
+        - Créez une personne réaliste et tridimensionnelle (pas un stéréotype)
         - Incluez des détails spécifiques et mémorables qui donnent vie au persona
-        - Rendez le persona actionnable pour les équipes marketing et ventes
         - Faites en sorte que le persona soit unique et distinct des autres profils clients standards
         
         {existing_personas_summary}
         {boutique_context}
-
-        
-        AVANT DE FINALISER VOTRE PERSONA, VÉRIFIEZ SI VOUS AVEZ BIEN RÉPONDU AUX ÉLÉMENTS DE LA LISTE CI-DESSOUS :**
-
-        - [ ] Rappeler le contexte du persona afin de garder en tête l'objectif de cet exercice pour votre entreprise
-        - [ ] Décrire brièvement le portrait démographique du persona en intégrant une photo réaliste et en utilisant des informations pertinentes pour votre entreprise et son objectif (vendre un produit ou un service, développer votre notoriété, trouver des partenaires, etc.)
-        - [ ] Renseigner les objectifs du persona en lien avec l'objectif de votre entreprise
-        - [ ] Lister les défis de votre persona toujours en lien avec l'objectif de votre entreprise pour constater si vous pouvez y répondre avec votre offre
-        - [ ] Nommer les attentes de votre persona en fonction de votre entreprise et de son produit ou de son service
-        - [ ] Intégrer les motivations et les freins de votre persona à utiliser votre produit ou service
-        - [ ] Définir les canaux de communication utilisés par le persona pour savoir comment le joindre
-        - [ ] Est-ce que je possède toutes les informations utiles sur mon persona pour développer ou adapter mon produit ou mon service en fonction de sa réalité et de ses besoins ?
-        - [ ] Est-ce que le texte du persona que je vais générer sera en français? (OUI! Il le faut!)
-        
         """
     },
     
     # Prompts pour la génération d'avatar
     "avatar_generation": {
-        "fr": """
+        "en": """
         Create a detailed prompt for generating a profile picture avatar for this specific customer persona:
         
         Customer Name: {name}
@@ -238,7 +198,7 @@ PROMPT_TRANSLATIONS = {
     
     # Prompts pour la génération de contenu marketing
     "marketing_content": {
-        "fr": """
+        "en": """
         Create ONE {campaign_type} marketing content piece for {name} based on their customer profile:
         
         CUSTOMER PROFILE:
@@ -315,7 +275,7 @@ PROMPT_TRANSLATIONS = {
     
     # Prompt pour la génération d'image de campagne
     "campaign_image": {
-        "fr": """
+        "en": """
         Create a detailed image prompt for a marketing campaign in the {niche} niche targeted at {customer_name}.
         
         CAMPAIGN CONTEXT:
@@ -368,7 +328,7 @@ PROMPT_TRANSLATIONS = {
     
     # Prompts pour la génération d'attributs spécifiques à la niche
     "niche_attributes": {
-        "fr": """
+        "en": """
         Based on this customer persona in the {niche} niche, create a JSON object with specialized attributes 
         specific to this niche and customer. Include:
         
@@ -423,7 +383,7 @@ PROMPT_TRANSLATIONS = {
     
     # Prompts pour la génération d'historique d'achat
     "purchase_history": {
-        "fr": """
+        "en": """
         Based on this customer persona in the {niche} niche, create a JSON array of 3-5 products they have 
         purchased in the past. Each product should include:
         
@@ -498,7 +458,7 @@ def get_translated_prompt(prompt_key, language=None, **kwargs):
     
     # Fallback à l'anglais si la langue n'est pas supportée
     if language not in PROMPT_TRANSLATIONS.get(prompt_key, {}):
-        language = 'fr'
+        language = 'en'
     
     prompt_template = PROMPT_TRANSLATIONS.get(prompt_key, {}).get(language, "")
     
@@ -747,7 +707,6 @@ async def generate_enhanced_customer_data_async(
     gender = customer.get("gender", "Unknown")
     language = customer.get("language", "English")
     interests = ", ".join(customer.get("interests", []))
-    objectif = customer.get("objectif", "Non spécifié")
     purchase_history = customer.get("purchase_history", [])
     
     # Format purchase history for prompt
@@ -794,7 +753,6 @@ async def generate_enhanced_customer_data_async(
         location=location,
         niche=niche,
         interests=interests,
-        objectif=objectif,
         purchases=purchase_str,
         existing_personas_summary=existing_personas_summary,
         boutique_context=boutique_context

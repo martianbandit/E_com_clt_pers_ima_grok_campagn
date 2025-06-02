@@ -337,7 +337,6 @@ class Customer(db.Model):
     language = db.Column(db.String(50), nullable=True)  # Langue originale du client
     preferred_language = db.Column(db.String(10), nullable=True)  # Langue préférée (ISO code: fr, en, es, etc.)
     interests = db.Column(db.Text, nullable=True)  # Stored as comma-separated values
-    objectif = db.Column(db.String(255), nullable=True)  # Objectif principal du persona pour guider la génération
     preferred_device = db.Column(db.String(50), nullable=True)
     income_level = db.Column(db.String(50), nullable=True)  # budget, middle, affluent, luxury
     education = db.Column(db.String(50), nullable=True)  # high school, bachelor, master, etc.
@@ -519,7 +518,6 @@ class Campaign(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Foreign keys
-    owner_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
     # Relation sans backref pour éviter les conflits
     campaign_customer = db.relationship('Customer', foreign_keys=[customer_id], lazy=True)
