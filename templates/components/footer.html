@@ -128,13 +128,13 @@
                 <h6 class="text-light mb-3 mt-4 fw-bold">{{ _('Suivez-nous') }}</h6>
                 <div class="social-icons-container">
                     <a href="https://www.linkedin.com/company/markeasy-ai" target="_blank" class="social-icon-orange" title="LinkedIn">
-                        <i class="fab fa-linkedin-in"></i>
+                        <span class="social-text">in</span>
                     </a>
                     <a href="https://www.reddit.com/r/markeasy" target="_blank" class="social-icon-orange" title="Reddit">
-                        <i class="fab fa-reddit-alien"></i>
+                        <span class="social-text">R</span>
                     </a>
                     <a href="https://www.pinterest.com/markeasyai" target="_blank" class="social-icon-orange" title="Pinterest">
-                        <i class="fab fa-pinterest-p"></i>
+                        <span class="social-text">P</span>
                     </a>
                 </div>
             </div>
@@ -207,10 +207,12 @@
         text-decoration: none !important;
     }
     
-    .social-icon-orange i {
+    .social-icon-orange .social-text {
         color: #1a1a1a !important;
-        font-size: 1.4rem !important;
+        font-size: 1.6rem !important;
+        font-weight: bold !important;
         line-height: 1 !important;
+        text-transform: lowercase;
     }
     
     .social-icon-neon svg {
