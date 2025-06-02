@@ -52,11 +52,11 @@
     
     /* Optimisation du slogan de marque */
     .brand-slogan {
-        font-size: 0.65rem !important;
+        font-size: 0.55rem !important;
         font-style: italic !important;
         color: #666 !important;
-        line-height: 1.2 !important;
-        max-width: 150px !important;
+        line-height: 1.1 !important;
+        max-width: 140px !important;
         word-wrap: break-word !important;
         white-space: normal !important;
         margin-top: 2px !important;
