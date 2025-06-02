@@ -2104,6 +2104,119 @@ def get_storage_statistics():
     result = integrated_image_service.get_storage_statistics()
     return jsonify(result)
 
+@app.route('/admin/database-replication')
+@login_required
+def database_replication_status():
+    """Page d'administration de la réplication de base de données"""
+    if current_user.role != 'admin':
+        flash('Accès administrateur requis', 'error')
+        return redirect(url_for('dashboard'))
+    
+    try:
+        from database_replication_setup import db_replication
+        
+        # Obtenir les statistiques de réplication
+        db_stats = db_replication.get_database_stats()
+        replication_test = db_replication.test_replication_lag()
+        
+        # Analytics récentes
+        user_analytics = db_replication.execute_analytics_query(
+            "SELECT COUNT(*) as total_users, COUNT(CASE WHEN last_login_at > NOW() - INTERVAL '7 days' THEN 1 END) as active_users FROM users"
+        )
+        
+        campaign_analytics = db_replication.execute_analytics_query(
+            "SELECT COUNT(*) as total_campaigns, COUNT(CASE WHEN created_at > NOW() - INTERVAL '30 days' THEN 1 END) as recent_campaigns FROM campaign"
+        )
+        
+        return render_template('admin/database_replication.html',
+                             db_stats=db_stats,
+                             replication_test=replication_test,
+                             user_analytics=user_analytics[0] if user_analytics else None,
+                             campaign_analytics=campaign_analytics[0] if campaign_analytics else None)
+        
+    except Exception as e:
+        logging.error(f"Erreur réplication DB: {str(e)}")
+        flash(f'Erreur lors de la récupération des statistiques: {str(e)}', 'danger')
+        return redirect(url_for('dashboard'))
+
+@app.route('/admin/migrations')
+@login_required
+def migrations_management():
+    """Page d'administration des migrations de base de données"""
+    if current_user.role != 'admin':
+        flash('Accès administrateur requis', 'error')
+        return redirect(url_for('dashboard'))
+    
+    try:
+        from automated_migration_system import MigrationManager
+        
+        manager = MigrationManager()
+        migration_status = manager.get_migration_status()
+        schema_validation = manager.validate_database_schema()
+        
+        return render_template('admin/migrations.html',
+                             migration_status=migration_status,
+                             schema_validation=schema_validation)
+        
+    except Exception as e:
+        logging.error(f"Erreur migrations: {str(e)}")
+        flash(f'Erreur lors de la récupération des migrations: {str(e)}', 'danger')
+        return redirect(url_for('dashboard'))
+
+@app.route('/api/admin/run-migrations', methods=['POST'])
+@login_required
+def run_migrations_api():
+    """API pour exécuter les migrations en attente"""
+    if current_user.role != 'admin':
+        return jsonify({"success": False, "error": "Accès administrateur requis"}), 403
+    
+    try:
+        from automated_migration_system import MigrationManager
+        
+        manager = MigrationManager()
+        results = manager.run_pending_migrations()
+        
+        # Log de l'activité d'administration
+        activity = UserActivity.log_activity(
+            user_id=current_user.id,
+            activity_type='admin_migration',
+            description=f'Exécution de migrations: {len(results["applied"])} appliquées, {len(results["failed"])} échecs',
+            ip_address=request.remote_addr,
+            user_agent=request.headers.get('User-Agent')
+        )
+        
+        return jsonify({
+            "success": len(results["failed"]) == 0,
+            "results": results
+        })
+        
+    except Exception as e:
+        logging.error(f"Erreur exécution migrations: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/admin/database-stats')
+@login_required
+def database_stats_api():
+    """API pour les statistiques de base de données en temps réel"""
+    if current_user.role != 'admin':
+        return jsonify({"success": False, "error": "Accès administrateur requis"}), 403
+    
+    try:
+        from database_replication_setup import db_replication
+        
+        stats = db_replication.get_database_stats()
+        replication_test = db_replication.test_replication_lag()
+        
+        return jsonify({
+            "success": True,
+            "database_stats": stats,
+            "replication_status": replication_test
+        })
+        
+    except Exception as e:
+        logging.error(f"Erreur stats DB: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route('/image_generation', methods=['GET', 'POST'])
 def image_generation():
     """Page de génération d'images marketing optimisées avec stockage persistant"""

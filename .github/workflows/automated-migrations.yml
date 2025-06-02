@@ -1,0 +1,214 @@
+name: Automated Database Migrations
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'migrations/**'
+      - 'models.py'
+      - 'automated_migration_system.py'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'migrations/**'
+      - 'models.py'
+
+jobs:
+  validate-migrations:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_ninjalead
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install sqlalchemy psycopg2-binary python-dotenv
+    
+    - name: Test database connection
+      env:
+        DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_ninjalead
+      run: |
+        python -c "
+        import os
+        from sqlalchemy import create_engine, text
+        engine = create_engine(os.environ['DATABASE_URL'])
+        with engine.connect() as conn:
+            result = conn.execute(text('SELECT version()'))
+            print('Database connection successful:', result.fetchone()[0])
+        "
+    
+    - name: Validate migration files
+      run: |
+        python -c "
+        import sys
+        from pathlib import Path
+        
+        migrations_dir = Path('migrations')
+        if not migrations_dir.exists():
+            print('Creating migrations directory')
+            migrations_dir.mkdir()
+        
+        migration_files = list(migrations_dir.glob('*.py'))
+        print(f'Found {len(migration_files)} migration files')
+        
+        for file in migration_files:
+            if not file.name.startswith(('add_', 'migrate_')):
+                print(f'Warning: {file.name} does not follow naming convention')
+        "
+    
+    - name: Dry run migrations
+      env:
+        DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_ninjalead
+      run: |
+        python automated_migration_system.py
+    
+    - name: Validate schema integrity
+      env:
+        DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_ninjalead
+      run: |
+        python -c "
+        from automated_migration_system import MigrationManager
+        manager = MigrationManager()
+        status = manager.get_migration_status()
+        validation = manager.validate_database_schema()
+        
+        print('Migration Status:')
+        print(f'  Applied: {status[\"total_applied\"]}')
+        print(f'  Pending: {status[\"total_pending\"]}')
+        print(f'  Available: {status[\"total_available\"]}')
+        
+        print(f'Schema Validation: {\"✓\" if validation[\"valid\"] else \"✗\"}')
+        if not validation['valid']:
+            print(f'Missing tables: {validation.get(\"missing_tables\", [])}')
+            sys.exit(1)
+        "
+
+  apply-migrations-staging:
+    needs: validate-migrations
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install sqlalchemy psycopg2-binary python-dotenv
+    
+    - name: Apply migrations to staging
+      env:
+        DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+      run: |
+        if [ -z "$DATABASE_URL" ]; then
+          echo "STAGING_DATABASE_URL secret not configured"
+          exit 1
+        fi
+        python automated_migration_system.py
+    
+    - name: Notify staging deployment
+      if: success()
+      run: |
+        echo "Migrations applied successfully to staging environment"
+
+  apply-migrations-production:
+    needs: validate-migrations
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install sqlalchemy psycopg2-binary python-dotenv
+    
+    - name: Backup database before migration
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      run: |
+        if [ -z "$DATABASE_URL" ]; then
+          echo "DATABASE_URL secret not configured"
+          exit 1
+        fi
+        
+        # Create backup using our backup system
+        python -c "
+        from backup_manager import backup_manager
+        result = backup_manager.create_backup()
+        if not result:
+            print('Backup failed - aborting migration')
+            exit(1)
+        print('Database backup created successfully')
+        "
+    
+    - name: Apply migrations to production
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      run: |
+        python automated_migration_system.py
+    
+    - name: Verify production health
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      run: |
+        python -c "
+        from automated_migration_system import MigrationManager
+        manager = MigrationManager()
+        validation = manager.validate_database_schema()
+        
+        if not validation['valid']:
+            print('Production schema validation failed!')
+            print(f'Errors: {validation}')
+            exit(1)
+        
+        print('Production database is healthy after migration')
+        "
+    
+    - name: Notify production deployment
+      if: success()
+      run: |
+        echo "Migrations applied successfully to production environment"
+    
+    - name: Rollback on failure
+      if: failure()
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      run: |
+        echo "Migration failed - consider manual rollback if needed"
+        # Note: Automatic rollback is complex and should be handled manually
+        # The backup created earlier can be used for restoration
