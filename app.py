@@ -46,6 +46,17 @@ try:
 except ImportError as e:
     print(f"Module CDN non disponible: {e}")
     cdn_available = False
+
+# Optimisation d'images et progressive loading
+try:
+    from image_optimization import init_image_optimization, image_optimizer
+    from progressive_loading import init_progressive_loading, progressive_loader
+    image_optimization_available = True
+    progressive_loading_available = True
+except ImportError as e:
+    print(f"Modules optimisation frontend non disponibles: {e}")
+    image_optimization_available = False
+    progressive_loading_available = False
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, g
@@ -5283,10 +5294,28 @@ def optimize_assets():
 if cdn_available:
     try:
         init_static_cdn(app)
-        logger.info("Système CDN initialisé avec succès")
+        print("Système CDN initialisé avec succès")
     except Exception as e:
-        logger.error(f"Erreur initialisation CDN: {e}")
+        print(f"Erreur initialisation CDN: {e}")
         cdn_available = False
+
+# Initialisation de l'optimisation d'images
+if image_optimization_available:
+    try:
+        init_image_optimization(app)
+        print("Optimisation d'images initialisée avec succès")
+    except Exception as e:
+        print(f"Erreur initialisation optimisation images: {e}")
+        image_optimization_available = False
+
+# Initialisation du progressive loading
+if progressive_loading_available:
+    try:
+        init_progressive_loading(app)
+        print("Progressive loading initialisé avec succès")
+    except Exception as e:
+        print(f"Erreur initialisation progressive loading: {e}")
+        progressive_loading_available = False
 
 if __name__ == '__main__':
     with app.app_context():

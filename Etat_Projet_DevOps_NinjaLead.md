@@ -180,9 +180,9 @@
 
 #### 3.3.2 Frontend Optimizations
 - ✅ **Minification** JS/CSS automatique (avec compression gzip)
-- ❌ **Image optimization** pipeline
-- ❌ **Progressive loading** pour grandes listes
-- ❌ **Service Worker** pour cache offline
+- ✅ **Image optimization** pipeline (WebP, redimensionnement, compression)
+- ✅ **Progressive loading** pour grandes listes (pagination intelligente)
+- ✅ **Service Worker** pour cache offline (v1.2.0 avec stratégies avancées)
 
 ### 3.4 Nouvelles Fonctionnalités (Priorité MOYENNE)
 

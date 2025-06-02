@@ -1,78 +1,108 @@
 /**
  * Service Worker pour NinjaLead.ai
- * Gère le cache offline et améliore les performances
+ * Gestion du cache offline et optimisation des performances
  */
 
-const CACHE_NAME = 'ninjalead-cache-v1';
-const OFFLINE_PAGE = '/offline';
+const CACHE_NAME = 'ninjalead-v1.2.0';
+const STATIC_CACHE = `${CACHE_NAME}-static`;
+const DYNAMIC_CACHE = `${CACHE_NAME}-dynamic`;
+const API_CACHE = `${CACHE_NAME}-api`;
 
-// Ressources à mettre en cache immédiatement
-const STATIC_CACHE_URLS = [
+// Assets statiques à mettre en cache immédiatement
+const STATIC_ASSETS = [
     '/',
-    '/static/css/custom.css',
-    '/static/js/loading.js',
-    '/static/js/progressive-loading.js',
-    '/static/images/ninja-logo.png',
-    '/static/images/ninja-meditation.png',
-    '/offline'
+    '/static/css/style.css',
+    '/static/css/bootstrap.min.css',
+    '/static/js/app.js',
+    '/static/js/bootstrap.bundle.min.js',
+    '/static/images/logo.png',
+    '/static/images/ninja-avatar.png',
+    '/offline.html'
 ];
 
-// Ressources dynamiques à mettre en cache lors de l'accès
-const DYNAMIC_CACHE_PATTERNS = [
-    /^\/dashboard/,
-    /^\/customers/,
-    /^\/campaigns/,
-    /^\/products/,
-    /^\/static\//,
-    /^\/images\//
+// URLs d'API à mettre en cache
+const API_ROUTES = [
+    '/api/dashboard-stats',
+    '/api/campaigns',
+    '/api/boutiques',
+    '/health'
 ];
 
-// Installation du Service Worker
+// Stratégies de cache
+const CACHE_STRATEGIES = {
+    // Cache First pour les assets statiques
+    'cache-first': [
+        /\.(?:css|js|png|jpg|jpeg|svg|gif|woff|woff2|ttf|eot|ico)$/,
+        /^\/static\//,
+        /^\/assets\//,
+        /^\/optimized-images\//
+    ],
+    
+    // Network First pour les pages HTML
+    'network-first': [
+        /\.html$/,
+        /^\/dashboard/,
+        /^\/campaigns/,
+        /^\/boutiques/,
+        /^\/admin/
+    ],
+    
+    // Stale While Revalidate pour l'API
+    'stale-while-revalidate': [
+        /^\/api\//,
+        /^\/health/
+    ]
+};
+
+/**
+ * Installation du Service Worker
+ */
 self.addEventListener('install', event => {
-    console.log('Service Worker: Installation en cours...');
+    console.log('[SW] Installation du Service Worker v1.2.0');
     
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                console.log('Service Worker: Mise en cache des ressources statiques');
-                return cache.addAll(STATIC_CACHE_URLS);
-            })
-            .then(() => {
-                console.log('Service Worker: Installation terminée');
-                return self.skipWaiting();
-            })
-            .catch(err => {
-                console.error('Service Worker: Erreur d\'installation', err);
-            })
+        Promise.all([
+            // Cache des assets statiques
+            caches.open(STATIC_CACHE).then(cache => {
+                console.log('[SW] Mise en cache des assets statiques');
+                return cache.addAll(STATIC_ASSETS);
+            }),
+            
+            // Cache des données API critiques
+            cacheAPIData()
+        ]).then(() => {
+            console.log('[SW] Installation terminée');
+            return self.skipWaiting();
+        }).catch(error => {
+            console.error('[SW] Erreur lors de l\'installation:', error);
+        })
     );
 });
 
-// Activation du Service Worker
+/**
+ * Activation du Service Worker
+ */
 self.addEventListener('activate', event => {
-    console.log('Service Worker: Activation en cours...');
+    console.log('[SW] Activation du Service Worker');
     
     event.waitUntil(
-        caches.keys()
-            .then(cacheNames => {
-                return Promise.all(
-                    cacheNames.map(cacheName => {
-                        if (cacheName !== CACHE_NAME) {
-                            console.log('Service Worker: Suppression ancien cache', cacheName);
-                            return caches.delete(cacheName);
-                        }
-                    })
-                );
-            })
-            .then(() => {
-                console.log('Service Worker: Activation terminée');
-                return self.clients.claim();
-            })
+        Promise.all([
+            // Nettoyage des anciens caches
+            cleanupOldCaches(),
+            
+            // Prise de contrôle immédiate
+            self.clients.claim()
+        ]).then(() => {
+            console.log('[SW] Activation terminée');
+        })
     );
 });
 
-// Interception des requêtes réseau
+/**
+ * Interception des requêtes réseau
+ */
 self.addEventListener('fetch', event => {
-    const request = event.request;
+    const { request } = event;
     const url = new URL(request.url);
     
     // Ignorer les requêtes non-HTTP
@@ -80,142 +110,192 @@ self.addEventListener('fetch', event => {
         return;
     }
     
-    // Stratégie Cache First pour les ressources statiques
-    if (request.method === 'GET' && isStaticResource(url.pathname)) {
-        event.respondWith(cacheFirstStrategy(request));
-        return;
-    }
+    // Déterminer la stratégie de cache
+    const strategy = getCacheStrategy(request.url);
     
-    // Stratégie Network First pour les pages dynamiques
-    if (request.method === 'GET' && isDynamicPage(url.pathname)) {
-        event.respondWith(networkFirstStrategy(request));
-        return;
+    switch (strategy) {
+        case 'cache-first':
+            event.respondWith(cacheFirstStrategy(request));
+            break;
+        case 'network-first':
+            event.respondWith(networkFirstStrategy(request));
+            break;
+        case 'stale-while-revalidate':
+            event.respondWith(staleWhileRevalidateStrategy(request));
+            break;
+        default:
+            event.respondWith(networkOnlyStrategy(request));
     }
-    
-    // Stratégie Network Only pour les API et POST/PUT/DELETE
-    if (request.method !== 'GET' || url.pathname.startsWith('/api/')) {
-        event.respondWith(networkOnlyStrategy(request));
-        return;
-    }
-    
-    // Par défaut, essayer le réseau puis le cache
-    event.respondWith(networkFirstStrategy(request));
 });
 
 /**
- * Vérifie si une URL correspond à une ressource statique
- */
-function isStaticResource(pathname) {
-    return pathname.startsWith('/static/') || 
-           pathname.startsWith('/images/') ||
-           pathname.endsWith('.js') ||
-           pathname.endsWith('.css') ||
-           pathname.endsWith('.png') ||
-           pathname.endsWith('.jpg') ||
-           pathname.endsWith('.jpeg') ||
-           pathname.endsWith('.webp') ||
-           pathname.endsWith('.svg');
-}
-
-/**
- * Vérifie si une URL correspond à une page dynamique cacheable
- */
-function isDynamicPage(pathname) {
-    return DYNAMIC_CACHE_PATTERNS.some(pattern => pattern.test(pathname));
-}
-
-/**
- * Stratégie Cache First: cache d'abord, réseau en fallback
+ * Stratégie Cache First
  */
 async function cacheFirstStrategy(request) {
     try {
-        // Chercher dans le cache
         const cachedResponse = await caches.match(request);
         if (cachedResponse) {
             return cachedResponse;
         }
         
-        // Si pas en cache, aller sur le réseau
         const networkResponse = await fetch(request);
-        
-        // Mettre en cache si succès
         if (networkResponse.ok) {
-            const cache = await caches.open(CACHE_NAME);
+            const cache = await caches.open(STATIC_CACHE);
             cache.put(request, networkResponse.clone());
         }
         
         return networkResponse;
-        
     } catch (error) {
-        console.error('Service Worker: Erreur Cache First', error);
-        return caches.match('/offline') || new Response('Hors ligne', { status: 503 });
+        console.error('[SW] Cache First failed:', error);
+        return getCachedFallback(request);
     }
 }
 
 /**
- * Stratégie Network First: réseau d'abord, cache en fallback
+ * Stratégie Network First
  */
 async function networkFirstStrategy(request) {
     try {
-        // Essayer le réseau d'abord
         const networkResponse = await fetch(request);
         
-        // Mettre en cache si succès et méthode GET
-        if (networkResponse.ok && request.method === 'GET') {
-            const cache = await caches.open(CACHE_NAME);
+        if (networkResponse.ok) {
+            const cache = await caches.open(DYNAMIC_CACHE);
             cache.put(request, networkResponse.clone());
         }
         
         return networkResponse;
-        
     } catch (error) {
-        console.log('Service Worker: Réseau indisponible, recherche en cache');
+        console.log('[SW] Network failed, trying cache:', request.url);
         
-        // Chercher dans le cache
         const cachedResponse = await caches.match(request);
         if (cachedResponse) {
             return cachedResponse;
         }
         
-        // Page offline par défaut
-        return caches.match('/offline') || new Response('Hors ligne', { status: 503 });
+        // Page offline pour les navigations
+        if (request.mode === 'navigate') {
+            return caches.match('/offline.html');
+        }
+        
+        return new Response('Contenu non disponible hors ligne', {
+            status: 503,
+            statusText: 'Service Unavailable'
+        });
     }
 }
 
 /**
- * Stratégie Network Only: réseau uniquement
+ * Stratégie Stale While Revalidate
+ */
+async function staleWhileRevalidateStrategy(request) {
+    const cache = await caches.open(API_CACHE);
+    const cachedResponse = await cache.match(request);
+    
+    // Requête réseau en arrière-plan pour mettre à jour le cache
+    const networkResponsePromise = fetch(request).then(response => {
+        if (response.ok) {
+            cache.put(request, response.clone());
+        }
+        return response;
+    }).catch(error => {
+        console.log('[SW] Network update failed:', error);
+        return null;
+    });
+    
+    // Retourner immédiatement la version cachée si disponible
+    return cachedResponse || networkResponsePromise;
+}
+
+/**
+ * Stratégie Network Only
  */
 async function networkOnlyStrategy(request) {
-    try {
-        return await fetch(request);
-    } catch (error) {
-        console.error('Service Worker: Erreur Network Only', error);
-        
-        if (request.method === 'GET') {
-            return caches.match('/offline') || new Response('Hors ligne', { status: 503 });
+    return fetch(request);
+}
+
+/**
+ * Détermine la stratégie de cache pour une URL
+ */
+function getCacheStrategy(url) {
+    for (const [strategy, patterns] of Object.entries(CACHE_STRATEGIES)) {
+        if (patterns.some(pattern => pattern.test(url))) {
+            return strategy;
         }
-        
-        return new Response('Erreur réseau', { status: 503 });
+    }
+    return 'network-only';
+}
+
+/**
+ * Cache les données API critiques
+ */
+async function cacheAPIData() {
+    const cache = await caches.open(API_CACHE);
+    
+    for (const route of API_ROUTES) {
+        try {
+            const response = await fetch(route);
+            if (response.ok) {
+                await cache.put(route, response);
+                console.log(`[SW] API cached: ${route}`);
+            }
+        } catch (error) {
+            console.log(`[SW] Failed to cache API: ${route}`, error);
+        }
     }
 }
 
-// Gestion des messages depuis la page principale
+/**
+ * Nettoie les anciens caches
+ */
+async function cleanupOldCaches() {
+    const cacheNames = await caches.keys();
+    const currentCaches = [STATIC_CACHE, DYNAMIC_CACHE, API_CACHE];
+    
+    const deletionPromises = cacheNames
+        .filter(name => !currentCaches.includes(name))
+        .map(name => {
+            console.log(`[SW] Suppression ancien cache: ${name}`);
+            return caches.delete(name);
+        });
+    
+    return Promise.all(deletionPromises);
+}
+
+/**
+ * Fallback pour les requêtes qui échouent
+ */
+async function getCachedFallback(request) {
+    const url = new URL(request.url);
+    
+    // Fallback pour les images
+    if (request.destination === 'image') {
+        return caches.match('/static/images/placeholder.png');
+    }
+    
+    // Fallback pour les pages
+    if (request.mode === 'navigate') {
+        return caches.match('/offline.html');
+    }
+    
+    return new Response('Ressource non disponible', {
+        status: 503,
+        statusText: 'Service Unavailable'
+    });
+}
+
+/**
+ * Messages depuis l'application principale
+ */
 self.addEventListener('message', event => {
-    const { type, data } = event.data;
+    const { type, payload } = event.data;
     
     switch (type) {
-        case 'SKIP_WAITING':
-            self.skipWaiting();
+        case 'CACHE_UPDATE':
+            updateCache(payload);
             break;
-            
-        case 'CACHE_URLS':
-            cacheUrls(data.urls);
-            break;
-            
         case 'CLEAR_CACHE':
-            clearCache();
+            clearAllCaches();
             break;
-            
         case 'GET_CACHE_STATUS':
             getCacheStatus().then(status => {
                 event.ports[0].postMessage(status);
@@ -225,55 +305,91 @@ self.addEventListener('message', event => {
 });
 
 /**
- * Met en cache une liste d'URLs
+ * Met à jour le cache avec de nouvelles données
  */
-async function cacheUrls(urls) {
-    try {
-        const cache = await caches.open(CACHE_NAME);
-        await cache.addAll(urls);
-        console.log('Service Worker: URLs mises en cache', urls);
-    } catch (error) {
-        console.error('Service Worker: Erreur mise en cache URLs', error);
-    }
+async function updateCache(payload) {
+    const { url, data } = payload;
+    const cache = await caches.open(DYNAMIC_CACHE);
+    
+    const response = new Response(JSON.stringify(data), {
+        headers: { 'Content-Type': 'application/json' }
+    });
+    
+    await cache.put(url, response);
+    console.log(`[SW] Cache updated for: ${url}`);
 }
 
 /**
- * Vide le cache
+ * Vide tous les caches
  */
-async function clearCache() {
-    try {
-        const cacheNames = await caches.keys();
-        await Promise.all(cacheNames.map(name => caches.delete(name)));
-        console.log('Service Worker: Cache vidé');
-    } catch (error) {
-        console.error('Service Worker: Erreur vidage cache', error);
-    }
+async function clearAllCaches() {
+    const cacheNames = await caches.keys();
+    const deletionPromises = cacheNames.map(name => caches.delete(name));
+    await Promise.all(deletionPromises);
+    console.log('[SW] Tous les caches vidés');
 }
 
 /**
  * Retourne le statut du cache
  */
 async function getCacheStatus() {
-    try {
-        const cache = await caches.open(CACHE_NAME);
-        const requests = await cache.keys();
-        
-        let totalSize = 0;
-        for (const request of requests) {
-            const response = await cache.match(request);
-            if (response) {
-                const blob = await response.blob();
-                totalSize += blob.size;
-            }
-        }
-        
-        return {
-            totalFiles: requests.length,
-            totalSize: totalSize,
-            totalSizeMB: (totalSize / (1024 * 1024)).toFixed(2)
-        };
-    } catch (error) {
-        console.error('Service Worker: Erreur statut cache', error);
-        return { totalFiles: 0, totalSize: 0, totalSizeMB: '0' };
+    const cacheNames = await caches.keys();
+    const status = {};
+    
+    for (const name of cacheNames) {
+        const cache = await caches.open(name);
+        const keys = await cache.keys();
+        status[name] = keys.length;
     }
+    
+    return {
+        caches: status,
+        totalCaches: cacheNames.length,
+        version: CACHE_NAME
+    };
 }
+
+/**
+ * Gestion des notifications push (future extension)
+ */
+self.addEventListener('push', event => {
+    if (!event.data) return;
+    
+    const data = event.data.json();
+    const options = {
+        body: data.body,
+        icon: '/static/images/ninja-avatar.png',
+        badge: '/static/images/logo.png',
+        tag: 'ninjalead-notification',
+        requireInteraction: true,
+        actions: [
+            {
+                action: 'view',
+                title: 'Voir'
+            },
+            {
+                action: 'dismiss',
+                title: 'Ignorer'
+            }
+        ]
+    };
+    
+    event.waitUntil(
+        self.registration.showNotification(data.title, options)
+    );
+});
+
+/**
+ * Gestion des clics sur notifications
+ */
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+    
+    if (event.action === 'view') {
+        event.waitUntil(
+            clients.openWindow('/dashboard')
+        );
+    }
+});
+
+console.log('[SW] Service Worker NinjaLead.ai v1.2.0 chargé');
