@@ -89,23 +89,31 @@
                 <h6 class="text-light mb-3 fw-bold">{{ _('Documents légaux') }}</h6>
                 <ul class="list-unstyled footer-links">
                     <li class="mb-2">
-                        <a href="{{ url_for('terms_of_service') }}" class="footer-link">
-                            <img src="{{ url_for('static', filename='images/ninja-handshake.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Conditions d\'utilisation') }}
+                        <a href="{{ url_for('terms_of_service') }}" class="footer-link footer-icon-orange">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="me-2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z M16 18H8v-2h8v2z M16 14H8v-2h8v2z M13 9V3.5L18.5 9H13z"/>
+                            </svg>{{ _('Conditions d\'utilisation') }}
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="{{ url_for('privacy_policy') }}" class="footer-link">
-                            <img src="{{ url_for('static', filename='images/ninja-tech.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Politique de confidentialité') }}
+                        <a href="{{ url_for('privacy_policy') }}" class="footer-link footer-icon-orange">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="me-2">
+                                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z M12 7c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z M12 13c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                            </svg>{{ _('Politique de confidentialité') }}
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="{{ url_for('cookies_policy') }}" class="footer-link">
-                            <img src="{{ url_for('static', filename='images/ninja-meditation.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Politique des cookies') }}
+                        <a href="{{ url_for('cookies_policy') }}" class="footer-link footer-icon-orange">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="me-2">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>{{ _('Politique des cookies') }}
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="{{ url_for('legal_notice') }}" class="footer-link">
-                            <img src="{{ url_for('static', filename='images/ninja-analytics.png') }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;">{{ _('Mentions légales') }}
+                        <a href="{{ url_for('legal_notice') }}" class="footer-link footer-icon-orange">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="me-2">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-4-4 1.41-1.41L11 15.17l6.59-6.59L19 10l-8 8z"/>
+                            </svg>{{ _('Mentions légales') }}
                         </a>
                     </li>
                 </ul>
