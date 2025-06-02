@@ -2668,6 +2668,37 @@ def create_email_campaign_from_campaign(campaign_id):
         logging.error(f"Erreur création campagne email {campaign_id}: {str(e)}")
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route('/integrations')
+@login_required  
+def integrations_config():
+    """Page de configuration des intégrations"""
+    if current_user.role != 'admin':
+        flash('Accès administrateur requis pour configurer les intégrations.', 'warning')
+        return redirect(url_for('dashboard'))
+    
+    from integrations_dashboard import integrations_dashboard
+    dashboard_data = integrations_dashboard.get_dashboard_summary()
+    
+    return render_template('integrations_config.html', 
+                         dashboard_data=dashboard_data,
+                         page_title="Configuration des Intégrations")
+
+@app.route('/api/integrations/<integration_key>/test', methods=['POST'])
+@login_required
+def test_integration_endpoint(integration_key):
+    """Tester une intégration spécifique"""
+    if current_user.role != 'admin':
+        return jsonify({"success": False, "error": "Accès administrateur requis"}), 403
+    
+    from integrations_dashboard import integrations_dashboard
+    
+    try:
+        result = integrations_dashboard.test_integration(integration_key)
+        return jsonify(result)
+    except Exception as e:
+        logging.error(f"Erreur test intégration {integration_key}: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
 @app.route('/image_generation', methods=['GET', 'POST'])
 def image_generation():
     """Page de génération d'images marketing optimisées avec stockage persistant"""

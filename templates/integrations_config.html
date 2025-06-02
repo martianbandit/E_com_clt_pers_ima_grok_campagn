@@ -1,0 +1,489 @@
+{% extends "base.html" %}
+
+{% block title %}Configuration des Intégrations - NinjaLead.ai{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2">
+                    <i class="fas fa-plug me-2 text-primary"></i>
+                    Configuration des Intégrations
+                </h1>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour au tableau de bord
+                </a>
+            </div>
+
+            <!-- Résumé des intégrations -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center bg-primary text-white">
+                        <div class="card-body">
+                            <h3>{{ dashboard_data.active_integrations }}</h3>
+                            <p class="mb-0">Intégrations Actives</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center bg-warning text-white">
+                        <div class="card-body">
+                            <h3>{{ dashboard_data.partial_integrations }}</h3>
+                            <p class="mb-0">Partiellement Configurées</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center bg-secondary text-white">
+                        <div class="card-body">
+                            <h3>{{ dashboard_data.not_configured }}</h3>
+                            <p class="mb-0">Non Configurées</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center bg-info text-white">
+                        <div class="card-body">
+                            <h3>{{ dashboard_data.total_integrations }}</h3>
+                            <p class="mb-0">Total Disponibles</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommandations -->
+            {% if dashboard_data.recommendations %}
+            <div class="alert alert-info mb-4">
+                <h5><i class="fas fa-lightbulb me-2"></i>Recommandations</h5>
+                <ul class="mb-0">
+                    {% for rec in dashboard_data.recommendations %}
+                    <li>
+                        <strong>{{ rec.title }}</strong>: {{ rec.description }}
+                        {% if rec.priority == 'high' %}
+                        <span class="badge bg-danger ms-2">Priorité haute</span>
+                        {% elif rec.priority == 'medium' %}
+                        <span class="badge bg-warning ms-2">Priorité moyenne</span>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <!-- Liste des intégrations -->
+            <div class="row">
+                {% for integration_key, integration in dashboard_data.integrations.items() %}
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="card h-100 integration-card" data-integration="{{ integration_key }}">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-{{ 'stripe' if integration_key == 'stripe' else 'envelope' if integration_key == 'sendgrid' else 'share-alt' if integration_key in ['facebook', 'linkedin', 'twitter'] else 'chart-line' }} me-2"></i>
+                                {{ integration.name }}
+                            </h5>
+                            <span class="badge badge-status bg-{{ 'success' if integration.status == 'active' else 'warning' if integration.status == 'partial' else 'secondary' }}">
+                                {{ 'Actif' if integration.status == 'active' else 'Partiel' if integration.status == 'partial' else 'Inactif' }}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted mb-3">{{ integration.description }}</p>
+                            
+                            <!-- Progression de configuration -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <small class="text-muted">Configuration</small>
+                                    <small class="text-muted">{{ integration.configured_keys }}/{{ integration.total_keys }}</small>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-{{ 'success' if integration.status == 'active' else 'warning' if integration.status == 'partial' else 'secondary' }}" 
+                                         style="width: {{ (integration.configured_keys / integration.total_keys * 100) if integration.total_keys > 0 else 0 }}%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Fonctionnalités -->
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-2">Fonctionnalités disponibles:</small>
+                                <div class="feature-tags">
+                                    {% for feature in integration.features %}
+                                    <span class="badge bg-light text-dark me-1 mb-1">{{ feature }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="btn-group w-100">
+                                <button class="btn btn-outline-primary btn-sm" onclick="configureIntegration('{{ integration_key }}')">
+                                    <i class="fas fa-cog me-1"></i>Configurer
+                                </button>
+                                {% if integration.status != 'not_configured' %}
+                                <button class="btn btn-outline-success btn-sm" onclick="testIntegration('{{ integration_key }}')">
+                                    <i class="fas fa-check-circle me-1"></i>Tester
+                                </button>
+                                {% endif %}
+                                <button class="btn btn-outline-info btn-sm" onclick="viewDetails('{{ integration_key }}')">
+                                    <i class="fas fa-info-circle me-1"></i>Détails
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de configuration -->
+<div class="modal fade" id="configModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Configuration de l'intégration</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="configModalBody">
+                <!-- Contenu dynamique -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" id="saveConfigBtn">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de détails -->
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Détails de l'intégration</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detailsModalBody">
+                <!-- Contenu dynamique -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.integration-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #dee2e6;
+}
+
+.integration-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.badge-status {
+    font-size: 0.75em;
+}
+
+.feature-tags {
+    max-height: 60px;
+    overflow-y: auto;
+}
+
+.progress {
+    background-color: #e9ecef;
+    border-radius: 3px;
+}
+
+.btn-group .btn {
+    flex: 1;
+}
+
+.alert {
+    border-left: 4px solid #17a2b8;
+    border-radius: 0.375rem;
+}
+
+.key-input {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9em;
+}
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.status-active { background-color: #28a745; }
+.status-partial { background-color: #ffc107; }
+.status-inactive { background-color: #6c757d; }
+</style>
+
+<script>
+function configureIntegration(integrationKey) {
+    // Informations sur les clés requises pour chaque intégration
+    const integrationConfigs = {
+        stripe: {
+            name: 'Stripe',
+            description: 'Configuration des paiements Stripe',
+            keys: [
+                { name: 'STRIPE_SECRET_KEY', label: 'Clé secrète Stripe', required: true, type: 'password' },
+                { name: 'STRIPE_PUBLISHABLE_KEY', label: 'Clé publique Stripe', required: true, type: 'text' },
+                { name: 'STRIPE_WEBHOOK_SECRET', label: 'Secret webhook Stripe', required: false, type: 'password' }
+            ],
+            help: 'Récupérez vos clés depuis votre tableau de bord Stripe > Développeurs > Clés API'
+        },
+        sendgrid: {
+            name: 'SendGrid',
+            description: 'Configuration de l\'email marketing',
+            keys: [
+                { name: 'SENDGRID_API_KEY', label: 'Clé API SendGrid', required: true, type: 'password' },
+                { name: 'FROM_EMAIL', label: 'Email expéditeur', required: false, type: 'email' },
+                { name: 'FROM_NAME', label: 'Nom expéditeur', required: false, type: 'text' }
+            ],
+            help: 'Créez une clé API depuis votre tableau de bord SendGrid > Settings > API Keys'
+        },
+        facebook: {
+            name: 'Facebook/Instagram',
+            description: 'Configuration des publications sociales',
+            keys: [
+                { name: 'FACEBOOK_ACCESS_TOKEN', label: 'Token d\'accès Facebook', required: true, type: 'password' },
+                { name: 'FACEBOOK_PAGE_ID', label: 'ID de la page Facebook', required: true, type: 'text' },
+                { name: 'INSTAGRAM_ACCOUNT_ID', label: 'ID du compte Instagram', required: false, type: 'text' }
+            ],
+            help: 'Générez un token depuis Facebook Developers > Outils > Explorateur d\'API Graph'
+        },
+        linkedin: {
+            name: 'LinkedIn',
+            description: 'Configuration LinkedIn',
+            keys: [
+                { name: 'LINKEDIN_ACCESS_TOKEN', label: 'Token d\'accès LinkedIn', required: true, type: 'password' },
+                { name: 'LINKEDIN_PERSON_ID', label: 'ID personne LinkedIn', required: true, type: 'text' }
+            ],
+            help: 'Créez une application LinkedIn pour obtenir les tokens d\'accès'
+        },
+        twitter: {
+            name: 'Twitter/X',
+            description: 'Configuration Twitter',
+            keys: [
+                { name: 'TWITTER_BEARER_TOKEN', label: 'Bearer Token Twitter', required: true, type: 'password' },
+                { name: 'TWITTER_API_KEY', label: 'Clé API Twitter', required: false, type: 'text' },
+                { name: 'TWITTER_API_SECRET', label: 'Secret API Twitter', required: false, type: 'password' }
+            ],
+            help: 'Récupérez vos tokens depuis le portail développeur Twitter'
+        },
+        google_analytics: {
+            name: 'Google Analytics 4',
+            description: 'Configuration du tracking',
+            keys: [
+                { name: 'GA4_PROPERTY_ID', label: 'ID de propriété GA4', required: true, type: 'text' },
+                { name: 'GA4_SERVICE_ACCOUNT_KEY', label: 'Clé JSON du compte de service', required: false, type: 'textarea' },
+                { name: 'GA4_API_SECRET', label: 'Secret API Measurement Protocol', required: false, type: 'password' }
+            ],
+            help: 'Créez un compte de service Google Cloud avec accès à Google Analytics'
+        }
+    };
+
+    const config = integrationConfigs[integrationKey];
+    if (!config) {
+        alert('Configuration non disponible pour cette intégration');
+        return;
+    }
+
+    let html = `
+        <div class="mb-3">
+            <h6>${config.name}</h6>
+            <p class="text-muted">${config.description}</p>
+            <div class="alert alert-info">
+                <small><i class="fas fa-info-circle me-2"></i>${config.help}</small>
+            </div>
+        </div>
+        <form id="configForm">
+    `;
+
+    config.keys.forEach(key => {
+        const inputType = key.type === 'textarea' ? 'textarea' : 'input';
+        const inputTag = inputType === 'textarea' 
+            ? `<textarea class="form-control key-input" name="${key.name}" rows="4" placeholder="Collez votre clé JSON ici..."></textarea>`
+            : `<input type="${key.type}" class="form-control key-input" name="${key.name}" placeholder="Entrez votre ${key.label.toLowerCase()}">`;
+
+        html += `
+            <div class="mb-3">
+                <label class="form-label">
+                    ${key.label}
+                    ${key.required ? '<span class="text-danger">*</span>' : '<span class="text-muted">(optionnel)</span>'}
+                </label>
+                ${inputTag}
+            </div>
+        `;
+    });
+
+    html += `
+        </form>
+        <div class="alert alert-warning">
+            <small><i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Important:</strong> Ces clés seront stockées comme variables d'environnement sur Replit. 
+            Assurez-vous que vos clés sont valides avant de les sauvegarder.
+            </small>
+        </div>
+    `;
+
+    document.getElementById('configModalBody').innerHTML = html;
+    document.querySelector('#configModal .modal-title').textContent = `Configuration - ${config.name}`;
+    
+    const modal = new bootstrap.Modal(document.getElementById('configModal'));
+    modal.show();
+
+    // Gérer la sauvegarde
+    document.getElementById('saveConfigBtn').onclick = function() {
+        const formData = new FormData(document.getElementById('configForm'));
+        const keys = {};
+        
+        for (let [key, value] of formData.entries()) {
+            if (value.trim()) {
+                keys[key] = value.trim();
+            }
+        }
+
+        if (Object.keys(keys).length === 0) {
+            alert('Veuillez remplir au moins une clé');
+            return;
+        }
+
+        // Afficher les instructions pour configurer manuellement
+        alert(`Pour configurer ${config.name}:\n\n1. Allez dans l'onglet "Secrets" de votre Repl\n2. Ajoutez les clés suivantes:\n\n${Object.keys(keys).map(k => `${k} = [votre_clé]`).join('\n')}\n\n3. Redémarrez votre application\n4. Testez l'intégration`);
+        
+        modal.hide();
+    };
+}
+
+function testIntegration(integrationKey) {
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+    
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Test...';
+    button.disabled = true;
+
+    fetch(`/api/integrations/${integrationKey}/test`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('success', `✅ Test réussi pour ${integrationKey}`, data.message || 'Intégration fonctionnelle');
+            if (data.details) {
+                console.log('Détails du test:', data.details);
+            }
+        } else {
+            showAlert('danger', `❌ Test échoué pour ${integrationKey}`, data.error || 'Erreur de configuration');
+        }
+    })
+    .catch(error => {
+        showAlert('danger', 'Erreur de test', 'Impossible de tester l\'intégration: ' + error.message);
+    })
+    .finally(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+function viewDetails(integrationKey) {
+    fetch(`/api/integrations/${integrationKey}/status`)
+    .then(response => response.json())
+    .then(data => {
+        let html = `
+            <h6>${data.name}</h6>
+            <p class="text-muted">${data.description}</p>
+            
+            <h6 class="mt-3">Statut de configuration:</h6>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Clé</th>
+                            <th>Statut</th>
+                            <th>Requis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        if (data.keys) {
+            Object.entries(data.keys).forEach(([key, info]) => {
+                const statusIcon = info.configured ? '✅' : '❌';
+                const requiredBadge = info.required ? '<span class="badge bg-danger">Requis</span>' : '<span class="badge bg-secondary">Optionnel</span>';
+                
+                html += `
+                    <tr>
+                        <td><code>${key}</code></td>
+                        <td>${statusIcon} ${info.configured ? 'Configuré' : 'Non configuré'}</td>
+                        <td>${requiredBadge}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+            
+            <h6 class="mt-3">Fonctionnalités:</h6>
+            <ul class="list-unstyled">
+        `;
+
+        data.features.forEach(feature => {
+            html += `<li><i class="fas fa-check text-success me-2"></i>${feature}</li>`;
+        });
+
+        html += `</ul>`;
+
+        if (data.test_available) {
+            html += `
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Test de connectivité disponible pour cette intégration.
+                </div>
+            `;
+        }
+
+        document.getElementById('detailsModalBody').innerHTML = html;
+        document.querySelector('#detailsModal .modal-title').textContent = `Détails - ${data.name}`;
+        
+        const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+        modal.show();
+    })
+    .catch(error => {
+        showAlert('danger', 'Erreur', 'Impossible de récupérer les détails: ' + error.message);
+    });
+}
+
+function showAlert(type, title, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+    
+    alertDiv.innerHTML = `
+        <strong>${title}</strong><br>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+
+// Auto-refresh du statut toutes les 30 secondes
+setInterval(() => {
+    location.reload();
+}, 30000);
+</script>
+{% endblock %}
