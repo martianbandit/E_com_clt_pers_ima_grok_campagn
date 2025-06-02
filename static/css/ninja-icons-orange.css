@@ -1,63 +1,112 @@
 /* NinjaLead - Icônes Orange avec Aura */
 
-/* Styles pour les icônes ninja avec effet orange et aura */
+/* Styles pour les icônes ninja avec effet orange et aura étendue */
 .ninja-icon {
     fill: var(--vibrant-orange, #ff6b35);
-    transition: all 0.3s ease;
-    filter: drop-shadow(0 0 4px rgba(255, 107, 53, 0.6));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: 
+        drop-shadow(0 0 8px rgba(255, 107, 53, 0.7))
+        drop-shadow(0 0 16px rgba(255, 107, 53, 0.4))
+        drop-shadow(0 0 24px rgba(255, 107, 53, 0.2));
 }
 
-/* Aura orange pour les icônes du menu */
+/* Aura orange étendue pour les icônes du menu */
 .nav-link .ninja-icon,
 .navbar-nav .ninja-icon,
 .sidebar .ninja-icon {
     fill: var(--vibrant-orange, #ff6b35);
-    filter: drop-shadow(0 0 6px rgba(255, 107, 53, 0.8));
+    filter: 
+        drop-shadow(0 0 12px rgba(255, 107, 53, 0.8))
+        drop-shadow(0 0 24px rgba(255, 107, 53, 0.5))
+        drop-shadow(0 0 36px rgba(255, 107, 53, 0.3));
 }
 
 .nav-link:hover .ninja-icon,
 .navbar-nav .nav-link:hover .ninja-icon,
 .sidebar .nav-link:hover .ninja-icon {
     fill: #ff8c35;
-    filter: drop-shadow(0 0 10px rgba(255, 140, 53, 1));
+    filter: 
+        drop-shadow(0 0 20px rgba(255, 140, 53, 1))
+        drop-shadow(0 0 40px rgba(255, 140, 53, 0.6))
+        drop-shadow(0 0 60px rgba(255, 107, 53, 0.4))
+        drop-shadow(0 0 80px rgba(255, 107, 53, 0.2));
     transform: scale(1.1);
 }
 
-/* Effet d'aura pour les icônes actives */
+/* Effet d'aura spectaculaire pour les icônes actives */
 .nav-link.active .ninja-icon,
 .navbar-nav .nav-link.active .ninja-icon {
     fill: #ff8c35;
-    filter: drop-shadow(0 0 12px rgba(255, 140, 53, 1)) drop-shadow(0 0 20px rgba(255, 107, 53, 0.4));
+    filter: 
+        drop-shadow(0 0 24px rgba(255, 140, 53, 1))
+        drop-shadow(0 0 40px rgba(255, 107, 53, 0.6))
+        drop-shadow(0 0 60px rgba(255, 107, 53, 0.4))
+        drop-shadow(0 0 100px rgba(255, 107, 53, 0.2));
     animation: ninja-glow 2s ease-in-out infinite alternate;
 }
 
 @keyframes ninja-glow {
     from {
-        filter: drop-shadow(0 0 8px rgba(255, 140, 53, 0.8));
+        filter: 
+            drop-shadow(0 0 16px rgba(255, 140, 53, 0.8))
+            drop-shadow(0 0 32px rgba(255, 107, 53, 0.4));
     }
     to {
-        filter: drop-shadow(0 0 16px rgba(255, 140, 53, 1)) drop-shadow(0 0 24px rgba(255, 107, 53, 0.5));
+        filter: 
+            drop-shadow(0 0 32px rgba(255, 140, 53, 1))
+            drop-shadow(0 0 48px rgba(255, 107, 53, 0.6))
+            drop-shadow(0 0 80px rgba(255, 107, 53, 0.3))
+            drop-shadow(0 0 120px rgba(255, 107, 53, 0.15));
     }
 }
 
-/* Classe spéciale pour les icônes avec aura ninja */
+/* Classe spéciale pour les icônes avec aura ninja étendue */
 .ninja-icon-glow {
-    filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.8));
+    filter: 
+        drop-shadow(0 0 16px rgba(255, 107, 53, 0.8))
+        drop-shadow(0 0 32px rgba(255, 107, 53, 0.5))
+        drop-shadow(0 0 48px rgba(255, 107, 53, 0.3))
+        drop-shadow(0 0 80px rgba(255, 107, 53, 0.15));
     animation: ninja-icon-pulse 3s ease-in-out infinite;
 }
 
 @keyframes ninja-icon-pulse {
     0%, 100% {
-        filter: drop-shadow(0 0 6px rgba(255, 107, 53, 0.6));
+        filter: 
+            drop-shadow(0 0 16px rgba(255, 107, 53, 0.8))
+            drop-shadow(0 0 32px rgba(255, 107, 53, 0.5))
+            drop-shadow(0 0 48px rgba(255, 107, 53, 0.3));
     }
     50% {
-        filter: drop-shadow(0 0 12px rgba(255, 140, 53, 0.9));
+        filter: 
+            drop-shadow(0 0 24px rgba(255, 107, 53, 1))
+            drop-shadow(0 0 48px rgba(255, 107, 53, 0.7))
+            drop-shadow(0 0 72px rgba(255, 107, 53, 0.4))
+            drop-shadow(0 0 120px rgba(255, 107, 53, 0.2));
     }
 }
 
-/* Icônes dans les boutons */
+/* Icônes dans les boutons avec aura étendue */
 .btn .ninja-icon {
-    fill: currentColor;
+    fill: var(--vibrant-orange, #ff6b35);
+    filter: 
+        drop-shadow(0 0 12px rgba(255, 107, 53, 0.8))
+        drop-shadow(0 0 24px rgba(255, 107, 53, 0.4))
+        drop-shadow(0 0 36px rgba(255, 107, 53, 0.2));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn:hover .ninja-icon {
+    filter: 
+        drop-shadow(0 0 20px rgba(255, 107, 53, 1))
+        drop-shadow(0 0 40px rgba(255, 107, 53, 0.6))
+        drop-shadow(0 0 60px rgba(255, 107, 53, 0.3))
+        drop-shadow(0 0 100px rgba(255, 107, 53, 0.15));
+    transform: scale(1.1);
+}
+
+/* Espacement pour les icônes dans les boutons */
+.btn .ninja-icon {
     margin-right: 0.5rem;
 }
 
