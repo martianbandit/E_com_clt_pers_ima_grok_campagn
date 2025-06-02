@@ -1,0 +1,219 @@
+/* Optimisations spécifiques pour le feedback sur iOS et appareils mobiles */
+
+/* Optimisations générales pour iOS */
+@supports (-webkit-touch-callout: none) {
+    .ninja-feedback-modal {
+        max-width: 85vw !important;
+        max-height: 70vh !important;
+        margin: 2rem auto !important;
+    }
+    
+    .ninja-feedback-header {
+        padding: 0.5rem 0.75rem !important;
+        min-height: auto !important;
+    }
+    
+    .ninja-feedback-title {
+        font-size: 0.8rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .ninja-feedback-body {
+        padding: 0.625rem !important;
+        max-height: 40vh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Optimisations spécifiques pour petits écrans iOS */
+@media screen and (max-width: 414px) and (-webkit-min-device-pixel-ratio: 2) {
+    .modal-dialog {
+        margin: 1rem 0.5rem !important;
+        width: calc(100vw - 1rem) !important;
+        max-width: none !important;
+    }
+    
+    .ninja-feedback-modal {
+        border-radius: 10px !important;
+        max-height: 65vh !important;
+        overflow: hidden !important;
+    }
+    
+    .ninja-feedback-header {
+        padding: 0.5rem !important;
+        background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%) !important;
+    }
+    
+    .ninja-feedback-title {
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+    }
+    
+    .ninja-feedback-body {
+        padding: 0.5rem !important;
+        max-height: 35vh !important;
+        font-size: 0.75rem !important;
+    }
+    
+    .ninja-feedback-types {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.25rem !important;
+        padding: 0.375rem !important;
+    }
+    
+    .ninja-check-label {
+        padding: 0.25rem 0.375rem !important;
+        font-size: 0.7rem !important;
+        min-height: 32px !important;
+        border-radius: 4px !important;
+    }
+    
+    .form-check-input {
+        width: 16px !important;
+        height: 16px !important;
+        margin-right: 0.5rem !important;
+    }
+    
+    .ninja-form-label {
+        font-size: 0.7rem !important;
+        margin-bottom: 0.125rem !important;
+        font-weight: 600 !important;
+    }
+    
+    .ninja-input, .ninja-textarea {
+        padding: 0.375rem 0.5rem !important;
+        font-size: 0.7rem !important;
+        border-radius: 4px !important;
+        border: 1px solid #ddd !important;
+    }
+    
+    .ninja-textarea {
+        min-height: 40px !important;
+        resize: none !important;
+    }
+    
+    .ninja-form-text {
+        font-size: 0.6rem !important;
+        margin-top: 0.125rem !important;
+        color: #666 !important;
+    }
+    
+    .ninja-system-info {
+        padding: 0.375rem !important;
+        margin-top: 0.375rem !important;
+        background: #f8f9fa !important;
+        border-radius: 4px !important;
+    }
+    
+    .ninja-system-info small {
+        font-size: 0.6rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    .ninja-feedback-footer {
+        padding: 0.5rem !important;
+        border-top: 1px solid #eee !important;
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 0.375rem !important;
+    }
+    
+    .ninja-btn-primary, .ninja-btn-secondary {
+        flex: 1 !important;
+        padding: 0.4rem 0.5rem !important;
+        font-size: 0.7rem !important;
+        border-radius: 4px !important;
+        min-height: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .ninja-btn-primary {
+        background: #ff6b35 !important;
+        border: 1px solid #ff6b35 !important;
+        color: white !important;
+    }
+    
+    .ninja-btn-secondary {
+        background: transparent !important;
+        border: 1px solid #ddd !important;
+        color: #666 !important;
+    }
+    
+    .btn-close {
+        padding: 0.25rem !important;
+        font-size: 0.7rem !important;
+        opacity: 0.8 !important;
+    }
+}
+
+/* Optimisations pour iPhone SE et petits écrans */
+@media screen and (max-width: 375px) and (max-height: 667px) {
+    .ninja-feedback-modal {
+        max-height: 60vh !important;
+    }
+    
+    .ninja-feedback-body {
+        max-height: 30vh !important;
+        padding: 0.375rem !important;
+    }
+    
+    .ninja-feedback-title {
+        font-size: 0.7rem !important;
+    }
+    
+    .ninja-check-label {
+        font-size: 0.65rem !important;
+        min-height: 28px !important;
+    }
+    
+    .ninja-input, .ninja-textarea {
+        font-size: 0.65rem !important;
+        padding: 0.25rem 0.375rem !important;
+    }
+    
+    .ninja-btn-primary, .ninja-btn-secondary {
+        font-size: 0.65rem !important;
+        min-height: 28px !important;
+    }
+}
+
+/* Amélioration du scroll pour iOS */
+.ninja-feedback-body {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+/* Amélioration de l'accessibilité tactile */
+.ninja-check-label, .ninja-btn-primary, .ninja-btn-secondary {
+    -webkit-tap-highlight-color: rgba(255, 107, 53, 0.2);
+    touch-action: manipulation;
+}
+
+/* Prévention du zoom sur les inputs pour iOS */
+.ninja-input, .ninja-textarea {
+    font-size: 16px !important; /* Empêche le zoom automatique sur iOS */
+}
+
+/* Correction pour les petits écrans avec cette règle spéciale */
+@media screen and (max-width: 414px) {
+    .ninja-input, .ninja-textarea {
+        font-size: 0.75rem !important;
+        transform: scale(1);
+        -webkit-text-size-adjust: 100%;
+    }
+}
+
+/* Animation d'ouverture plus fluide pour iOS */
+@supports (-webkit-touch-callout: none) {
+    .modal.fade .modal-dialog {
+        transition: transform 0.2s ease-out;
+    }
+    
+    .modal.show .modal-dialog {
+        transform: none;
+    }
+}

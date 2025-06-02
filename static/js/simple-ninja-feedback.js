@@ -363,81 +363,82 @@ function addFeedbackStyles() {
     /* Responsive - Mobile First */
     @media (max-width: 768px) {
         .modal-dialog {
-            margin: 0.5rem;
+            margin: 1rem 0.5rem;
             max-width: calc(100vw - 1rem);
         }
         
         .ninja-feedback-modal {
-            border-radius: 12px;
+            border-radius: 8px;
+            max-height: 80vh;
         }
         
         .ninja-feedback-header {
-            padding: 1rem 1.25rem;
-            border-radius: 12px 12px 0 0;
+            padding: 0.75rem 1rem;
+            border-radius: 8px 8px 0 0;
         }
         
         .ninja-feedback-title {
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
         
         .ninja-feedback-body {
-            padding: 1.25rem;
-            max-height: 70vh;
+            padding: 0.875rem;
+            max-height: 50vh;
             overflow-y: auto;
         }
         
         .ninja-feedback-types {
-            padding: 0.75rem;
-            gap: 0.5rem;
+            padding: 0.5rem;
+            gap: 0.375rem;
         }
         
         .ninja-check-label {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
+            padding: 0.375rem 0.5rem;
+            font-size: 0.8rem;
         }
         
         .ninja-form-label {
-            font-size: 0.9rem;
-            margin-bottom: 0.375rem;
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
         }
         
         .ninja-input, .ninja-textarea {
-            padding: 0.625rem 0.875rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
+            padding: 0.5rem 0.625rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
         }
         
         .ninja-textarea {
-            rows: 3;
-            min-height: 80px;
+            rows: 2;
+            min-height: 60px;
         }
         
         .ninja-form-text {
-            font-size: 0.8rem;
-            margin-top: 0.375rem;
+            font-size: 0.7rem;
+            margin-top: 0.25rem;
         }
         
         .ninja-system-info {
-            padding: 0.75rem;
-            margin-top: 0.75rem;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
         }
         
         .ninja-system-info small {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
         }
         
         .ninja-feedback-footer {
-            padding: 1rem 1.25rem;
-            flex-direction: column;
-            gap: 0.75rem;
+            padding: 0.75rem;
+            flex-direction: row;
+            gap: 0.5rem;
         }
         
         .ninja-btn-primary, .ninja-btn-secondary {
-            width: 100%;
+            flex: 1;
             justify-content: center;
-            padding: 0.875rem 1.25rem;
-            font-size: 0.95rem;
-            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
         }
         
         /* Touch-friendly interactions */
