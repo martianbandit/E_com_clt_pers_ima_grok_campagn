@@ -187,9 +187,9 @@
 ### 3.4 Nouvelles Fonctionnalités (Priorité MOYENNE)
 
 #### 3.4.1 Intégrations
-- ❌ **Stripe payments** complet avec webhooks
-- ❌ **Email marketing** (Mailchimp, SendGrid)
-- ❌ **Social media APIs** (Facebook, Instagram)
+- ✅ **Stripe payments** complet avec webhooks et barrière de sécurité
+- ✅ **Email marketing** (Mailchimp, SendGrid) avec gestionnaire centralisé
+- ✅ **Social media APIs** (Facebook, Instagram, LinkedIn, Twitter)
 - ❌ **Analytics externes** (Google Analytics 4)
 
 #### 3.4.2 Intelligence Artificielle

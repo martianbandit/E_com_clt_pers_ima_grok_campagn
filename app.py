@@ -5317,6 +5317,16 @@ if progressive_loading_available:
         print(f"Erreur initialisation progressive loading: {e}")
         progressive_loading_available = False
 
+# Intégration système de paiement sécurisé
+try:
+    from payment_integration_manager import init_payment_integration
+    payment_integration = init_payment_integration(app)
+    print("Système de paiement sécurisé initialisé avec barrière de protection")
+except ImportError as e:
+    print(f"Module paiement non disponible: {e}")
+except Exception as e:
+    print(f"Erreur initialisation paiements: {e}")
+
 if __name__ == '__main__':
     with app.app_context():
         # Make sure to import the models here or their tables won't be created
