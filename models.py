@@ -519,6 +519,7 @@ class Campaign(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Foreign keys
+    owner_id = db.Column(db.String, db.ForeignKey('users.id'), nullable=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
     # Relation sans backref pour éviter les conflits
     campaign_customer = db.relationship('Customer', foreign_keys=[customer_id], lazy=True)

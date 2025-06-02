@@ -49,7 +49,7 @@ def get_prompt_language():
         # Récupérer la langue de la session si disponible
         if session and 'language' in session:
             return session['language']
-        return 'en'  # Langue par défaut
+        return 'fr'  # Langue par défaut
     except Exception as e:
         logger.warning(f"Erreur lors de la récupération de la langue: {e}")
         return 'en'  # Fallback à l'anglais en cas d'erreur
@@ -58,7 +58,7 @@ def get_prompt_language():
 PROMPT_TRANSLATIONS = {
     # Prompts pour la génération de personas clients
     "customer_persona": {
-        "en": """
+        "fr": """
         Create a detailed customer persona for {name}, a {age}-year-old {gender} from {location}.
 
         Include the following sections in your response:
@@ -167,8 +167,8 @@ PROMPT_TRANSLATIONS = {
         {existing_personas_summary}
         {boutique_context}
 
-        !*
-        **AVANT DE FINALISER VOTRE PERSONA, VÉRIFIEZ SI VOUS AVEZ BIEN RÉPONDU AUX ÉLÉMENTS DE LA LISTE CI-DESSOUS :**
+        
+        AVANT DE FINALISER VOTRE PERSONA, VÉRIFIEZ SI VOUS AVEZ BIEN RÉPONDU AUX ÉLÉMENTS DE LA LISTE CI-DESSOUS :**
 
         - [ ] Rappeler le contexte du persona afin de garder en tête l'objectif de cet exercice pour votre entreprise
         - [ ] Décrire brièvement le portrait démographique du persona en intégrant une photo réaliste et en utilisant des informations pertinentes pour votre entreprise et son objectif (vendre un produit ou un service, développer votre notoriété, trouver des partenaires, etc.)
@@ -179,13 +179,13 @@ PROMPT_TRANSLATIONS = {
         - [ ] Définir les canaux de communication utilisés par le persona pour savoir comment le joindre
         - [ ] Est-ce que je possède toutes les informations utiles sur mon persona pour développer ou adapter mon produit ou mon service en fonction de sa réalité et de ses besoins ?
         - [ ] Est-ce que le texte du persona que je vais générer sera en français? (OUI! Il le faut!)
-        !*
+        
         """
     },
     
     # Prompts pour la génération d'avatar
     "avatar_generation": {
-        "en": """
+        "fr": """
         Create a detailed prompt for generating a profile picture avatar for this specific customer persona:
         
         Customer Name: {name}
@@ -238,7 +238,7 @@ PROMPT_TRANSLATIONS = {
     
     # Prompts pour la génération de contenu marketing
     "marketing_content": {
-        "en": """
+        "fr": """
         Create ONE {campaign_type} marketing content piece for {name} based on their customer profile:
         
         CUSTOMER PROFILE:
@@ -315,7 +315,7 @@ PROMPT_TRANSLATIONS = {
     
     # Prompt pour la génération d'image de campagne
     "campaign_image": {
-        "en": """
+        "fr": """
         Create a detailed image prompt for a marketing campaign in the {niche} niche targeted at {customer_name}.
         
         CAMPAIGN CONTEXT:
@@ -368,7 +368,7 @@ PROMPT_TRANSLATIONS = {
     
     # Prompts pour la génération d'attributs spécifiques à la niche
     "niche_attributes": {
-        "en": """
+        "fr": """
         Based on this customer persona in the {niche} niche, create a JSON object with specialized attributes 
         specific to this niche and customer. Include:
         
@@ -423,7 +423,7 @@ PROMPT_TRANSLATIONS = {
     
     # Prompts pour la génération d'historique d'achat
     "purchase_history": {
-        "en": """
+        "fr": """
         Based on this customer persona in the {niche} niche, create a JSON array of 3-5 products they have 
         purchased in the past. Each product should include:
         
@@ -498,7 +498,7 @@ def get_translated_prompt(prompt_key, language=None, **kwargs):
     
     # Fallback à l'anglais si la langue n'est pas supportée
     if language not in PROMPT_TRANSLATIONS.get(prompt_key, {}):
-        language = 'en'
+        language = 'fr'
     
     prompt_template = PROMPT_TRANSLATIONS.get(prompt_key, {}).get(language, "")
     
