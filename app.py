@@ -2781,7 +2781,7 @@ def get_customer_personas_api(customer_id):
         from persona_manager import get_customer_personas
         
         customer = Customer.query.get_or_404(customer_id)
-        if customer.owner_id != current_user.numeric_id:
+        if customer.user_id != current_user.numeric_id:
             return jsonify({"success": False, "error": "Accès non autorisé"}), 403
         
         personas_data = get_customer_personas(customer_id)
@@ -2804,7 +2804,7 @@ def assign_persona_to_customer_api(customer_id):
         from persona_manager import assign_persona_to_customer
         
         customer = Customer.query.get_or_404(customer_id)
-        if customer.owner_id != current_user.numeric_id:
+        if customer.user_id != current_user.numeric_id:
             return jsonify({"success": False, "error": "Accès non autorisé"}), 403
         
         data = request.get_json()
