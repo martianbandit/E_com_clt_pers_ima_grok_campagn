@@ -131,13 +131,14 @@ function addFeedbackStyles() {
         color: white;
         border-radius: 10px 10px 0 0;
         border: none;
-        padding: 0.5rem 0.7rem;
+        padding: 0.6rem 0.8rem;
         position: relative;
-        min-height: 34px;
+        min-height: 40px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-shrink: 0;
+        overflow: hidden;
     }
 
     .ninja-feedback-header::before {
@@ -153,15 +154,18 @@ function addFeedbackStyles() {
 
     .ninja-feedback-title {
         font-weight: 600;
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         margin: 0;
         display: flex;
         align-items: center;
         position: relative;
         z-index: 1;
-        line-height: 1.1;
+        line-height: 1.2;
         flex: 1;
         letter-spacing: 0.3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .ninja-btn-close {
@@ -170,11 +174,11 @@ function addFeedbackStyles() {
         border: none;
         color: white;
         cursor: pointer;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: bold;
         transition: all 0.2s ease;
-        width: 26px;
-        height: 26px;
+        width: 28px;
+        height: 28px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -297,11 +301,11 @@ function addFeedbackStyles() {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         border: none;
         border-radius: 4px;
-        padding: 0.25rem 0.7rem;
+        padding: 0.3rem 0.8rem;
         font-weight: 600;
-        font-size: 0.7rem;
-        min-height: 26px;
-        max-height: 26px;
+        font-size: 0.75rem;
+        min-height: 28px;
+        max-height: 28px;
         line-height: 1;
         color: white;
         transition: all 0.3s ease;
@@ -337,13 +341,13 @@ function addFeedbackStyles() {
         background: transparent;
         border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 4px;
-        padding: 0.25rem 0.7rem;
+        padding: 0.3rem 0.8rem;
         font-weight: 500;
         color: #ffffff;
         transition: all 0.3s ease;
-        font-size: 0.7rem;
-        min-height: 26px;
-        max-height: 26px;
+        font-size: 0.75rem;
+        min-height: 28px;
+        max-height: 28px;
         line-height: 1;
         display: flex;
         align-items: center;
