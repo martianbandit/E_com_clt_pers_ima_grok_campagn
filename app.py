@@ -2048,9 +2048,65 @@ def delete_account():
         flash('An error occurred while deleting your account. Please try again.', 'danger')
         return redirect(url_for('user_profile_config'))
 
+@app.route('/images/<filename>')
+def serve_generated_image(filename):
+    """Sert les images générées par IA stockées localement"""
+    from flask import send_from_directory
+    from pathlib import Path
+    
+    try:
+        # Chemin vers le répertoire de stockage des images
+        image_dir = Path("generated_images")
+        
+        # Vérifier dans les sous-dossiers
+        for subdir in ["avatars", "campaigns", "products", "."]:
+            full_path = image_dir / subdir / filename
+            if full_path.exists():
+                return send_from_directory(str(image_dir / subdir), filename)
+        
+        # Si le fichier n'est pas trouvé
+        return "Image not found", 404
+        
+    except Exception as e:
+        logging.error(f"Erreur lors du service d'image {filename}: {str(e)}")
+        return "Error serving image", 500
+
+@app.route('/api/images/gallery/<user_id>')
+@login_required
+def get_user_image_gallery(user_id):
+    """API pour récupérer la galerie d'images d'un utilisateur"""
+    from integrated_image_service import integrated_image_service
+    
+    try:
+        # Vérifier que l'utilisateur peut accéder à ces images
+        if current_user.id != user_id and current_user.role != 'admin':
+            return jsonify({"success": False, "error": "Accès non autorisé"}), 403
+        
+        image_type = request.args.get('type', None)
+        limit = int(request.args.get('limit', 20))
+        
+        result = integrated_image_service.get_user_image_gallery(user_id, image_type, limit)
+        return jsonify(result)
+        
+    except Exception as e:
+        logging.error(f"Erreur lors de la récupération de la galerie: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/images/stats')
+@login_required
+def get_storage_statistics():
+    """API pour les statistiques de stockage d'images"""
+    from integrated_image_service import integrated_image_service
+    
+    if current_user.role != 'admin':
+        return jsonify({"success": False, "error": "Accès administrateur requis"}), 403
+    
+    result = integrated_image_service.get_storage_statistics()
+    return jsonify(result)
+
 @app.route('/image_generation', methods=['GET', 'POST'])
 def image_generation():
-    """Page de génération d'images marketing optimisées avec recherche de produits similaires"""
+    """Page de génération d'images marketing optimisées avec stockage persistant"""
     # Récupérer les clients sauvegardés pour la sélection
     saved_customers = Customer.query.order_by(Customer.name).all()
     

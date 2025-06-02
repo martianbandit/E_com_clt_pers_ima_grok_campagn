@@ -66,10 +66,14 @@
 - ✅ **Interface mobile-friendly** Bootstrap 5
 - ✅ **Système de navigation** contextuel
 
-### 1.6 Intégrations IA
+### 1.6 Intégrations IA & Stockage
 - ✅ **OpenAI GPT** pour génération de texte
 - ✅ **Grok (xAI)** comme alternative avec fallback
 - ✅ **DALL-E** pour génération d'images
+- ✅ **Stockage persistant d'images IA** avec base de données
+- ✅ **Cache Redis** pour optimisation des images
+- ✅ **Service intégré** de génération et stockage
+- ✅ **API complète** de gestion d'images (endpoints /images/)
 - ✅ **Gestion d'erreurs robuste** avec retry automatique
 - ✅ **Métriques d'utilisation IA** trackées
 
