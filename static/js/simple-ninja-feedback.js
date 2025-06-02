@@ -183,12 +183,12 @@ function addFeedbackStyles() {
     .ninja-feedback-types {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
-        padding: 0.75rem;
+        gap: 0.3rem;
+        padding: 0.4rem;
         background: rgba(255, 107, 53, 0.05);
-        border-radius: 8px;
-        border-left: 3px solid #ff6b35;
-        margin-bottom: 0.75rem;
+        border-radius: 6px;
+        border-left: 2px solid #ff6b35;
+        margin-bottom: 0.5rem;
     }
 
     .ninja-form-check {
@@ -201,11 +201,13 @@ function addFeedbackStyles() {
         font-weight: 500;
         color: var(--bs-body-color);
         cursor: pointer;
-        padding: 0.5rem;
-        border-radius: 6px;
+        padding: 0.25rem 0.4rem;
+        border-radius: 4px;
         transition: all 0.3s ease;
         border: 1px solid transparent;
-        font-size: 0.9rem;
+        font-size: 0.75rem;
+        min-height: 28px;
+        line-height: 1.2;
     }
 
     .ninja-check-label:hover {
@@ -263,19 +265,22 @@ function addFeedbackStyles() {
     }
 
     .ninja-feedback-footer {
-        padding: 0.75rem 1rem;
+        padding: 0.4rem 0.6rem;
         border: none;
         background: rgba(255, 107, 53, 0.02);
         display: flex;
-        gap: 0.75rem;
+        gap: 0.4rem;
+        min-height: 40px;
     }
 
     .ninja-btn-primary {
         background: linear-gradient(135deg, #ff6b35 0%, #e55528 100%);
         border: none;
-        border-radius: 6px;
-        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        padding: 0.3rem 0.6rem;
         font-weight: 600;
+        font-size: 0.75rem;
+        min-height: 32px;
         color: white;
         transition: all 0.3s ease;
         display: flex;
@@ -309,14 +314,15 @@ function addFeedbackStyles() {
     .ninja-btn-secondary {
         background: transparent;
         border: 1px solid #6c757d;
-        border-radius: 6px;
-        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        padding: 0.3rem 0.6rem;
         font-weight: 600;
         color: #6c757d;
         transition: all 0.3s ease;
+        font-size: 0.75rem;
+        min-height: 32px;
         display: flex;
         align-items: center;
-        font-size: 0.875rem;
     }
 
     .ninja-btn-secondary:hover {
