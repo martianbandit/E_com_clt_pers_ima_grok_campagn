@@ -1,4 +1,4 @@
-# NinjaLead - Plateforme de Marketing IA pour Boutiques
+# NinjaLead - Plateforme de Marketing IA pour SaaS et startups
 
 <div align="center">
   <img src="static/img/ninjalead-ninja-new.png" alt="NinjaLead Logo" width="200">
@@ -22,7 +22,7 @@
 
 ## Vue d'ensemble
 
-NinjaLead est une plateforme de marketing alimentée par l'IA, conçue pour aider les boutiques en ligne et les entreprises de niche à optimiser leurs campagnes marketing, à comprendre leurs clients et à améliorer leurs performances commerciales. Développée avec Python et Flask, cette application web offre une suite complète d'outils pour la génération de contenu, l'analyse de données clients et la gestion de campagnes marketing.
+NinjaLead est une plateforme de marketing alimentée par l'IA, conçue pour aider les boutiques, SaaS(webapp), influenceurs, e-commerce,ou simple introduction de votre business en ligne, simplement les entreprises de niche à optimiser leurs campagnes marketing, à comprendre leurs clients et à améliorer leurs performances commerciales. Développée avec Python et Flask, cette application web offre une suite complète d'outils pour la génération de contenu, l'analyse de données clients et la gestion de campagnes marketing.
 
 La plateforme est conçue avec une architecture multi-tenant permettant à chaque utilisateur de travailler dans son propre environnement isolé avec ses propres données de boutiques, campagnes et clients.
 
