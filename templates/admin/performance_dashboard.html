@@ -232,7 +232,7 @@ function runOptimization() {
     const originalText = btn.innerHTML;
     
     // Afficher le loading
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Optimisation...';
+    btn.innerHTML = '<i class="\1 icon-orange"\2></i>Optimisation...';
     btn.disabled = true;
     
     fetch('/admin/performance/optimize', {
@@ -247,16 +247,16 @@ function runOptimization() {
         let resultsHtml = '<div class="list-group">';
         
         if (data.error) {
-            resultsHtml += `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>${data.error}</div>`;
+            resultsHtml += `<div class="alert alert-danger"><i class="\1 icon-orange"\2></i>${data.error}</div>`;
         } else {
             if (data.assets) {
-                resultsHtml += `<div class="list-group-item"><i class="fas fa-file-archive me-2 text-success"></i><strong>Assets:</strong> ${data.assets}</div>`;
+                resultsHtml += `<div class="list-group-item"><i class="\1 icon-orange"\2></i><strong>Assets:</strong> ${data.assets}</div>`;
             }
             if (data.database) {
-                resultsHtml += `<div class="list-group-item"><i class="fas fa-database me-2 text-info"></i><strong>Base de données:</strong> ${data.database}</div>`;
+                resultsHtml += `<div class="list-group-item"><i class="\1 icon-orange"\2></i><strong>Base de données:</strong> ${data.database}</div>`;
             }
             if (data.cache) {
-                resultsHtml += `<div class="list-group-item"><i class="fas fa-memory me-2 text-warning"></i><strong>Cache:</strong> ${data.cache}</div>`;
+                resultsHtml += `<div class="list-group-item"><i class="\1 icon-orange"\2></i><strong>Cache:</strong> ${data.cache}</div>`;
             }
         }
         
@@ -269,7 +269,7 @@ function runOptimization() {
     .catch(error => {
         console.error('Erreur:', error);
         document.getElementById('optimizationResults').innerHTML = 
-            '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>Erreur lors de l\'optimisation</div>';
+            '<div class="alert alert-danger"><i class="\1 icon-orange"\2></i>Erreur lors de l\'optimisation</div>';
         new bootstrap.Modal(document.getElementById('optimizationModal')).show();
     })
     .finally(() => {

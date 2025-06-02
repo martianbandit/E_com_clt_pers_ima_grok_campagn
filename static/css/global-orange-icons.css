@@ -1,0 +1,225 @@
+/* Système global d'icônes orange avec aura - NinjaLead */
+
+/* Variables CSS pour les effets orange */
+:root {
+    --orange-primary: #FF6B35;
+    --orange-hover: #FF8C42;
+    --orange-light: #FFA500;
+    --orange-glow: rgba(255, 107, 53, 0.6);
+    --orange-glow-strong: rgba(255, 107, 53, 0.8);
+    --orange-glow-subtle: rgba(255, 107, 53, 0.3);
+}
+
+/* Classe globale pour toutes les icônes orange */
+.icon-orange {
+    color: var(--orange-primary) !important;
+    fill: var(--orange-primary) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 0 8px var(--orange-glow));
+}
+
+/* Effet hover pour toutes les icônes orange */
+.icon-orange:hover {
+    color: var(--orange-hover) !important;
+    fill: var(--orange-hover) !important;
+    filter: 
+        drop-shadow(0 0 12px var(--orange-glow-strong))
+        drop-shadow(0 0 24px var(--orange-glow))
+        drop-shadow(0 0 36px var(--orange-glow-subtle));
+    transform: scale(1.05) translateY(-1px);
+}
+
+/* Icônes dans les boutons */
+.btn .icon-orange,
+.btn svg.icon-orange,
+.btn i.icon-orange {
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
+}
+
+.btn:hover .icon-orange,
+.btn:hover svg.icon-orange,
+.btn:hover i.icon-orange {
+    filter: 
+        drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))
+        drop-shadow(0 0 16px var(--orange-glow));
+}
+
+/* Icônes dans la navigation */
+.nav-link .icon-orange,
+.navbar-nav .icon-orange,
+.sidebar .icon-orange {
+    filter: 
+        drop-shadow(0 0 10px var(--orange-glow))
+        drop-shadow(0 0 20px var(--orange-glow-subtle));
+}
+
+.nav-link:hover .icon-orange,
+.navbar-nav .nav-link:hover .icon-orange,
+.sidebar .nav-link:hover .icon-orange {
+    filter: 
+        drop-shadow(0 0 16px var(--orange-glow-strong))
+        drop-shadow(0 0 32px var(--orange-glow))
+        drop-shadow(0 0 48px var(--orange-glow-subtle));
+    transform: scale(1.1);
+}
+
+/* Icônes dans les cartes */
+.card-header .icon-orange,
+.card-title .icon-orange {
+    filter: drop-shadow(0 0 8px var(--orange-glow));
+}
+
+/* Icônes dans les alertes */
+.alert .icon-orange {
+    filter: drop-shadow(0 0 6px var(--orange-glow));
+}
+
+/* Icônes dans les tableaux */
+.table .icon-orange {
+    filter: drop-shadow(0 0 4px var(--orange-glow-subtle));
+}
+
+.table tr:hover .icon-orange {
+    filter: drop-shadow(0 0 8px var(--orange-glow));
+}
+
+/* Icônes dans les dropdowns */
+.dropdown-menu .icon-orange {
+    filter: drop-shadow(0 0 4px var(--orange-glow-subtle));
+}
+
+.dropdown-item:hover .icon-orange {
+    filter: drop-shadow(0 0 8px var(--orange-glow));
+}
+
+/* Icônes de taille spécifique */
+.icon-orange.icon-sm {
+    width: 14px;
+    height: 14px;
+}
+
+.icon-orange.icon-md {
+    width: 18px;
+    height: 18px;
+}
+
+.icon-orange.icon-lg {
+    width: 24px;
+    height: 24px;
+}
+
+.icon-orange.icon-xl {
+    width: 32px;
+    height: 32px;
+}
+
+/* Animation de pulsation pour les icônes importantes */
+.icon-orange.icon-pulse {
+    animation: orange-pulse 2s ease-in-out infinite;
+}
+
+@keyframes orange-pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 8px var(--orange-glow));
+    }
+    50% {
+        filter: 
+            drop-shadow(0 0 16px var(--orange-glow-strong))
+            drop-shadow(0 0 32px var(--orange-glow));
+    }
+}
+
+/* Icônes avec rotation */
+.icon-orange.icon-spin {
+    animation: orange-spin 1s linear infinite;
+}
+
+@keyframes orange-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Conversion automatique des icônes FontAwesome existantes */
+.fa.icon-orange,
+.fas.icon-orange,
+.far.icon-orange,
+.fab.icon-orange {
+    color: var(--orange-primary) !important;
+    filter: drop-shadow(0 0 8px var(--orange-glow));
+}
+
+.fa.icon-orange:hover,
+.fas.icon-orange:hover,
+.far.icon-orange:hover,
+.fab.icon-orange:hover {
+    color: var(--orange-hover) !important;
+    filter: 
+        drop-shadow(0 0 12px var(--orange-glow-strong))
+        drop-shadow(0 0 24px var(--orange-glow));
+}
+
+/* Bootstrap Icons avec effet orange */
+.bi.icon-orange {
+    color: var(--orange-primary) !important;
+    filter: drop-shadow(0 0 8px var(--orange-glow));
+}
+
+.bi.icon-orange:hover {
+    color: var(--orange-hover) !important;
+    filter: 
+        drop-shadow(0 0 12px var(--orange-glow-strong))
+        drop-shadow(0 0 24px var(--orange-glow));
+}
+
+/* Classes utilitaires pour différents contextes */
+.icon-orange-subtle {
+    filter: drop-shadow(0 0 4px var(--orange-glow-subtle)) !important;
+}
+
+.icon-orange-strong {
+    filter: 
+        drop-shadow(0 0 12px var(--orange-glow-strong))
+        drop-shadow(0 0 24px var(--orange-glow)) !important;
+}
+
+.icon-orange-glow-intense {
+    filter: 
+        drop-shadow(0 0 16px var(--orange-glow-strong))
+        drop-shadow(0 0 32px var(--orange-glow))
+        drop-shadow(0 0 48px var(--orange-glow-subtle)) !important;
+}
+
+/* Classes spéciales pour les icônes importantes */
+.icon-orange-hero {
+    filter: 
+        drop-shadow(0 0 20px var(--orange-glow-strong))
+        drop-shadow(0 0 40px var(--orange-glow))
+        drop-shadow(0 0 60px var(--orange-glow-subtle));
+    animation: orange-pulse 3s ease-in-out infinite;
+}
+
+/* Icônes dans les formulaires */
+.form-control:focus + .icon-orange,
+.input-group:focus-within .icon-orange {
+    filter: drop-shadow(0 0 12px var(--orange-glow));
+}
+
+/* Responsive - réduction des effets sur mobile pour les performances */
+@media (max-width: 768px) {
+    .icon-orange {
+        filter: drop-shadow(0 0 4px var(--orange-glow-subtle)) !important;
+    }
+    
+    .icon-orange:hover {
+        filter: drop-shadow(0 0 8px var(--orange-glow)) !important;
+        transform: none;
+    }
+    
+    .icon-orange.icon-pulse {
+        animation: none;
+    }
+}

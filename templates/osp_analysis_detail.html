@@ -169,13 +169,13 @@
                     
                     <div class="action-buttons">
                         <a href="{{ url_for('edit_osp_analysis', analysis_id=analysis.id) }}" class="btn btn-sm btn-primary">
-                            <i class="bi bi-pencil-square"></i> {{ _("Modifier") }}
+                            <i class="\1 icon-orange"\2></i> {{ _("Modifier") }}
                         </a>
                         <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                            <i class="bi bi-trash"></i> {{ _("Supprimer") }}
+                            <i class="\1 icon-orange"\2></i> {{ _("Supprimer") }}
                         </button>
                         <a href="{{ url_for('osp_tools') }}" class="btn btn-sm btn-secondary">
-                            <i class="bi bi-arrow-left"></i> {{ _("Retour") }}
+                            <i class="\1 icon-orange"\2></i> {{ _("Retour") }}
                         </a>
                     </div>
                     
@@ -217,7 +217,7 @@
                                                 <ul class="list-group list-group-flush">
                                                     {% for strength in results.get('strengths', []) %}
                                                     <li class="list-group-item">
-                                                        <i class="bi bi-check-circle-fill text-success me-2"></i> {{ strength }}
+                                                        <i class="\1 icon-orange"\2></i> {{ strength }}
                                                     </li>
                                                     {% endfor %}
                                                 </ul>
@@ -232,7 +232,7 @@
                                                 <ul class="list-group list-group-flush">
                                                     {% for weakness in results.get('weaknesses', []) %}
                                                     <li class="list-group-item">
-                                                        <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i> {{ weakness }}
+                                                        <i class="\1 icon-orange"\2></i> {{ weakness }}
                                                     </li>
                                                     {% endfor %}
                                                 </ul>
@@ -247,7 +247,7 @@
                                         <ul class="list-group list-group-flush">
                                             {% for recommendation in results.get('recommendations', []) %}
                                             <li class="list-group-item">
-                                                <i class="bi bi-lightbulb-fill text-warning me-2"></i> {{ recommendation }}
+                                                <i class="\1 icon-orange"\2></i> {{ recommendation }}
                                             </li>
                                             {% endfor %}
                                         </ul>
@@ -330,7 +330,7 @@
                                                 <ul class="list-group">
                                                     {% for suggestion in results.get('content_suggestions', []) %}
                                                     <li class="list-group-item">
-                                                        <i class="bi bi-check2-circle text-success me-2"></i> {{ suggestion }}
+                                                        <i class="\1 icon-orange"\2></i> {{ suggestion }}
                                                     </li>
                                                     {% endfor %}
                                                 </ul>
@@ -343,7 +343,7 @@
                                                 <ul class="list-group">
                                                     {% for recommendation in results.get('technical_recommendations', []) %}
                                                     <li class="list-group-item">
-                                                        <i class="bi bi-gear-fill text-secondary me-2"></i> {{ recommendation }}
+                                                        <i class="\1 icon-orange"\2></i> {{ recommendation }}
                                                     </li>
                                                     {% endfor %}
                                                 </ul>
@@ -548,7 +548,7 @@
     <div class="toast align-items-center" id="copyToast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body">
-                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <i class="\1 icon-orange"\2></i>
                 {{ _("Texte copié dans le presse-papiers!") }}
             </div>
             <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>

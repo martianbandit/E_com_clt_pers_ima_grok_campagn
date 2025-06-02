@@ -1,5 +1,5 @@
 {% macro ninja_icon(icon_name, size='md', classes='', title='') %}
-    <svg class="ninja-icon ninja-icon-{{ size }} {{ classes }}" {% if title %}title="{{ title }}"{% endif %}>
+    <svg class="ninja-icon ninja-icon-{{ size }} {{ classes }} icon-orange" {% if title %}title="{{ title }}"{% endif %}>
         <use href="{{ url_for('static', filename='images/ninja-icons.svg') }}#{{ icon_name }}"></use>
     </svg>
 {% endmacro %}

@@ -123,7 +123,7 @@ window.showNinjaToast = function(message, type, isThemeChange = false) {
             if (isThemeChange || message.includes('thème') || message.includes('theme')) {
                 const currentTheme = document.documentElement.getAttribute('data-bs-theme');
                 const icon = currentTheme === 'dark' ? 'fa-moon' : 'fa-sun';
-                toastTitle.innerHTML = `<i class="fas ${icon} me-2"></i> Thème`;
+                toastTitle.innerHTML = `<i class="\1 icon-orange"\2></i> Thème`;
                 toast.classList.add('theme-change');
             } else {
                 toastTitle.innerHTML = '<img src="{{ url_for("static", filename="images/ninja-analytics.png") }}" alt="" style="width: 16px; height: 16px; margin-right: 8px;"> Information';

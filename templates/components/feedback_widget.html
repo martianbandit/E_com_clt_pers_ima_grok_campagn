@@ -3,7 +3,7 @@
 <div id="feedbackWidget" class="feedback-widget">
     <!-- Bouton d'aide flottant -->
     <div class="feedback-toggle" onclick="toggleFeedbackPanel()">
-        <svg class="feedback-icon ninja-icon ninja-icon-lg ninja-icon-glow">
+        <svg class="feedback-icon ninja-icon ninja-icon-lg ninja-icon-glow icon-orange">
             <use href="{{ url_for('static', filename='images/ninja-icons.svg') }}#ninja-megaphone"></use>
         </svg>
         <span class="feedback-badge" id="helpBadge">?</span>
@@ -13,7 +13,7 @@
     <div class="feedback-panel" id="feedbackPanel" style="display: none;">
         <div class="feedback-header">
             <h5>
-                <i class="fas fa-headset me-2"></i>
+                <i class="\1 icon-orange"\2></i>
                 Assistance & Feedback
             </h5>
             <button type="button" class="btn-close feedback-close" onclick="toggleFeedbackPanel()"></button>
@@ -22,11 +22,11 @@
         <!-- Onglets -->
         <div class="feedback-tabs">
             <button class="feedback-tab active" onclick="switchFeedbackTab('help')">
-                <i class="fas fa-info-circle me-1"></i>
+                <i class="\1 icon-orange"\2></i>
                 Aide
             </button>
             <button class="feedback-tab" onclick="switchFeedbackTab('feedback')">
-                <i class="fas fa-comment me-1"></i>
+                <i class="\1 icon-orange"\2></i>
                 Feedback
             </button>
         </div>
@@ -79,11 +79,11 @@
 
                 <div class="feedback-actions">
                     <button type="submit" class="btn btn-primary" id="submitFeedbackBtn">
-                        <i class="fas fa-paper-plane me-1"></i>
+                        <i class="\1 icon-orange"\2></i>
                         Envoyer
                     </button>
                     <button type="button" class="btn btn-secondary" onclick="clearFeedbackForm()">
-                        <i class="fas fa-times me-1"></i>
+                        <i class="\1 icon-orange"\2></i>
                         Annuler
                     </button>
                 </div>
@@ -93,13 +93,13 @@
         <!-- Message de confirmation -->
         <div class="feedback-success" id="feedbackSuccess" style="display: none;">
             <div class="alert alert-success">
-                <i class="fas fa-check-circle me-2"></i>
+                <i class="\1 icon-orange"\2></i>
                 <strong>Merci pour votre feedback!</strong>
                 <p class="mb-0">Votre message a été envoyé avec succès. Notre équipe l'examinera rapidement.</p>
                 <small class="text-muted">ID de référence: <span id="feedbackId"></span></small>
             </div>
             <button class="btn btn-outline-primary btn-sm" onclick="resetFeedbackWidget()">
-                <i class="fas fa-plus me-1"></i>
+                <i class="\1 icon-orange"\2></i>
                 Nouveau feedback
             </button>
         </div>
@@ -405,7 +405,7 @@ function loadContextualHelp() {
         const tipsContainer = document.getElementById('helpTips');
         if (data.tips && data.tips.length > 0) {
             tipsContainer.innerHTML = '<div class="help-tips">' + 
-                data.tips.map(tip => `<div class="help-tip"><i class="fas fa-lightbulb"></i>${tip}</div>`).join('') +
+                data.tips.map(tip => `<div class="help-tip"><i class="\1 icon-orange"\2></i>${tip}</div>`).join('') +
                 '</div>';
         } else {
             tipsContainer.innerHTML = '';
@@ -426,7 +426,7 @@ function submitFeedback(event) {
     const originalText = submitBtn.innerHTML;
     
     // Loading state
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Envoi...';
+    submitBtn.innerHTML = '<i class="\1 icon-orange"\2></i>Envoi...';
     submitBtn.disabled = true;
     
     const feedbackData = {
